@@ -1,0 +1,42 @@
+{
+  "manifest_version": 3,
+  "name": "Pixi Scene Inspector",
+  "description": "Visual inspector for the PixiJS scene tree and node properties",
+  "version": "1.0.0",
+  "permissions": [
+    "storage"
+  ],
+  "action": {
+    "default_title": "Pixi Scene Inspector",
+    "default_popup": "settings.html",
+    "default_icon": {
+      "16": "icon.png",
+      "48": "icon.png"
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "content-bridge.js"
+      ],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "content-dock.js"
+      ],
+      "run_at": "document_idle",
+      "world": "MAIN"
+    }
+  ],
+  "icons": {
+    "16": "icon.png",
+    "48": "icon.png"
+  }
+}

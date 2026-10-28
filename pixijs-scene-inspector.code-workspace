@@ -1,0 +1,29 @@
+{
+	"folders":
+	[
+		{
+			"path": "."
+		}
+	],
+	"settings":
+	{
+		"files.exclude":
+		{
+			"@mf-types/": true,
+			"build": true,
+			"node_modules": true,
+		},
+		
+		"search.exclude":
+		{
+			"@mf-types/": true,
+			"build": true,
+			"node_modules": true,
+			"webpack": true,
+			"package*.json": true,
+			"tsconfig*.json": true,
+			"svelte.config.*": true,
+			".*.*": true
+		}
+	}
+}
