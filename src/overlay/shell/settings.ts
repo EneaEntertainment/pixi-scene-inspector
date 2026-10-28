@@ -29,6 +29,7 @@ type SceneInspectorSettings = {
     tree?: PanelSettings;
     propertyExport?: PropertyExportSettings;
     propertyExportOutput?: PropertyExportOutputMode;
+    highlight?: boolean;
 };
 
 export type FloatRectSettings = {
@@ -216,6 +217,11 @@ function normalizeSettings(raw: Record<string, unknown>): SceneInspectorSettings
         settings.propertyExportOutput = propertyExportOutput;
     }
 
+    if (typeof raw.highlight === 'boolean')
+    {
+        settings.highlight = raw.highlight;
+    }
+
     return settings;
 }
 
@@ -286,6 +292,8 @@ function writeSettings(patch: SceneInspectorSettings)
     const propertyExportOutput = patch.propertyExportOutput
         ?? current.propertyExportOutput;
 
+    const highlight = patch.highlight ?? current.highlight;
+
     const next: SceneInspectorSettings = {
         properties: roundPanelSettings({
             ...current.properties,
@@ -299,6 +307,7 @@ function writeSettings(patch: SceneInspectorSettings)
                 }
                 : {}),
         }),
+
         tree: roundPanelSettings({
             ...current.tree,
             ...patch.tree,
@@ -321,6 +330,11 @@ function writeSettings(patch: SceneInspectorSettings)
     if (propertyExportOutput)
     {
         next.propertyExportOutput = propertyExportOutput;
+    }
+
+    if (typeof highlight === 'boolean')
+    {
+        next.highlight = highlight;
     }
 
     try
@@ -355,6 +369,16 @@ export function readPropertyExportOutput(): PropertyExportOutputMode
 export function writePropertyExportOutput(mode: PropertyExportOutputMode)
 {
     writeSettings({ propertyExportOutput: mode });
+}
+
+export function readHighlightEnabled(): boolean
+{
+    return readSettings().highlight === true;
+}
+
+export function writeHighlightEnabled(enabled: boolean)
+{
+    writeSettings({ highlight: enabled });
 }
 
 export function readPanelSettings(key: PanelSettingsKey): PanelSettings

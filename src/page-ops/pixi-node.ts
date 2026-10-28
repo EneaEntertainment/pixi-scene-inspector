@@ -45,6 +45,15 @@ export type PixiNode = {
     addChild?: (child: PixiNode) => unknown;
     addChildAt?: (child: PixiNode, index: number) => unknown;
     getLocalBounds?: () => unknown;
+    getBounds?: (...args: Array<unknown>) => unknown;
+    worldTransform?: {
+        a: number;
+        b: number;
+        c: number;
+        d: number;
+        tx: number;
+        ty: number;
+    };
     _view3d?: {
         root?: PixiNode;
         camera?: (PixiNode & { parent?: PixiNode | null }) | null;
@@ -64,9 +73,20 @@ export type PageGlobals = typeof globalThis & {
 
     __PIXI_APP__?: {
         stage?: PixiNode;
+        canvas?: HTMLCanvasElement;
+        view?: HTMLCanvasElement;
+        screen?: {
+            width?: number;
+            height?: number;
+        };
         renderer?: {
             lastObjectRendered?: PixiNode;
             _lastObjectRendered?: PixiNode;
+            canvas?: HTMLCanvasElement;
+            view?: HTMLCanvasElement;
+            width?: number;
+            height?: number;
+            resolution?: number;
         };
     };
 
@@ -75,6 +95,11 @@ export type PageGlobals = typeof globalThis & {
     __PIXI_RENDERER__?: {
         lastObjectRendered?: PixiNode;
         _lastObjectRendered?: PixiNode;
+        canvas?: HTMLCanvasElement;
+        view?: HTMLCanvasElement;
+        width?: number;
+        height?: number;
+        resolution?: number;
     };
 
     $pixi?: PixiNode;

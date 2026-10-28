@@ -33,13 +33,17 @@ The header shows node count and which global was used. **live** refresh (~1s) is
 
 Selected node is available in the page console as `$pixi`.
 
+### Selection highlight (docked overlay)
+
+Enable **highlight** in the header (off by default) to outline the selected node on the game canvas. Anchor, when present, is marked with a small circle. The setting is remembered in `localStorage`.
+
 ### Properties panel (docked overlay)
 
 Docked mode mounts a right-side **Properties** panel for the selected node (transform, visibility, rendering, interactivity). Fields appear only when the live Pixi object exposes them.
 
 - Toggle **Float** / **Dock** in the panel header: floating mode can be dragged and corner-resized; docked mode resizes from the left edge and shrinks the game shell.
 - Number fields support click-drag scrubbing (Esc cancels an in-progress scrub). Hold **Option/Alt** when releasing a scrub, or when nudging with the field arrows / `↑` `↓`, to snap the value to the nearest step.
-- Layout for both panels (`properties` / `tree`: mode, position, width, height) is stored in `localStorage` under `pixi-scene-inspector-settings`.
+- Layout for both panels (`properties` / `tree`: mode, position, width, height) and the **highlight** toggle are stored in `localStorage` under `pixi-scene-inspector-settings`.
 
 Plain `mountPixiSceneInspector` (no docked overlay) does not include the properties panel.
 

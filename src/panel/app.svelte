@@ -43,7 +43,10 @@
     seedExpandedRoot,
   } from "./panel-session";
   import SceneTree from "./scene-tree.svelte";
-
+  import {
+    readHighlightEnabled,
+    writeHighlightEnabled,
+  } from "../overlay/shell/settings";
   import type { PixiTreeHost } from "../host";
   import type {
     LaidOutNode,
@@ -56,10 +59,12 @@
     host,
     onBarReady,
     selection = createSelectionChannel(),
+    setHighlightEnabled,
   }: {
     host: PixiTreeHost;
     onBarReady?: (bar: HTMLElement) => void;
     selection?: SelectionChannel;
+    setHighlightEnabled?: (enabled: boolean) => void;
   } = $props();
 
   let expandedIds = $state<Set<string>>(new Set());
@@ -74,6 +79,7 @@
   let canvasW = $state(800);
   let canvasH = $state(600);
   let isolatedRootId = $state<string | null>(null);
+  let highlightEnabled = $state(readHighlightEnabled());
   let autoRefresh = $state(true);
   let nameFilter = $state("");
   let lastError = $state("");
@@ -475,6 +481,13 @@
     {source}
     {showHelp}
     {isolateLabel}
+    {highlightEnabled}
+    onhighlightEnabledChange={(value) => {
+      highlightEnabled = value;
+
+      writeHighlightEnabled(value);
+      setHighlightEnabled?.(value);
+    }}
     {autoRefresh}
     onautoRefreshChange={(value) => {
       autoRefresh = value;

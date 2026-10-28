@@ -1,4 +1,4 @@
-const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/browserAll-4uq44jlq.js","assets/webworkerAll-Dodk3B0J.js","assets/Filter-C55WUVNA.js","assets/WebGPURenderer-D3LVXPxv.js","assets/getTexelRangeRects-B3NNcjeT.js","assets/RenderTargetSystem-DSc6_YVK.js","assets/WebGLRenderer-BR-J9mfl.js","assets/CanvasRenderer-vVX4sCw2.js"])))=>i.map(i=>d[i]);
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/browserAll-C9yK-V0l.js","assets/webworkerAll-CxjpTpBa.js","assets/Filter-CZL0ynfX.js","assets/WebGPURenderer-hpCfPSnt.js","assets/getTexelRangeRects-BH89xgPo.js","assets/RenderTargetSystem-DPHO7lDy.js","assets/WebGLRenderer-CPaMSD5Y.js","assets/CanvasRenderer-r_UR7EkQ.js"])))=>i.map(i=>d[i]);
 (function polyfill() {
   const relList = document.createElement("link").relList;
   if (relList && relList.supports && relList.supports("modulepreload")) return;
@@ -355,7 +355,7 @@ const browserExt = {
   },
   test: () => true,
   load: async () => {
-    await __vitePreload(() => import("./browserAll-4uq44jlq.js"), true ? __vite__mapDeps([0,1,2]) : void 0);
+    await __vitePreload(() => import("./browserAll-C9yK-V0l.js"), true ? __vite__mapDeps([0,1,2]) : void 0);
   }
 };
 const webworkerExt = {
@@ -366,7 +366,7 @@ const webworkerExt = {
   },
   test: () => typeof self !== "undefined" && self.WorkerGlobalScope !== void 0,
   load: async () => {
-    await __vitePreload(() => import("./webworkerAll-Dodk3B0J.js"), true ? __vite__mapDeps([1,2]) : void 0);
+    await __vitePreload(() => import("./webworkerAll-CxjpTpBa.js"), true ? __vite__mapDeps([1,2]) : void 0);
   }
 };
 class ObservablePoint {
@@ -13297,7 +13297,7 @@ async function autoDetectRenderer(options) {
     const rendererType = preferredOrder[i2];
     if (rendererType === "webgpu" && await isWebGPUSupported()) {
       const { WebGPURenderer } = await __vitePreload(async () => {
-        const { WebGPURenderer: WebGPURenderer2 } = await import("./WebGPURenderer-D3LVXPxv.js");
+        const { WebGPURenderer: WebGPURenderer2 } = await import("./WebGPURenderer-hpCfPSnt.js");
         return { WebGPURenderer: WebGPURenderer2 };
       }, true ? __vite__mapDeps([3,4,5,2]) : void 0);
       RendererClass = WebGPURenderer;
@@ -13307,7 +13307,7 @@ async function autoDetectRenderer(options) {
       options.failIfMajorPerformanceCaveat ?? AbstractRenderer.defaultOptions.failIfMajorPerformanceCaveat
     )) {
       const { WebGLRenderer } = await __vitePreload(async () => {
-        const { WebGLRenderer: WebGLRenderer2 } = await import("./WebGLRenderer-BR-J9mfl.js");
+        const { WebGLRenderer: WebGLRenderer2 } = await import("./WebGLRenderer-CPaMSD5Y.js");
         return { WebGLRenderer: WebGLRenderer2 };
       }, true ? __vite__mapDeps([6,4,5,2]) : void 0);
       RendererClass = WebGLRenderer;
@@ -13315,7 +13315,7 @@ async function autoDetectRenderer(options) {
       break;
     } else if (rendererType === "canvas") {
       const { CanvasRenderer } = await __vitePreload(async () => {
-        const { CanvasRenderer: CanvasRenderer2 } = await import("./CanvasRenderer-vVX4sCw2.js");
+        const { CanvasRenderer: CanvasRenderer2 } = await import("./CanvasRenderer-r_UR7EkQ.js");
         return { CanvasRenderer: CanvasRenderer2 };
       }, true ? __vite__mapDeps([7,5,2]) : void 0);
       RendererClass = CanvasRenderer;
@@ -39057,7 +39057,7 @@ function Missing_pixi($$anchor, $$props) {
 }
 var root$3 = /* @__PURE__ */ from_html(`<div class="iso svelte-evo3fa"> </div>`);
 var root_1$3 = /* @__PURE__ */ from_html(`<button type="button" class="filter-clear svelte-evo3fa" aria-label="Clear filter">×</button>`);
-var root_2$3 = /* @__PURE__ */ from_html(`<header class="bar svelte-evo3fa"><div class="title svelte-evo3fa">Pixi Scene Inspector</div> <div class="meta svelte-evo3fa"> </div> <button type="button" class="help-btn svelte-evo3fa">?</button> <!> <div class="filter svelte-evo3fa"><input type="text" class="filter-input svelte-evo3fa" placeholder="filter…" spellcheck="false" autocomplete="off" aria-label="Filter nodes by name"/> <!></div> <label class="toggle svelte-evo3fa"><input type="checkbox"/> live</label> <button type="button" class="btn svelte-evo3fa">Refresh</button></header>`);
+var root_2$3 = /* @__PURE__ */ from_html(`<header class="bar svelte-evo3fa"><div class="title svelte-evo3fa">Pixi Scene Inspector</div> <div class="meta svelte-evo3fa"> </div> <button type="button" class="help-btn svelte-evo3fa">?</button> <!> <div class="filter svelte-evo3fa"><input type="text" class="filter-input svelte-evo3fa" placeholder="filter…" spellcheck="false" autocomplete="off" aria-label="Filter nodes by name"/> <!></div> <label class="toggle svelte-evo3fa"><input type="checkbox"/> highlight</label> <label class="toggle svelte-evo3fa"><input type="checkbox"/> live</label> <button type="button" class="btn svelte-evo3fa">Refresh</button></header>`);
 const $$css$4 = {
   hash: "svelte-evo3fa",
   code: '.bar.svelte-evo3fa {display:flex;flex-shrink:0;gap:12px;align-items:center;padding:8px 12px;border-bottom:2px solid #2e2e2e;background:#3a3a3a;}.title.svelte-evo3fa {font-size:13px;font-weight:700;letter-spacing:0.02em;}.meta.svelte-evo3fa {overflow:hidden;font-size:11px;color:#bdbdbd;text-overflow:ellipsis;white-space:nowrap;}.help-btn.svelte-evo3fa {display:flex;flex-shrink:0;align-items:center;justify-content:center;width:18px;height:18px;margin-right:auto;padding:0;font-family:inherit;font-size:12px;font-weight:700;line-height:1;color:#bdbdbd;cursor:pointer;background:transparent;border:1.5px solid #bdbdbd;border-radius:50%;}.help-btn.svelte-evo3fa:hover,\n  .help-btn[aria-pressed="true"].svelte-evo3fa {color:#111;background:#fff;border-color:#111;}.iso.svelte-evo3fa {flex-shrink:0;max-width:420px;overflow:hidden;font-size:11px;color:#ffe066;text-overflow:ellipsis;white-space:nowrap;}.toggle.svelte-evo3fa {display:flex;gap:6px;align-items:center;font-size:11px;color:#cfcfcf;user-select:none;}.filter.svelte-evo3fa {display:flex;flex-shrink:0;gap:4px;align-items:center;}.filter-input.svelte-evo3fa {width:120px;padding:3px 6px;font-family:inherit;font-size:11px;color:#f0f0f0;background:#2e2e2e;border:1.5px solid #111;outline:none;}.filter-input.svelte-evo3fa::placeholder {color:#888;}.filter-input.svelte-evo3fa:focus {border-color:#ffe066;}.filter-clear.svelte-evo3fa {display:flex;flex-shrink:0;align-items:center;justify-content:center;width:18px;height:18px;padding:0;font-family:inherit;font-size:12px;font-weight:700;line-height:1;color:#bdbdbd;cursor:pointer;background:transparent;border:1.5px solid #bdbdbd;border-radius:50%;}.filter-clear.svelte-evo3fa:hover {color:#111;background:#fff;border-color:#111;}.btn.svelte-evo3fa {padding:4px 10px;font-family:inherit;font-size:11px;font-weight:700;color:#111;cursor:pointer;background:#fff;border:1.5px solid #111;box-shadow:2px 2px 0 #111;}.btn.svelte-evo3fa:active {transform:translate(1px, 1px);box-shadow:1px 1px 0 #111;}'
@@ -39102,7 +39102,9 @@ function Panel_bar($$anchor, $$props) {
   }
   var label = sibling(div_2, 2);
   var input_1 = child(label);
-  var button_2 = sibling(label, 2);
+  var label_1 = sibling(label, 2);
+  var input_2 = child(label_1);
+  var button_2 = sibling(label_1, 2);
   bind_this(header, ($$value) => set(barEl, $$value), () => get(barEl));
   template_effect(() => {
     set_attribute(div, "title", $$props.source);
@@ -39110,14 +39112,16 @@ function Panel_bar($$anchor, $$props) {
     set_attribute(button, "aria-label", $$props.showHelp ? "Close help" : "Keyboard shortcuts");
     set_attribute(button, "aria-pressed", $$props.showHelp);
     set_value(input, $$props.nameFilter);
-    set_checked(input_1, $$props.autoRefresh);
+    set_checked(input_1, $$props.highlightEnabled);
+    set_checked(input_2, $$props.autoRefresh);
   });
   delegated("click", button, (e2) => {
     $$props.ontoggleHelp();
     e2.currentTarget.blur();
   });
   delegated("input", input, (e2) => $$props.onnameFilterChange(e2.currentTarget.value));
-  delegated("change", input_1, (e2) => $$props.onautoRefreshChange(e2.currentTarget.checked));
+  delegated("change", input_1, (e2) => $$props.onhighlightEnabledChange(e2.currentTarget.checked));
+  delegated("change", input_2, (e2) => $$props.onautoRefreshChange(e2.currentTarget.checked));
   delegated("click", button_2, function(...$$args) {
     $$props.onrefresh?.apply(this, $$args);
   });
@@ -39907,514 +39911,6 @@ function Scene_tree($$anchor, $$props) {
   append($$anchor, div);
   pop();
 }
-if (typeof WATCH !== "undefined" && WATCH) {
-  new EventSource("http://localhost:10809/esbuild").addEventListener("change", () => {
-    window.location.reload();
-  });
-}
-var root_1 = /* @__PURE__ */ from_html(`<div class="empty svelte-fytdi9"><p class="svelte-fytdi9">Loading…</p></div>`);
-var root_2 = /* @__PURE__ */ from_html(`<div class="viewport svelte-fytdi9"><!></div>`);
-var root_3 = /* @__PURE__ */ from_html(`<div class="shell svelte-fytdi9"><!> <!></div>`);
-const $$css = {
-  hash: "svelte-fytdi9",
-  code: '* {box-sizing:border-box;}.shell.svelte-fytdi9 {display:flex;flex-direction:column;width:100%;height:100%;font-family:"Courier New", Courier, monospace;color:#f0f0f0;background:#4a4a4a;}.viewport.svelte-fytdi9 {flex:1;overflow:auto;-webkit-user-select:none;user-select:none;background:linear-gradient(90deg, rgb(0 0 0 / 6%) 1px, transparent 1px),\n      linear-gradient(rgb(0 0 0 / 6%) 1px, transparent 1px), #4a4a4a;background-size:16px 16px;}.empty.svelte-fytdi9 {display:flex;flex:1;flex-direction:column;gap:12px;align-items:flex-start;justify-content:center;padding:32px;max-width:560px;}.empty.svelte-fytdi9 p:where(.svelte-fytdi9) {margin:0;line-height:1.4;}'
-};
-function App($$anchor, $$props) {
-  push($$props, true);
-  append_styles$1($$anchor, $$css);
-  const selection = prop($$props, "selection", 19, createSelectionChannel);
-  let expandedIds = /* @__PURE__ */ state(proxy(/* @__PURE__ */ new Set()));
-  let selectedId = /* @__PURE__ */ state(null);
-  let didSeedExpand = false;
-  let status = /* @__PURE__ */ state("loading");
-  let message = /* @__PURE__ */ state("Looking for PixiJS…");
-  let source2 = /* @__PURE__ */ state("");
-  let tree = /* @__PURE__ */ state(null);
-  let nodes = /* @__PURE__ */ state(proxy([]));
-  let edges = /* @__PURE__ */ state(proxy([]));
-  let canvasW = /* @__PURE__ */ state(800);
-  let canvasH = /* @__PURE__ */ state(600);
-  let isolatedRootId = /* @__PURE__ */ state(null);
-  let autoRefresh = /* @__PURE__ */ state(true);
-  let nameFilter = /* @__PURE__ */ state("");
-  let lastError = /* @__PURE__ */ state("");
-  let clipboardId = /* @__PURE__ */ state(null);
-  let moving = /* @__PURE__ */ state(false);
-  let dragging = /* @__PURE__ */ state(false);
-  let showHelp = /* @__PURE__ */ state(false);
-  const isolateLabel = /* @__PURE__ */ user_derived(() => {
-    if (!get(isolatedRootId) || !get(tree)) {
-      return null;
-    }
-    const iso = findTreeNode(get(tree), get(isolatedRootId));
-    return `isolated${iso ? `: ${iso.label || iso.typeName}` : ""} · press I again to exit`;
-  });
-  user_effect(() => {
-    if (!get(selectedId) || !get(tree)) {
-      selection().publish({ id: null, name: null });
-      return;
-    }
-    const node = findTreeNode(get(tree), get(selectedId));
-    selection().publish({
-      id: get(selectedId),
-      name: node ? node.label || node.typeName : null
-    });
-  });
-  function getViewRoot(root2) {
-    if (!get(isolatedRootId)) {
-      return root2;
-    }
-    return findTreeNode(root2, get(isolatedRootId)) ?? root2;
-  }
-  function relayoutFromTree(root2) {
-    const viewRoot = getViewRoot(root2);
-    const query = get(nameFilter).trim();
-    const filtered = query ? filterTreeByName(viewRoot, query) : viewRoot;
-    if (!filtered) {
-      set(nodes, [], true);
-      set(edges, [], true);
-      set(canvasW, 200);
-      set(canvasH, 100);
-      if (get(source2)) {
-        set(message, `0 nodes · ${get(source2)}`);
-      }
-      return;
-    }
-    const expandForLayout = query ? collectTreeIds(filtered) : get(expandedIds);
-    const laid = layoutTree(filtered, expandForLayout);
-    set(nodes, laid.nodes, true);
-    set(edges, laid.edges, true);
-    set(canvasW, laid.width, true);
-    set(canvasH, laid.height, true);
-    if (get(source2)) {
-      const count2 = query ? countTreeNodes(filtered) : countTreeNodes(root2);
-      set(message, `${count2} nodes · ${get(source2)}`);
-    }
-  }
-  async function refresh() {
-    if (get(moving) || get(dragging)) {
-      return;
-    }
-    try {
-      const result = await $$props.host.fetchSnapshot();
-      if (!result.ok) {
-        set(status, "missing");
-        set(message, result.reason, true);
-        set(tree, null);
-        set(nodes, [], true);
-        set(edges, [], true);
-        set(isolatedRootId, null);
-        return;
-      }
-      const isFirstTree = get(tree) === null;
-      const prevTree = get(tree);
-      set(tree, result.tree, true);
-      if (prevTree && isTreeRewrite(prevTree, result.tree)) {
-        set(expandedIds, seedExpandedRoot(result.tree.id), true);
-        set(selectedId, null);
-        set(isolatedRootId, null);
-        set(clipboardId, null);
-      } else if (!didSeedExpand) {
-        set(expandedIds, seedExpandedRoot(result.tree.id), true);
-        didSeedExpand = true;
-      }
-      if (get(selectedId) && !findTreeNode(result.tree, get(selectedId))) {
-        set(selectedId, null);
-      }
-      if (get(isolatedRootId) && !findTreeNode(result.tree, get(isolatedRootId))) {
-        set(isolatedRootId, null);
-      }
-      set(source2, result.source, true);
-      set(status, "ok");
-      relayoutFromTree(result.tree);
-      if (isFirstTree && get(selectedId)) {
-        await highlight(get(selectedId));
-      }
-      set(lastError, "");
-    } catch (err) {
-      set(status, "missing");
-      set(lastError, err instanceof Error ? err.message : String(err), true);
-      set(message, "Failed to read page context");
-    }
-  }
-  async function applyMove(sourceId, parentId, index) {
-    if (!get(tree) || get(moving)) {
-      return;
-    }
-    if (!canReparent(get(tree), sourceId, parentId)) {
-      return;
-    }
-    set(moving, true);
-    try {
-      const newId = await $$props.host.moveNode(sourceId, parentId, index);
-      if (newId === null || newId === void 0) {
-        return;
-      }
-      if (get(clipboardId) === sourceId) {
-        set(clipboardId, newId, true);
-      } else if (get(clipboardId) && isAncestorId(sourceId, get(clipboardId))) {
-        set(clipboardId, null);
-      }
-      set(moving, false);
-      await refresh();
-      if (get(tree)) {
-        set(expandedIds, expandedIdsAfterMove(get(expandedIds), get(tree), newId), true);
-        relayoutFromTree(get(tree));
-      }
-      await highlight(newId);
-      setTimeout(
-        () => {
-          void highlight(newId);
-        },
-        0
-      );
-    } catch (err) {
-      set(lastError, err instanceof Error ? err.message : String(err), true);
-    } finally {
-      set(moving, false);
-    }
-  }
-  function onmove(sourceId, parentId, index) {
-    void applyMove(sourceId, parentId, index);
-  }
-  function ondragging(active) {
-    set(dragging, active, true);
-  }
-  async function highlight(id) {
-    set(selectedId, id, true);
-    try {
-      await $$props.host.selectNode(id);
-    } catch {
-    }
-  }
-  function toggleIsolate() {
-    if (!get(tree) || !get(selectedId)) {
-      return;
-    }
-    if (get(isolatedRootId)) {
-      set(isolatedRootId, null);
-    } else {
-      set(isolatedRootId, get(selectedId), true);
-      const next = new Set(get(expandedIds));
-      next.add(get(selectedId));
-      set(expandedIds, next, true);
-    }
-    relayoutFromTree(get(tree));
-  }
-  async function toggleVisible() {
-    if (!get(selectedId) || !get(tree)) {
-      return;
-    }
-    const selected = findTreeNode(get(tree), get(selectedId));
-    if (selected && !canToggleTreeNodeVisible(selected)) {
-      return;
-    }
-    try {
-      const ok = await $$props.host.toggleNodeVisible(get(selectedId));
-      if (!ok) {
-        return;
-      }
-      await refresh();
-    } catch (err) {
-      set(lastError, err instanceof Error ? err.message : String(err), true);
-    }
-  }
-  async function onselect(id, altKey, toggleExpand = true) {
-    await highlight(id);
-    if (!toggleExpand || !get(tree)) {
-      return;
-    }
-    const viewRoot = getViewRoot(get(tree));
-    const next = new Set(get(expandedIds));
-    const changed = altKey ? collapseOneLevel(viewRoot, id, next) : expandOneLevel(viewRoot, id, next);
-    if (changed) {
-      set(expandedIds, next, true);
-      relayoutFromTree(get(tree));
-    }
-  }
-  function navigate(key, toEnd) {
-    if (!get(selectedId)) {
-      return;
-    }
-    if (key === "ArrowLeft" || key === "ArrowRight") {
-      const nextId = levelNavTarget(get(nodes), get(selectedId), key, toEnd);
-      if (nextId === null || nextId === void 0) {
-        return;
-      }
-      void highlight(nextId);
-      return;
-    }
-    if (!get(tree)) {
-      return;
-    }
-    const viewRoot = getViewRoot(get(tree));
-    const result = depthNavTarget(viewRoot, get(nodes), get(expandedIds), get(selectedId), key, toEnd);
-    if (result === null || result === void 0) {
-      return;
-    }
-    if (result.expandAlong.length > 0) {
-      const next = new Set(get(expandedIds));
-      for (const id of result.expandAlong) {
-        next.add(id);
-      }
-      set(expandedIds, next, true);
-      relayoutFromTree(get(tree));
-    }
-    void highlight(result.selectId);
-  }
-  function onkeydown(e2) {
-    const action = resolvePanelKey(e2, {
-      showHelp: get(showHelp),
-      selectedId: get(selectedId),
-      clipboardId: get(clipboardId)
-    });
-    if (!action) {
-      return;
-    }
-    e2.preventDefault();
-    switch (action.type) {
-      case "closeHelp":
-        set(showHelp, false);
-        break;
-      case "copy":
-        set(clipboardId, action.id, true);
-        break;
-      case "paste":
-        void applyMove(action.sourceId, action.parentId, null);
-        break;
-      case "isolate":
-        toggleIsolate();
-        break;
-      case "toggleVisible":
-        void toggleVisible();
-        break;
-      case "expand":
-        if (get(selectedId)) {
-          void onselect(get(selectedId), false);
-        }
-        break;
-      case "collapse":
-        if (get(selectedId)) {
-          void onselect(get(selectedId), true);
-        }
-        break;
-      case "navigate":
-        navigate(action.key, action.toEnd);
-        break;
-    }
-  }
-  onMount(() => {
-    void refresh();
-    const id = setInterval(
-      () => {
-        if (get(autoRefresh)) {
-          void refresh();
-        }
-      },
-      1e3
-    );
-    window.addEventListener("keydown", onkeydown, true);
-    return () => {
-      clearInterval(id);
-      window.removeEventListener("keydown", onkeydown, true);
-    };
-  });
-  onDestroy(() => {
-    selection().publish({ id: null, name: null });
-  });
-  var $$exports = { refresh };
-  var div = root_3();
-  var node_1 = child(div);
-  Panel_bar(node_1, {
-    get message() {
-      return get(message);
-    },
-    get source() {
-      return get(source2);
-    },
-    get showHelp() {
-      return get(showHelp);
-    },
-    get isolateLabel() {
-      return get(isolateLabel);
-    },
-    get autoRefresh() {
-      return get(autoRefresh);
-    },
-    onautoRefreshChange: (value) => {
-      set(autoRefresh, value, true);
-    },
-    get nameFilter() {
-      return get(nameFilter);
-    },
-    onnameFilterChange: (value) => {
-      set(nameFilter, value, true);
-      if (get(tree)) {
-        relayoutFromTree(get(tree));
-      }
-    },
-    ontoggleHelp: () => {
-      set(showHelp, !get(showHelp));
-    },
-    onrefresh: () => {
-      refresh().catch(() => void 0);
-    },
-    get onBarReady() {
-      return $$props.onBarReady;
-    }
-  });
-  var node_2 = sibling(node_1, 2);
-  {
-    var consequent = ($$anchor2) => {
-      Help($$anchor2, {
-        onclose: () => {
-          set(showHelp, false);
-        }
-      });
-    };
-    var consequent_1 = ($$anchor2) => {
-      Missing_pixi($$anchor2, {
-        get message() {
-          return get(message);
-        },
-        get lastError() {
-          return get(lastError);
-        }
-      });
-    };
-    var consequent_2 = ($$anchor2) => {
-      var div_1 = root_1();
-      append($$anchor2, div_1);
-    };
-    var alternate = ($$anchor2) => {
-      var div_2 = root_2();
-      var node_3 = child(div_2);
-      {
-        let $0 = /* @__PURE__ */ user_derived(() => get(tree) ? getViewRoot(get(tree)).id : null);
-        Scene_tree(node_3, {
-          get nodes() {
-            return get(nodes);
-          },
-          get edges() {
-            return get(edges);
-          },
-          get width() {
-            return get(canvasW);
-          },
-          get height() {
-            return get(canvasH);
-          },
-          get rootId() {
-            return get($0);
-          },
-          get selectedId() {
-            return get(selectedId);
-          },
-          onselect,
-          onmove,
-          ondragging
-        });
-      }
-      append($$anchor2, div_2);
-    };
-    if_block(node_2, ($$render) => {
-      if (get(showHelp)) $$render(consequent);
-      else if (get(status) === "missing") $$render(consequent_1, 1);
-      else if (get(status) === "loading") $$render(consequent_2, 2);
-      else $$render(alternate, -1);
-    });
-  }
-  append($$anchor, div);
-  return pop($$exports);
-}
-function mountPixiSceneInspector(target, options) {
-  const host = options?.host ?? createInPageHost();
-  const selection = options?.selection ?? createSelectionChannel();
-  const app = mount(App, {
-    target,
-    props: {
-      host,
-      onBarReady: options?.onBarReady,
-      selection
-    }
-  });
-  return {
-    unmount: () => {
-      void unmount(app);
-    },
-    refresh: () => app.refresh()
-  };
-}
-const FLOAT_CORNER_SIZE = 14;
-const FLOAT_MIN_VISIBLE = 40;
-function clampFloatRect(rect, options) {
-  const minVisible = options.minVisible ?? FLOAT_MIN_VISIBLE;
-  const width = options.minWidth === void 0 ? options.clampWidth(rect.width, options.viewportW) : Math.max(
-    options.minWidth,
-    options.clampWidth(rect.width, options.viewportW)
-  );
-  const height = Math.max(
-    options.minHeight,
-    Math.min(
-      rect.height,
-      Math.max(options.minHeight, options.viewportH)
-    )
-  );
-  const left = Math.min(
-    Math.max(rect.left, minVisible - width),
-    options.viewportW - minVisible
-  );
-  const top = Math.min(
-    Math.max(rect.top, 0),
-    Math.max(0, options.viewportH - minVisible)
-  );
-  return { left, top, width, height };
-}
-function attachPointerDrag(target, options) {
-  let dragging = false;
-  const onPointerDown = (event2) => {
-    if (event2.button !== 0) {
-      return;
-    }
-    if (options.shouldStart && !options.shouldStart(event2)) {
-      return;
-    }
-    dragging = true;
-    options.onStart?.(event2);
-    target.setPointerCapture(event2.pointerId);
-    event2.preventDefault();
-    if (options.stopPropagation) {
-      event2.stopPropagation();
-    }
-  };
-  const onPointerMove = (event2) => {
-    if (!dragging) {
-      return;
-    }
-    options.onMove(event2);
-  };
-  const onPointerUp = (event2) => {
-    if (!dragging) {
-      return;
-    }
-    dragging = false;
-    try {
-      target.releasePointerCapture(event2.pointerId);
-    } catch {
-    }
-    options.onEnd?.(event2);
-  };
-  target.addEventListener("pointerdown", onPointerDown);
-  target.addEventListener("pointermove", onPointerMove);
-  target.addEventListener("pointerup", onPointerUp);
-  target.addEventListener("pointercancel", onPointerUp);
-  return () => {
-    target.removeEventListener("pointerdown", onPointerDown);
-    target.removeEventListener("pointermove", onPointerMove);
-    target.removeEventListener("pointerup", onPointerUp);
-    target.removeEventListener("pointercancel", onPointerUp);
-  };
-}
 const EVENT_MODE_OPTIONS = [
   { value: "none", label: "None" },
   { value: "passive", label: "Passive" },
@@ -40917,7 +40413,7 @@ function asPositiveNumber(value) {
   const n2 = Number(value);
   return Number.isFinite(n2) && n2 > 0 ? n2 : void 0;
 }
-function asFiniteNumber(value) {
+function asFiniteNumber$1(value) {
   const n2 = Number(value);
   return Number.isFinite(n2) ? n2 : void 0;
 }
@@ -40932,8 +40428,8 @@ function normalizePosition(raw) {
     return void 0;
   }
   const record = raw;
-  const left = asFiniteNumber(record.left);
-  const top = asFiniteNumber(record.top);
+  const left = asFiniteNumber$1(record.left);
+  const top = asFiniteNumber$1(record.top);
   if (left === void 0 || top === void 0) {
     return void 0;
   }
@@ -41021,6 +40517,9 @@ function normalizeSettings(raw) {
   if (propertyExportOutput) {
     settings.propertyExportOutput = propertyExportOutput;
   }
+  if (typeof raw.highlight === "boolean") {
+    settings.highlight = raw.highlight;
+  }
   return settings;
 }
 function roundPanelSettings(panel) {
@@ -41064,6 +40563,7 @@ function writeSettings(patch) {
     patch.propertyExport
   );
   const propertyExportOutput = patch.propertyExportOutput ?? current.propertyExportOutput;
+  const highlight = patch.highlight ?? current.highlight;
   const next = {
     properties: roundPanelSettings({
       ...current.properties,
@@ -41092,6 +40592,9 @@ function writeSettings(patch) {
   if (propertyExportOutput) {
     next.propertyExportOutput = propertyExportOutput;
   }
+  if (typeof highlight === "boolean") {
+    next.highlight = highlight;
+  }
   try {
     localStorage.setItem(SETTINGS_KEY, JSON.stringify(next));
   } catch {
@@ -41112,6 +40615,12 @@ function readPropertyExportOutput() {
 }
 function writePropertyExportOutput(mode) {
   writeSettings({ propertyExportOutput: mode });
+}
+function readHighlightEnabled() {
+  return readSettings().highlight === true;
+}
+function writeHighlightEnabled(enabled) {
+  writeSettings({ highlight: enabled });
 }
 function readPanelSettings(key) {
   return readSettings()[key] ?? {};
@@ -41135,6 +40644,524 @@ function writeFloatPanelSettings(key, rect) {
     width: rect.width,
     height: rect.height
   });
+}
+if (typeof WATCH !== "undefined" && WATCH) {
+  new EventSource("http://localhost:10809/esbuild").addEventListener("change", () => {
+    window.location.reload();
+  });
+}
+var root_1 = /* @__PURE__ */ from_html(`<div class="empty svelte-fytdi9"><p class="svelte-fytdi9">Loading…</p></div>`);
+var root_2 = /* @__PURE__ */ from_html(`<div class="viewport svelte-fytdi9"><!></div>`);
+var root_3 = /* @__PURE__ */ from_html(`<div class="shell svelte-fytdi9"><!> <!></div>`);
+const $$css = {
+  hash: "svelte-fytdi9",
+  code: '* {box-sizing:border-box;}.shell.svelte-fytdi9 {display:flex;flex-direction:column;width:100%;height:100%;font-family:"Courier New", Courier, monospace;color:#f0f0f0;background:#4a4a4a;}.viewport.svelte-fytdi9 {flex:1;overflow:auto;-webkit-user-select:none;user-select:none;background:linear-gradient(90deg, rgb(0 0 0 / 6%) 1px, transparent 1px),\n      linear-gradient(rgb(0 0 0 / 6%) 1px, transparent 1px), #4a4a4a;background-size:16px 16px;}.empty.svelte-fytdi9 {display:flex;flex:1;flex-direction:column;gap:12px;align-items:flex-start;justify-content:center;padding:32px;max-width:560px;}.empty.svelte-fytdi9 p:where(.svelte-fytdi9) {margin:0;line-height:1.4;}'
+};
+function App($$anchor, $$props) {
+  push($$props, true);
+  append_styles$1($$anchor, $$css);
+  const selection = prop($$props, "selection", 19, createSelectionChannel);
+  let expandedIds = /* @__PURE__ */ state(proxy(/* @__PURE__ */ new Set()));
+  let selectedId = /* @__PURE__ */ state(null);
+  let didSeedExpand = false;
+  let status = /* @__PURE__ */ state("loading");
+  let message = /* @__PURE__ */ state("Looking for PixiJS…");
+  let source2 = /* @__PURE__ */ state("");
+  let tree = /* @__PURE__ */ state(null);
+  let nodes = /* @__PURE__ */ state(proxy([]));
+  let edges = /* @__PURE__ */ state(proxy([]));
+  let canvasW = /* @__PURE__ */ state(800);
+  let canvasH = /* @__PURE__ */ state(600);
+  let isolatedRootId = /* @__PURE__ */ state(null);
+  let highlightEnabled = /* @__PURE__ */ state(proxy(readHighlightEnabled()));
+  let autoRefresh = /* @__PURE__ */ state(true);
+  let nameFilter = /* @__PURE__ */ state("");
+  let lastError = /* @__PURE__ */ state("");
+  let clipboardId = /* @__PURE__ */ state(null);
+  let moving = /* @__PURE__ */ state(false);
+  let dragging = /* @__PURE__ */ state(false);
+  let showHelp = /* @__PURE__ */ state(false);
+  const isolateLabel = /* @__PURE__ */ user_derived(() => {
+    if (!get(isolatedRootId) || !get(tree)) {
+      return null;
+    }
+    const iso = findTreeNode(get(tree), get(isolatedRootId));
+    return `isolated${iso ? `: ${iso.label || iso.typeName}` : ""} · press I again to exit`;
+  });
+  user_effect(() => {
+    if (!get(selectedId) || !get(tree)) {
+      selection().publish({ id: null, name: null });
+      return;
+    }
+    const node = findTreeNode(get(tree), get(selectedId));
+    selection().publish({
+      id: get(selectedId),
+      name: node ? node.label || node.typeName : null
+    });
+  });
+  function getViewRoot(root2) {
+    if (!get(isolatedRootId)) {
+      return root2;
+    }
+    return findTreeNode(root2, get(isolatedRootId)) ?? root2;
+  }
+  function relayoutFromTree(root2) {
+    const viewRoot = getViewRoot(root2);
+    const query = get(nameFilter).trim();
+    const filtered = query ? filterTreeByName(viewRoot, query) : viewRoot;
+    if (!filtered) {
+      set(nodes, [], true);
+      set(edges, [], true);
+      set(canvasW, 200);
+      set(canvasH, 100);
+      if (get(source2)) {
+        set(message, `0 nodes · ${get(source2)}`);
+      }
+      return;
+    }
+    const expandForLayout = query ? collectTreeIds(filtered) : get(expandedIds);
+    const laid = layoutTree(filtered, expandForLayout);
+    set(nodes, laid.nodes, true);
+    set(edges, laid.edges, true);
+    set(canvasW, laid.width, true);
+    set(canvasH, laid.height, true);
+    if (get(source2)) {
+      const count2 = query ? countTreeNodes(filtered) : countTreeNodes(root2);
+      set(message, `${count2} nodes · ${get(source2)}`);
+    }
+  }
+  async function refresh() {
+    if (get(moving) || get(dragging)) {
+      return;
+    }
+    try {
+      const result = await $$props.host.fetchSnapshot();
+      if (!result.ok) {
+        set(status, "missing");
+        set(message, result.reason, true);
+        set(tree, null);
+        set(nodes, [], true);
+        set(edges, [], true);
+        set(isolatedRootId, null);
+        return;
+      }
+      const isFirstTree = get(tree) === null;
+      const prevTree = get(tree);
+      set(tree, result.tree, true);
+      if (prevTree && isTreeRewrite(prevTree, result.tree)) {
+        set(expandedIds, seedExpandedRoot(result.tree.id), true);
+        set(selectedId, null);
+        set(isolatedRootId, null);
+        set(clipboardId, null);
+      } else if (!didSeedExpand) {
+        set(expandedIds, seedExpandedRoot(result.tree.id), true);
+        didSeedExpand = true;
+      }
+      if (get(selectedId) && !findTreeNode(result.tree, get(selectedId))) {
+        set(selectedId, null);
+      }
+      if (get(isolatedRootId) && !findTreeNode(result.tree, get(isolatedRootId))) {
+        set(isolatedRootId, null);
+      }
+      set(source2, result.source, true);
+      set(status, "ok");
+      relayoutFromTree(result.tree);
+      if (isFirstTree && get(selectedId)) {
+        await highlight(get(selectedId));
+      }
+      set(lastError, "");
+    } catch (err) {
+      set(status, "missing");
+      set(lastError, err instanceof Error ? err.message : String(err), true);
+      set(message, "Failed to read page context");
+    }
+  }
+  async function applyMove(sourceId, parentId, index) {
+    if (!get(tree) || get(moving)) {
+      return;
+    }
+    if (!canReparent(get(tree), sourceId, parentId)) {
+      return;
+    }
+    set(moving, true);
+    try {
+      const newId = await $$props.host.moveNode(sourceId, parentId, index);
+      if (newId === null || newId === void 0) {
+        return;
+      }
+      if (get(clipboardId) === sourceId) {
+        set(clipboardId, newId, true);
+      } else if (get(clipboardId) && isAncestorId(sourceId, get(clipboardId))) {
+        set(clipboardId, null);
+      }
+      set(moving, false);
+      await refresh();
+      if (get(tree)) {
+        set(expandedIds, expandedIdsAfterMove(get(expandedIds), get(tree), newId), true);
+        relayoutFromTree(get(tree));
+      }
+      await highlight(newId);
+      setTimeout(
+        () => {
+          void highlight(newId);
+        },
+        0
+      );
+    } catch (err) {
+      set(lastError, err instanceof Error ? err.message : String(err), true);
+    } finally {
+      set(moving, false);
+    }
+  }
+  function onmove(sourceId, parentId, index) {
+    void applyMove(sourceId, parentId, index);
+  }
+  function ondragging(active) {
+    set(dragging, active, true);
+  }
+  async function highlight(id) {
+    set(selectedId, id, true);
+    try {
+      await $$props.host.selectNode(id);
+    } catch {
+    }
+  }
+  function toggleIsolate() {
+    if (!get(tree) || !get(selectedId)) {
+      return;
+    }
+    if (get(isolatedRootId)) {
+      set(isolatedRootId, null);
+    } else {
+      set(isolatedRootId, get(selectedId), true);
+      const next = new Set(get(expandedIds));
+      next.add(get(selectedId));
+      set(expandedIds, next, true);
+    }
+    relayoutFromTree(get(tree));
+  }
+  async function toggleVisible() {
+    if (!get(selectedId) || !get(tree)) {
+      return;
+    }
+    const selected = findTreeNode(get(tree), get(selectedId));
+    if (selected && !canToggleTreeNodeVisible(selected)) {
+      return;
+    }
+    try {
+      const ok = await $$props.host.toggleNodeVisible(get(selectedId));
+      if (!ok) {
+        return;
+      }
+      await refresh();
+    } catch (err) {
+      set(lastError, err instanceof Error ? err.message : String(err), true);
+    }
+  }
+  async function onselect(id, altKey, toggleExpand = true) {
+    await highlight(id);
+    if (!toggleExpand || !get(tree)) {
+      return;
+    }
+    const viewRoot = getViewRoot(get(tree));
+    const next = new Set(get(expandedIds));
+    const changed = altKey ? collapseOneLevel(viewRoot, id, next) : expandOneLevel(viewRoot, id, next);
+    if (changed) {
+      set(expandedIds, next, true);
+      relayoutFromTree(get(tree));
+    }
+  }
+  function navigate(key, toEnd) {
+    if (!get(selectedId)) {
+      return;
+    }
+    if (key === "ArrowLeft" || key === "ArrowRight") {
+      const nextId = levelNavTarget(get(nodes), get(selectedId), key, toEnd);
+      if (nextId === null || nextId === void 0) {
+        return;
+      }
+      void highlight(nextId);
+      return;
+    }
+    if (!get(tree)) {
+      return;
+    }
+    const viewRoot = getViewRoot(get(tree));
+    const result = depthNavTarget(viewRoot, get(nodes), get(expandedIds), get(selectedId), key, toEnd);
+    if (result === null || result === void 0) {
+      return;
+    }
+    if (result.expandAlong.length > 0) {
+      const next = new Set(get(expandedIds));
+      for (const id of result.expandAlong) {
+        next.add(id);
+      }
+      set(expandedIds, next, true);
+      relayoutFromTree(get(tree));
+    }
+    void highlight(result.selectId);
+  }
+  function onkeydown(e2) {
+    const action = resolvePanelKey(e2, {
+      showHelp: get(showHelp),
+      selectedId: get(selectedId),
+      clipboardId: get(clipboardId)
+    });
+    if (!action) {
+      return;
+    }
+    e2.preventDefault();
+    switch (action.type) {
+      case "closeHelp":
+        set(showHelp, false);
+        break;
+      case "copy":
+        set(clipboardId, action.id, true);
+        break;
+      case "paste":
+        void applyMove(action.sourceId, action.parentId, null);
+        break;
+      case "isolate":
+        toggleIsolate();
+        break;
+      case "toggleVisible":
+        void toggleVisible();
+        break;
+      case "expand":
+        if (get(selectedId)) {
+          void onselect(get(selectedId), false);
+        }
+        break;
+      case "collapse":
+        if (get(selectedId)) {
+          void onselect(get(selectedId), true);
+        }
+        break;
+      case "navigate":
+        navigate(action.key, action.toEnd);
+        break;
+    }
+  }
+  onMount(() => {
+    void refresh();
+    const id = setInterval(
+      () => {
+        if (get(autoRefresh)) {
+          void refresh();
+        }
+      },
+      1e3
+    );
+    window.addEventListener("keydown", onkeydown, true);
+    return () => {
+      clearInterval(id);
+      window.removeEventListener("keydown", onkeydown, true);
+    };
+  });
+  onDestroy(() => {
+    selection().publish({ id: null, name: null });
+  });
+  var $$exports = { refresh };
+  var div = root_3();
+  var node_1 = child(div);
+  Panel_bar(node_1, {
+    get message() {
+      return get(message);
+    },
+    get source() {
+      return get(source2);
+    },
+    get showHelp() {
+      return get(showHelp);
+    },
+    get isolateLabel() {
+      return get(isolateLabel);
+    },
+    get highlightEnabled() {
+      return get(highlightEnabled);
+    },
+    onhighlightEnabledChange: (value) => {
+      set(highlightEnabled, value, true);
+      writeHighlightEnabled(value);
+      $$props.setHighlightEnabled?.(value);
+    },
+    get autoRefresh() {
+      return get(autoRefresh);
+    },
+    onautoRefreshChange: (value) => {
+      set(autoRefresh, value, true);
+    },
+    get nameFilter() {
+      return get(nameFilter);
+    },
+    onnameFilterChange: (value) => {
+      set(nameFilter, value, true);
+      if (get(tree)) {
+        relayoutFromTree(get(tree));
+      }
+    },
+    ontoggleHelp: () => {
+      set(showHelp, !get(showHelp));
+    },
+    onrefresh: () => {
+      refresh().catch(() => void 0);
+    },
+    get onBarReady() {
+      return $$props.onBarReady;
+    }
+  });
+  var node_2 = sibling(node_1, 2);
+  {
+    var consequent = ($$anchor2) => {
+      Help($$anchor2, {
+        onclose: () => {
+          set(showHelp, false);
+        }
+      });
+    };
+    var consequent_1 = ($$anchor2) => {
+      Missing_pixi($$anchor2, {
+        get message() {
+          return get(message);
+        },
+        get lastError() {
+          return get(lastError);
+        }
+      });
+    };
+    var consequent_2 = ($$anchor2) => {
+      var div_1 = root_1();
+      append($$anchor2, div_1);
+    };
+    var alternate = ($$anchor2) => {
+      var div_2 = root_2();
+      var node_3 = child(div_2);
+      {
+        let $0 = /* @__PURE__ */ user_derived(() => get(tree) ? getViewRoot(get(tree)).id : null);
+        Scene_tree(node_3, {
+          get nodes() {
+            return get(nodes);
+          },
+          get edges() {
+            return get(edges);
+          },
+          get width() {
+            return get(canvasW);
+          },
+          get height() {
+            return get(canvasH);
+          },
+          get rootId() {
+            return get($0);
+          },
+          get selectedId() {
+            return get(selectedId);
+          },
+          onselect,
+          onmove,
+          ondragging
+        });
+      }
+      append($$anchor2, div_2);
+    };
+    if_block(node_2, ($$render) => {
+      if (get(showHelp)) $$render(consequent);
+      else if (get(status) === "missing") $$render(consequent_1, 1);
+      else if (get(status) === "loading") $$render(consequent_2, 2);
+      else $$render(alternate, -1);
+    });
+  }
+  append($$anchor, div);
+  return pop($$exports);
+}
+function mountPixiSceneInspector(target, options) {
+  const host = options?.host ?? createInPageHost();
+  const selection = options?.selection ?? createSelectionChannel();
+  const app = mount(App, {
+    target,
+    props: {
+      host,
+      onBarReady: options?.onBarReady,
+      selection,
+      setHighlightEnabled: options?.setHighlightEnabled
+    }
+  });
+  return {
+    unmount: () => {
+      void unmount(app);
+    },
+    refresh: () => app.refresh()
+  };
+}
+const FLOAT_CORNER_SIZE = 14;
+const FLOAT_MIN_VISIBLE = 40;
+function clampFloatRect(rect, options) {
+  const minVisible = options.minVisible ?? FLOAT_MIN_VISIBLE;
+  const width = options.minWidth === void 0 ? options.clampWidth(rect.width, options.viewportW) : Math.max(
+    options.minWidth,
+    options.clampWidth(rect.width, options.viewportW)
+  );
+  const height = Math.max(
+    options.minHeight,
+    Math.min(
+      rect.height,
+      Math.max(options.minHeight, options.viewportH)
+    )
+  );
+  const left = Math.min(
+    Math.max(rect.left, minVisible - width),
+    options.viewportW - minVisible
+  );
+  const top = Math.min(
+    Math.max(rect.top, 0),
+    Math.max(0, options.viewportH - minVisible)
+  );
+  return { left, top, width, height };
+}
+function attachPointerDrag(target, options) {
+  let dragging = false;
+  const onPointerDown = (event2) => {
+    if (event2.button !== 0) {
+      return;
+    }
+    if (options.shouldStart && !options.shouldStart(event2)) {
+      return;
+    }
+    dragging = true;
+    options.onStart?.(event2);
+    target.setPointerCapture(event2.pointerId);
+    event2.preventDefault();
+    if (options.stopPropagation) {
+      event2.stopPropagation();
+    }
+  };
+  const onPointerMove = (event2) => {
+    if (!dragging) {
+      return;
+    }
+    options.onMove(event2);
+  };
+  const onPointerUp = (event2) => {
+    if (!dragging) {
+      return;
+    }
+    dragging = false;
+    try {
+      target.releasePointerCapture(event2.pointerId);
+    } catch {
+    }
+    options.onEnd?.(event2);
+  };
+  target.addEventListener("pointerdown", onPointerDown);
+  target.addEventListener("pointermove", onPointerMove);
+  target.addEventListener("pointerup", onPointerUp);
+  target.addEventListener("pointercancel", onPointerUp);
+  return () => {
+    target.removeEventListener("pointerdown", onPointerDown);
+    target.removeEventListener("pointermove", onPointerMove);
+    target.removeEventListener("pointerup", onPointerUp);
+    target.removeEventListener("pointercancel", onPointerUp);
+  };
 }
 const HANDLE_EDGE_PX = 6;
 const MODE_BTN_STYLE = {
@@ -41597,9 +41624,6 @@ function readIdentityString(value) {
   }
   return String(value);
 }
-function displayedName(node, win) {
-  return customLabelOf(node, false, win) || typeNameOf(node, win);
-}
 function identityStringMaps(node) {
   const win = globalThis;
   const useLabel = isPixi8(node, win);
@@ -41617,7 +41641,7 @@ function identityStringMaps(node) {
   return [
     {
       key: "name",
-      get: () => displayedName(node, win),
+      get: () => readIdentityString(node.name),
       set: (value) => {
         node.name = value;
       }
@@ -45956,6 +45980,264 @@ function createPropertiesPanel(options) {
     destroy: chrome.destroy
   };
 }
+const OVERLAY_ID = "pixi-scene-inspector-selection-highlight";
+const FILL = "rgba(64, 140, 255, 0.35)";
+const STROKE = "rgba(40, 120, 255, 0.95)";
+const ANCHOR_FILL = "rgba(255, 255, 255, 1)";
+const EMPTY_SIZE = 4;
+const ANCHOR_SIZE = 6;
+function asFiniteNumber(value) {
+  return typeof value === "number" && Number.isFinite(value) ? value : null;
+}
+function readLocalBounds(node) {
+  if (typeof node.getLocalBounds !== "function") {
+    return null;
+  }
+  try {
+    const bounds = node.getLocalBounds();
+    if (!bounds || typeof bounds !== "object") {
+      return null;
+    }
+    const minX = asFiniteNumber(bounds.minX) ?? asFiniteNumber(bounds.x);
+    const minY = asFiniteNumber(bounds.minY) ?? asFiniteNumber(bounds.y);
+    if (minX === null || minY === null) {
+      return null;
+    }
+    const maxX = asFiniteNumber(bounds.maxX);
+    const maxY = asFiniteNumber(bounds.maxY);
+    if (maxX !== null && maxY !== null) {
+      return { minX, minY, maxX, maxY };
+    }
+    const width = asFiniteNumber(bounds.width);
+    const height = asFiniteNumber(bounds.height);
+    if (width === null || height === null) {
+      return null;
+    }
+    return {
+      minX,
+      minY,
+      maxX: minX + width,
+      maxY: minY + height
+    };
+  } catch {
+    return null;
+  }
+}
+function readWorldTransform(node) {
+  const matrix = node.worldTransform;
+  if (!matrix) {
+    return null;
+  }
+  const a2 = asFiniteNumber(matrix.a);
+  const b2 = asFiniteNumber(matrix.b);
+  const c2 = asFiniteNumber(matrix.c);
+  const d2 = asFiniteNumber(matrix.d);
+  const tx = asFiniteNumber(matrix.tx);
+  const ty = asFiniteNumber(matrix.ty);
+  if (a2 === null || b2 === null || c2 === null || d2 === null || tx === null || ty === null) {
+    return null;
+  }
+  return { a: a2, b: b2, c: c2, d: d2, tx, ty };
+}
+function findPixiCanvas(win) {
+  const app = win.__PIXI_APP__;
+  const renderer = win.__PIXI_RENDERER__ || app?.renderer;
+  const candidates = [
+    app?.canvas,
+    app?.view,
+    renderer?.canvas,
+    renderer?.view
+  ];
+  for (const candidate of candidates) {
+    if (candidate instanceof HTMLCanvasElement) {
+      return candidate;
+    }
+  }
+  return null;
+}
+function readScreenSize(win, canvas) {
+  const app = win.__PIXI_APP__;
+  const screenW = asFiniteNumber(app?.screen?.width);
+  const screenH = asFiniteNumber(app?.screen?.height);
+  if (screenW !== null && screenH !== null && screenW > 0 && screenH > 0) {
+    return { width: screenW, height: screenH };
+  }
+  const renderer = win.__PIXI_RENDERER__ || app?.renderer;
+  const resolution = asFiniteNumber(renderer?.resolution) ?? 1;
+  const rendererW = asFiniteNumber(renderer?.width);
+  const rendererH = asFiniteNumber(renderer?.height);
+  if (rendererW !== null && rendererH !== null && resolution > 0 && rendererW > 0 && rendererH > 0) {
+    return {
+      width: rendererW / resolution,
+      height: rendererH / resolution
+    };
+  }
+  const cssW = canvas.clientWidth || canvas.getBoundingClientRect().width;
+  const cssH = canvas.clientHeight || canvas.getBoundingClientRect().height;
+  return {
+    width: cssW > 0 ? cssW : 1,
+    height: cssH > 0 ? cssH : 1
+  };
+}
+function hasAnchor(node) {
+  const anchor = node.anchor;
+  if (!anchor) {
+    return false;
+  }
+  return asFiniteNumber(anchor.x) !== null && asFiniteNumber(anchor.y) !== null;
+}
+function createOverlayRoot() {
+  document.getElementById(OVERLAY_ID)?.remove();
+  const root2 = document.createElement("div");
+  root2.id = OVERLAY_ID;
+  Object.assign(root2.style, {
+    position: "fixed",
+    left: "0",
+    top: "0",
+    width: "0",
+    height: "0",
+    overflow: "hidden",
+    pointerEvents: "none",
+    zIndex: "2147483640",
+    display: "none"
+  });
+  const box = document.createElement("div");
+  Object.assign(box.style, {
+    position: "absolute",
+    left: "0",
+    top: "0",
+    boxSizing: "border-box",
+    transformOrigin: "0 0",
+    background: FILL,
+    border: `1px solid ${STROKE}`,
+    willChange: "transform"
+  });
+  const anchorMark = document.createElement("div");
+  Object.assign(anchorMark.style, {
+    position: "absolute",
+    left: "0",
+    top: "0",
+    width: `${ANCHOR_SIZE}px`,
+    height: `${ANCHOR_SIZE}px`,
+    boxSizing: "border-box",
+    borderRadius: "50%",
+    background: ANCHOR_FILL,
+    border: `1px solid ${STROKE}`,
+    display: "none",
+    willChange: "transform"
+  });
+  root2.appendChild(box);
+  root2.appendChild(anchorMark);
+  document.body.appendChild(root2);
+  return { root: root2, box, anchorMark };
+}
+function installSelectionHighlight(win = globalThis) {
+  const { root: root2, box, anchorMark } = createOverlayRoot();
+  let frame = 0;
+  let running = false;
+  let destroyed = false;
+  let enabled = readHighlightEnabled();
+  function hide() {
+    root2.style.display = "none";
+    anchorMark.style.display = "none";
+  }
+  function stop() {
+    if (!running) {
+      return;
+    }
+    running = false;
+    cancelAnimationFrame(frame);
+    frame = 0;
+    hide();
+  }
+  function tick() {
+    if (destroyed || !enabled) {
+      running = false;
+      frame = 0;
+      hide();
+      return;
+    }
+    frame = requestAnimationFrame(tick);
+    const node = win.$pixi;
+    if (!isNodeAlive(node)) {
+      hide();
+      return;
+    }
+    const canvas = findPixiCanvas(win);
+    const matrix = readWorldTransform(node);
+    const bounds = readLocalBounds(node);
+    if (!canvas || !matrix || !bounds) {
+      hide();
+      return;
+    }
+    const rect = canvas.getBoundingClientRect();
+    if (!(rect.width > 0) || !(rect.height > 0)) {
+      hide();
+      return;
+    }
+    let minX = bounds.minX;
+    let minY = bounds.minY;
+    let width = bounds.maxX - bounds.minX;
+    let height = bounds.maxY - bounds.minY;
+    if (!(width > 0) || !(height > 0)) {
+      const cx = (bounds.minX + bounds.maxX) / 2;
+      const cy = (bounds.minY + bounds.maxY) / 2;
+      minX = cx - EMPTY_SIZE / 2;
+      minY = cy - EMPTY_SIZE / 2;
+      width = EMPTY_SIZE;
+      height = EMPTY_SIZE;
+    }
+    const screen = readScreenSize(win, canvas);
+    const scaleX = rect.width / screen.width;
+    const scaleY = rect.height / screen.height;
+    const a2 = matrix.a * scaleX;
+    const b2 = matrix.b * scaleY;
+    const c2 = matrix.c * scaleX;
+    const d2 = matrix.d * scaleY;
+    const tx = (matrix.a * minX + matrix.c * minY + matrix.tx) * scaleX;
+    const ty = (matrix.b * minX + matrix.d * minY + matrix.ty) * scaleY;
+    root2.style.display = "block";
+    root2.style.left = `${rect.left}px`;
+    root2.style.top = `${rect.top}px`;
+    root2.style.width = `${rect.width}px`;
+    root2.style.height = `${rect.height}px`;
+    box.style.width = `${width}px`;
+    box.style.height = `${height}px`;
+    box.style.transform = `matrix(${a2}, ${b2}, ${c2}, ${d2}, ${tx}, ${ty})`;
+    if (hasAnchor(node)) {
+      const half = ANCHOR_SIZE / 2;
+      const originX = matrix.tx * scaleX - half;
+      const originY = matrix.ty * scaleY - half;
+      anchorMark.style.display = "block";
+      anchorMark.style.transform = `translate(${originX}px, ${originY}px)`;
+    } else {
+      anchorMark.style.display = "none";
+    }
+  }
+  function start() {
+    if (destroyed || !enabled || running) {
+      return;
+    }
+    running = true;
+    frame = requestAnimationFrame(tick);
+  }
+  start();
+  return {
+    setEnabled: (next) => {
+      enabled = next;
+      if (next) {
+        start();
+      } else {
+        stop();
+      }
+    },
+    destroy: () => {
+      destroyed = true;
+      stop();
+      root2.remove();
+    }
+  };
+}
 const DEFAULT_FLOAT_WIDTH = 720;
 const FLOAT_MIN_W = 200;
 const FLOAT_MIN_H = 120;
@@ -46269,6 +46551,8 @@ function dockPixiSceneInspector(options) {
   const cleanups = [];
   let properties = null;
   const selection = createSelectionChannel();
+  const selectionHighlight = installSelectionHighlight();
+  cleanups.push(() => selectionHighlight.destroy());
   const treePanel = createTreePanel({
     id: TREE_ID,
     resizable,
@@ -46333,6 +46617,7 @@ function dockPixiSceneInspector(options) {
   const panel = mountPixiSceneInspector(treePanel.panelHost, {
     ...options,
     selection,
+    setHighlightEnabled: selectionHighlight.setEnabled,
     onBarReady: (bar) => {
       treePanel.attachBarChrome(bar);
     }

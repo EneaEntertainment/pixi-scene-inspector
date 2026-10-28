@@ -15,6 +15,7 @@ export type MountPixiSceneInspectorOptions = {
     host?: PixiTreeHost;
     onBarReady?: (bar: HTMLElement) => void;
     selection?: SelectionChannel;
+    setHighlightEnabled?: (enabled: boolean) => void;
 };
 
 export function mountPixiSceneInspector(
@@ -29,8 +30,9 @@ export function mountPixiSceneInspector(
         target,
         props: {
             host,
-            onBarReady: options?.onBarReady,
+            onBarReady          : options?.onBarReady,
             selection,
+            setHighlightEnabled : options?.setHighlightEnabled,
         },
     });
 

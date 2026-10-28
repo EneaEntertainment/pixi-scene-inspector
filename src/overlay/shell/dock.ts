@@ -9,6 +9,7 @@ import {
 import { createSelectionChannel } from '../../selection-channel';
 import { mountPixiSceneInspector } from '../mount';
 import { createPropertiesPanel, type PropertiesPanel } from '../properties/panel';
+import { installSelectionHighlight } from '../selection-highlight';
 import { readPanelSettings } from './settings';
 import { createTreePanel } from './tree-panel';
 import { installViewportPatches, readNumberGetter, triggerResize } from './viewport';
@@ -157,6 +158,9 @@ export function dockPixiSceneInspector(options?: DockPixiSceneInspectorOptions):
     const cleanups: Array<() => void> = [];
     let properties: PropertiesPanel | null = null;
     const selection = createSelectionChannel();
+    const selectionHighlight = installSelectionHighlight();
+
+    cleanups.push(() => selectionHighlight.destroy());
 
     const treePanel = createTreePanel({
         id            : TREE_ID,
@@ -249,6 +253,8 @@ export function dockPixiSceneInspector(options?: DockPixiSceneInspectorOptions):
     const panel = mountPixiSceneInspector(treePanel.panelHost, {
         ...options,
         selection,
+
+        setHighlightEnabled: selectionHighlight.setEnabled,
 
         onBarReady: (bar) =>
         {

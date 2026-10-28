@@ -6,6 +6,8 @@
     source: string;
     showHelp: boolean;
     isolateLabel: string | null;
+    highlightEnabled: boolean;
+    onhighlightEnabledChange: (value: boolean) => void;
     autoRefresh: boolean;
     onautoRefreshChange: (value: boolean) => void;
     nameFilter: string;
@@ -20,6 +22,8 @@
       source,
       showHelp,
       isolateLabel,
+      highlightEnabled,
+      onhighlightEnabledChange,
       autoRefresh,
       onautoRefreshChange,
       nameFilter,
@@ -83,6 +87,14 @@
       </button>
     {/if}
   </div>
+  <label class="toggle">
+    <input
+      type="checkbox"
+      checked={highlightEnabled}
+      onchange={(e) => onhighlightEnabledChange(e.currentTarget.checked)}
+    />
+    highlight
+  </label>
   <label class="toggle">
     <input
       type="checkbox"
