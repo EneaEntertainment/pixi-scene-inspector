@@ -1,5 +1,5 @@
 import { isNodeAlive, type PageGlobals, type PixiNode, type PixiPoint } from '../../page-ops/pixi-node';
-import { customLabelOf, isPixi8, typeNameOf } from '../../page-ops/types';
+import { isPixi8 } from '../../page-ops/types';
 
 type PropertyKey =
     | 'position.x'
@@ -191,11 +191,6 @@ function readIdentityString(value: unknown): string
     return String(value);
 }
 
-function displayedName(node: PixiNode, win: PageGlobals): string
-{
-    return customLabelOf(node, false, win) || typeNameOf(node, win);
-}
-
 function identityStringMaps(node: PixiNode): Array<PropertyMapping<string>>
 {
     const win = globalThis as PageGlobals;
@@ -221,7 +216,7 @@ function identityStringMaps(node: PixiNode): Array<PropertyMapping<string>>
         {
             key: 'name',
 
-            get: () => displayedName(node, win),
+            get: () => readIdentityString(node.name),
 
             set: (value) =>
             {
