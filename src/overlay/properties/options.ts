@@ -103,6 +103,11 @@ export const ALIGN_OPTIONS: Array<SelectOption> = [
     { value: 'justify', label: 'justify' },
 ];
 
+export const FILL_GRADIENT_TYPE_OPTIONS: Array<SelectOption> = [
+    { value: 'vertical', label: 'vertical' },
+    { value: 'horizontal', label: 'horizontal' },
+];
+
 export const WHITE_SPACE_OPTIONS: Array<SelectOption> = [
     { value: 'normal', label: 'normal' },
     { value: 'pre', label: 'pre' },

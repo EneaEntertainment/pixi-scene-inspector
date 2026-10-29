@@ -3,6 +3,7 @@ import {
     BLEND_MODE_OPTIONS,
     CURSOR_OPTIONS,
     EVENT_MODE_OPTIONS,
+    FILL_GRADIENT_TYPE_OPTIONS,
     FONT_STYLE_OPTIONS,
     FONT_VARIANT_OPTIONS,
     FONT_WEIGHT_OPTIONS,
@@ -290,6 +291,12 @@ const TEXT_CATALOG_SECTIONS: Array<CatalogSectionSpec> = [
         id     : 'textFill',
         title  : 'Fill',
         fields : [
+            {
+                kind    : 'select',
+                key     : 'style.fillGradientType',
+                label   : 'fillGradientType',
+                options : FILL_GRADIENT_TYPE_OPTIONS,
+            },
             { kind: 'fillStops', key: 'style.fill', label: 'fill' },
             { kind: 'color', key: 'style.tint', label: 'tint' },
         ],

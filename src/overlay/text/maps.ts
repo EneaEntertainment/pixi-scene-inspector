@@ -10,7 +10,12 @@ import {
     writeDropShadowEnabled,
     writeDropShadowNumber,
 } from './drop-shadow';
-import { readFillStops, writeFillStops } from './fill';
+import {
+    readFillGradientType,
+    readFillStops,
+    writeFillGradientType,
+    writeFillStops,
+} from './fill';
 import { legacyBitmapTextMaps } from './legacy-bitmap';
 import {
     readStrokeColor,
@@ -175,6 +180,23 @@ export function textMapsForNode(node: PixiNode | null | undefined): TextProperty
                 writeFillStops(style, value, pixi8);
             },
         };
+    }
+
+    if (readFillGradientType(style, pixi8) !== undefined)
+    {
+        strings.push({
+            key : 'style.fillGradientType',
+            get : () => readFillGradientType(style, pixi8),
+            set : (value) =>
+            {
+                if (value !== 'horizontal' && value !== 'vertical')
+                {
+                    return;
+                }
+
+                writeFillGradientType(style, value, pixi8);
+            },
+        });
     }
 
     const align = styleStringMap(style, 'style.align', 'align');

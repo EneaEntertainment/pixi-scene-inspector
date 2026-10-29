@@ -29,7 +29,7 @@ export function buildTextSection(): Container
     const gradient = new FillGradient({
         type       : 'linear',
         start      : { x: 0, y: 0 },
-        end        : { x: 1, y: 0 },
+        end        : { x: 0, y: 1 },
         colorStops : [
             { offset: 0, color: 0x88ff88 },
             { offset: 1, color: 0x228844 },

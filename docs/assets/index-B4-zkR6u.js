@@ -1,4 +1,4 @@
-const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/browserAll-C9yK-V0l.js","assets/webworkerAll-CxjpTpBa.js","assets/Filter-CZL0ynfX.js","assets/WebGPURenderer-hpCfPSnt.js","assets/getTexelRangeRects-BH89xgPo.js","assets/RenderTargetSystem-DPHO7lDy.js","assets/WebGLRenderer-CPaMSD5Y.js","assets/CanvasRenderer-r_UR7EkQ.js"])))=>i.map(i=>d[i]);
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/browserAll-DwLeqlkI.js","assets/webworkerAll-BYz16wcg.js","assets/Filter-V02SY-M6.js","assets/WebGPURenderer-wef2XRFc.js","assets/getTexelRangeRects-D8QdiyE4.js","assets/RenderTargetSystem-BDs6ca3Z.js","assets/WebGLRenderer-CYzUSbdu.js","assets/CanvasRenderer-Dnq25Wvk.js"])))=>i.map(i=>d[i]);
 (function polyfill() {
   const relList = document.createElement("link").relList;
   if (relList && relList.supports && relList.supports("modulepreload")) return;
@@ -355,7 +355,7 @@ const browserExt = {
   },
   test: () => true,
   load: async () => {
-    await __vitePreload(() => import("./browserAll-C9yK-V0l.js"), true ? __vite__mapDeps([0,1,2]) : void 0);
+    await __vitePreload(() => import("./browserAll-DwLeqlkI.js"), true ? __vite__mapDeps([0,1,2]) : void 0);
   }
 };
 const webworkerExt = {
@@ -366,7 +366,7 @@ const webworkerExt = {
   },
   test: () => typeof self !== "undefined" && self.WorkerGlobalScope !== void 0,
   load: async () => {
-    await __vitePreload(() => import("./webworkerAll-CxjpTpBa.js"), true ? __vite__mapDeps([1,2]) : void 0);
+    await __vitePreload(() => import("./webworkerAll-BYz16wcg.js"), true ? __vite__mapDeps([1,2]) : void 0);
   }
 };
 class ObservablePoint {
@@ -13297,7 +13297,7 @@ async function autoDetectRenderer(options) {
     const rendererType = preferredOrder[i2];
     if (rendererType === "webgpu" && await isWebGPUSupported()) {
       const { WebGPURenderer } = await __vitePreload(async () => {
-        const { WebGPURenderer: WebGPURenderer2 } = await import("./WebGPURenderer-hpCfPSnt.js");
+        const { WebGPURenderer: WebGPURenderer2 } = await import("./WebGPURenderer-wef2XRFc.js");
         return { WebGPURenderer: WebGPURenderer2 };
       }, true ? __vite__mapDeps([3,4,5,2]) : void 0);
       RendererClass = WebGPURenderer;
@@ -13307,7 +13307,7 @@ async function autoDetectRenderer(options) {
       options.failIfMajorPerformanceCaveat ?? AbstractRenderer.defaultOptions.failIfMajorPerformanceCaveat
     )) {
       const { WebGLRenderer } = await __vitePreload(async () => {
-        const { WebGLRenderer: WebGLRenderer2 } = await import("./WebGLRenderer-CPaMSD5Y.js");
+        const { WebGLRenderer: WebGLRenderer2 } = await import("./WebGLRenderer-CYzUSbdu.js");
         return { WebGLRenderer: WebGLRenderer2 };
       }, true ? __vite__mapDeps([6,4,5,2]) : void 0);
       RendererClass = WebGLRenderer;
@@ -13315,7 +13315,7 @@ async function autoDetectRenderer(options) {
       break;
     } else if (rendererType === "canvas") {
       const { CanvasRenderer } = await __vitePreload(async () => {
-        const { CanvasRenderer: CanvasRenderer2 } = await import("./CanvasRenderer-r_UR7EkQ.js");
+        const { CanvasRenderer: CanvasRenderer2 } = await import("./CanvasRenderer-Dnq25Wvk.js");
         return { CanvasRenderer: CanvasRenderer2 };
       }, true ? __vite__mapDeps([7,5,2]) : void 0);
       RendererClass = CanvasRenderer;
@@ -40007,6 +40007,10 @@ const ALIGN_OPTIONS = [
   { value: "right", label: "right" },
   { value: "justify", label: "justify" }
 ];
+const FILL_GRADIENT_TYPE_OPTIONS = [
+  { value: "vertical", label: "vertical" },
+  { value: "horizontal", label: "horizontal" }
+];
 const WHITE_SPACE_OPTIONS = [
   { value: "normal", label: "normal" },
   { value: "pre", label: "pre" },
@@ -40200,6 +40204,12 @@ const TEXT_CATALOG_SECTIONS = [
     id: "textFill",
     title: "Fill",
     fields: [
+      {
+        kind: "select",
+        key: "style.fillGradientType",
+        label: "fillGradientType",
+        options: FILL_GRADIENT_TYPE_OPTIONS
+      },
       { kind: "fillStops", key: "style.fill", label: "fill" },
       { kind: "color", key: "style.tint", label: "tint" }
     ]
@@ -42205,6 +42215,8 @@ function writeDropShadowColor(style, value, pixi8) {
   }
   style.dropShadowColor = writeColorValue(style.dropShadowColor, parsed);
 }
+const FILL_GRADIENT_VERTICAL = 0;
+const FILL_GRADIENT_HORIZONTAL = 1;
 function isFillGradientLike(value) {
   if (!value || typeof value !== "object") {
     return false;
@@ -42400,13 +42412,49 @@ function applyGradientStops(gradient, stops) {
     }
   }
 }
-function createLinearFillGradient(FillGradient2, stops, existing, fontSize) {
+function styleFontSize(style) {
+  return typeof style.fontSize === "number" && style.fontSize > 0 ? style.fontSize : 26;
+}
+function pointsForGradientType(type, textureSpace, fontSize) {
+  const extent = textureSpace === "global" ? Math.max(1, fontSize) : 1;
+  if (type === "horizontal") {
+    return {
+      start: { x: 0, y: 0 },
+      end: { x: extent, y: 0 }
+    };
+  }
+  return {
+    start: { x: 0, y: 0 },
+    end: { x: 0, y: extent }
+  };
+}
+function gradientTypeFromPoints(start, end) {
+  return Math.abs(end.x - start.x) >= Math.abs(end.y - start.y) ? "horizontal" : "vertical";
+}
+function normalizeFillGradientType(value) {
+  if (value === "horizontal" || value === FILL_GRADIENT_HORIZONTAL || value === 1) {
+    return "horizontal";
+  }
+  if (value === "vertical" || value === FILL_GRADIENT_VERTICAL || value === 0) {
+    return "vertical";
+  }
+  return void 0;
+}
+function exportFillGradientTypeValue(type) {
+  return type === "horizontal" ? FILL_GRADIENT_HORIZONTAL : FILL_GRADIENT_VERTICAL;
+}
+function createLinearFillGradient(FillGradient2, stops, existing, fontSize, type) {
   const textureSpace = existing?.textureSpace === "global" ? "global" : "local";
-  const start = pointFromUnknown(existing?.start, { x: 0, y: 0 });
-  const end = pointFromUnknown(
-    existing?.end,
-    textureSpace === "global" ? { x: 0, y: Math.max(1, fontSize) } : { x: 0, y: 1 }
-  );
+  let start;
+  let end;
+  if (type) {
+    ({ start, end } = pointsForGradientType(type, textureSpace, fontSize));
+  } else if (hasFinitePoint(existing?.start) && hasFinitePoint(existing?.end)) {
+    start = pointFromUnknown(existing?.start, { x: 0, y: 0 });
+    end = pointFromUnknown(existing?.end, { x: 0, y: 1 });
+  } else {
+    ({ start, end } = pointsForGradientType("vertical", textureSpace, fontSize));
+  }
   let gradient = null;
   try {
     gradient = new FillGradient2({
@@ -42432,7 +42480,7 @@ function createLinearFillGradient(FillGradient2, stops, existing, fontSize) {
     gradient.textureSpace = textureSpace;
   } catch {
   }
-  if (gradient.textureSpace === "global") {
+  if (gradient.textureSpace === "global" && type === "vertical") {
     gradient.end = {
       x: end.x,
       y: Math.max(Math.abs(end.y), fontSize)
@@ -42440,6 +42488,20 @@ function createLinearFillGradient(FillGradient2, stops, existing, fontSize) {
   }
   applyGradientStops(gradient, stops);
   return gradient;
+}
+function applyLinearGradientType(gradient, type, fontSize) {
+  const textureSpace = gradient.textureSpace === "global" ? "global" : "local";
+  const { start, end } = pointsForGradientType(type, textureSpace, fontSize);
+  gradient.start = start;
+  gradient.end = end;
+  gradient.texture = null;
+  if (typeof gradient.buildGradient === "function") {
+    try {
+      gradient.buildGradient();
+    } catch {
+      gradient.texture = null;
+    }
+  }
 }
 function assignFillGradient(style, gradient) {
   if (style.fill === gradient) {
@@ -42449,7 +42511,7 @@ function assignFillGradient(style, gradient) {
   style.fill = gradient;
 }
 function writePixi8GradientFill(style, stops, existing) {
-  const fontSize = typeof style.fontSize === "number" && style.fontSize > 0 ? style.fontSize : 26;
+  const fontSize = styleFontSize(style);
   if (existing && existing.type !== "radial" && typeof existing.addColorStop === "function") {
     const gradient2 = existing;
     applyGradientStops(gradient2, stops);
@@ -42571,6 +42633,63 @@ function writeFillStops(style, stops, pixi8) {
   }
   style.fill = normalized.map((stop) => stop.color);
   style.fillGradientStops = normalized.map((stop) => stop.offset);
+}
+function readFillGradientType(style, pixi8) {
+  const stops = readFillStops(style);
+  if (!stops || stops.length < 2) {
+    return void 0;
+  }
+  if (pixi8) {
+    const gradient = gradientFromFill(style.fill);
+    if (!gradient || gradient.type === "radial") {
+      return void 0;
+    }
+    if (hasFinitePoint(gradient.start) && hasFinitePoint(gradient.end)) {
+      return gradientTypeFromPoints(
+        pointFromUnknown(gradient.start, { x: 0, y: 0 }),
+        pointFromUnknown(gradient.end, { x: 0, y: 1 })
+      );
+    }
+    return "vertical";
+  }
+  return normalizeFillGradientType(style.fillGradientType) ?? "vertical";
+}
+function writeFillGradientType(style, value, pixi8) {
+  const type = value === "horizontal" ? "horizontal" : "vertical";
+  const stops = readFillStops(style);
+  if (!stops || stops.length < 2) {
+    return;
+  }
+  if (!pixi8) {
+    style.fillGradientType = exportFillGradientTypeValue(type);
+    return;
+  }
+  const existing = gradientFromFill(style.fill);
+  const fontSize = styleFontSize(style);
+  if (existing && existing.type !== "radial" && typeof existing.addColorStop === "function" && isUsableLinearGradient(existing)) {
+    applyLinearGradientType(existing, type, fontSize);
+    assignFillGradient(style, existing);
+    return;
+  }
+  const FillGradient2 = getFillGradientCtor(style);
+  if (!FillGradient2) {
+    return;
+  }
+  const normalized = stops.map((stop) => ({
+    color: parseColorString(stop.color),
+    offset: Math.max(0, Math.min(1, stop.offset))
+  }));
+  const gradient = createLinearFillGradient(
+    FillGradient2,
+    normalized,
+    existing,
+    fontSize,
+    type
+  );
+  if (!gradient) {
+    return;
+  }
+  assignFillGradient(style, gradient);
 }
 function readLegacyNumber(node, key) {
   try {
@@ -43056,6 +43175,18 @@ function textMapsForNode(node) {
       }
     };
   }
+  if (readFillGradientType(style, pixi8) !== void 0) {
+    strings.push({
+      key: "style.fillGradientType",
+      get: () => readFillGradientType(style, pixi8),
+      set: (value) => {
+        if (value !== "horizontal" && value !== "vertical") {
+          return;
+        }
+        writeFillGradientType(style, value, pixi8);
+      }
+    });
+  }
   const align = styleStringMap(style, "style.align", "align");
   if (align) {
     strings.push(align);
@@ -43259,6 +43390,16 @@ function findExportBoolean(maps, key) {
 function findExportString(maps, key) {
   return resolveStringMap(maps, key);
 }
+function fillGradientTypeExportValue(maps) {
+  const value = findExportString(maps, "style.fillGradientType")?.get();
+  if (value === "horizontal") {
+    return 1;
+  }
+  if (value === "vertical") {
+    return 0;
+  }
+  return void 0;
+}
 function collectFillExportValue(maps) {
   const mapping = maps.text.fillStops;
   if (!mapping) {
@@ -43271,9 +43412,11 @@ function collectFillExportValue(maps) {
   if (stops.length === 1) {
     return { fill: stops[0].color };
   }
+  const fillGradientType = fillGradientTypeExportValue(maps);
   return {
     fill: stops.map((stop) => stop.color),
-    fillGradientStops: stops.map((stop) => stop.offset)
+    fillGradientStops: stops.map((stop) => stop.offset),
+    ...fillGradientType === void 0 ? {} : { fillGradientType }
   };
 }
 function isExportPropAvailable(maps, spec) {
@@ -43370,6 +43513,19 @@ function collectStyleExportProp(scratch, id, value) {
     scratch.props.fill = fillExport.fill;
     if (fillExport.fillGradientStops) {
       scratch.props.fillGradientStops = fillExport.fillGradientStops;
+    }
+    if (fillExport.fillGradientType !== void 0) {
+      scratch.props.fillGradientType = fillExport.fillGradientType;
+    }
+    return;
+  }
+  if (path2 === "fillGradientType") {
+    if (value === "horizontal") {
+      scratch.props.fillGradientType = 1;
+    } else if (value === "vertical") {
+      scratch.props.fillGradientType = 0;
+    } else if (typeof value === "number") {
+      scratch.props.fillGradientType = value;
     }
     return;
   }
@@ -48132,7 +48288,7 @@ function buildTextSection() {
   const gradient = new FillGradient({
     type: "linear",
     start: { x: 0, y: 0 },
-    end: { x: 1, y: 0 },
+    end: { x: 0, y: 1 },
     colorStops: [
       { offset: 0, color: 8978312 },
       { offset: 1, color: 2263108 }

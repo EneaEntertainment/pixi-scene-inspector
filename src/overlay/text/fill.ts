@@ -8,7 +8,10 @@ import {
 } from './colors';
 
 import type { PageGlobals } from '../../page-ops/pixi-node';
-import type { FillColorStop, StyleRecord } from './types';
+import type { FillColorStop, FillGradientType, StyleRecord } from './types';
+
+const FILL_GRADIENT_VERTICAL = 0;
+const FILL_GRADIENT_HORIZONTAL = 1;
 
 type FillGradientLike = {
     colorStops: Array<{ offset: number; color: unknown }>;
@@ -381,22 +384,91 @@ function applyGradientStops(gradient: GradientMutable, stops: Array<{ color: str
     }
 }
 
+function styleFontSize(style: StyleRecord): number
+{
+    return typeof style.fontSize === 'number' && style.fontSize > 0
+        ? style.fontSize
+        : 26;
+}
+
+function pointsForGradientType(
+    type: FillGradientType,
+    textureSpace: 'local' | 'global',
+    fontSize: number,
+): { start: { x: number; y: number }; end: { x: number; y: number } }
+{
+    const extent = textureSpace === 'global' ? Math.max(1, fontSize) : 1;
+
+    if (type === 'horizontal')
+    {
+        return {
+            start : { x: 0, y: 0 },
+            end   : { x: extent, y: 0 },
+        };
+    }
+
+    return {
+        start : { x: 0, y: 0 },
+        end   : { x: 0, y: extent },
+    };
+}
+
+function gradientTypeFromPoints(
+    start: { x: number; y: number },
+    end: { x: number; y: number },
+): FillGradientType
+{
+    return Math.abs(end.x - start.x) >= Math.abs(end.y - start.y)
+        ? 'horizontal'
+        : 'vertical';
+}
+
+function normalizeFillGradientType(value: unknown): FillGradientType | undefined
+{
+    if (value === 'horizontal' || value === FILL_GRADIENT_HORIZONTAL || value === 1)
+    {
+        return 'horizontal';
+    }
+
+    if (value === 'vertical' || value === FILL_GRADIENT_VERTICAL || value === 0)
+    {
+        return 'vertical';
+    }
+
+    return undefined;
+}
+
+function exportFillGradientTypeValue(type: FillGradientType): number
+{
+    return type === 'horizontal' ? FILL_GRADIENT_HORIZONTAL : FILL_GRADIENT_VERTICAL;
+}
+
 function createLinearFillGradient(
     FillGradient: FillGradientCtor,
     stops: Array<{ color: string | number; offset: number }>,
     existing: FillGradientLike | null,
     fontSize: number,
+    type?: FillGradientType,
 ): GradientMutable | null
 {
     const textureSpace = existing?.textureSpace === 'global' ? 'global' : 'local';
-    const start = pointFromUnknown(existing?.start, { x: 0, y: 0 });
 
-    const end = pointFromUnknown(
-        existing?.end,
-        textureSpace === 'global'
-            ? { x: 0, y: Math.max(1, fontSize) }
-            : { x: 0, y: 1 },
-    );
+    let start: { x: number; y: number };
+    let end: { x: number; y: number };
+
+    if (type)
+    {
+        ({ start, end } = pointsForGradientType(type, textureSpace, fontSize));
+    }
+    else if (hasFinitePoint(existing?.start) && hasFinitePoint(existing?.end))
+    {
+        start = pointFromUnknown(existing?.start, { x: 0, y: 0 });
+        end = pointFromUnknown(existing?.end, { x: 0, y: 1 });
+    }
+    else
+    {
+        ({ start, end } = pointsForGradientType('vertical', textureSpace, fontSize));
+    }
 
     let gradient: unknown = null;
 
@@ -440,7 +512,7 @@ function createLinearFillGradient(
         void 0;
     }
 
-    if (gradient.textureSpace === 'global')
+    if (gradient.textureSpace === 'global' && type === 'vertical')
     {
         gradient.end = {
             x : end.x,
@@ -451,6 +523,32 @@ function createLinearFillGradient(
     applyGradientStops(gradient, stops);
 
     return gradient;
+}
+
+function applyLinearGradientType(
+    gradient: GradientMutable,
+    type: FillGradientType,
+    fontSize: number,
+)
+{
+    const textureSpace = gradient.textureSpace === 'global' ? 'global' : 'local';
+    const { start, end } = pointsForGradientType(type, textureSpace, fontSize);
+
+    gradient.start = start;
+    gradient.end = end;
+    gradient.texture = null;
+
+    if (typeof gradient.buildGradient === 'function')
+    {
+        try
+        {
+            gradient.buildGradient();
+        }
+        catch
+        {
+            gradient.texture = null;
+        }
+    }
 }
 
 function assignFillGradient(style: StyleRecord, gradient: GradientMutable)
@@ -471,9 +569,7 @@ function writePixi8GradientFill(
     existing: FillGradientLike | null,
 ): boolean
 {
-    const fontSize = typeof style.fontSize === 'number' && style.fontSize > 0
-        ? style.fontSize
-        : 26;
+    const fontSize = styleFontSize(style);
 
     if (
         existing
@@ -683,3 +779,101 @@ export function writeFillStops(style: StyleRecord, stops: Array<FillColorStop>, 
     style.fill = normalized.map((stop) => stop.color);
     style.fillGradientStops = normalized.map((stop) => stop.offset);
 }
+
+export function readFillGradientType(style: StyleRecord, pixi8: boolean): FillGradientType | undefined
+{
+    const stops = readFillStops(style);
+
+    if (!stops || stops.length < 2)
+    {
+        return undefined;
+    }
+
+    if (pixi8)
+    {
+        const gradient = gradientFromFill(style.fill);
+
+        if (!gradient || gradient.type === 'radial')
+        {
+            return undefined;
+        }
+
+        if (hasFinitePoint(gradient.start) && hasFinitePoint(gradient.end))
+        {
+            return gradientTypeFromPoints(
+                pointFromUnknown(gradient.start, { x: 0, y: 0 }),
+                pointFromUnknown(gradient.end, { x: 0, y: 1 }),
+            );
+        }
+
+        return 'vertical';
+    }
+
+    return normalizeFillGradientType(style.fillGradientType) ?? 'vertical';
+}
+
+export function writeFillGradientType(
+    style: StyleRecord,
+    value: FillGradientType,
+    pixi8: boolean,
+)
+{
+    const type = value === 'horizontal' ? 'horizontal' : 'vertical';
+    const stops = readFillStops(style);
+
+    if (!stops || stops.length < 2)
+    {
+        return;
+    }
+
+    if (!pixi8)
+    {
+        style.fillGradientType = exportFillGradientTypeValue(type);
+
+        return;
+    }
+
+    const existing = gradientFromFill(style.fill);
+    const fontSize = styleFontSize(style);
+
+    if (
+        existing
+        && existing.type !== 'radial'
+        && typeof (existing as GradientMutable).addColorStop === 'function'
+        && isUsableLinearGradient(existing)
+    )
+    {
+        applyLinearGradientType(existing as GradientMutable, type, fontSize);
+        assignFillGradient(style, existing as GradientMutable);
+
+        return;
+    }
+
+    const FillGradient = getFillGradientCtor(style);
+
+    if (!FillGradient)
+    {
+        return;
+    }
+
+    const normalized = stops.map((stop) => ({
+        color  : parseColorString(stop.color),
+        offset : Math.max(0, Math.min(1, stop.offset)),
+    }));
+
+    const gradient = createLinearFillGradient(
+        FillGradient,
+        normalized,
+        existing,
+        fontSize,
+        type,
+    );
+
+    if (!gradient)
+    {
+        return;
+    }
+
+    assignFillGradient(style, gradient);
+}
+

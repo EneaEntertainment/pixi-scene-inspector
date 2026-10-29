@@ -7,6 +7,7 @@ export {
 } from '../text/maps';
 export type {
     FillColorStop,
+    FillGradientType,
     TextBooleanPropertyKey,
     TextFillPropertyKey,
     TextNumberPropertyKey,

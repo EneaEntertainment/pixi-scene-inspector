@@ -30,7 +30,25 @@ function findExportString(maps: ExportPropertyMaps, key: FieldStringKey): { get:
 type FillStyleExport = {
     fill: string | Array<string>;
     fillGradientStops?: Array<number>;
+    fillGradientType?: number;
 };
+
+function fillGradientTypeExportValue(maps: ExportPropertyMaps): number | undefined
+{
+    const value = findExportString(maps, 'style.fillGradientType')?.get();
+
+    if (value === 'horizontal')
+    {
+        return 1;
+    }
+
+    if (value === 'vertical')
+    {
+        return 0;
+    }
+
+    return undefined;
+}
 
 function collectFillExportValue(maps: ExportPropertyMaps): FillStyleExport | undefined
 {
@@ -53,9 +71,12 @@ function collectFillExportValue(maps: ExportPropertyMaps): FillStyleExport | und
         return { fill: stops[0].color };
     }
 
+    const fillGradientType = fillGradientTypeExportValue(maps);
+
     return {
         fill              : stops.map((stop) => stop.color),
         fillGradientStops : stops.map((stop) => stop.offset),
+        ...(fillGradientType === undefined ? {} : { fillGradientType }),
     };
 }
 
@@ -235,6 +256,29 @@ function collectStyleExportProp(scratch: StyleExportScratch, id: ExportPropId, v
         if (fillExport.fillGradientStops)
         {
             scratch.props.fillGradientStops = fillExport.fillGradientStops;
+        }
+
+        if (fillExport.fillGradientType !== undefined)
+        {
+            scratch.props.fillGradientType = fillExport.fillGradientType;
+        }
+
+        return;
+    }
+
+    if (path === 'fillGradientType')
+    {
+        if (value === 'horizontal')
+        {
+            scratch.props.fillGradientType = 1;
+        }
+        else if (value === 'vertical')
+        {
+            scratch.props.fillGradientType = 0;
+        }
+        else if (typeof value === 'number')
+        {
+            scratch.props.fillGradientType = value;
         }
 
         return;

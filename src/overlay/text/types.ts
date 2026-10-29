@@ -7,6 +7,7 @@ type TextPropertyKey =
     | 'style.fontStyle'
     | 'style.fontVariant'
     | 'style.fill'
+    | 'style.fillGradientType'
     | 'style.tint'
     | 'style.align'
     | 'style.letterSpacing'
@@ -45,12 +46,15 @@ export type TextStringPropertyKey =
     | 'style.fontStyle'
     | 'style.fontVariant'
     | 'style.tint'
+    | 'style.fillGradientType'
     | 'style.align'
     | 'style.whiteSpace'
     | 'style.textBaseline'
     | 'style.strokeColor'
     | 'style.strokeJoin'
     | 'style.dropShadow.color';
+
+export type FillGradientType = 'horizontal' | 'vertical';
 
 export type TextFillPropertyKey = 'style.fill';
 
