@@ -1,5 +1,5 @@
 import { isHideBlockedTypeName } from '../node-type-config';
-import { collectTreeIds, isAncestorId, parentIdOf } from '../tree-ops';
+import { isAncestorId, parentIdOf, remapIdsByUid } from '../tree-ops';
 
 import type { TreeNodeData } from '../types';
 
@@ -46,12 +46,12 @@ export function seedExpandedRoot(rootId: string): Set<string>
 
 export function expandedIdsAfterMove(
     expandedIds: Set<string>,
-    tree: TreeNodeData,
+    prevTree: TreeNodeData,
+    nextTree: TreeNodeData,
     movedId: string,
 ): Set<string>
 {
-    const valid = collectTreeIds(tree);
-    const nextExpanded = new Set([...expandedIds].filter((id) => valid.has(id)));
+    const nextExpanded = remapIdsByUid(expandedIds, prevTree, nextTree);
     const newParentId = parentIdOf(movedId);
 
     if (newParentId)
@@ -59,7 +59,26 @@ export function expandedIdsAfterMove(
         nextExpanded.add(newParentId);
     }
 
-    nextExpanded.add(tree.id);
+    nextExpanded.add(nextTree.id);
+
+    return nextExpanded;
+}
+
+export function ensureMovedParentExpanded(
+    expandedIds: Set<string>,
+    nextTree: TreeNodeData,
+    movedId: string,
+): Set<string>
+{
+    const nextExpanded = new Set(expandedIds);
+    const newParentId = parentIdOf(movedId);
+
+    if (newParentId)
+    {
+        nextExpanded.add(newParentId);
+    }
+
+    nextExpanded.add(nextTree.id);
 
     return nextExpanded;
 }
@@ -71,5 +90,6 @@ export function createPanelSession()
         canToggleTreeNodeVisible,
         seedExpandedRoot,
         expandedIdsAfterMove,
+        ensureMovedParentExpanded,
     };
 }

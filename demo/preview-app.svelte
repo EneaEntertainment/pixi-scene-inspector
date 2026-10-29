@@ -13,7 +13,13 @@
     expandOneLevel,
     levelNavTarget,
   } from "../src/tree-nav";
-  import { collectTreeIds, findTreeNode, isAncestorId } from "../src/tree-ops";
+  import {
+    collectIdToUid,
+    collectUidToId,
+    findTreeNode,
+    isAncestorId,
+    remapIdByUid,
+  } from "../src/tree-ops";
   import { moveNodeInTree, toggleVisibleInTree } from "./tree-mutators";
 
   import type { TreeNodeData } from "../src/types";
@@ -219,41 +225,45 @@
       return;
     }
 
+    const prevTree = tree;
     const result = moveNodeInTree(tree, sourceId, parentId, index);
 
     if (!result) {
       return;
     }
 
+    const prevIdToUid = collectIdToUid(prevTree);
+    const nextUidToId = collectUidToId(result.root);
+
     if (clipboardId === sourceId) {
       clipboardId = result.newId;
     } else if (clipboardId && isAncestorId(sourceId, clipboardId)) {
       clipboardId = null;
+    } else if (clipboardId) {
+      clipboardId = remapIdByUid(clipboardId, prevIdToUid, nextUidToId);
     }
 
     if (isolatedRootId === sourceId) {
       isolatedRootId = result.newId;
     } else if (isolatedRootId && isAncestorId(sourceId, isolatedRootId)) {
       isolatedRootId = null;
+    } else if (isolatedRootId) {
+      isolatedRootId = remapIdByUid(isolatedRootId, prevIdToUid, nextUidToId);
     }
 
     tree = result.root;
 
     let nextExpanded = expandedIdsAfterMove(
       expandedIds,
+      prevTree,
       result.root,
       result.newId,
     );
 
     if (isolatedRootId) {
-      const valid = collectTreeIds(result.root);
+      nextExpanded = new Set(nextExpanded);
 
-      if (valid.has(isolatedRootId)) {
-        nextExpanded = new Set(nextExpanded);
-        nextExpanded.add(isolatedRootId);
-      } else {
-        isolatedRootId = null;
-      }
+      nextExpanded.add(isolatedRootId);
     }
 
     expandedIds = nextExpanded;

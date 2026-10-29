@@ -25,12 +25,16 @@
     levelNavTarget,
   } from "../tree-nav";
   import {
+    collectIdToUid,
     collectTreeIds,
+    collectUidToId,
     countTreeNodes,
     filterTreeByName,
     findTreeNode,
     isAncestorId,
     isTreeRewrite,
+    remapIdByUid,
+    remapIdsByUid,
   } from "../tree-ops";
   import Help from "./help.svelte";
   import MissingPixi from "./missing-pixi.svelte";
@@ -39,7 +43,7 @@
   import {
     canReparent,
     canToggleTreeNodeVisible,
-    expandedIdsAfterMove,
+    ensureMovedParentExpanded,
     seedExpandedRoot,
   } from "./panel-session";
   import SceneTree from "./scene-tree.svelte";
@@ -187,14 +191,29 @@
         expandedIds = seedExpandedRoot(result.tree.id);
 
         didSeedExpand = true;
-      }
+      } else if (prevTree) {
+        const prevIdToUid = collectIdToUid(prevTree);
+        const nextUidToId = collectUidToId(result.tree);
+        const nextExpanded = remapIdsByUid(expandedIds, prevTree, result.tree);
 
-      if (selectedId && !findTreeNode(result.tree, selectedId)) {
-        selectedId = null;
-      }
+        nextExpanded.add(result.tree.id);
+        expandedIds = nextExpanded;
 
-      if (isolatedRootId && !findTreeNode(result.tree, isolatedRootId)) {
-        isolatedRootId = null;
+        if (selectedId) {
+          selectedId = remapIdByUid(selectedId, prevIdToUid, nextUidToId);
+        }
+
+        if (isolatedRootId) {
+          isolatedRootId = remapIdByUid(
+            isolatedRootId,
+            prevIdToUid,
+            nextUidToId,
+          );
+        }
+
+        if (clipboardId) {
+          clipboardId = remapIdByUid(clipboardId, prevIdToUid, nextUidToId);
+        }
       }
 
       source = result.source;
@@ -235,9 +254,11 @@
         return;
       }
 
-      if (clipboardId === sourceId) {
-        clipboardId = newId;
-      } else if (clipboardId && isAncestorId(sourceId, clipboardId)) {
+      if (
+        clipboardId &&
+        clipboardId !== sourceId &&
+        isAncestorId(sourceId, clipboardId)
+      ) {
         clipboardId = null;
       }
 
@@ -246,7 +267,7 @@
       await refresh();
 
       if (tree) {
-        expandedIds = expandedIdsAfterMove(expandedIds, tree, newId);
+        expandedIds = ensureMovedParentExpanded(expandedIds, tree, newId);
 
         relayoutFromTree(tree);
       }

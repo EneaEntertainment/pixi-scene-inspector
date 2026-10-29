@@ -66,6 +66,75 @@ function collectTreeUids(node: TreeNodeData, into: Set<number> = new Set()): Set
     return into;
 }
 
+export function collectIdToUid(
+    node: TreeNodeData,
+    into: Map<string, number> = new Map(),
+): Map<string, number>
+{
+    into.set(node.id, node.uid);
+
+    for (const child of node.children)
+    {
+        collectIdToUid(child, into);
+    }
+
+    return into;
+}
+
+export function collectUidToId(
+    node: TreeNodeData,
+    into: Map<number, string> = new Map(),
+): Map<number, string>
+{
+    into.set(node.uid, node.id);
+
+    for (const child of node.children)
+    {
+        collectUidToId(child, into);
+    }
+
+    return into;
+}
+
+export function remapIdByUid(
+    id: string,
+    prevIdToUid: ReadonlyMap<string, number>,
+    nextUidToId: ReadonlyMap<number, string>,
+): string | null
+{
+    const uid = prevIdToUid.get(id);
+
+    if (uid === undefined)
+    {
+        return null;
+    }
+
+    return nextUidToId.get(uid) ?? null;
+}
+
+export function remapIdsByUid(
+    ids: ReadonlySet<string>,
+    prevTree: TreeNodeData,
+    nextTree: TreeNodeData,
+): Set<string>
+{
+    const prevIdToUid = collectIdToUid(prevTree);
+    const nextUidToId = collectUidToId(nextTree);
+    const next = new Set<string>();
+
+    for (const id of ids)
+    {
+        const remapped = remapIdByUid(id, prevIdToUid, nextUidToId);
+
+        if (remapped !== null)
+        {
+            next.add(remapped);
+        }
+    }
+
+    return next;
+}
+
 const TREE_UID_CONTINUITY_THRESHOLD = 0.25;
 
 export function isTreeRewrite(

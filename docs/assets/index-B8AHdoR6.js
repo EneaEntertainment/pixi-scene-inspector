@@ -1,4 +1,4 @@
-const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/browserAll-DwLeqlkI.js","assets/webworkerAll-BYz16wcg.js","assets/Filter-V02SY-M6.js","assets/WebGPURenderer-wef2XRFc.js","assets/getTexelRangeRects-D8QdiyE4.js","assets/RenderTargetSystem-BDs6ca3Z.js","assets/WebGLRenderer-CYzUSbdu.js","assets/CanvasRenderer-Dnq25Wvk.js"])))=>i.map(i=>d[i]);
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/browserAll-C2P1en91.js","assets/webworkerAll-BGnvvG8y.js","assets/Filter-PFqwio7Q.js","assets/WebGPURenderer-Ceb3u5DA.js","assets/getTexelRangeRects-BAa9uRf8.js","assets/RenderTargetSystem-Dgm8mfLx.js","assets/WebGLRenderer-DAkuR3fl.js","assets/CanvasRenderer-CBdhQRSt.js"])))=>i.map(i=>d[i]);
 (function polyfill() {
   const relList = document.createElement("link").relList;
   if (relList && relList.supports && relList.supports("modulepreload")) return;
@@ -355,7 +355,7 @@ const browserExt = {
   },
   test: () => true,
   load: async () => {
-    await __vitePreload(() => import("./browserAll-DwLeqlkI.js"), true ? __vite__mapDeps([0,1,2]) : void 0);
+    await __vitePreload(() => import("./browserAll-C2P1en91.js"), true ? __vite__mapDeps([0,1,2]) : void 0);
   }
 };
 const webworkerExt = {
@@ -366,7 +366,7 @@ const webworkerExt = {
   },
   test: () => typeof self !== "undefined" && self.WorkerGlobalScope !== void 0,
   load: async () => {
-    await __vitePreload(() => import("./webworkerAll-BYz16wcg.js"), true ? __vite__mapDeps([1,2]) : void 0);
+    await __vitePreload(() => import("./webworkerAll-BGnvvG8y.js"), true ? __vite__mapDeps([1,2]) : void 0);
   }
 };
 class ObservablePoint {
@@ -13297,7 +13297,7 @@ async function autoDetectRenderer(options) {
     const rendererType = preferredOrder[i2];
     if (rendererType === "webgpu" && await isWebGPUSupported()) {
       const { WebGPURenderer } = await __vitePreload(async () => {
-        const { WebGPURenderer: WebGPURenderer2 } = await import("./WebGPURenderer-wef2XRFc.js");
+        const { WebGPURenderer: WebGPURenderer2 } = await import("./WebGPURenderer-Ceb3u5DA.js");
         return { WebGPURenderer: WebGPURenderer2 };
       }, true ? __vite__mapDeps([3,4,5,2]) : void 0);
       RendererClass = WebGPURenderer;
@@ -13307,7 +13307,7 @@ async function autoDetectRenderer(options) {
       options.failIfMajorPerformanceCaveat ?? AbstractRenderer.defaultOptions.failIfMajorPerformanceCaveat
     )) {
       const { WebGLRenderer } = await __vitePreload(async () => {
-        const { WebGLRenderer: WebGLRenderer2 } = await import("./WebGLRenderer-CYzUSbdu.js");
+        const { WebGLRenderer: WebGLRenderer2 } = await import("./WebGLRenderer-DAkuR3fl.js");
         return { WebGLRenderer: WebGLRenderer2 };
       }, true ? __vite__mapDeps([6,4,5,2]) : void 0);
       RendererClass = WebGLRenderer;
@@ -13315,7 +13315,7 @@ async function autoDetectRenderer(options) {
       break;
     } else if (rendererType === "canvas") {
       const { CanvasRenderer } = await __vitePreload(async () => {
-        const { CanvasRenderer: CanvasRenderer2 } = await import("./CanvasRenderer-Dnq25Wvk.js");
+        const { CanvasRenderer: CanvasRenderer2 } = await import("./CanvasRenderer-CBdhQRSt.js");
         return { CanvasRenderer: CanvasRenderer2 };
       }, true ? __vite__mapDeps([7,5,2]) : void 0);
       RendererClass = CanvasRenderer;
@@ -38808,6 +38808,39 @@ function collectTreeUids(node, into = /* @__PURE__ */ new Set()) {
   }
   return into;
 }
+function collectIdToUid(node, into = /* @__PURE__ */ new Map()) {
+  into.set(node.id, node.uid);
+  for (const child2 of node.children) {
+    collectIdToUid(child2, into);
+  }
+  return into;
+}
+function collectUidToId(node, into = /* @__PURE__ */ new Map()) {
+  into.set(node.uid, node.id);
+  for (const child2 of node.children) {
+    collectUidToId(child2, into);
+  }
+  return into;
+}
+function remapIdByUid(id, prevIdToUid, nextUidToId) {
+  const uid2 = prevIdToUid.get(id);
+  if (uid2 === void 0) {
+    return null;
+  }
+  return nextUidToId.get(uid2) ?? null;
+}
+function remapIdsByUid(ids, prevTree, nextTree) {
+  const prevIdToUid = collectIdToUid(prevTree);
+  const nextUidToId = collectUidToId(nextTree);
+  const next = /* @__PURE__ */ new Set();
+  for (const id of ids) {
+    const remapped = remapIdByUid(id, prevIdToUid, nextUidToId);
+    if (remapped !== null) {
+      next.add(remapped);
+    }
+  }
+  return next;
+}
 const TREE_UID_CONTINUITY_THRESHOLD = 0.25;
 function isTreeRewrite(prev, next, threshold = TREE_UID_CONTINUITY_THRESHOLD) {
   const prevUids = collectTreeUids(prev);
@@ -39202,14 +39235,13 @@ function canToggleTreeNodeVisible(node) {
 function seedExpandedRoot(rootId) {
   return /* @__PURE__ */ new Set([rootId]);
 }
-function expandedIdsAfterMove(expandedIds, tree, movedId) {
-  const valid = collectTreeIds(tree);
-  const nextExpanded = new Set([...expandedIds].filter((id) => valid.has(id)));
+function ensureMovedParentExpanded(expandedIds, nextTree, movedId) {
+  const nextExpanded = new Set(expandedIds);
   const newParentId = parentIdOf(movedId);
   if (newParentId) {
     nextExpanded.add(newParentId);
   }
-  nextExpanded.add(tree.id);
+  nextExpanded.add(nextTree.id);
   return nextExpanded;
 }
 const GAP_MIN = 8;
@@ -40766,12 +40798,21 @@ function App($$anchor, $$props) {
       } else if (!didSeedExpand) {
         set(expandedIds, seedExpandedRoot(result.tree.id), true);
         didSeedExpand = true;
-      }
-      if (get(selectedId) && !findTreeNode(result.tree, get(selectedId))) {
-        set(selectedId, null);
-      }
-      if (get(isolatedRootId) && !findTreeNode(result.tree, get(isolatedRootId))) {
-        set(isolatedRootId, null);
+      } else if (prevTree) {
+        const prevIdToUid = collectIdToUid(prevTree);
+        const nextUidToId = collectUidToId(result.tree);
+        const nextExpanded = remapIdsByUid(get(expandedIds), prevTree, result.tree);
+        nextExpanded.add(result.tree.id);
+        set(expandedIds, nextExpanded, true);
+        if (get(selectedId)) {
+          set(selectedId, remapIdByUid(get(selectedId), prevIdToUid, nextUidToId), true);
+        }
+        if (get(isolatedRootId)) {
+          set(isolatedRootId, remapIdByUid(get(isolatedRootId), prevIdToUid, nextUidToId), true);
+        }
+        if (get(clipboardId)) {
+          set(clipboardId, remapIdByUid(get(clipboardId), prevIdToUid, nextUidToId), true);
+        }
       }
       set(source2, result.source, true);
       set(status, "ok");
@@ -40799,15 +40840,13 @@ function App($$anchor, $$props) {
       if (newId === null || newId === void 0) {
         return;
       }
-      if (get(clipboardId) === sourceId) {
-        set(clipboardId, newId, true);
-      } else if (get(clipboardId) && isAncestorId(sourceId, get(clipboardId))) {
+      if (get(clipboardId) && get(clipboardId) !== sourceId && isAncestorId(sourceId, get(clipboardId))) {
         set(clipboardId, null);
       }
       set(moving, false);
       await refresh();
       if (get(tree)) {
-        set(expandedIds, expandedIdsAfterMove(get(expandedIds), get(tree), newId), true);
+        set(expandedIds, ensureMovedParentExpanded(get(expandedIds), get(tree), newId), true);
         relayoutFromTree(get(tree));
       }
       await highlight(newId);
