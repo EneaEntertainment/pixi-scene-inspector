@@ -18,12 +18,12 @@ export function isTextNumberKey(key: FieldNumberKey): key is TextNumberPropertyK
     return key.startsWith('style.');
 }
 
-export function isTextBooleanKey(key: FieldBooleanKey): key is TextBooleanPropertyKey
+function isTextBooleanKey(key: FieldBooleanKey): key is TextBooleanPropertyKey
 {
     return key.startsWith('style.');
 }
 
-export function isTextStringKey(key: FieldStringKey): key is TextStringPropertyKey
+function isTextStringKey(key: FieldStringKey): key is TextStringPropertyKey
 {
     return key === 'text' || key.startsWith('style.');
 }

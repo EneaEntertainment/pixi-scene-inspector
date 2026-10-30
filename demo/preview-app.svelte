@@ -1,6 +1,12 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { layoutTree } from "../src/layout";
+  import {
+    remapIdListByUid,
+    resolveMarqueeSelection,
+    sortIdsByTreeOrder,
+    toggleSelectedId,
+  } from "../src/multi-select";
   import { resolvePanelKey } from "../src/panel/panel-keyboard";
   import {
     canReparent,
@@ -20,7 +26,7 @@
     isAncestorId,
     remapIdByUid,
   } from "../src/tree-ops";
-  import { moveNodeInTree, toggleVisibleInTree } from "./tree-mutators";
+  import { moveNodesInTree, toggleVisibleInTree } from "./tree-mutators";
 
   import type { TreeNodeData } from "../src/types";
 
@@ -177,9 +183,22 @@
 
   let tree = $state<TreeNodeData>(initial);
   let expandedIds = $state<Set<string>>(new Set([initial.id]));
-  let selectedId = $state<string | null>(null);
+  let selectedIds = $state<Array<string>>([]);
+  let lastClearedIds = $state<Array<string> | null>(null);
   let isolatedRootId = $state<string | null>(null);
-  let clipboardId = $state<string | null>(null);
+  let clipboardIds = $state<Array<string>>([]);
+
+  function applySelection(ids: Array<string>) {
+    if (ids.length > 0) {
+      lastClearedIds = null;
+    }
+
+    selectedIds = ids;
+  }
+
+  const selectedId = $derived(
+    selectedIds.length > 0 ? selectedIds[selectedIds.length - 1] : null,
+  );
 
   function getViewRoot(root: TreeNodeData): TreeNodeData {
     if (!isolatedRootId) {
@@ -201,8 +220,27 @@
     }
   });
 
-  function onselect(id: string, altKey: boolean, toggleExpand = true) {
-    selectedId = id;
+  function onselect(
+    id: string,
+    altKey: boolean,
+    options: { toggleExpand?: boolean; additive?: boolean } = {},
+  ) {
+    const additive = options.additive === true;
+    const toggleExpand = options.toggleExpand !== false;
+
+    if (additive) {
+      applySelection(toggleSelectedId(selectedIds, id));
+
+      return;
+    }
+
+    if (selectedIds.length > 1 && selectedIds.includes(id)) {
+      expandOrCollapseSelection(altKey);
+
+      return;
+    }
+
+    applySelection([id]);
 
     if (!toggleExpand) {
       return;
@@ -220,13 +258,32 @@
     }
   }
 
-  function applyMove(sourceId: string, parentId: string, index: number | null) {
-    if (!canReparent(tree, sourceId, parentId)) {
+  function onselectmany(ids: Array<string>, additive: boolean) {
+    const ordered = sortIdsByTreeOrder(getViewRoot(tree), ids);
+    const next = resolveMarqueeSelection(selectedIds, ordered, additive);
+
+    if (next === null) {
+      return;
+    }
+
+    applySelection(next);
+  }
+
+  function applyMove(
+    sourceIds: Array<string>,
+    parentId: string,
+    index: number | null,
+  ) {
+    const ordered = sortIdsByTreeOrder(tree, sourceIds).filter((id) =>
+      canReparent(tree, id, parentId),
+    );
+
+    if (ordered.length === 0) {
       return;
     }
 
     const prevTree = tree;
-    const result = moveNodeInTree(tree, sourceId, parentId, index);
+    const result = moveNodesInTree(tree, ordered, parentId, index);
 
     if (!result) {
       return;
@@ -235,30 +292,39 @@
     const prevIdToUid = collectIdToUid(prevTree);
     const nextUidToId = collectUidToId(result.root);
 
-    if (clipboardId === sourceId) {
-      clipboardId = result.newId;
-    } else if (clipboardId && isAncestorId(sourceId, clipboardId)) {
-      clipboardId = null;
-    } else if (clipboardId) {
-      clipboardId = remapIdByUid(clipboardId, prevIdToUid, nextUidToId);
-    }
+    clipboardIds = remapIdListByUid(clipboardIds, prevIdToUid, nextUidToId);
 
-    if (isolatedRootId === sourceId) {
-      isolatedRootId = result.newId;
-    } else if (isolatedRootId && isAncestorId(sourceId, isolatedRootId)) {
-      isolatedRootId = null;
-    } else if (isolatedRootId) {
-      isolatedRootId = remapIdByUid(isolatedRootId, prevIdToUid, nextUidToId);
+    if (isolatedRootId) {
+      const remapped = remapIdByUid(isolatedRootId, prevIdToUid, nextUidToId);
+
+      if (remapped === null) {
+        for (const sourceId of ordered) {
+          if (
+            isolatedRootId === sourceId ||
+            isAncestorId(sourceId, isolatedRootId)
+          ) {
+            isolatedRootId = null;
+
+            break;
+          }
+        }
+      } else {
+        isolatedRootId = remapped;
+      }
     }
 
     tree = result.root;
 
-    let nextExpanded = expandedIdsAfterMove(
-      expandedIds,
-      prevTree,
-      result.root,
-      result.newId,
-    );
+    let nextExpanded = expandedIds;
+
+    for (const newId of result.newIds) {
+      nextExpanded = expandedIdsAfterMove(
+        nextExpanded,
+        prevTree,
+        result.root,
+        newId,
+      );
+    }
 
     if (isolatedRootId) {
       nextExpanded = new Set(nextExpanded);
@@ -268,46 +334,88 @@
 
     expandedIds = nextExpanded;
 
-    const movedId = result.newId;
+    const movedIds = result.newIds;
 
-    selectedId = movedId;
+    lastClearedIds = null;
+
+    applySelection(movedIds);
 
     setTimeout(() => {
-      selectedId = movedId;
+      applySelection(movedIds);
     }, 0);
   }
 
-  function onmove(sourceId: string, parentId: string, index: number | null) {
-    applyMove(sourceId, parentId, index);
+  function onmove(
+    sourceIds: Array<string>,
+    parentId: string,
+    index: number | null,
+  ) {
+    applyMove(sourceIds, parentId, index);
   }
 
   function toggleIsolate() {
-    if (!selectedId) {
+    if (isolatedRootId) {
+      isolatedRootId = null;
+
       return;
     }
 
-    if (isolatedRootId) {
-      isolatedRootId = null;
-    } else {
-      isolatedRootId = selectedId;
-
-      const next = new Set(expandedIds);
-
-      next.add(selectedId);
-
-      expandedIds = next;
+    if (selectedIds.length !== 1) {
+      return;
     }
+
+    const id = selectedIds[0];
+
+    if (!id) {
+      return;
+    }
+
+    isolatedRootId = id;
+
+    const next = new Set(expandedIds);
+
+    next.add(id);
+
+    expandedIds = next;
   }
 
   function toggleVisible() {
-    if (!selectedId) {
+    if (selectedIds.length === 0) {
       return;
     }
 
-    const next = toggleVisibleInTree(tree, selectedId);
+    let next = tree;
 
-    if (next) {
-      tree = next;
+    for (const id of selectedIds) {
+      const updated = toggleVisibleInTree(next, id);
+
+      if (updated) {
+        next = updated;
+      }
+    }
+
+    lastClearedIds = null;
+
+    tree = next;
+  }
+
+  function expandOrCollapseSelection(altKey: boolean) {
+    const viewRoot = getViewRoot(tree);
+    const next = new Set(expandedIds);
+    let changed = false;
+
+    for (const id of selectedIds) {
+      const didChange = altKey
+        ? collapseOneLevel(viewRoot, id, next)
+        : expandOneLevel(viewRoot, id, next);
+
+      if (didChange) {
+        changed = true;
+      }
+    }
+
+    if (changed) {
+      expandedIds = next;
     }
   }
 
@@ -326,7 +434,7 @@
         return;
       }
 
-      selectedId = nextId;
+      applySelection([nextId]);
 
       return;
     }
@@ -356,14 +464,16 @@
       expandedIds = next;
     }
 
-    selectedId = result.selectId;
+    applySelection([result.selectId]);
   }
 
   function onkeydown(e: KeyboardEvent) {
     const action = resolvePanelKey(e, {
       showHelp: false,
-      selectedId,
-      clipboardId,
+      selectedIds,
+      clipboardIds,
+      isolated: isolatedRootId !== null,
+      canRestoreSelection: lastClearedIds !== null && lastClearedIds.length > 0,
     });
 
     if (!action) {
@@ -376,12 +486,36 @@
       case "closeHelp":
         break;
 
+      case "clearSelection":
+        if (selectedIds.length > 0) {
+          lastClearedIds = [...selectedIds];
+        }
+
+        selectedIds = [];
+
+        break;
+
+      case "restoreSelection":
+        if (!lastClearedIds || lastClearedIds.length === 0) {
+          break;
+        }
+
+        {
+          const ids = lastClearedIds;
+
+          lastClearedIds = null;
+
+          applySelection(ids);
+        }
+
+        break;
+
       case "copy":
-        clipboardId = action.id;
+        clipboardIds = sortIdsByTreeOrder(tree, action.ids);
         break;
 
       case "paste":
-        applyMove(action.sourceId, action.parentId, null);
+        applyMove(action.sourceIds, action.parentId, null);
         break;
 
       case "isolate":
@@ -393,16 +527,11 @@
         break;
 
       case "expand":
-        if (selectedId) {
-          onselect(selectedId, false);
-        }
-
+        expandOrCollapseSelection(false);
         break;
-      case "collapse":
-        if (selectedId) {
-          onselect(selectedId, true);
-        }
 
+      case "collapse":
+        expandOrCollapseSelection(true);
         break;
 
       case "navigate":
@@ -425,8 +554,9 @@
     width={laid.width}
     height={laid.height}
     rootId={getViewRoot(tree).id}
-    {selectedId}
+    {selectedIds}
     {onselect}
+    {onselectmany}
     {onmove}
   />
 </div>

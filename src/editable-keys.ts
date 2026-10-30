@@ -1,3 +1,16 @@
+const NON_TEXT_INPUT_TYPES = new Set([
+    'button',
+    'checkbox',
+    'color',
+    'file',
+    'hidden',
+    'image',
+    'radio',
+    'range',
+    'reset',
+    'submit',
+]);
+
 export function isEditableKeyTarget(target: EventTarget | null): boolean
 {
     if (!(target instanceof HTMLElement))
@@ -12,7 +25,17 @@ export function isEditableKeyTarget(target: EventTarget | null): boolean
 
     const tag = target.tagName;
 
-    return tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT';
+    if (tag === 'TEXTAREA' || tag === 'SELECT')
+    {
+        return true;
+    }
+
+    if (tag !== 'INPUT' || !(target instanceof HTMLInputElement))
+    {
+        return false;
+    }
+
+    return !NON_TEXT_INPUT_TYPES.has(target.type);
 }
 
 export function isolateEditableKeyEvents(root: HTMLElement): () => void

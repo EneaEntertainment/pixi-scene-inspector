@@ -135,6 +135,32 @@ export function remapIdsByUid(
     return next;
 }
 
+export function isTreeChanged(prev: TreeNodeData, next: TreeNodeData): boolean
+{
+    if (prev.uid !== next.uid || prev.visible !== next.visible)
+    {
+        return true;
+    }
+
+    if (prev.children.length !== next.children.length)
+    {
+        return true;
+    }
+
+    for (let i = 0; i < prev.children.length; i++)
+    {
+        const prevChild = prev.children[i];
+        const nextChild = next.children[i];
+
+        if (!prevChild || !nextChild || isTreeChanged(prevChild, nextChild))
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 const TREE_UID_CONTINUITY_THRESHOLD = 0.25;
 
 export function isTreeRewrite(

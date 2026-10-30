@@ -4,6 +4,17 @@ import { attachNumberDrag, snapToStep } from './number-drag';
 import type { FieldNumberKey } from '../properties/keys';
 import type { NumberField, NumberFieldSpec } from './types';
 
+export type NumberCommitInfo = {
+    source: 'input' | 'scrub' | 'nudge';
+    previous: number | undefined;
+};
+
+type NumberCommitHandler = (
+    key: FieldNumberKey,
+    value: number,
+    info: NumberCommitInfo,
+) => void;
+
 export function formatNumber(value: number): string
 {
     if (!Number.isFinite(value))
@@ -38,7 +49,7 @@ function clampNumber(value: number, min: number | undefined, max: number | undef
     return next;
 }
 
-export function createNumberField(spec: NumberFieldSpec, onCommit: (key: FieldNumberKey, value: number) => void): NumberField
+export function createNumberField(spec: NumberFieldSpec, onCommit: NumberCommitHandler): NumberField
 {
     const root = createFieldRoot();
     const label = createFieldLabel(spec.label);
@@ -170,33 +181,34 @@ export function createNumberField(spec: NumberFieldSpec, onCommit: (key: FieldNu
         input.value = value === undefined ? '' : formatNumber(value);
     }
 
-    function commit(next: number)
+    function commit(
+        next: number,
+        source: NumberCommitInfo['source'],
+        previous: number | undefined = current,
+    )
     {
         const clamped = clampNumber(next, spec.min, spec.max);
 
         current = clamped;
         input.value = formatNumber(clamped);
 
-        onCommit(spec.key, clamped);
+        onCommit(spec.key, clamped, { source, previous });
     }
 
     function nudge(direction: 1 | -1, snap = false)
     {
-        if (typeof current !== 'number')
-        {
-            return;
-        }
+        const base = typeof current === 'number' ? current : 0;
+        const next = base + (direction * spec.step);
 
-        const next = current + (direction * spec.step);
-
-        commit(snap ? snapToStep(next, spec.step) : next);
+        commit(snap ? snapToStep(next, spec.step) : next, 'nudge', base);
     }
 
     const drag = attachNumberDrag(dragLayer, {
         step         : spec.step,
         dragAccel    : spec.dragAccel,
-        commit,
+        commit       : (value, previous) => commit(value, 'scrub', previous),
         getValue     : () => current,
+        allowEmpty   : true,
         onSyncChrome : syncChrome,
         onClickFocus : () =>
         {
@@ -210,6 +222,7 @@ export function createNumberField(spec: NumberFieldSpec, onCommit: (key: FieldNu
 
         syncChrome();
     });
+
     control.addEventListener('pointerleave', () =>
     {
         hover = false;
@@ -249,7 +262,7 @@ export function createNumberField(spec: NumberFieldSpec, onCommit: (key: FieldNu
 
         if (Number.isFinite(parsed))
         {
-            commit(parsed);
+            commit(parsed, 'input');
         }
         else
         {

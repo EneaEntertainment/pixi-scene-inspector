@@ -82,14 +82,3 @@ export function ensureMovedParentExpanded(
 
     return nextExpanded;
 }
-
-export function createPanelSession()
-{
-    return {
-        canReparent,
-        canToggleTreeNodeVisible,
-        seedExpandedRoot,
-        expandedIdsAfterMove,
-        ensureMovedParentExpanded,
-    };
-}

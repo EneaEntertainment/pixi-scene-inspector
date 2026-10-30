@@ -1,8 +1,13 @@
+import { treeDragGesture } from './gesture-active';
 import { isAncestorId } from './tree-ops';
 
 import type { LaidOutNode } from './types';
 
 const GAP_MIN = 8;
+
+export const beginTreeDragGesture = treeDragGesture.begin;
+export const endTreeDragGesture = treeDragGesture.end;
+export const isTreeDragGestureActive = treeDragGesture.isActive;
 
 type DropVisual =
   | { kind: 'gap'; x: number; y: number; width: number; height: number }
@@ -140,23 +145,36 @@ type RowHit = {
     rowH: number;
 };
 
+function isBlockedTarget(targetId: string, sourceIds: ReadonlyArray<string>): boolean
+{
+    for (const sourceId of sourceIds)
+    {
+        if (targetId === sourceId || isAncestorId(sourceId, targetId))
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 export function resolveDropTarget(
     nodes: Array<LaidOutNode>,
     rootId: string,
-    sourceId: string,
+    sourceIds: ReadonlyArray<string>,
     pointerX: number,
     pointerY: number,
     canvasWidth: number,
 ): DropTarget | null
 {
-    if (sourceId === rootId)
+    if (sourceIds.length === 0 || sourceIds.includes(rootId))
     {
         return null;
     }
 
     for (const node of nodes)
     {
-        if (node.id === sourceId || isAncestorId(sourceId, node.id))
+        if (isBlockedTarget(node.id, sourceIds))
         {
             continue;
         }
@@ -178,7 +196,7 @@ export function resolveDropTarget(
 
     for (const group of groups)
     {
-        if (isAncestorId(sourceId, group.parentId))
+        if (isBlockedTarget(group.parentId, sourceIds))
         {
             continue;
         }

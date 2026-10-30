@@ -5,9 +5,8 @@
 
   const { onclose }: Props = $props();
 
-  function close()
-  {
-      onclose();
+  function close() {
+    onclose();
   }
 </script>
 
@@ -22,6 +21,10 @@
       <dd>Select node</dd>
     </div>
     <div class="help-row">
+      <dt><kbd>⇧/Shift</kbd> or <kbd>⌘/Ctrl</kbd>+click</dt>
+      <dd>Multi-select</dd>
+    </div>
+    <div class="help-row">
       <dt><kbd>Click</kbd> again or <kbd>+</kbd> / <kbd>=</kbd></dt>
       <dd>Expand one level</dd>
     </div>
@@ -31,11 +34,11 @@
     </div>
     <div class="help-row">
       <dt><kbd>←</kbd> <kbd>→</kbd></dt>
-      <dd>Move among siblings</dd>
+      <dd>Move among siblings (from primary; replaces a multi-selection)</dd>
     </div>
     <div class="help-row">
       <dt><kbd>↑</kbd> <kbd>↓</kbd></dt>
-      <dd>Parent / first child (↓ expands)</dd>
+      <dd>Parent / first child (↓ expands; replaces a multi-selection)</dd>
     </div>
     <div class="help-row">
       <dt><kbd>⌥/Alt</kbd>+arrows</dt>
@@ -43,15 +46,18 @@
     </div>
     <div class="help-row">
       <dt><kbd>I</kbd></dt>
-      <dd>Isolate selected subtree (toggle)</dd>
+      <dd>
+        Isolate selected subtree (enter needs one node; press again to
+        exit)
+      </dd>
     </div>
     <div class="help-row">
       <dt><kbd>H</kbd></dt>
-      <dd>Toggle visible (not Camera3D / Scene3D)</dd>
+      <dd>Toggle visible on every selected node (not Camera3D / Scene3D)</dd>
     </div>
     <div class="help-row">
       <dt>Drag</dt>
-      <dd>Reparent node</dd>
+      <dd>Reparent selected node(s)</dd>
     </div>
     <div class="help-row">
       <dt><kbd>⌥/Alt</kbd> + number scrub / arrows</dt>
@@ -59,11 +65,23 @@
     </div>
     <div class="help-row">
       <dt><kbd>Esc</kbd></dt>
-      <dd>Cancel drag / restore value to start / close this help</dd>
+      <dd>
+        Clear selection / cancel drag and restore value / cancel node drag /
+        close this help
+      </dd>
     </div>
     <div class="help-row">
-      <dt><kbd>⌘/Ctrl</kbd>+<kbd>C</kbd> then <kbd>⌘/Ctrl</kbd>+<kbd>V</kbd></dt>
-      <dd>Copy node, paste as child of selection</dd>
+      <dt><kbd>Shift</kbd>+<kbd>Esc</kbd></dt>
+      <dd>
+        Restore selection cleared by Esc (if nothing else selected or tree
+        unchanged)
+      </dd>
+    </div>
+    <div class="help-row">
+      <dt>
+        <kbd>⌘/Ctrl</kbd>+<kbd>C</kbd> then <kbd>⌘/Ctrl</kbd>+<kbd>V</kbd>
+      </dt>
+      <dd>Move selected node(s) under the current selection</dd>
     </div>
     <div class="help-row">
       <dt><kbd>?</kbd></dt>

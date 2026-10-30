@@ -15,6 +15,12 @@
   import { onDestroy, onMount } from "svelte";
   import { layoutTree } from "../layout";
   import {
+    remapIdListByUid,
+    resolveMarqueeSelection,
+    sortIdsByTreeOrder,
+    toggleSelectedId,
+  } from "../multi-select";
+  import {
     createSelectionChannel,
     type SelectionChannel,
   } from "../selection-channel";
@@ -31,7 +37,7 @@
     countTreeNodes,
     filterTreeByName,
     findTreeNode,
-    isAncestorId,
+    isTreeChanged,
     isTreeRewrite,
     remapIdByUid,
     remapIdsByUid,
@@ -48,6 +54,11 @@
   } from "./panel-session";
   import SceneTree from "./scene-tree.svelte";
   import {
+    DEFAULT_LIVE_REFRESH_INTERVAL_SEC,
+    readLiveRefreshIntervalAttr,
+    subscribeLiveRefreshInterval,
+  } from "../live-refresh";
+  import {
     readHighlightEnabled,
     writeHighlightEnabled,
   } from "../overlay/shell/settings";
@@ -58,6 +69,8 @@
     TreeEdge,
     TreeNodeData,
   } from "../types";
+
+  const MULTI_SELECTION_TITLE = "multiple nodes selected";
 
   const {
     host,
@@ -72,7 +85,7 @@
   } = $props();
 
   let expandedIds = $state<Set<string>>(new Set());
-  let selectedId = $state<string | null>(null);
+  let selectedIds = $state<Array<string>>([]);
   let didSeedExpand = false;
   let status = $state<"loading" | "ok" | "missing">("loading");
   let message = $state("Looking for PixiJS…");
@@ -84,13 +97,21 @@
   let canvasH = $state(600);
   let isolatedRootId = $state<string | null>(null);
   let highlightEnabled = $state(readHighlightEnabled());
-  let autoRefresh = $state(true);
+  const initialLiveRefreshInterval =
+    readLiveRefreshIntervalAttr() ?? DEFAULT_LIVE_REFRESH_INTERVAL_SEC;
+  let liveRefreshInterval = $state(initialLiveRefreshInterval);
+  let autoRefresh = $state(initialLiveRefreshInterval > 0);
   let nameFilter = $state("");
   let lastError = $state("");
-  let clipboardId = $state<string | null>(null);
+  let clipboardIds = $state<Array<string>>([]);
+  let lastClearedIds = $state<Array<string> | null>(null);
   let moving = $state(false);
   let dragging = $state(false);
   let showHelp = $state(false);
+
+  const selectedId = $derived(
+    selectedIds.length > 0 ? selectedIds[selectedIds.length - 1] : null,
+  );
 
   const isolateLabel = $derived.by(() => {
     if (!isolatedRootId || !tree) {
@@ -103,17 +124,36 @@
   });
 
   $effect(() => {
-    if (!selectedId || !tree) {
-      selection.publish({ id: null, name: null });
+    if (!tree || selectedIds.length === 0) {
+      selection.publish({ id: null, name: null, ids: [] });
 
       return;
     }
 
-    const node = findTreeNode(tree, selectedId);
+    if (selectedIds.length > 1) {
+      selection.publish({
+        id: selectedId,
+        name: MULTI_SELECTION_TITLE,
+        ids: selectedIds,
+      });
+
+      return;
+    }
+
+    const id = selectedIds[0];
+
+    if (!id) {
+      selection.publish({ id: null, name: null, ids: [] });
+
+      return;
+    }
+
+    const node = findTreeNode(tree, id);
 
     selection.publish({
-      id: selectedId,
+      id,
       name: node ? node.label || node.typeName : null,
+      ids: [id],
     });
   });
 
@@ -173,20 +213,27 @@
         nodes = [];
         edges = [];
         isolatedRootId = null;
+        lastClearedIds = null;
 
         return;
       }
 
       const isFirstTree = tree === null;
       const prevTree = tree;
+      const treeChanged = !prevTree || isTreeChanged(prevTree, result.tree);
+
+      if (treeChanged) {
+        lastClearedIds = null;
+      }
 
       tree = result.tree;
 
       if (prevTree && isTreeRewrite(prevTree, result.tree)) {
         expandedIds = seedExpandedRoot(result.tree.id);
-        selectedId = null;
+        selectedIds = [];
         isolatedRootId = null;
-        clipboardId = null;
+        clipboardIds = [];
+        lastClearedIds = null;
       } else if (!didSeedExpand) {
         expandedIds = seedExpandedRoot(result.tree.id);
 
@@ -199,8 +246,8 @@
         nextExpanded.add(result.tree.id);
         expandedIds = nextExpanded;
 
-        if (selectedId) {
-          selectedId = remapIdByUid(selectedId, prevIdToUid, nextUidToId);
+        if (selectedIds.length > 0) {
+          selectedIds = remapIdListByUid(selectedIds, prevIdToUid, nextUidToId);
         }
 
         if (isolatedRootId) {
@@ -211,8 +258,12 @@
           );
         }
 
-        if (clipboardId) {
-          clipboardId = remapIdByUid(clipboardId, prevIdToUid, nextUidToId);
+        if (clipboardIds.length > 0) {
+          clipboardIds = remapIdListByUid(
+            clipboardIds,
+            prevIdToUid,
+            nextUidToId,
+          );
         }
       }
 
@@ -221,8 +272,8 @@
 
       relayoutFromTree(result.tree);
 
-      if (isFirstTree && selectedId) {
-        await highlight(selectedId);
+      if (isFirstTree || prevTree) {
+        await applySelection(selectedIds);
       }
 
       lastError = "";
@@ -234,32 +285,28 @@
   }
 
   async function applyMove(
-    sourceId: string,
+    sourceIds: Array<string>,
     parentId: string,
     index: number | null,
   ) {
-    if (!tree || moving) {
+    if (!tree || moving || sourceIds.length === 0) {
       return;
     }
 
-    if (!canReparent(tree, sourceId, parentId)) {
+    const ordered = sortIdsByTreeOrder(tree, sourceIds).filter((id) =>
+      canReparent(tree!, id, parentId),
+    );
+
+    if (ordered.length === 0) {
       return;
     }
 
     moving = true;
     try {
-      const newId = await host.moveNode(sourceId, parentId, index);
+      const newIds = await host.moveNodes(ordered, parentId, index);
 
-      if (newId === null || newId === undefined) {
+      if (!newIds || newIds.length === 0) {
         return;
-      }
-
-      if (
-        clipboardId &&
-        clipboardId !== sourceId &&
-        isAncestorId(sourceId, clipboardId)
-      ) {
-        clipboardId = null;
       }
 
       moving = false;
@@ -267,15 +314,21 @@
       await refresh();
 
       if (tree) {
-        expandedIds = ensureMovedParentExpanded(expandedIds, tree, newId);
+        let nextExpanded = expandedIds;
+
+        for (const newId of newIds) {
+          nextExpanded = ensureMovedParentExpanded(nextExpanded, tree, newId);
+        }
+
+        expandedIds = nextExpanded;
 
         relayoutFromTree(tree);
       }
 
-      await highlight(newId);
+      await applySelection(newIds);
 
       setTimeout(() => {
-        void highlight(newId);
+        void applySelection(newIds);
       }, 0);
     } catch (err) {
       lastError = err instanceof Error ? err.message : String(err);
@@ -284,59 +337,110 @@
     }
   }
 
-  function onmove(sourceId: string, parentId: string, index: number | null) {
-    void applyMove(sourceId, parentId, index);
+  function onmove(
+    sourceIds: Array<string>,
+    parentId: string,
+    index: number | null,
+  ) {
+    void applyMove(sourceIds, parentId, index);
   }
 
   function ondragging(active: boolean) {
     dragging = active;
   }
 
-  async function highlight(id: string) {
-    selectedId = id;
+  async function applySelection(ids: Array<string>) {
+    if (ids.length > 0) {
+      lastClearedIds = null;
+    }
+
+    selectedIds = ids;
 
     try {
-      await host.selectNode(id);
+      await host.selectNodes(ids);
     } catch {
       void 0;
     }
   }
 
+  async function clearSelection() {
+    if (selectedIds.length > 0) {
+      lastClearedIds = [...selectedIds];
+    }
+
+    selectedIds = [];
+
+    try {
+      await host.selectNodes([]);
+    } catch {
+      void 0;
+    }
+  }
+
+  async function restoreSelection() {
+    if (!lastClearedIds || lastClearedIds.length === 0) {
+      return;
+    }
+
+    await applySelection([...lastClearedIds]);
+  }
+
   function toggleIsolate() {
-    if (!tree || !selectedId) {
+    if (!tree) {
       return;
     }
 
     if (isolatedRootId) {
       isolatedRootId = null;
-    } else {
-      isolatedRootId = selectedId;
+      relayoutFromTree(tree);
 
-      const next = new Set(expandedIds);
-
-      next.add(selectedId);
-
-      expandedIds = next;
+      return;
     }
+
+    if (selectedIds.length !== 1) {
+      return;
+    }
+
+    const id = selectedIds[0];
+
+    if (!id) {
+      return;
+    }
+
+    isolatedRootId = id;
+
+    const next = new Set(expandedIds);
+
+    next.add(id);
+
+    expandedIds = next;
 
     relayoutFromTree(tree);
   }
 
   async function toggleVisible() {
-    if (!selectedId || !tree) {
-      return;
-    }
-
-    const selected = findTreeNode(tree, selectedId);
-
-    if (selected && !canToggleTreeNodeVisible(selected)) {
+    if (selectedIds.length === 0 || !tree) {
       return;
     }
 
     try {
-      const ok = await host.toggleNodeVisible(selectedId);
+      let any = false;
 
-      if (!ok) {
+      for (const id of selectedIds) {
+        const node = findTreeNode(tree, id);
+
+        if (node && !canToggleTreeNodeVisible(node)) {
+          continue;
+        }
+
+        const ok = await host.toggleNodeVisible(id);
+
+        if (ok) {
+          any = true;
+        }
+      }
+
+      if (!any) {
         return;
       }
 
@@ -346,8 +450,29 @@
     }
   }
 
-  async function onselect(id: string, altKey: boolean, toggleExpand = true) {
-    await highlight(id);
+  async function onselect(
+    id: string,
+    altKey: boolean,
+    options: { toggleExpand?: boolean; additive?: boolean } = {},
+  ) {
+    const additive = options.additive === true;
+    const toggleExpand = options.toggleExpand !== false;
+
+    if (additive) {
+      const next = toggleSelectedId(selectedIds, id);
+
+      await applySelection(next);
+
+      return;
+    }
+
+    if (selectedIds.length > 1 && selectedIds.includes(id)) {
+      expandOrCollapseSelection(altKey);
+
+      return;
+    }
+
+    await applySelection([id]);
 
     if (!toggleExpand || !tree) {
       return;
@@ -359,6 +484,47 @@
     const changed = altKey
       ? collapseOneLevel(viewRoot, id, next)
       : expandOneLevel(viewRoot, id, next);
+
+    if (changed) {
+      expandedIds = next;
+
+      relayoutFromTree(tree);
+    }
+  }
+
+  async function onselectmany(ids: Array<string>, additive: boolean) {
+    if (!tree) {
+      return;
+    }
+
+    const ordered = sortIdsByTreeOrder(getViewRoot(tree), ids);
+    const next = resolveMarqueeSelection(selectedIds, ordered, additive);
+
+    if (next === null) {
+      return;
+    }
+
+    await applySelection(next);
+  }
+
+  function expandOrCollapseSelection(altKey: boolean) {
+    if (!tree || selectedIds.length === 0) {
+      return;
+    }
+
+    const viewRoot = getViewRoot(tree);
+    const next = new Set(expandedIds);
+    let changed = false;
+
+    for (const id of selectedIds) {
+      const didChange = altKey
+        ? collapseOneLevel(viewRoot, id, next)
+        : expandOneLevel(viewRoot, id, next);
+
+      if (didChange) {
+        changed = true;
+      }
+    }
 
     if (changed) {
       expandedIds = next;
@@ -381,7 +547,7 @@
         return;
       }
 
-      void highlight(nextId);
+      void applySelection([nextId]);
 
       return;
     }
@@ -417,14 +583,16 @@
       relayoutFromTree(tree);
     }
 
-    void highlight(result.selectId);
+    void applySelection([result.selectId]);
   }
 
   function onkeydown(e: KeyboardEvent) {
     const action = resolvePanelKey(e, {
       showHelp,
-      selectedId,
-      clipboardId,
+      selectedIds,
+      clipboardIds,
+      isolated: isolatedRootId !== null,
+      canRestoreSelection: lastClearedIds !== null && lastClearedIds.length > 0,
     });
 
     if (!action) {
@@ -438,12 +606,20 @@
         showHelp = false;
         break;
 
+      case "clearSelection":
+        void clearSelection();
+        break;
+
+      case "restoreSelection":
+        void restoreSelection();
+        break;
+
       case "copy":
-        clipboardId = action.id;
+        clipboardIds = tree ? sortIdsByTreeOrder(tree, action.ids) : action.ids;
         break;
 
       case "paste":
-        void applyMove(action.sourceId, action.parentId, null);
+        void applyMove(action.sourceIds, action.parentId, null);
         break;
 
       case "isolate":
@@ -455,17 +631,11 @@
         break;
 
       case "expand":
-        if (selectedId) {
-          void onselect(selectedId, false);
-        }
-
+        expandOrCollapseSelection(false);
         break;
 
       case "collapse":
-        if (selectedId) {
-          void onselect(selectedId, true);
-        }
-
+        expandOrCollapseSelection(true);
         break;
 
       case "navigate":
@@ -477,22 +647,55 @@
   onMount(() => {
     void refresh();
 
-    const id = setInterval(() => {
-      if (autoRefresh) {
-        void refresh();
+    let timerId = 0;
+
+    const restartTimer = () => {
+      if (timerId !== 0) {
+        clearInterval(timerId);
+        timerId = 0;
       }
-    }, 1000);
+
+      if (liveRefreshInterval <= 0) {
+        return;
+      }
+
+      timerId = window.setInterval(() => {
+        if (autoRefresh) {
+          void refresh();
+        }
+      }, liveRefreshInterval * 1000);
+    };
+
+    restartTimer();
+
+    const unsubscribeLiveRefresh = subscribeLiveRefreshInterval((seconds) => {
+      const wasOff = liveRefreshInterval <= 0;
+
+      liveRefreshInterval = seconds;
+
+      if (seconds <= 0) {
+        autoRefresh = false;
+      } else if (wasOff) {
+        autoRefresh = true;
+      }
+
+      restartTimer();
+    });
 
     window.addEventListener("keydown", onkeydown, true);
 
     return () => {
-      clearInterval(id);
+      if (timerId !== 0) {
+        clearInterval(timerId);
+      }
+
+      unsubscribeLiveRefresh();
       window.removeEventListener("keydown", onkeydown, true);
     };
   });
 
   onDestroy(() => {
-    selection.publish({ id: null, name: null });
+    selection.publish({ id: null, name: null, ids: [] });
   });
 </script>
 
@@ -510,7 +713,14 @@
       setHighlightEnabled?.(value);
     }}
     {autoRefresh}
+    liveRefreshAvailable={liveRefreshInterval > 0}
     onautoRefreshChange={(value) => {
+      if (liveRefreshInterval <= 0) {
+        autoRefresh = false;
+
+        return;
+      }
+
       autoRefresh = value;
     }}
     {nameFilter}
@@ -548,8 +758,9 @@
         width={canvasW}
         height={canvasH}
         rootId={tree ? getViewRoot(tree).id : null}
-        {selectedId}
+        {selectedIds}
         {onselect}
+        {onselectmany}
         {onmove}
         {ondragging}
       />

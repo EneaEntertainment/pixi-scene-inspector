@@ -42,8 +42,9 @@ export type PixiNode = {
     _activePagesMeshData?: Array<{ mesh?: PixiNode } | null>;
     parent?: PixiNode | null;
     destroyed?: boolean;
-    addChild?: (child: PixiNode) => unknown;
+    addChild?: (...children: Array<PixiNode>) => unknown;
     addChildAt?: (child: PixiNode, index: number) => unknown;
+    removeChild?: (...children: Array<PixiNode>) => unknown;
     getLocalBounds?: () => unknown;
     getBounds?: (...args: Array<unknown>) => unknown;
     worldTransform?: {

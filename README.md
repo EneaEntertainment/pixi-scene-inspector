@@ -29,7 +29,7 @@ Lookup order: `__PIXI_STAGE__` → `__PIXI_APP__.stage` → `renderer.lastObject
 
 With the extension loaded, press **Shift+`` ` ``** on the game page to toggle the **docked** in-page panel (same behavior as `togglePixiSceneInspector` — no game import needed). Press again to close.
 
-The header shows node count and which global was used. **live** refresh (~1s) is on by default; uncheck it or click **Refresh**. Use the **filter…** field to keep only matching nodes (and their ancestors); matches are highlighted. Press **?** for the shortcuts panel (Esc closes it).
+The header shows node count and which global was used. **live** refresh (~1s) is on by default; uncheck it or click **Refresh**. The interval is set in the extension options (0–10s; **0** turns live refresh off). Use the **filter…** field to keep only matching nodes (and their ancestors); matches are highlighted. Press **?** for the shortcuts panel (Esc closes it).
 
 Selected node is available in the page console as `$pixi`.
 
@@ -52,26 +52,45 @@ Plain `mountPixiSceneInspector` (no docked overlay) does not include the propert
 | Action | Effect |
 | --- | --- |
 | Click | Select (first click on a new node does not expand) |
+| Shift or ⌘/Ctrl+click | Toggle multi-select (see below) |
 | Second click / `+` / `=` | Expand one level |
 | Option/Alt+click / `-` / `_` | Collapse one level |
+
+### Multi-select
+
+Hold **Shift** or **⌘** / **Ctrl** and click a node to add it to the selection, or remove it if it was already selected. A plain click replaces the selection with that single node.
+
+A node and one of its ancestors cannot both stay selected: adding either drops the conflicting ids. The last-toggled (or last single-clicked) node is the **primary** selection — it is exposed as `$pixi` in the page console.
+
+With more than one node selected:
+
+- Click any selected node (or press `+` / `=` / `-` / `_`) to expand or collapse **all** selected nodes one level.
+- Arrow keys navigate from the primary node and replace the selection with that single target.
+- Drag or **⌘/Ctrl+C** / **⌘/Ctrl+V** moves the whole selection; paste targets the primary node as parent.
+- **h** toggles `visible` on every selected node.
+- Entering isolate (**i**) requires a single selection; press again to exit (exit still works if more than one node is selected).
+- Canvas **highlight** (when enabled) draws the union bounds of the selection.
+- The Properties panel keeps only shared **transform** fields (`position`, `scale`, `rotation` / `angle`). Matching values show as shared; mixed values stay blank. Typing a number sets that absolute value on every selected node; scrubbing or arrow nudges apply a **delta** to each. Export and copy-name are unavailable for a multi-selection.
 
 ### Keyboard navigation
 
 | Key | Effect |
 | --- | --- |
-| `←` / `→` | Previous / next sibling |
+| `←` / `→` | Previous / next sibling (from primary; replaces a multi-selection) |
 | Option/Alt+`←` / `→` | First / last sibling |
 | `↑` | Parent |
 | `↓` | First child (expands if needed) |
 | Option/Alt+`↑` / `↓` | Root / deepest first child |
-| `i` | Isolate selected subtree (toggle; press again to exit) |
-| `h` | Toggle `visible` on the selected node (blocked for Camera3D / Scene3D) |
+| `i` | Isolate selected subtree (enter needs one node; press again to exit) |
+| `h` | Toggle `visible` on every selected node (blocked for Camera3D / Scene3D) |
+| Esc | Clear selection (also cancels an in-progress drag / number scrub, or closes help) |
+| Shift+Esc | Restore selection cleared by Esc (if nothing else is selected and the tree is unchanged) |
 | `?` | Toggle shortcuts help |
 
 ### Reparent
 
-- **Drag & drop** a node onto another → append as last child; drop in a gap between siblings → insert at that index. Esc cancels an in-progress drag.
-- **⌘/Ctrl+C** then **⌘/Ctrl+V** → move the copied node under the selected node (append).
+- **Drag & drop** selected node(s) onto another → append as last child; drop in a gap between siblings → insert at that index. Esc cancels an in-progress drag.
+- **⌘/Ctrl+C** then **⌘/Ctrl+V** → move the copied node(s) under the primary selection (append).
 
 ## Usage (HTML overlay)
 

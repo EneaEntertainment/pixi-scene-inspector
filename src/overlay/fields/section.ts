@@ -4,6 +4,7 @@ export function createSection(title: string, initiallyExpanded: boolean, onExpor
     root: HTMLElement;
     body: HTMLElement;
     setExpanded: (expanded: boolean) => void;
+    setExportEnabled: (enabled: boolean) => void;
 }
 {
     const root = document.createElement('section');
@@ -75,7 +76,25 @@ export function createSection(title: string, initiallyExpanded: boolean, onExpor
     toggle.appendChild(chevron);
     toggle.appendChild(label);
 
-    const exportBtn = createExportButton(onExportClick);
+    let exportEnabled = true;
+
+    const exportBtn = createExportButton(() =>
+    {
+        if (!exportEnabled)
+        {
+            return;
+        }
+
+        onExportClick();
+    });
+
+    function applyExportEnabled()
+    {
+        exportBtn.disabled = !exportEnabled;
+        exportBtn.style.opacity = exportEnabled ? '1' : '0.35';
+        exportBtn.style.cursor = exportEnabled ? 'pointer' : 'default';
+        exportBtn.style.pointerEvents = exportEnabled ? 'auto' : 'none';
+    }
 
     header.appendChild(toggle);
     header.appendChild(exportBtn);
@@ -108,6 +127,7 @@ export function createSection(title: string, initiallyExpanded: boolean, onExpor
     });
 
     applyExpanded();
+    applyExportEnabled();
     root.appendChild(header);
     root.appendChild(body);
 
@@ -120,6 +140,13 @@ export function createSection(title: string, initiallyExpanded: boolean, onExpor
             expanded = next;
 
             applyExpanded();
+        },
+
+        setExportEnabled: (enabled) =>
+        {
+            exportEnabled = enabled;
+
+            applyExportEnabled();
         },
     };
 }

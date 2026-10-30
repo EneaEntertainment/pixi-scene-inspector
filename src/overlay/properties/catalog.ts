@@ -139,8 +139,6 @@ export type ExportPropSpec =
     | StringExportSpec
     | FillExportSpec;
 
-type PropertiesFormTabId = 'object' | 'text';
-
 const OBJECT_CATALOG_SECTIONS: Array<CatalogSectionSpec> = [
     {
         id     : 'identity',
@@ -537,12 +535,7 @@ function exportPropsFromCatalog(sections: Array<CatalogSectionSpec>): Record<
 export const OBJECT_FORM_SECTIONS: Array<SectionSpec> = formSectionsFromCatalog(OBJECT_CATALOG_SECTIONS);
 export const TEXT_FORM_SECTIONS: Array<SectionSpec> = formSectionsFromCatalog(TEXT_CATALOG_SECTIONS);
 
-export function formSectionsForTab(tab: PropertiesFormTabId): Array<SectionSpec>
-{
-    return tab === 'object' ? OBJECT_FORM_SECTIONS : TEXT_FORM_SECTIONS;
-}
-
-export const EXPORT_PROPS_BY_SECTION: Record<
+const EXPORT_PROPS_BY_SECTION: Record<
     PropertyExportSectionId,
     Array<ExportPropSpec>
 > = exportPropsFromCatalog([
