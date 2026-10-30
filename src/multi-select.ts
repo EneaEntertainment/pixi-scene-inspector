@@ -74,6 +74,25 @@ export function normalizeSelectedIds(ids: ReadonlyArray<string>): Array<string>
     return next;
 }
 
+export function resolveMarqueeSelection(
+    selectedIds: ReadonlyArray<string>,
+    hitIds: ReadonlyArray<string>,
+    additive: boolean,
+): Array<string> | null
+{
+    if (hitIds.length === 0)
+    {
+        return null;
+    }
+
+    if (additive)
+    {
+        return normalizeSelectedIds([...selectedIds, ...hitIds]);
+    }
+
+    return normalizeSelectedIds(hitIds);
+}
+
 export function remapIdListByUid(
     ids: ReadonlyArray<string>,
     prevIdToUid: ReadonlyMap<string, number>,

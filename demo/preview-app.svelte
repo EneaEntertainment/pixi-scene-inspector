@@ -3,6 +3,7 @@
   import { layoutTree } from "../src/layout";
   import {
     remapIdListByUid,
+    resolveMarqueeSelection,
     sortIdsByTreeOrder,
     toggleSelectedId,
   } from "../src/multi-select";
@@ -255,6 +256,17 @@
     if (changed) {
       expandedIds = next;
     }
+  }
+
+  function onselectmany(ids: Array<string>, additive: boolean) {
+    const ordered = sortIdsByTreeOrder(getViewRoot(tree), ids);
+    const next = resolveMarqueeSelection(selectedIds, ordered, additive);
+
+    if (next === null) {
+      return;
+    }
+
+    applySelection(next);
   }
 
   function applyMove(
@@ -544,6 +556,7 @@
     rootId={getViewRoot(tree).id}
     {selectedIds}
     {onselect}
+    {onselectmany}
     {onmove}
   />
 </div>

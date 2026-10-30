@@ -16,6 +16,7 @@
   import { layoutTree } from "../layout";
   import {
     remapIdListByUid,
+    resolveMarqueeSelection,
     sortIdsByTreeOrder,
     toggleSelectedId,
   } from "../multi-select";
@@ -483,6 +484,21 @@
     }
   }
 
+  async function onselectmany(ids: Array<string>, additive: boolean) {
+    if (!tree) {
+      return;
+    }
+
+    const ordered = sortIdsByTreeOrder(getViewRoot(tree), ids);
+    const next = resolveMarqueeSelection(selectedIds, ordered, additive);
+
+    if (next === null) {
+      return;
+    }
+
+    await applySelection(next);
+  }
+
   function expandOrCollapseSelection(altKey: boolean) {
     if (!tree || selectedIds.length === 0) {
       return;
@@ -696,6 +712,7 @@
         rootId={tree ? getViewRoot(tree).id : null}
         {selectedIds}
         {onselect}
+        {onselectmany}
         {onmove}
         {ondragging}
       />

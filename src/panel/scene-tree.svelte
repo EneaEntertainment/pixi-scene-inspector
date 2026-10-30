@@ -23,6 +23,7 @@
       altKey: boolean,
       options?: { toggleExpand?: boolean; additive?: boolean },
     ) => void;
+    onselectmany?: (ids: Array<string>, additive: boolean) => void;
     onmove?: (
       sourceIds: Array<string>,
       parentId: string,
@@ -39,6 +40,7 @@
     rootId,
     selectedIds,
     onselect,
+    onselectmany,
     onmove,
     ondragging,
   }: Props = $props();
@@ -69,7 +71,18 @@
     drop: DropTarget | null;
   };
 
+  type MarqueeState = {
+    startX: number;
+    startY: number;
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+    active: boolean;
+  };
+
   let drag = $state<DragState | null>(null);
+  let marquee = $state<MarqueeState | null>(null);
   let suppressClick = false;
   let suppressClickTimer: ReturnType<typeof setTimeout> | null = null;
   let activePointerId: number | null = null;
@@ -87,7 +100,7 @@
       return;
     }
 
-    if (drag) {
+    if (drag || marquee) {
       return;
     }
 
@@ -108,6 +121,56 @@
 
   function setDragging(active: boolean) {
     ondragging?.(active);
+  }
+
+  function rectsIntersect(
+    ax: number,
+    ay: number,
+    aw: number,
+    ah: number,
+    bx: number,
+    by: number,
+    bw: number,
+    bh: number,
+  ): boolean {
+    return ax < bx + bw && ax + aw > bx && ay < by + bh && ay + ah > by;
+  }
+
+  function collectMarqueeHits(state: MarqueeState): Array<string> {
+    const hits: Array<string> = [];
+
+    for (const node of nodes) {
+      if (
+        rectsIntersect(
+          state.x,
+          state.y,
+          state.width,
+          state.height,
+          node.x,
+          node.y,
+          node.width,
+          node.height,
+        )
+      ) {
+        hits.push(node.id);
+      }
+    }
+
+    return hits;
+  }
+
+  function bindGestureListeners() {
+    window.addEventListener("pointermove", onWindowPointerMove, true);
+    window.addEventListener("pointerup", onWindowPointerUp, true);
+    window.addEventListener("pointercancel", onWindowPointerCancel, true);
+    window.addEventListener("keydown", onWindowKeyDown, true);
+  }
+
+  function unbindGestureListeners() {
+    window.removeEventListener("pointermove", onWindowPointerMove, true);
+    window.removeEventListener("pointerup", onWindowPointerUp, true);
+    window.removeEventListener("pointercancel", onWindowPointerCancel, true);
+    window.removeEventListener("keydown", onWindowKeyDown, true);
   }
 
   function updateDragFromEvent(e: PointerEvent) {
@@ -155,6 +218,41 @@
     drag = { ...drag, drop, pointerX: local.x, pointerY: local.y };
   }
 
+  function updateMarqueeFromEvent(e: PointerEvent) {
+    if (!marquee) {
+      return;
+    }
+
+    const local = svgPoint(e);
+
+    if (!local) {
+      return;
+    }
+
+    if (!marquee.active) {
+      const dist = Math.hypot(
+        local.x - marquee.startX,
+        local.y - marquee.startY,
+      );
+
+      if (dist < DRAG_THRESHOLD) {
+        return;
+      }
+
+      window.getSelection()?.removeAllRanges();
+      setDragging(true);
+
+      marquee = { ...marquee, active: true };
+    }
+
+    const x = Math.min(marquee.startX, local.x);
+    const y = Math.min(marquee.startY, local.y);
+    const w = Math.abs(local.x - marquee.startX);
+    const h = Math.abs(local.y - marquee.startY);
+
+    marquee = { ...marquee, x, y, width: w, height: h };
+  }
+
   function armSuppressClick() {
     suppressClick = true;
 
@@ -175,10 +273,7 @@
     drag = null;
     activePointerId = null;
 
-    window.removeEventListener("pointermove", onWindowPointerMove, true);
-    window.removeEventListener("pointerup", onWindowPointerUp, true);
-    window.removeEventListener("pointercancel", onWindowPointerCancel, true);
-    window.removeEventListener("keydown", onWindowKeyDown, true);
+    unbindGestureListeners();
 
     if (hadGesture) {
       endTreeDragGesture();
@@ -204,8 +299,43 @@
     onmove(state.sourceIds, state.drop.parentId, state.drop.index);
   }
 
+  function finishMarquee(commit: boolean, additive = false) {
+    const state = marquee;
+
+    if (!state) {
+      return;
+    }
+
+    marquee = null;
+    activePointerId = null;
+
+    unbindGestureListeners();
+    endTreeDragGesture();
+
+    if (!state.active) {
+      setDragging(false);
+
+      return;
+    }
+
+    setDragging(false);
+    armSuppressClick();
+
+    if (!commit) {
+      return;
+    }
+
+    onselectmany?.(collectMarqueeHits(state), additive);
+  }
+
   function onWindowPointerMove(e: PointerEvent) {
     if (activePointerId !== null && e.pointerId !== activePointerId) {
+      return;
+    }
+
+    if (marquee) {
+      updateMarqueeFromEvent(e);
+
       return;
     }
 
@@ -221,6 +351,12 @@
       return;
     }
 
+    if (marquee) {
+      finishMarquee(true, e.shiftKey || e.metaKey || e.ctrlKey);
+
+      return;
+    }
+
     finishDrag(true);
   }
 
@@ -229,11 +365,25 @@
       return;
     }
 
+    if (marquee) {
+      finishMarquee(false);
+
+      return;
+    }
+
     finishDrag(false);
   }
 
   function onWindowKeyDown(e: KeyboardEvent) {
     if (e.key !== "Escape") {
+      return;
+    }
+
+    if (marquee) {
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      finishMarquee(false);
+
       return;
     }
 
@@ -247,6 +397,10 @@
   }
 
   $effect(() => () => {
+    if (marquee) {
+      finishMarquee(false);
+    }
+
     if (drag) {
       finishDrag(false);
     }
@@ -279,7 +433,7 @@
   $effect(() => () => hideTip());
 
   function onNodeEnter(node: LaidOutNode) {
-    if (drag?.active) {
+    if (drag?.active || marquee?.active) {
       return;
     }
 
@@ -393,6 +547,10 @@
 
     hideTip();
 
+    if (marquee) {
+      finishMarquee(false);
+    }
+
     if (drag) {
       finishDrag(false);
     }
@@ -422,11 +580,57 @@
     };
 
     beginTreeDragGesture();
+    bindGestureListeners();
+  }
 
-    window.addEventListener("pointermove", onWindowPointerMove, true);
-    window.addEventListener("pointerup", onWindowPointerUp, true);
-    window.addEventListener("pointercancel", onWindowPointerCancel, true);
-    window.addEventListener("keydown", onWindowKeyDown, true);
+  function onSvgPointerDown(e: PointerEvent) {
+    if (e.button !== 0) {
+      return;
+    }
+
+    if (!onselectmany) {
+      return;
+    }
+
+    const target = e.target;
+
+    if (
+      target instanceof Element &&
+      target.closest("[data-node-id]") !== null
+    ) {
+      return;
+    }
+
+    const local = svgPoint(e);
+
+    if (!local) {
+      return;
+    }
+
+    hideTip();
+
+    if (marquee) {
+      finishMarquee(false);
+    }
+
+    if (drag) {
+      finishDrag(false);
+    }
+
+    activePointerId = e.pointerId;
+
+    marquee = {
+      startX: local.x,
+      startY: local.y,
+      x: local.x,
+      y: local.y,
+      width: 0,
+      height: 0,
+      active: false,
+    };
+
+    beginTreeDragGesture();
+    bindGestureListeners();
   }
 
   const dropNodeId = $derived.by(() => {
@@ -466,6 +670,7 @@
   style:width={`${width}px`}
   style:height={`${height}px`}
   class:dragging={drag?.active}
+  class:marqueeing={marquee?.active}
 >
   <svg
     class="tree"
@@ -474,6 +679,7 @@
     {height}
     role="img"
     aria-label="Pixi scene inspector"
+    onpointerdown={onSvgPointerDown}
   >
     <defs>
       <pattern
@@ -545,6 +751,17 @@
         labelColor={drag.labelColor}
       />
     {/if}
+
+    {#if marquee?.active}
+      <rect
+        class="marquee"
+        x={marquee.x}
+        y={marquee.y}
+        width={marquee.width}
+        height={marquee.height}
+        pointer-events="none"
+      />
+    {/if}
   </svg>
 
   {#if tip}
@@ -575,10 +792,20 @@
     cursor: grabbing;
   }
 
+  .tree-wrap.marqueeing {
+    cursor: crosshair;
+  }
+
   .tree {
     display: block;
     -webkit-user-select: none;
     user-select: none;
+  }
+
+  .marquee {
+    fill: rgba(255, 255, 255, 0.18);
+    stroke: #ffffff;
+    stroke-width: 1.5;
   }
 
   .tip {
