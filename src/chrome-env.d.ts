@@ -12,12 +12,12 @@ declare const chrome: {
     storage: {
         sync: ChromeStorageArea;
         onChanged: {
-            addListener(
+            addListener: (
                 callback: (
                     changes: Record<string, ChromeStorageChange>,
                     areaName: string,
                 ) => void,
-            ): void;
+            ) => void;
         };
     };
 };

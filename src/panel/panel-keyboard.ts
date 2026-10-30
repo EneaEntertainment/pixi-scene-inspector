@@ -1,6 +1,5 @@
-import { isTreeDragGestureActive } from '../drag-drop';
 import { isEditableKeyTarget } from '../editable-keys';
-import { isNumberDragGestureActive } from '../overlay/fields/number-drag';
+import { isBlockingGestureActive } from '../gesture-active';
 
 type PanelKeyContext = {
     showHelp: boolean;
@@ -46,7 +45,7 @@ export function resolvePanelKey(e: KeyboardEvent, ctx: PanelKeyContext): PanelKe
 
     if (e.key === 'Escape')
     {
-        if (isNumberDragGestureActive() || isTreeDragGestureActive())
+        if (isBlockingGestureActive())
         {
             return null;
         }

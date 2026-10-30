@@ -35,8 +35,8 @@ export type SelectionInfo = {
 };
 
 export type SelectionChannel = {
-    publish(info: SelectionInfo): void;
-    subscribe(listener: (info: SelectionInfo) => void): () => void;
+    publish: (info: SelectionInfo) => void;
+    subscribe: (listener: (info: SelectionInfo) => void) => () => void;
 };
 
 export type MountedPixiSceneInspector = {

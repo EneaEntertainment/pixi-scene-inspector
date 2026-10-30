@@ -5,8 +5,8 @@ export type SelectionInfo = {
 };
 
 export type SelectionChannel = {
-    publish(info: SelectionInfo): void;
-    subscribe(listener: (info: SelectionInfo) => void): () => void;
+    publish: (info: SelectionInfo) => void;
+    subscribe: (listener: (info: SelectionInfo) => void) => () => void;
 };
 
 function sameIds(a: Array<string>, b: Array<string>): boolean

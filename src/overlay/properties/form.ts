@@ -1,5 +1,5 @@
 import { isNodeAlive } from '../../page-ops/pixi-node';
-import { resolveByPath } from '../../page-ops/root';
+import { resolveAliveNodesByIds } from '../../page-ops/resolve-selection';
 import { clearSelectionIds } from '../../page-ops/selection-ids';
 import { typeNameOf } from '../../page-ops/types';
 import { openExportDialog } from '../export';
@@ -17,6 +17,7 @@ import { isTextNumberKey, resolveBooleanMap, resolveNumberMap, resolveStringMap 
 import { mapsForNode } from './node';
 import { createPropertiesTabs } from './tabs';
 import { textMapsForNode } from './text';
+import { applyTransformNumber, MULTI_TRANSFORM_KEYS } from './transform-apply';
 
 import type { PageGlobals, PixiNode } from '../../page-ops/pixi-node';
 import type { SelectionChannel } from '../../selection-channel';
@@ -29,15 +30,6 @@ import type { PropertiesTabId } from './tabs';
 import type { FillColorStop, TextFillPropertyKey, TextPropertyMaps } from './text';
 
 const POLL_MS = 200;
-
-const MULTI_TRANSFORM_KEYS = new Set<NumberPropertyKey>([
-    'position.x',
-    'position.y',
-    'scale.x',
-    'scale.y',
-    'rotation',
-    'angle',
-]);
 
 function emptyTextMaps(): TextPropertyMaps
 {
@@ -190,58 +182,14 @@ export function createPropertiesForm(selection: SelectionChannel): PropertiesFor
 
     function selectedNodes(): Array<PixiNode>
     {
-        const win = globalThis as PageGlobals;
-        const nodes: Array<PixiNode> = [];
-
-        for (const id of selectedIds)
-        {
-            const node = resolveByPath(id, win);
-
-            if (isNodeAlive(node))
-            {
-                nodes.push(node);
-            }
-        }
-
-        return nodes;
+        return resolveAliveNodesByIds(selectedIds);
     }
 
     function applyNumber(key: FieldNumberKey, value: number, info: NumberCommitInfo)
     {
         if (selectedIds.length > 1)
         {
-            if (!MULTI_TRANSFORM_KEYS.has(key as NumberPropertyKey))
-            {
-                return;
-            }
-
-            const delta = value - (info.previous ?? 0);
-
-            for (const node of selectedNodes())
-            {
-                const maps = mapsForNode(node);
-                const pair = { object: maps, text: emptyTextMaps() };
-                const mapping = resolveNumberMap(pair, key);
-
-                if (!mapping)
-                {
-                    continue;
-                }
-
-                if (info.source === 'input')
-                {
-                    mapping.set(value);
-                }
-                else
-                {
-                    const current = mapping.get();
-
-                    if (typeof current === 'number')
-                    {
-                        mapping.set(current + delta);
-                    }
-                }
-            }
+            applyTransformNumber(selectedNodes(), key as NumberPropertyKey, value, info);
 
             return;
         }

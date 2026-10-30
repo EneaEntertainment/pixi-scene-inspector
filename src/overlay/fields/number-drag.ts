@@ -1,26 +1,8 @@
+import { numberDragGesture } from '../../gesture-active';
+
 const DRAG_PX_PER_STEP = 8;
 const DRAG_EDGE_PX = 8;
 const DRAG_EDGE_PX_PER_SEC = 480;
-
-let activeNumberDragGestures = 0;
-
-export function isNumberDragGestureActive(): boolean
-{
-    return activeNumberDragGestures > 0;
-}
-
-function beginNumberDragGesture()
-{
-    activeNumberDragGestures += 1;
-}
-
-function endNumberDragGesture()
-{
-    if (activeNumberDragGestures > 0)
-    {
-        activeNumberDragGestures -= 1;
-    }
-}
 
 export function snapToStep(value: number, step: number): number
 {
@@ -174,7 +156,7 @@ export function attachNumberDrag(
         accumulatedY = 0;
 
         stopEdgeScroll();
-        endNumberDragGesture();
+        numberDragGesture.end();
 
         window.removeEventListener('pointermove', onWindowPointerMove);
         window.removeEventListener('pointerup', onWindowPointerUp);
@@ -321,7 +303,7 @@ export function attachNumberDrag(
         lastCommitted = startValue;
         pointerId = event.pointerId;
 
-        beginNumberDragGesture();
+        numberDragGesture.begin();
 
         dragLayer.setPointerCapture(event.pointerId);
         window.addEventListener('pointermove', onWindowPointerMove);
