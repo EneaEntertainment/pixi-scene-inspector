@@ -250,14 +250,19 @@ export function createPropertiesPanel(options: CreatePropertiesPanelOptions): Pr
         button.style.cursor = enabled ? 'pointer' : 'default';
     }
 
-    function setTitleName(name: string | null)
+    let selectedIds: Array<string> = [];
+
+    function setTitleName(name: string | null, ids: Array<string> = [])
     {
         selectedName = name;
+        selectedIds = ids;
         title.textContent = name ?? 'Select a node';
         title.title = title.textContent;
 
-        setHeaderActionEnabled(copyBtn, name !== null);
-        setHeaderActionEnabled(exportBtn, name !== null);
+        const single = name !== null && ids.length <= 1;
+
+        setHeaderActionEnabled(copyBtn, single);
+        setHeaderActionEnabled(exportBtn, single);
     }
 
     function flashTitleName()
@@ -329,7 +334,7 @@ export function createPropertiesPanel(options: CreatePropertiesPanelOptions): Pr
         event.preventDefault();
         event.stopPropagation();
 
-        if (selectedName === null)
+        if (selectedName === null || selectedIds.length > 1)
         {
             return;
         }
@@ -349,7 +354,7 @@ export function createPropertiesPanel(options: CreatePropertiesPanelOptions): Pr
         event.preventDefault();
         event.stopPropagation();
 
-        if (selectedName === null)
+        if (selectedName === null || selectedIds.length > 1)
         {
             return;
         }
@@ -387,7 +392,7 @@ export function createPropertiesPanel(options: CreatePropertiesPanelOptions): Pr
     chrome.addCleanup(
         options.selection.subscribe((info) =>
         {
-            setTitleName(info.name);
+            setTitleName(info.name, info.ids);
         }),
     );
 

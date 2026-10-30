@@ -1,4 +1,6 @@
 import { isNodeAlive, type PageGlobals, type PixiNode } from '../page-ops/pixi-node';
+import { resolveByPath } from '../page-ops/root';
+import { getSelectionIds } from '../page-ops/selection-ids';
 import { readHighlightEnabled } from './shell/settings';
 
 const OVERLAY_ID = 'pixi-scene-inspector-selection-highlight';
@@ -192,6 +194,24 @@ function hasAnchor(node: PixiNode): boolean
     return asFiniteNumber(anchor.x) !== null && asFiniteNumber(anchor.y) !== null;
 }
 
+function worldCorners(
+    bounds: LocalBounds,
+    matrix: MatrixLike,
+): Array<{ x: number; y: number }>
+{
+    const points = [
+        { x: bounds.minX, y: bounds.minY },
+        { x: bounds.maxX, y: bounds.minY },
+        { x: bounds.maxX, y: bounds.maxY },
+        { x: bounds.minX, y: bounds.maxY },
+    ];
+
+    return points.map((point) => ({
+        x : (matrix.a * point.x) + (matrix.c * point.y) + matrix.tx,
+        y : (matrix.b * point.x) + (matrix.d * point.y) + matrix.ty,
+    }));
+}
+
 function createOverlayRoot(): {
     root: HTMLDivElement;
     box: HTMLDivElement;
@@ -279,43 +299,17 @@ export function installSelectionHighlight(win: PageGlobals = globalThis as PageG
         hide();
     }
 
-    function tick()
+    function paintSingle(
+        node: PixiNode,
+        scaleX: number,
+        scaleY: number,
+        rect: DOMRect,
+    )
     {
-        if (destroyed || !enabled)
-        {
-            running = false;
-            frame = 0;
-
-            hide();
-
-            return;
-        }
-
-        frame = requestAnimationFrame(tick);
-
-        const node = win.$pixi;
-
-        if (!isNodeAlive(node))
-        {
-            hide();
-
-            return;
-        }
-
-        const canvas = findPixiCanvas(win);
         const matrix = readWorldTransform(node);
         const bounds = readLocalBounds(node);
 
-        if (!canvas || !matrix || !bounds)
-        {
-            hide();
-
-            return;
-        }
-
-        const rect = canvas.getBoundingClientRect();
-
-        if (!(rect.width > 0) || !(rect.height > 0))
+        if (!matrix || !bounds)
         {
             hide();
 
@@ -338,9 +332,6 @@ export function installSelectionHighlight(win: PageGlobals = globalThis as PageG
             height = EMPTY_SIZE;
         }
 
-        const screen = readScreenSize(win, canvas);
-        const scaleX = rect.width / screen.width;
-        const scaleY = rect.height / screen.height;
         const a = matrix.a * scaleX;
         const b = matrix.b * scaleY;
         const c = matrix.c * scaleX;
@@ -370,6 +361,161 @@ export function installSelectionHighlight(win: PageGlobals = globalThis as PageG
         {
             anchorMark.style.display = 'none';
         }
+    }
+
+    function paintUnion(
+        nodes: Array<PixiNode>,
+        scaleX: number,
+        scaleY: number,
+        rect: DOMRect,
+    )
+    {
+        let minX = Number.POSITIVE_INFINITY;
+        let minY = Number.POSITIVE_INFINITY;
+        let maxX = Number.NEGATIVE_INFINITY;
+        let maxY = Number.NEGATIVE_INFINITY;
+        let any = false;
+
+        for (const node of nodes)
+        {
+            const matrix = readWorldTransform(node);
+            const bounds = readLocalBounds(node);
+
+            if (!matrix || !bounds)
+            {
+                continue;
+            }
+
+            let local = bounds;
+            const localWidth = bounds.maxX - bounds.minX;
+            const localHeight = bounds.maxY - bounds.minY;
+
+            if (!(localWidth > 0) || !(localHeight > 0))
+            {
+                const cx = (bounds.minX + bounds.maxX) / 2;
+                const cy = (bounds.minY + bounds.maxY) / 2;
+
+                local = {
+                    minX : cx - (EMPTY_SIZE / 2),
+                    minY : cy - (EMPTY_SIZE / 2),
+                    maxX : cx + (EMPTY_SIZE / 2),
+                    maxY : cy + (EMPTY_SIZE / 2),
+                };
+            }
+
+            for (const corner of worldCorners(local, matrix))
+            {
+                any = true;
+                minX = Math.min(minX, corner.x);
+                minY = Math.min(minY, corner.y);
+                maxX = Math.max(maxX, corner.x);
+                maxY = Math.max(maxY, corner.y);
+            }
+        }
+
+        if (!any)
+        {
+            hide();
+
+            return;
+        }
+
+        const left = minX * scaleX;
+        const top = minY * scaleY;
+        const width = Math.max(EMPTY_SIZE, (maxX - minX) * scaleX);
+        const height = Math.max(EMPTY_SIZE, (maxY - minY) * scaleY);
+
+        root.style.display = 'block';
+        root.style.left = `${rect.left}px`;
+        root.style.top = `${rect.top}px`;
+        root.style.width = `${rect.width}px`;
+        root.style.height = `${rect.height}px`;
+        box.style.width = `${width}px`;
+        box.style.height = `${height}px`;
+        box.style.transform = `translate(${left}px, ${top}px)`;
+        anchorMark.style.display = 'none';
+    }
+
+    function tick()
+    {
+        if (destroyed || !enabled)
+        {
+            running = false;
+            frame = 0;
+
+            hide();
+
+            return;
+        }
+
+        frame = requestAnimationFrame(tick);
+
+        const canvas = findPixiCanvas(win);
+
+        if (!canvas)
+        {
+            hide();
+
+            return;
+        }
+
+        const rect = canvas.getBoundingClientRect();
+
+        if (!(rect.width > 0) || !(rect.height > 0))
+        {
+            hide();
+
+            return;
+        }
+
+        const screen = readScreenSize(win, canvas);
+        const scaleX = rect.width / screen.width;
+        const scaleY = rect.height / screen.height;
+        const ids = getSelectionIds();
+
+        if (ids.length > 1)
+        {
+            const nodes: Array<PixiNode> = [];
+
+            for (const id of ids)
+            {
+                const node = resolveByPath(id, win);
+
+                if (isNodeAlive(node))
+                {
+                    nodes.push(node);
+                }
+            }
+
+            if (nodes.length > 1)
+            {
+                paintUnion(nodes, scaleX, scaleY, rect);
+
+                return;
+            }
+
+            if (nodes.length === 1 && nodes[0])
+            {
+                paintSingle(nodes[0], scaleX, scaleY, rect);
+
+                return;
+            }
+
+            hide();
+
+            return;
+        }
+
+        const node = win.$pixi;
+
+        if (!isNodeAlive(node))
+        {
+            hide();
+
+            return;
+        }
+
+        paintSingle(node, scaleX, scaleY, rect);
     }
 
     function start()

@@ -1,4 +1,6 @@
 import { isNodeAlive } from '../../page-ops/pixi-node';
+import { resolveByPath } from '../../page-ops/root';
+import { clearSelectionIds } from '../../page-ops/selection-ids';
 import { typeNameOf } from '../../page-ops/types';
 import { openExportDialog } from '../export';
 import { OBJECT_FORM_SECTIONS, TEXT_FORM_SECTIONS } from './catalog';
@@ -11,7 +13,7 @@ import {
     createSelectField,
     createTextField,
 } from './fields';
-import { resolveBooleanMap, resolveNumberMap, resolveStringMap } from './keys';
+import { isTextNumberKey, resolveBooleanMap, resolveNumberMap, resolveStringMap } from './keys';
 import { mapsForNode } from './node';
 import { createPropertiesTabs } from './tabs';
 import { textMapsForNode } from './text';
@@ -19,13 +21,23 @@ import { textMapsForNode } from './text';
 import type { PageGlobals, PixiNode } from '../../page-ops/pixi-node';
 import type { SelectionChannel } from '../../selection-channel';
 import type { ExportDialog, ExportPropertyMaps } from '../export';
+import type { NumberCommitInfo } from '../fields/number';
 import type { PropertyExportSectionId, SectionSpec } from './catalog';
 import type { FieldBooleanKey, FieldNumberKey, FieldStringKey } from './keys';
-import type { NodePropertyMaps } from './node';
+import type { NodePropertyMaps, NumberPropertyKey } from './node';
 import type { PropertiesTabId } from './tabs';
 import type { FillColorStop, TextFillPropertyKey, TextPropertyMaps } from './text';
 
 const POLL_MS = 200;
+
+const MULTI_TRANSFORM_KEYS = new Set<NumberPropertyKey>([
+    'position.x',
+    'position.y',
+    'scale.x',
+    'scale.y',
+    'rotation',
+    'angle',
+]);
 
 function emptyTextMaps(): TextPropertyMaps
 {
@@ -37,6 +49,7 @@ type FieldBinding = {
     destroy: () => void;
     present: (maps: ExportPropertyMaps) => boolean;
     sync: (maps: ExportPropertyMaps) => void;
+    numberKey?: NumberPropertyKey;
 };
 
 function bindField<T>(
@@ -49,12 +62,14 @@ function bindField<T>(
 
     present: (maps: ExportPropertyMaps) => boolean,
     read: (maps: ExportPropertyMaps) => T | undefined,
+    numberKey?: NumberPropertyKey,
 ): FieldBinding
 {
     return {
         root    : field.root,
         destroy : field.destroy,
         present,
+        numberKey,
 
         sync: (maps) =>
         {
@@ -150,6 +165,7 @@ export function createPropertiesForm(selection: SelectionChannel): PropertiesFor
         syncVisibility: (
             objectMaps: NodePropertyMaps,
             textMaps: TextPropertyMaps,
+            multi: boolean,
         ) => void;
 
         syncValues: (
@@ -164,6 +180,7 @@ export function createPropertiesForm(selection: SelectionChannel): PropertiesFor
     let textMaps: TextPropertyMaps = emptyTextMaps();
     let activeExportDialog: ExportDialog | null = null;
     let selectedId: string | null = null;
+    let selectedIds: Array<string> = [];
     let selectedNodeName: string | null = null;
 
     function currentExportMaps(): ExportPropertyMaps
@@ -171,8 +188,64 @@ export function createPropertiesForm(selection: SelectionChannel): PropertiesFor
         return { object: objectMaps, text: textMaps };
     }
 
-    function applyNumber(key: FieldNumberKey, value: number)
+    function selectedNodes(): Array<PixiNode>
     {
+        const win = globalThis as PageGlobals;
+        const nodes: Array<PixiNode> = [];
+
+        for (const id of selectedIds)
+        {
+            const node = resolveByPath(id, win);
+
+            if (isNodeAlive(node))
+            {
+                nodes.push(node);
+            }
+        }
+
+        return nodes;
+    }
+
+    function applyNumber(key: FieldNumberKey, value: number, info: NumberCommitInfo)
+    {
+        if (selectedIds.length > 1)
+        {
+            if (!MULTI_TRANSFORM_KEYS.has(key as NumberPropertyKey))
+            {
+                return;
+            }
+
+            const delta = value - (info.previous ?? 0);
+
+            for (const node of selectedNodes())
+            {
+                const maps = mapsForNode(node);
+                const pair = { object: maps, text: emptyTextMaps() };
+                const mapping = resolveNumberMap(pair, key);
+
+                if (!mapping)
+                {
+                    continue;
+                }
+
+                if (info.source === 'input')
+                {
+                    mapping.set(value);
+                }
+                else
+                {
+                    const current = mapping.get();
+
+                    if (typeof current === 'number')
+                    {
+                        mapping.set(current + delta);
+                    }
+                }
+            }
+
+            return;
+        }
+
         if (!isNodeAlive(selectedNode()))
         {
             return;
@@ -209,7 +282,11 @@ export function createPropertiesForm(selection: SelectionChannel): PropertiesFor
 
             selectedNodeName = display;
 
-            selection.publish({ id: selectedId, name: display });
+            selection.publish({
+                id   : selectedId,
+                name : display,
+                ids  : selectedId ? [selectedId] : [],
+            });
         }
     }
 
@@ -230,6 +307,11 @@ export function createPropertiesForm(selection: SelectionChannel): PropertiesFor
 
     function openSectionExport(sectionId: PropertyExportSectionId, title: string)
     {
+        if (selectedIds.length > 1)
+        {
+            return;
+        }
+
         activeExportDialog?.close();
 
         activeExportDialog = openExportDialog({
@@ -267,11 +349,13 @@ export function createPropertiesForm(selection: SelectionChannel): PropertiesFor
             if (fieldSpec.kind === 'number')
             {
                 const field = createNumberField(fieldSpec, applyNumber);
+                const numberKey = isTextNumberKey(fieldSpec.key) ? undefined : fieldSpec.key;
 
                 fields.push(bindField(
                     field,
-                    (maps) => !!resolveNumberMap(maps, field.key),
-                    (maps) => resolveNumberMap(maps, field.key)?.get(),
+                    (maps) => !!resolveNumberMap(maps, fieldSpec.key),
+                    (maps) => resolveNumberMap(maps, fieldSpec.key)?.get(),
+                    numberKey,
                 ));
 
                 ui.body.appendChild(field.root);
@@ -345,14 +429,21 @@ export function createPropertiesForm(selection: SelectionChannel): PropertiesFor
             root : ui.root,
             fields,
 
-            syncVisibility: (nextObject, nextText) =>
+            syncVisibility: (nextObject, nextText, multi) =>
             {
                 const maps = { object: nextObject, text: nextText };
                 let any = false;
 
                 for (const field of fields)
                 {
-                    const show = field.present(maps);
+                    let show = field.present(maps);
+
+                    if (multi)
+                    {
+                        show = section.id === 'transform'
+                            && !!field.numberKey
+                            && MULTI_TRANSFORM_KEYS.has(field.numberKey);
+                    }
 
                     field.root.style.display = show ? 'flex' : 'none';
 
@@ -363,6 +454,8 @@ export function createPropertiesForm(selection: SelectionChannel): PropertiesFor
                 }
 
                 ui.root.style.display = any ? 'block' : 'none';
+
+                ui.setExportEnabled(!multi);
             },
 
             syncValues: (nextObject, nextText) =>
@@ -412,17 +505,111 @@ export function createPropertiesForm(selection: SelectionChannel): PropertiesFor
 
         win.$pixi = undefined;
         selectedId = null;
+        selectedIds = [];
         selectedNodeName = null;
 
-        selection.publish({ id: null, name: null });
+        clearSelectionIds();
+        selection.publish({ id: null, name: null, ids: [] });
 
         return null;
+    }
+
+    function readSharedNumber(key: NumberPropertyKey, nodes: Array<PixiNode>): number | undefined
+    {
+        let shared: number | undefined;
+        let first = true;
+
+        for (const node of nodes)
+        {
+            const maps = mapsForNode(node);
+            const value = resolveNumberMap({ object: maps, text: emptyTextMaps() }, key)?.get();
+
+            if (first)
+            {
+                shared = value;
+                first = false;
+
+                continue;
+            }
+
+            if (value !== shared)
+            {
+                return undefined;
+            }
+        }
+
+        return first ? undefined : shared;
+    }
+
+    function multiObjectMaps(nodes: Array<PixiNode>): NodePropertyMaps
+    {
+        const numbers: NodePropertyMaps['numbers'] = [];
+
+        for (const key of MULTI_TRANSFORM_KEYS)
+        {
+            let available = false;
+
+            for (const node of nodes)
+            {
+                const maps = mapsForNode(node);
+
+                if (resolveNumberMap({ object: maps, text: emptyTextMaps() }, key))
+                {
+                    available = true;
+
+                    break;
+                }
+            }
+
+            if (!available)
+            {
+                continue;
+            }
+
+            const shared = readSharedNumber(key, nodes);
+
+            numbers.push({
+                key,
+                get : () => shared,
+                set : () => undefined,
+            });
+        }
+
+        return { numbers, booleans: [], strings: [] };
     }
 
     function syncFromNode()
     {
         try
         {
+            if (selectedIds.length > 1)
+            {
+                const nodes = selectedNodes();
+
+                objectMaps = multiObjectMaps(nodes);
+                textMaps = emptyTextMaps();
+
+                tabs.setTextAvailable(false);
+                tabs.setActive('object');
+                showTab('object');
+
+                objectPane.style.visibility = nodes.length > 0 ? 'visible' : 'hidden';
+                textPane.style.visibility = 'hidden';
+
+                for (const section of builtObject)
+                {
+                    section.syncVisibility(objectMaps, textMaps, true);
+                    section.syncValues(objectMaps, textMaps);
+                }
+
+                for (const section of builtText)
+                {
+                    section.root.style.display = 'none';
+                }
+
+                return;
+            }
+
             const node = selectedNode();
 
             objectMaps = mapsForNode(node);
@@ -449,7 +636,7 @@ export function createPropertiesForm(selection: SelectionChannel): PropertiesFor
             {
                 for (const section of builtObject)
                 {
-                    section.syncVisibility(objectMaps, textMaps);
+                    section.syncVisibility(objectMaps, textMaps, false);
                     section.syncValues(objectMaps, textMaps);
                 }
             }
@@ -458,7 +645,7 @@ export function createPropertiesForm(selection: SelectionChannel): PropertiesFor
             {
                 for (const section of builtText)
                 {
-                    section.syncVisibility(objectMaps, textMaps);
+                    section.syncVisibility(objectMaps, textMaps, false);
                     section.syncValues(objectMaps, textMaps);
                 }
             }
@@ -491,10 +678,15 @@ export function createPropertiesForm(selection: SelectionChannel): PropertiesFor
     {
         selectedId = info.id;
         selectedNodeName = info.name;
+        selectedIds = info.ids;
 
         if (info.id === null && info.name === null)
         {
-            (globalThis as PageGlobals).$pixi = undefined;
+            const win = globalThis as PageGlobals;
+
+            win.$pixi = undefined;
+
+            clearSelectionIds();
         }
 
         syncFromNode();

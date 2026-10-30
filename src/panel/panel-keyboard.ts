@@ -1,24 +1,26 @@
+import { isTreeDragGestureActive } from '../drag-drop';
 import { isEditableKeyTarget } from '../editable-keys';
+import { isNumberDragGestureActive } from '../overlay/fields/number-drag';
 
 type PanelKeyContext = {
     showHelp: boolean;
-    selectedId: string | null;
-    clipboardId: string | null;
+    selectedIds: Array<string>;
+    clipboardIds: Array<string>;
+    isolated: boolean;
+    canRestoreSelection: boolean;
 };
 
 type PanelKeyAction =
   | { type: 'closeHelp' }
-  | { type: 'copy'; id: string }
-  | { type: 'paste'; sourceId: string; parentId: string }
+  | { type: 'clearSelection' }
+  | { type: 'restoreSelection' }
+  | { type: 'copy'; ids: Array<string> }
+  | { type: 'paste'; sourceIds: Array<string>; parentId: string }
   | { type: 'isolate' }
   | { type: 'toggleVisible' }
   | { type: 'expand' }
   | { type: 'collapse' }
-  | {
-      type: 'navigate';
-      key: 'ArrowLeft' | 'ArrowRight' | 'ArrowUp' | 'ArrowDown';
-      toEnd: boolean;
-  };
+  | { type: 'navigate'; key: 'ArrowLeft' | 'ArrowRight' | 'ArrowUp' | 'ArrowDown'; toEnd: boolean; };
 
 export function resolvePanelKey(e: KeyboardEvent, ctx: PanelKeyContext): PanelKeyAction | null
 {
@@ -42,27 +44,59 @@ export function resolvePanelKey(e: KeyboardEvent, ctx: PanelKeyContext): PanelKe
         return null;
     }
 
-    if ((e.metaKey || e.ctrlKey) && (e.key === 'c' || e.key === 'C'))
+    if (e.key === 'Escape')
     {
-        if (!ctx.selectedId)
+        if (isNumberDragGestureActive() || isTreeDragGestureActive())
         {
             return null;
         }
 
-        return { type: 'copy', id: ctx.selectedId };
+        if (e.shiftKey)
+        {
+            if (ctx.selectedIds.length > 0 || !ctx.canRestoreSelection)
+            {
+                return null;
+            }
+
+            return { type: 'restoreSelection' };
+        }
+
+        if (ctx.selectedIds.length === 0)
+        {
+            return null;
+        }
+
+        return { type: 'clearSelection' };
+    }
+
+    if ((e.metaKey || e.ctrlKey) && (e.key === 'c' || e.key === 'C'))
+    {
+        if (ctx.selectedIds.length === 0)
+        {
+            return null;
+        }
+
+        return { type: 'copy', ids: [...ctx.selectedIds] };
     }
 
     if ((e.metaKey || e.ctrlKey) && (e.key === 'v' || e.key === 'V'))
     {
-        if (!ctx.clipboardId || !ctx.selectedId)
+        if (ctx.clipboardIds.length === 0 || ctx.selectedIds.length === 0)
+        {
+            return null;
+        }
+
+        const parentId = ctx.selectedIds[ctx.selectedIds.length - 1];
+
+        if (!parentId)
         {
             return null;
         }
 
         return {
-            type     : 'paste',
-            sourceId : ctx.clipboardId,
-            parentId : ctx.selectedId,
+            type      : 'paste',
+            sourceIds : [...ctx.clipboardIds],
+            parentId,
         };
     }
 
@@ -71,22 +105,25 @@ export function resolvePanelKey(e: KeyboardEvent, ctx: PanelKeyContext): PanelKe
         return null;
     }
 
-    if ((e.key === 'i' || e.key === 'I') && ctx.selectedId)
+    if (
+        (e.key === 'i' || e.key === 'I')
+        && (ctx.isolated || ctx.selectedIds.length === 1)
+    )
     {
         return { type: 'isolate' };
     }
 
-    if ((e.key === 'h' || e.key === 'H') && ctx.selectedId)
+    if ((e.key === 'h' || e.key === 'H') && ctx.selectedIds.length > 0)
     {
         return { type: 'toggleVisible' };
     }
 
-    if ((e.key === '+' || e.key === '=') && ctx.selectedId)
+    if ((e.key === '+' || e.key === '=') && ctx.selectedIds.length > 0)
     {
         return { type: 'expand' };
     }
 
-    if ((e.key === '-' || e.key === '_') && ctx.selectedId)
+    if ((e.key === '-' || e.key === '_') && ctx.selectedIds.length > 0)
     {
         return { type: 'collapse' };
     }

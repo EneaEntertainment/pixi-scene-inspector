@@ -1,5 +1,10 @@
 <script lang="ts">
-  import { type DropTarget, resolveDropTarget } from "../drag-drop";
+  import {
+    beginTreeDragGesture,
+    endTreeDragGesture,
+    type DropTarget,
+    resolveDropTarget,
+  } from "../drag-drop";
   import DragGhost from "./drag-ghost.svelte";
   import { displayLabel, fullLabel, labelColor } from "./node-label";
   import TreeNode from "./tree-node.svelte";
@@ -12,9 +17,17 @@
     width: number;
     height: number;
     rootId: string | null;
-    selectedId: string | null;
-    onselect: (id: string, altKey: boolean, toggleExpand?: boolean) => void;
-    onmove?: (sourceId: string, parentId: string, index: number | null) => void;
+    selectedIds: Array<string>;
+    onselect: (
+      id: string,
+      altKey: boolean,
+      options?: { toggleExpand?: boolean; additive?: boolean },
+    ) => void;
+    onmove?: (
+      sourceIds: Array<string>,
+      parentId: string,
+      index: number | null,
+    ) => void;
     ondragging?: (dragging: boolean) => void;
   };
 
@@ -24,7 +37,7 @@
     width,
     height,
     rootId,
-    selectedId,
+    selectedIds,
     onselect,
     onmove,
     ondragging,
@@ -40,7 +53,7 @@
   const DRAG_THRESHOLD = 5;
 
   type DragState = {
-    sourceId: string;
+    sourceIds: Array<string>;
     label: string;
     labelColor: string;
     visible: boolean;
@@ -62,8 +75,13 @@
   let activePointerId: number | null = null;
   let lastScrolledId: string | null = null;
 
+  const selectedSet = $derived(new Set(selectedIds));
+  const primarySelectedId = $derived(
+    selectedIds.length > 0 ? selectedIds[selectedIds.length - 1] : null,
+  );
+
   $effect(() => {
-    const id = selectedId;
+    const id = primarySelectedId;
 
     if (id === null || id === undefined || !wrapEl) {
       return;
@@ -128,7 +146,7 @@
     const drop = resolveDropTarget(
       nodes,
       rootId,
-      drag.sourceId,
+      drag.sourceIds,
       local.x,
       local.y,
       width,
@@ -152,6 +170,7 @@
 
   function finishDrag(commit: boolean) {
     const state = drag;
+    const hadGesture = state !== null;
 
     drag = null;
     activePointerId = null;
@@ -160,6 +179,10 @@
     window.removeEventListener("pointerup", onWindowPointerUp, true);
     window.removeEventListener("pointercancel", onWindowPointerCancel, true);
     window.removeEventListener("keydown", onWindowKeyDown, true);
+
+    if (hadGesture) {
+      endTreeDragGesture();
+    }
 
     if (!state) {
       return;
@@ -178,7 +201,7 @@
       return;
     }
 
-    onmove(state.sourceId, state.drop.parentId, state.drop.index);
+    onmove(state.sourceIds, state.drop.parentId, state.drop.index);
   }
 
   function onWindowPointerMove(e: PointerEvent) {
@@ -219,22 +242,17 @@
     }
 
     e.preventDefault();
-    e.stopPropagation();
+    e.stopImmediatePropagation();
     finishDrag(false);
   }
 
   $effect(() => () => {
-    window.removeEventListener("pointermove", onWindowPointerMove, true);
-    window.removeEventListener("pointerup", onWindowPointerUp, true);
-    window.removeEventListener("pointercancel", onWindowPointerCancel, true);
-    window.removeEventListener("keydown", onWindowKeyDown, true);
+    if (drag) {
+      finishDrag(false);
+    }
 
     if (suppressClickTimer !== null) {
       clearTimeout(suppressClickTimer);
-    }
-
-    if (drag?.active) {
-      setDragging(false);
     }
   });
 
@@ -313,9 +331,19 @@
 
     e.preventDefault();
 
-    const toggleExpand = e.altKey || selectedId === id;
+    const additive = e.shiftKey || e.metaKey || e.ctrlKey;
 
-    onselect(id, e.altKey, toggleExpand);
+    if (additive) {
+      onselect(id, e.altKey, { toggleExpand: false, additive: true });
+
+      return;
+    }
+
+    const inMultiSelection = selectedIds.length > 1 && selectedSet.has(id);
+    const toggleExpand =
+      e.altKey || primarySelectedId === id || inMultiSelection;
+
+    onselect(id, e.altKey, { toggleExpand, additive: false });
   }
 
   function svgPoint(e: PointerEvent): { x: number; y: number } | null {
@@ -344,6 +372,10 @@
       return;
     }
 
+    if (e.shiftKey || e.metaKey || e.ctrlKey) {
+      return;
+    }
+
     if (
       !onmove ||
       rootId === null ||
@@ -361,10 +393,19 @@
 
     hideTip();
 
+    if (drag) {
+      finishDrag(false);
+    }
+
     activePointerId = e.pointerId;
 
+    const movingIds =
+      selectedSet.has(node.id) && selectedIds.length > 1
+        ? selectedIds.filter((id) => id !== rootId)
+        : [node.id];
+
     drag = {
-      sourceId: node.id,
+      sourceIds: movingIds,
       label: displayLabel(node),
       labelColor: labelColor(node, rootId),
       visible: node.visible,
@@ -379,6 +420,8 @@
       active: false,
       drop: null,
     };
+
+    beginTreeDragGesture();
 
     window.addEventListener("pointermove", onWindowPointerMove, true);
     window.addEventListener("pointerup", onWindowPointerUp, true);
@@ -406,6 +449,14 @@
     }
 
     return drag.drop.visuals.find((v) => v.kind === "gap") ?? null;
+  });
+
+  const dragSourceSet = $derived.by(() => {
+    if (!drag?.active) {
+      return new Set<string>();
+    }
+
+    return new Set(drag.sourceIds);
   });
 </script>
 
@@ -453,9 +504,9 @@
         {node}
         display={displayLabel(node)}
         color={labelColor(node, rootId)}
-        selected={selectedId === node.id}
+        selected={selectedSet.has(node.id)}
         isDropNode={dropNodeId === node.id}
-        isSource={!!(drag?.active && drag.sourceId === node.id)}
+        isSource={dragSourceSet.has(node.id)}
         onclick={(e) => handleClick(e, node.id)}
         onpointerdown={(e) => onNodePointerDown(e, node)}
         onpointerenter={() => onNodeEnter(node)}

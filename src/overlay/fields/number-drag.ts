@@ -2,6 +2,26 @@ const DRAG_PX_PER_STEP = 8;
 const DRAG_EDGE_PX = 8;
 const DRAG_EDGE_PX_PER_SEC = 480;
 
+let activeNumberDragGestures = 0;
+
+export function isNumberDragGestureActive(): boolean
+{
+    return activeNumberDragGestures > 0;
+}
+
+function beginNumberDragGesture()
+{
+    activeNumberDragGestures += 1;
+}
+
+function endNumberDragGesture()
+{
+    if (activeNumberDragGestures > 0)
+    {
+        activeNumberDragGestures -= 1;
+    }
+}
+
 export function snapToStep(value: number, step: number): number
 {
     if (!Number.isFinite(value) || !Number.isFinite(step) || step === 0)
@@ -16,7 +36,8 @@ export type NumberDragBinding = {
     step: number;
     dragAccel?: number;
     getValue: () => number | undefined;
-    commit: (value: number) => void;
+    commit: (value: number, previous: number) => void;
+    allowEmpty?: boolean;
     onSyncChrome: () => void;
     onClickFocus: () => void;
 };
@@ -33,6 +54,7 @@ export function attachNumberDrag(
 {
     let startY = 0;
     let startValue = 0;
+    let lastCommitted = 0;
     let accumulatedY = 0;
     let moved = false;
     let dragging = false;
@@ -44,14 +66,13 @@ export function attachNumberDrag(
 
     const applyAccumulated = () =>
     {
-        if (typeof binding.getValue() !== 'number')
-        {
-            return;
-        }
-
         const steps = accumulatedY / DRAG_PX_PER_STEP;
+        const next = startValue + (steps * binding.step);
+        const previous = lastCommitted;
 
-        binding.commit(startValue + (steps * binding.step));
+        lastCommitted = next;
+
+        binding.commit(next, previous);
     };
 
     const stopEdgeScroll = () =>
@@ -153,6 +174,7 @@ export function attachNumberDrag(
         accumulatedY = 0;
 
         stopEdgeScroll();
+        endNumberDragGesture();
 
         window.removeEventListener('pointermove', onWindowPointerMove);
         window.removeEventListener('pointerup', onWindowPointerUp);
@@ -186,7 +208,11 @@ export function attachNumberDrag(
             return;
         }
 
-        binding.commit(startValue);
+        const previous = lastCommitted;
+
+        lastCommitted = startValue;
+
+        binding.commit(startValue, previous);
         endDrag(false);
     };
 
@@ -198,18 +224,18 @@ export function attachNumberDrag(
         }
 
         const value = binding.getValue();
+        const current = typeof value === 'number' ? value : startValue;
+        const snapped = snapToStep(current, binding.step);
+        const previous = lastCommitted;
 
-        if (typeof value !== 'number')
-        {
-            return;
-        }
+        lastCommitted = snapped;
 
-        binding.commit(snapToStep(value, binding.step));
+        binding.commit(snapped, previous);
     };
 
     const onWindowPointerMove = (event: PointerEvent) =>
     {
-        if (pointerId !== event.pointerId || typeof binding.getValue() !== 'number')
+        if (pointerId !== event.pointerId)
         {
             return;
         }
@@ -270,15 +296,16 @@ export function attachNumberDrag(
         }
 
         event.preventDefault();
-        event.stopPropagation();
+        event.stopImmediatePropagation();
         cancelDrag();
     };
 
     const onPointerDown = (event: PointerEvent) =>
     {
         const value = binding.getValue();
+        const hasValue = typeof value === 'number';
 
-        if (event.button !== 0 || typeof value !== 'number')
+        if (event.button !== 0 || (!hasValue && !binding.allowEmpty))
         {
             return;
         }
@@ -290,8 +317,11 @@ export function attachNumberDrag(
         accumulatedY = 0;
         edgeDir = 0;
         startY = event.clientY;
-        startValue = value;
+        startValue = hasValue ? value : 0;
+        lastCommitted = startValue;
         pointerId = event.pointerId;
+
+        beginNumberDragGesture();
 
         dragLayer.setPointerCapture(event.pointerId);
         window.addEventListener('pointermove', onWindowPointerMove);

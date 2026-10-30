@@ -72,61 +72,107 @@ export function toggleVisibleInTree(root: TreeNodeData, id: string): TreeNodeDat
     return next;
 }
 
-export function moveNodeInTree(
+export function moveNodesInTree(
     root: TreeNodeData,
-    sourceId: string,
+    sourceIds: Array<string>,
     newParentId: string,
     index: number | null,
-): { root: TreeNodeData; newId: string; newParentId: string } | null
+): { root: TreeNodeData; newIds: Array<string>; newParentId: string } | null
 {
-    if (!canReparent(root, sourceId, newParentId))
+    const movable = sourceIds.filter((sourceId) => canReparent(root, sourceId, newParentId));
+
+    if (movable.length === 0)
     {
         return null;
     }
 
     const next = cloneTree(root);
-    const source = findTreeNode(next, sourceId);
     const newParent = findTreeNode(next, newParentId);
 
-    if (!source || !newParent)
+    if (!newParent)
     {
         return null;
     }
 
-    const oldParent = findParentNode(next, sourceId);
+    const movableSet = new Set(movable);
+    let insertAt: number;
 
-    if (!oldParent)
+    if (index === null)
     {
-        return null;
+        insertAt = -1;
     }
-
-    const oldIndex = oldParent.children.findIndex((c) => c.id === sourceId);
-
-    if (oldIndex < 0)
+    else
     {
-        return null;
-    }
+        let removedBefore = 0;
 
-    let insertAt = index === null ? newParent.children.length : Math.max(0, index);
-
-    if (oldParent === newParent)
-    {
-        if (insertAt > oldIndex)
+        for (let i = 0; i < index && i < newParent.children.length; i++)
         {
-            insertAt -= 1;
+            const sib = newParent.children[i];
+
+            if (sib && movableSet.has(sib.id))
+            {
+                removedBefore += 1;
+            }
         }
 
-        if (insertAt === oldIndex)
-        {
-            return null;
-        }
+        insertAt = Math.max(0, index - removedBefore);
     }
 
-    oldParent.children.splice(oldIndex, 1);
-    insertAt = Math.min(insertAt, newParent.children.length);
-    newParent.children.splice(insertAt, 0, source);
+    const moved: Array<TreeNodeData> = [];
+
+    for (const sourceId of movable)
+    {
+        const source = findTreeNode(next, sourceId);
+
+        if (!source)
+        {
+            continue;
+        }
+
+        const oldParent = findParentNode(next, source.id);
+
+        if (!oldParent)
+        {
+            continue;
+        }
+
+        const oldIndex = oldParent.children.findIndex((c) => c.id === source.id);
+
+        if (oldIndex < 0)
+        {
+            continue;
+        }
+
+        oldParent.children.splice(oldIndex, 1);
+        moved.push(source);
+    }
+
+    if (moved.length === 0)
+    {
+        return null;
+    }
+
+    if (insertAt < 0)
+    {
+        insertAt = newParent.children.length;
+    }
+    else
+    {
+        insertAt = Math.min(insertAt, newParent.children.length);
+    }
+
+    for (const node of moved)
+    {
+        newParent.children.splice(insertAt, 0, node);
+
+        insertAt += 1;
+    }
 
     remapIdsInPlace(next, next.id);
 
-    return { root: next, newId: source.id, newParentId: newParent.id };
+    return {
+        root        : next,
+        newIds      : moved.map((node) => node.id),
+        newParentId : newParent.id,
+    };
 }
