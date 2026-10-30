@@ -35,6 +35,7 @@
     collectTreeIds,
     collectUidToId,
     countTreeNodes,
+    expandPathsToIds,
     filterTreeByName,
     findTreeNode,
     isTreeChanged,
@@ -102,6 +103,7 @@
   let liveRefreshInterval = $state(initialLiveRefreshInterval);
   let autoRefresh = $state(initialLiveRefreshInterval > 0);
   let nameFilter = $state("");
+  let selectionReveal = $state(0);
   let lastError = $state("");
   let clipboardIds = $state<Array<string>>([]);
   let lastClearedIds = $state<Array<string> | null>(null);
@@ -725,7 +727,16 @@
     }}
     {nameFilter}
     onnameFilterChange={(value) => {
-      nameFilter = value;
+      const wasFiltering = nameFilter.trim().length > 0;
+      const nextFilter = value;
+      const isFiltering = nextFilter.trim().length > 0;
+
+      nameFilter = nextFilter;
+
+      if (wasFiltering && !isFiltering && selectedIds.length > 0) {
+        expandedIds = expandPathsToIds(expandedIds, selectedIds);
+        selectionReveal += 1;
+      }
 
       if (tree) {
         relayoutFromTree(tree);
@@ -759,6 +770,7 @@
         height={canvasH}
         rootId={tree ? getViewRoot(tree).id : null}
         {selectedIds}
+        revealToken={selectionReveal}
         {onselect}
         {onselectmany}
         {onmove}

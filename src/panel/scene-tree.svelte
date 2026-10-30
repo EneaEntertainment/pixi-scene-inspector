@@ -18,6 +18,7 @@
     height: number;
     rootId: string | null;
     selectedIds: Array<string>;
+    revealToken?: number;
     onselect: (
       id: string,
       altKey: boolean,
@@ -39,6 +40,7 @@
     height,
     rootId,
     selectedIds,
+    revealToken = 0,
     onselect,
     onselectmany,
     onmove,
@@ -87,6 +89,7 @@
   let suppressClickTimer: ReturnType<typeof setTimeout> | null = null;
   let activePointerId: number | null = null;
   let lastScrolledId: string | null = null;
+  let lastScrolledRevealToken = 0;
 
   const selectedSet = $derived(new Set(selectedIds));
   const primarySelectedId = $derived(
@@ -95,6 +98,7 @@
 
   $effect(() => {
     const id = primarySelectedId;
+    const token = revealToken;
 
     if (id === null || id === undefined || !wrapEl) {
       return;
@@ -104,7 +108,11 @@
       return;
     }
 
-    if (id === lastScrolledId) {
+    if (!nodes.some((node) => node.id === id)) {
+      return;
+    }
+
+    if (id === lastScrolledId && token === lastScrolledRevealToken) {
       return;
     }
 
@@ -115,6 +123,7 @@
     }
 
     lastScrolledId = id;
+    lastScrolledRevealToken = token;
 
     el.scrollIntoView({ block: "nearest", inline: "nearest" });
   });
