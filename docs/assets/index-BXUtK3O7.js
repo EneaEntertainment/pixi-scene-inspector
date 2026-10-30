@@ -1,4 +1,4 @@
-const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/browserAll-W6dcJSA3.js","assets/webworkerAll-DDGKWLJu.js","assets/Filter-DANXV-zo.js","assets/WebGPURenderer-BYMDU00-.js","assets/getTexelRangeRects-BgS9_tq5.js","assets/RenderTargetSystem-Be_T5XB0.js","assets/WebGLRenderer-C91deDyU.js","assets/CanvasRenderer-CxAHUcd4.js"])))=>i.map(i=>d[i]);
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/browserAll-sDMCAhEL.js","assets/webworkerAll-X9Gmo5G8.js","assets/Filter-CdqFoxVc.js","assets/WebGPURenderer-CKVU7iJa.js","assets/getTexelRangeRects-Ip1wih5e.js","assets/RenderTargetSystem-B6NUYIXW.js","assets/WebGLRenderer-C3t3NZhN.js","assets/CanvasRenderer-4WsNSAmJ.js"])))=>i.map(i=>d[i]);
 (function polyfill() {
   const relList = document.createElement("link").relList;
   if (relList && relList.supports && relList.supports("modulepreload")) return;
@@ -355,7 +355,7 @@ const browserExt = {
   },
   test: () => true,
   load: async () => {
-    await __vitePreload(() => import("./browserAll-W6dcJSA3.js"), true ? __vite__mapDeps([0,1,2]) : void 0);
+    await __vitePreload(() => import("./browserAll-sDMCAhEL.js"), true ? __vite__mapDeps([0,1,2]) : void 0);
   }
 };
 const webworkerExt = {
@@ -366,7 +366,7 @@ const webworkerExt = {
   },
   test: () => typeof self !== "undefined" && self.WorkerGlobalScope !== void 0,
   load: async () => {
-    await __vitePreload(() => import("./webworkerAll-DDGKWLJu.js"), true ? __vite__mapDeps([1,2]) : void 0);
+    await __vitePreload(() => import("./webworkerAll-X9Gmo5G8.js"), true ? __vite__mapDeps([1,2]) : void 0);
   }
 };
 class ObservablePoint {
@@ -13297,7 +13297,7 @@ async function autoDetectRenderer(options) {
     const rendererType = preferredOrder[i2];
     if (rendererType === "webgpu" && await isWebGPUSupported()) {
       const { WebGPURenderer } = await __vitePreload(async () => {
-        const { WebGPURenderer: WebGPURenderer2 } = await import("./WebGPURenderer-BYMDU00-.js");
+        const { WebGPURenderer: WebGPURenderer2 } = await import("./WebGPURenderer-CKVU7iJa.js");
         return { WebGPURenderer: WebGPURenderer2 };
       }, true ? __vite__mapDeps([3,4,5,2]) : void 0);
       RendererClass = WebGPURenderer;
@@ -13307,7 +13307,7 @@ async function autoDetectRenderer(options) {
       options.failIfMajorPerformanceCaveat ?? AbstractRenderer.defaultOptions.failIfMajorPerformanceCaveat
     )) {
       const { WebGLRenderer } = await __vitePreload(async () => {
-        const { WebGLRenderer: WebGLRenderer2 } = await import("./WebGLRenderer-C91deDyU.js");
+        const { WebGLRenderer: WebGLRenderer2 } = await import("./WebGLRenderer-C3t3NZhN.js");
         return { WebGLRenderer: WebGLRenderer2 };
       }, true ? __vite__mapDeps([6,4,5,2]) : void 0);
       RendererClass = WebGLRenderer;
@@ -13315,7 +13315,7 @@ async function autoDetectRenderer(options) {
       break;
     } else if (rendererType === "canvas") {
       const { CanvasRenderer } = await __vitePreload(async () => {
-        const { CanvasRenderer: CanvasRenderer2 } = await import("./CanvasRenderer-CxAHUcd4.js");
+        const { CanvasRenderer: CanvasRenderer2 } = await import("./CanvasRenderer-4WsNSAmJ.js");
         return { CanvasRenderer: CanvasRenderer2 };
       }, true ? __vite__mapDeps([7,5,2]) : void 0);
       RendererClass = CanvasRenderer;
@@ -38572,10 +38572,7 @@ function nodeNameMatches(node, query) {
   if (!q) {
     return true;
   }
-  if (node.label.toLowerCase().includes(q)) {
-    return true;
-  }
-  return node.typeName.toLowerCase().includes(q);
+  return node.label.toLowerCase().includes(q);
 }
 function filterTreeByName(root2, query) {
   const q = query.trim().toLowerCase();
