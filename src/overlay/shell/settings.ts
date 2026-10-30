@@ -373,7 +373,7 @@ export function writePropertyExportOutput(mode: PropertyExportOutputMode)
 
 export function readHighlightEnabled(): boolean
 {
-    return readSettings().highlight === true;
+    return readSettings().highlight !== false;
 }
 
 export function writeHighlightEnabled(enabled: boolean)

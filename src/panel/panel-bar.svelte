@@ -9,6 +9,7 @@
     highlightEnabled: boolean;
     onhighlightEnabledChange: (value: boolean) => void;
     autoRefresh: boolean;
+    liveRefreshAvailable: boolean;
     onautoRefreshChange: (value: boolean) => void;
     nameFilter: string;
     onnameFilterChange: (value: string) => void;
@@ -25,6 +26,7 @@
       highlightEnabled,
       onhighlightEnabledChange,
       autoRefresh,
+      liveRefreshAvailable,
       onautoRefreshChange,
       nameFilter,
       onnameFilterChange,
@@ -95,10 +97,11 @@
     />
     highlight
   </label>
-  <label class="toggle">
+  <label class="toggle" class:disabled={!liveRefreshAvailable} title={liveRefreshAvailable ? undefined : 'Set interval in extension settings'}>
     <input
       type="checkbox"
-      checked={autoRefresh}
+      checked={autoRefresh && liveRefreshAvailable}
+      disabled={!liveRefreshAvailable}
       onchange={(e) => onautoRefreshChange(e.currentTarget.checked)}
     />
     live
@@ -175,6 +178,10 @@
     font-size: 11px;
     color: #cfcfcf;
     user-select: none;
+  }
+
+  .toggle.disabled {
+    opacity: 0.45;
   }
 
   .filter {

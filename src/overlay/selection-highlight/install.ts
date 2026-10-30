@@ -1,9 +1,10 @@
+import { subscribeHighlightColors } from '../../highlight-colors';
 import { resolveLiveSelectionNodes } from '../../page-ops/resolve-selection';
 import { readHighlightEnabled } from '../shell/settings';
 import { ANCHOR_SIZE, EMPTY_SIZE } from './constants';
 import { attachHighlightTransformDrag } from './drag';
 import { findPixiCanvas, hasAnchor, readLocalBounds, readScreenSize, readWorldTransform, worldCorners } from './geometry';
-import { createOverlayRoot, layoutHandles, setHandlesVisible } from './overlay-dom';
+import { applyHighlightPaint, createOverlayRoot, layoutHandles, setHandlesVisible } from './overlay-dom';
 
 import type { PageGlobals, PixiNode } from '../../page-ops/pixi-node';
 import type { BoxPaint, MatrixLike, SelectionHighlight } from './types';
@@ -20,6 +21,11 @@ export function installSelectionHighlight(
     let destroyed = false;
     let enabled = readHighlightEnabled();
     let paint: BoxPaint | null = null;
+
+    const unsubscribeColors = subscribeHighlightColors(() =>
+    {
+        applyHighlightPaint(overlay);
+    });
 
     const drag = attachHighlightTransformDrag({
         overlay,
@@ -299,6 +305,7 @@ export function installSelectionHighlight(
         {
             destroyed = true;
 
+            unsubscribeColors();
             drag.cancel();
             stop();
             root.remove();

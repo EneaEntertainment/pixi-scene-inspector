@@ -1,4 +1,9 @@
-import { ANCHOR_SIZE, FILL, HANDLE_SIZE, MARK_FILL, OVERLAY_ID, ROTATE_STALK, STROKE } from './constants';
+import {
+    highlightFill,
+    highlightStroke,
+    MARK_FILL,
+} from '../../highlight-colors';
+import { ANCHOR_SIZE, HANDLE_SIZE, OVERLAY_ID, ROTATE_STALK } from './constants';
 import { localToRoot, normalize2 } from './math';
 
 import type { BoxPaint, OverlayRoot } from './types';
@@ -17,12 +22,30 @@ function styleHandle(el: HTMLDivElement, cursor: string)
         height        : `${HANDLE_SIZE}px`,
         boxSizing     : 'border-box',
         background    : MARK_FILL,
-        border        : `1px solid ${STROKE}`,
+        border        : `1px solid ${highlightStroke()}`,
         pointerEvents : 'auto',
         cursor,
         zIndex        : '2',
         touchAction   : 'none',
     });
+}
+
+export function applyHighlightPaint(overlay: OverlayRoot)
+{
+    const fill = highlightFill();
+    const stroke = highlightStroke();
+
+    overlay.box.style.background = fill;
+    overlay.outline.setAttribute('stroke', stroke);
+    overlay.rotateStalk.style.background = stroke;
+
+    const border = `1px solid ${stroke}`;
+
+    overlay.rotateHandle.style.border = border;
+    overlay.scaleXHandle.style.border = border;
+    overlay.scaleYHandle.style.border = border;
+    overlay.uniformHandle.style.border = border;
+    overlay.anchorMark.style.border = border;
 }
 
 export function createOverlayRoot(): OverlayRoot
@@ -52,7 +75,7 @@ export function createOverlayRoot(): OverlayRoot
         left            : '0',
         top             : '0',
         transformOrigin : '0 0',
-        background      : FILL,
+        background      : highlightFill(),
         willChange      : 'transform',
         pointerEvents   : 'auto',
         cursor          : 'move',
@@ -74,7 +97,7 @@ export function createOverlayRoot(): OverlayRoot
     const outline = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
 
     outline.setAttribute('fill', 'none');
-    outline.setAttribute('stroke', STROKE);
+    outline.setAttribute('stroke', highlightStroke());
     outline.setAttribute('stroke-width', '1');
     outline.setAttribute('vector-effect', 'non-scaling-stroke');
     outlineSvg.appendChild(outline);
@@ -87,7 +110,7 @@ export function createOverlayRoot(): OverlayRoot
         top             : '0',
         width           : `${ROTATE_STALK}px`,
         height          : '1px',
-        background      : STROKE,
+        background      : highlightStroke(),
         pointerEvents   : 'none',
         transformOrigin : '0 50%',
         zIndex          : '1',
@@ -125,7 +148,7 @@ export function createOverlayRoot(): OverlayRoot
         boxSizing     : 'border-box',
         borderRadius  : '50%',
         background    : MARK_FILL,
-        border        : `1px solid ${STROKE}`,
+        border        : `1px solid ${highlightStroke()}`,
         display       : 'none',
         willChange    : 'transform',
         pointerEvents : 'none',

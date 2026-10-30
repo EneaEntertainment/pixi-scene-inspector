@@ -1,7 +1,8 @@
 import { highlightTransformGesture } from '../../gesture-active';
+import { highlightFill, highlightFillDrag, highlightStroke, highlightStrokeDrag } from '../../highlight-colors';
 import { snapToStep } from '../fields/number-drag';
 import { readTransformNumber, writeTransformNumber } from '../properties/transform-apply';
-import { FILL, FILL_DRAG, POSITION_STEP, ROTATION_STEP, SCALE_STEP, STROKE, STROKE_DRAG } from './constants';
+import { POSITION_STEP, ROTATION_STEP, SCALE_STEP } from './constants';
 import { readWorldTransform } from './geometry';
 import { localToScreen, normalize2, project, worldDeltaToParentLocal } from './math';
 
@@ -152,9 +153,9 @@ export function attachHighlightTransformDrag(host: HighlightDragHost): Highlight
 
         if (wasActive)
         {
-            box.style.background = FILL;
+            box.style.background = highlightFill();
 
-            outline.setAttribute('stroke', STROKE);
+            outline.setAttribute('stroke', highlightStroke());
 
             highlightTransformGesture.end();
         }
@@ -513,10 +514,9 @@ export function attachHighlightTransformDrag(host: HighlightDragHost): Highlight
         dragAlt = event.altKey;
         dragSnapshots = snapshots;
         dragPaint = { ...paint, matrix: { ...paint.matrix } };
-        box.style.background = FILL_DRAG;
+        box.style.background = highlightFillDrag();
 
-        outline.setAttribute('stroke', STROKE_DRAG);
-
+        outline.setAttribute('stroke', highlightStrokeDrag());
         highlightTransformGesture.begin();
 
         if (mode === 'rotate')

@@ -54,6 +54,11 @@
   } from "./panel-session";
   import SceneTree from "./scene-tree.svelte";
   import {
+    DEFAULT_LIVE_REFRESH_INTERVAL_SEC,
+    readLiveRefreshIntervalAttr,
+    subscribeLiveRefreshInterval,
+  } from "../live-refresh";
+  import {
     readHighlightEnabled,
     writeHighlightEnabled,
   } from "../overlay/shell/settings";
@@ -92,7 +97,10 @@
   let canvasH = $state(600);
   let isolatedRootId = $state<string | null>(null);
   let highlightEnabled = $state(readHighlightEnabled());
-  let autoRefresh = $state(true);
+  const initialLiveRefreshInterval =
+    readLiveRefreshIntervalAttr() ?? DEFAULT_LIVE_REFRESH_INTERVAL_SEC;
+  let liveRefreshInterval = $state(initialLiveRefreshInterval);
+  let autoRefresh = $state(initialLiveRefreshInterval > 0);
   let nameFilter = $state("");
   let lastError = $state("");
   let clipboardIds = $state<Array<string>>([]);
@@ -639,16 +647,49 @@
   onMount(() => {
     void refresh();
 
-    const id = setInterval(() => {
-      if (autoRefresh) {
-        void refresh();
+    let timerId = 0;
+
+    const restartTimer = () => {
+      if (timerId !== 0) {
+        clearInterval(timerId);
+        timerId = 0;
       }
-    }, 1000);
+
+      if (liveRefreshInterval <= 0) {
+        return;
+      }
+
+      timerId = window.setInterval(() => {
+        if (autoRefresh) {
+          void refresh();
+        }
+      }, liveRefreshInterval * 1000);
+    };
+
+    restartTimer();
+
+    const unsubscribeLiveRefresh = subscribeLiveRefreshInterval((seconds) => {
+      const wasOff = liveRefreshInterval <= 0;
+
+      liveRefreshInterval = seconds;
+
+      if (seconds <= 0) {
+        autoRefresh = false;
+      } else if (wasOff) {
+        autoRefresh = true;
+      }
+
+      restartTimer();
+    });
 
     window.addEventListener("keydown", onkeydown, true);
 
     return () => {
-      clearInterval(id);
+      if (timerId !== 0) {
+        clearInterval(timerId);
+      }
+
+      unsubscribeLiveRefresh();
       window.removeEventListener("keydown", onkeydown, true);
     };
   });
@@ -672,7 +713,14 @@
       setHighlightEnabled?.(value);
     }}
     {autoRefresh}
+    liveRefreshAvailable={liveRefreshInterval > 0}
     onautoRefreshChange={(value) => {
+      if (liveRefreshInterval <= 0) {
+        autoRefresh = false;
+
+        return;
+      }
+
       autoRefresh = value;
     }}
     {nameFilter}

@@ -1,9 +1,4 @@
 export const OVERLAY_ID = 'pixi-scene-inspector-selection-highlight';
-export const FILL = 'rgba(64, 140, 255, 0.35)';
-export const STROKE = 'rgba(40, 120, 255, 0.95)';
-export const FILL_DRAG = 'rgba(64, 140, 255, 0.1)';
-export const STROKE_DRAG = 'rgba(40, 120, 255, 0.45)';
-export const MARK_FILL = 'rgba(255, 255, 255, 1)';
 export const EMPTY_SIZE = 4;
 export const ANCHOR_SIZE = 6;
 export const HANDLE_SIZE = 8;

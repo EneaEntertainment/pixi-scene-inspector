@@ -14,7 +14,6 @@
       --line: #d8dde8;
       --accent: #1a1f2b;
       --focus: #3b82f6;
-      --danger: #b42318;
     }
 
     * {
@@ -34,6 +33,12 @@
       margin: 0 0 14px;
       font-size: 14px;
       font-weight: 700;
+    }
+
+    .stack {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
     }
 
     .field {
@@ -60,6 +65,76 @@
       display: flex;
       gap: 8px;
       align-items: center;
+    }
+
+    .color-row,
+    .alpha-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .color-row span,
+    .alpha-row span {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .color-row input[type="color"] {
+      width: 42px;
+      height: 28px;
+      padding: 0;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: #f0f2f6;
+      cursor: pointer;
+    }
+
+    .alpha-row input[type="text"] {
+      width: 72px;
+      padding: 6px 8px;
+      font: inherit;
+      color: var(--text);
+      text-align: right;
+      background: #f0f2f6;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+    }
+
+    .alpha-row input[type="text"]:focus {
+      outline: 2px solid var(--focus);
+      outline-offset: 1px;
+    }
+
+    .interval-row {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .interval-row input[type="range"] {
+      width: 100%;
+      margin: 0;
+      accent-color: var(--accent);
+      cursor: pointer;
+    }
+
+    .interval-value {
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+      text-align: right;
+    }
+
+    .interval-header {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .interval-header .hint {
+      margin: 0;
     }
 
     #shortcut {
@@ -102,30 +177,62 @@
     button:hover {
       background: #eef1f6;
     }
-
-    #status {
-      min-height: 1.2em;
-      margin: 10px 0 0;
-      color: var(--muted);
-      font-size: 12px;
-    }
-
-    #status[data-tone="error"] {
-      color: var(--danger);
-    }
   </style>
 </head>
 <body>
   <h1>Pixi Scene Inspector</h1>
-  <div class="field">
-    <div class="label">Toggle shortcut</div>
-    <p class="hint">Click the field, then press the key combination. At least one modifier is required.</p>
-    <div class="row">
-      <input id="shortcut" type="text" readonly value="" aria-label="Toggle shortcut" />
-      <button id="reset" type="button">Reset</button>
+  <div class="stack">
+    <div class="field">
+      <div class="label">Toggle shortcut</div>
+      <p class="hint">Click the field, then press the key combination. At least one modifier is required.</p>
+      <div class="row">
+        <input id="shortcut" type="text" readonly value="" aria-label="Toggle shortcut" />
+        <button id="reset" type="button">Reset</button>
+      </div>
+    </div>
+    <div class="field">
+      <div class="label">Live refresh</div>
+      <p class="hint">Tree auto-refresh interval.</p>
+      <div class="interval-row">
+        <div class="interval-header">
+          <span class="hint">Interval</span>
+          <span id="live-refresh-value" class="interval-value">1 s</span>
+        </div>
+        <input
+          id="live-refresh-interval"
+          type="range"
+          min="0"
+          max="10"
+          step="0.5"
+          value="1"
+          aria-label="Live refresh interval in seconds"
+        />
+      </div>
+    </div>
+    <div class="field">
+      <div class="label">Selection highlight</div>
+      <p class="hint">Fill and outline for the selection box.</p>
+      <div class="color-row">
+        <span>Fill</span>
+        <input id="highlight-fill" type="color" value="#408cff" aria-label="Highlight fill color" />
+      </div>
+      <div class="alpha-row">
+        <span>Fill alpha</span>
+        <input id="highlight-fill-alpha" type="text" inputmode="decimal" spellcheck="false" value="0.35" aria-label="Highlight fill alpha" />
+      </div>
+      <div class="alpha-row">
+        <span>Fill drag alpha</span>
+        <input id="highlight-fill-drag-alpha" type="text" inputmode="decimal" spellcheck="false" value="0.1" aria-label="Highlight fill drag alpha" />
+      </div>
+      <div class="color-row">
+        <span>Stroke</span>
+        <input id="highlight-stroke" type="color" value="#2878ff" aria-label="Highlight stroke color" />
+      </div>
+      <div class="row">
+        <button id="reset-colors" type="button">Reset colors</button>
+      </div>
     </div>
   </div>
-  <p id="status" aria-live="polite"></p>
   <script src="settings.js"></script>
 </body>
 </html>

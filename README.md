@@ -29,7 +29,7 @@ Lookup order: `__PIXI_STAGE__` → `__PIXI_APP__.stage` → `renderer.lastObject
 
 With the extension loaded, press **Shift+`` ` ``** on the game page to toggle the **docked** in-page panel (same behavior as `togglePixiSceneInspector` — no game import needed). Press again to close.
 
-The header shows node count and which global was used. **live** refresh (~1s) is on by default; uncheck it or click **Refresh**. Use the **filter…** field to keep only matching nodes (and their ancestors); matches are highlighted. Press **?** for the shortcuts panel (Esc closes it).
+The header shows node count and which global was used. **live** refresh (~1s) is on by default; uncheck it or click **Refresh**. The interval is set in the extension options (0–10s; **0** turns live refresh off). Use the **filter…** field to keep only matching nodes (and their ancestors); matches are highlighted. Press **?** for the shortcuts panel (Esc closes it).
 
 Selected node is available in the page console as `$pixi`.
 
