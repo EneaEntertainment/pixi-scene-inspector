@@ -1,4 +1,4 @@
-const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/browserAll-C2P1en91.js","assets/webworkerAll-BGnvvG8y.js","assets/Filter-PFqwio7Q.js","assets/WebGPURenderer-Ceb3u5DA.js","assets/getTexelRangeRects-BAa9uRf8.js","assets/RenderTargetSystem-Dgm8mfLx.js","assets/WebGLRenderer-DAkuR3fl.js","assets/CanvasRenderer-CBdhQRSt.js"])))=>i.map(i=>d[i]);
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/browserAll-D26c_Z-f.js","assets/webworkerAll-BTN0GUoD.js","assets/Filter-B5l4scwC.js","assets/WebGPURenderer-DXCCH5pq.js","assets/getTexelRangeRects-tJzfmWw-.js","assets/RenderTargetSystem-Db00nRui.js","assets/WebGLRenderer-RJvVxNxn.js","assets/CanvasRenderer-D-dlIJyc.js"])))=>i.map(i=>d[i]);
 (function polyfill() {
   const relList = document.createElement("link").relList;
   if (relList && relList.supports && relList.supports("modulepreload")) return;
@@ -355,7 +355,7 @@ const browserExt = {
   },
   test: () => true,
   load: async () => {
-    await __vitePreload(() => import("./browserAll-C2P1en91.js"), true ? __vite__mapDeps([0,1,2]) : void 0);
+    await __vitePreload(() => import("./browserAll-D26c_Z-f.js"), true ? __vite__mapDeps([0,1,2]) : void 0);
   }
 };
 const webworkerExt = {
@@ -366,7 +366,7 @@ const webworkerExt = {
   },
   test: () => typeof self !== "undefined" && self.WorkerGlobalScope !== void 0,
   load: async () => {
-    await __vitePreload(() => import("./webworkerAll-BGnvvG8y.js"), true ? __vite__mapDeps([1,2]) : void 0);
+    await __vitePreload(() => import("./webworkerAll-BTN0GUoD.js"), true ? __vite__mapDeps([1,2]) : void 0);
   }
 };
 class ObservablePoint {
@@ -5948,10 +5948,10 @@ const getGlobalMixin = {
       return this.alpha;
     }
     let alpha = this.alpha;
-    let current = this.parent;
-    while (current) {
-      alpha *= current.alpha;
-      current = current.parent;
+    let current2 = this.parent;
+    while (current2) {
+      alpha *= current2.alpha;
+      current2 = current2.parent;
     }
     return alpha;
   },
@@ -6236,8 +6236,8 @@ class ScreenSizeRegistry {
    * @returns `true` if this changed the registered screens, `false` if the size was already registered.
    */
   set(rendererUid, pixelWidth, pixelHeight) {
-    const current = this._screenSizes.get(rendererUid);
-    if (current && current.pixelWidth === pixelWidth && current.pixelHeight === pixelHeight) return false;
+    const current2 = this._screenSizes.get(rendererUid);
+    if (current2 && current2.pixelWidth === pixelWidth && current2.pixelHeight === pixelHeight) return false;
     this._screenSizes.set(rendererUid, { pixelWidth, pixelHeight });
     this._update();
     return true;
@@ -8685,18 +8685,18 @@ const _Ticker = class _Ticker2 {
    * @returns This instance of a ticker
    */
   _addListener(listener) {
-    let current = this._head.next;
+    let current2 = this._head.next;
     let previous = this._head;
-    if (!current) {
+    if (!current2) {
       listener.connect(previous);
     } else {
-      while (current) {
-        if (listener.priority > current.priority) {
+      while (current2) {
+        if (listener.priority > current2.priority) {
           listener.connect(previous);
           break;
         }
-        previous = current;
-        current = current.next;
+        previous = current2;
+        current2 = current2.next;
       }
       if (!listener.previous) {
         listener.connect(previous);
@@ -8778,8 +8778,8 @@ const _Ticker = class _Ticker2 {
       return 0;
     }
     let count2 = 0;
-    let current = this._head;
-    while (current = current.next) {
+    let current2 = this._head;
+    while (current2 = current2.next) {
       count2++;
     }
     return count2;
@@ -13297,7 +13297,7 @@ async function autoDetectRenderer(options) {
     const rendererType = preferredOrder[i2];
     if (rendererType === "webgpu" && await isWebGPUSupported()) {
       const { WebGPURenderer } = await __vitePreload(async () => {
-        const { WebGPURenderer: WebGPURenderer2 } = await import("./WebGPURenderer-Ceb3u5DA.js");
+        const { WebGPURenderer: WebGPURenderer2 } = await import("./WebGPURenderer-DXCCH5pq.js");
         return { WebGPURenderer: WebGPURenderer2 };
       }, true ? __vite__mapDeps([3,4,5,2]) : void 0);
       RendererClass = WebGPURenderer;
@@ -13307,7 +13307,7 @@ async function autoDetectRenderer(options) {
       options.failIfMajorPerformanceCaveat ?? AbstractRenderer.defaultOptions.failIfMajorPerformanceCaveat
     )) {
       const { WebGLRenderer } = await __vitePreload(async () => {
-        const { WebGLRenderer: WebGLRenderer2 } = await import("./WebGLRenderer-DAkuR3fl.js");
+        const { WebGLRenderer: WebGLRenderer2 } = await import("./WebGLRenderer-RJvVxNxn.js");
         return { WebGLRenderer: WebGLRenderer2 };
       }, true ? __vite__mapDeps([6,4,5,2]) : void 0);
       RendererClass = WebGLRenderer;
@@ -13315,7 +13315,7 @@ async function autoDetectRenderer(options) {
       break;
     } else if (rendererType === "canvas") {
       const { CanvasRenderer } = await __vitePreload(async () => {
-        const { CanvasRenderer: CanvasRenderer2 } = await import("./CanvasRenderer-CBdhQRSt.js");
+        const { CanvasRenderer: CanvasRenderer2 } = await import("./CanvasRenderer-D-dlIJyc.js");
         return { CanvasRenderer: CanvasRenderer2 };
       }, true ? __vite__mapDeps([7,5,2]) : void 0);
       RendererClass = CanvasRenderer;
@@ -33871,6 +33871,18 @@ _SplitText.defaultOptions = {
 };
 let SplitText = _SplitText;
 extensions.add(browserExt, webworkerExt);
+const NON_TEXT_INPUT_TYPES = /* @__PURE__ */ new Set([
+  "button",
+  "checkbox",
+  "color",
+  "file",
+  "hidden",
+  "image",
+  "radio",
+  "range",
+  "reset",
+  "submit"
+]);
 function isEditableKeyTarget(target) {
   if (!(target instanceof HTMLElement)) {
     return false;
@@ -33879,7 +33891,13 @@ function isEditableKeyTarget(target) {
     return true;
   }
   const tag = target.tagName;
-  return tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT";
+  if (tag === "TEXTAREA" || tag === "SELECT") {
+    return true;
+  }
+  if (tag !== "INPUT" || !(target instanceof HTMLInputElement)) {
+    return false;
+  }
+  return !NON_TEXT_INPUT_TYPES.has(target.type);
 }
 function isolateEditableKeyEvents(root2) {
   const onKey = (event2) => {
@@ -34982,12 +35000,12 @@ class Batch2 {
           if (d2) deferred2.promise.then(d2.resolve).catch(d2.reject);
         }
       }
-      var current = [...batch.current.keys()].filter(
+      var current2 = [...batch.current.keys()].filter(
         (source3) => !/** @type {[any, boolean]} */
         batch.current.get(source3)[1]
       );
-      if (!batch.#started || current.length === 0) continue;
-      var others = current.filter((source3) => !this.current.has(source3));
+      if (!batch.#started || current2.length === 0) continue;
+      var others = current2.filter((source3) => !this.current.has(source3));
       if (others.length === 0) {
         if (is_earlier) {
           batch.discard();
@@ -37615,7 +37633,7 @@ function skip_to_branch(effect2) {
 function reconcile(state2, array, anchor, flags2, get_key) {
   var length2 = array.length;
   var items = state2.items;
-  var current = skip_to_branch(state2.effect.first);
+  var current2 = skip_to_branch(state2.effect.first);
   var seen2;
   var prev = null;
   var matched = [];
@@ -37640,10 +37658,10 @@ function reconcile(state2, array, anchor, flags2, get_key) {
     }
     if ((effect2.f & EFFECT_OFFSCREEN) !== 0) {
       effect2.f ^= EFFECT_OFFSCREEN;
-      if (effect2 === current) {
+      if (effect2 === current2) {
         move(effect2, null, anchor);
       } else {
-        var next = prev ? prev.next : current;
+        var next = prev ? prev.next : current2;
         if (effect2 === state2.effect.last) {
           state2.effect.last = effect2.prev;
         }
@@ -37655,11 +37673,11 @@ function reconcile(state2, array, anchor, flags2, get_key) {
         prev = effect2;
         matched = [];
         stashed = [];
-        current = skip_to_branch(prev.next);
+        current2 = skip_to_branch(prev.next);
         continue;
       }
     }
-    if (effect2 !== current) {
+    if (effect2 !== current2) {
       if (seen2 !== void 0 && seen2.has(effect2)) {
         if (matched.length < stashed.length) {
           var start = stashed[0];
@@ -37676,14 +37694,14 @@ function reconcile(state2, array, anchor, flags2, get_key) {
           link(state2, a2.prev, b2.next);
           link(state2, prev, a2);
           link(state2, b2, start);
-          current = start;
+          current2 = start;
           prev = b2;
           i2 -= 1;
           matched = [];
           stashed = [];
         } else {
           seen2.delete(effect2);
-          move(effect2, current, anchor);
+          move(effect2, current2, anchor);
           link(state2, effect2.prev, effect2.next);
           link(state2, effect2, prev === null ? state2.effect.first : prev.next);
           link(state2, prev, effect2);
@@ -37693,12 +37711,12 @@ function reconcile(state2, array, anchor, flags2, get_key) {
       }
       matched = [];
       stashed = [];
-      while (current !== null && current !== effect2) {
-        (seen2 ??= /* @__PURE__ */ new Set()).add(current);
-        stashed.push(current);
-        current = skip_to_branch(current.next);
+      while (current2 !== null && current2 !== effect2) {
+        (seen2 ??= /* @__PURE__ */ new Set()).add(current2);
+        stashed.push(current2);
+        current2 = skip_to_branch(current2.next);
       }
-      if (current === null) {
+      if (current2 === null) {
         continue;
       }
     }
@@ -37706,7 +37724,7 @@ function reconcile(state2, array, anchor, flags2, get_key) {
       matched.push(effect2);
     }
     prev = effect2;
-    current = skip_to_branch(effect2.next);
+    current2 = skip_to_branch(effect2.next);
   }
   if (state2.outrogroups !== null) {
     for (const group of state2.outrogroups) {
@@ -37719,7 +37737,7 @@ function reconcile(state2, array, anchor, flags2, get_key) {
       state2.outrogroups = null;
     }
   }
-  if (current !== null || seen2 !== void 0) {
+  if (current2 !== null || seen2 !== void 0) {
     var to_destroy = [];
     if (seen2 !== void 0) {
       for (effect2 of seen2) {
@@ -37728,11 +37746,11 @@ function reconcile(state2, array, anchor, flags2, get_key) {
         }
       }
     }
-    while (current !== null) {
-      if ((current.f & INERT) === 0 && current !== state2.fallback) {
-        to_destroy.push(current);
+    while (current2 !== null) {
+      if ((current2.f & INERT) === 0 && current2 !== state2.fallback) {
+        to_destroy.push(current2);
       }
-      current = skip_to_branch(current.next);
+      current2 = skip_to_branch(current2.next);
     }
     var destroy_length = to_destroy.length;
     if (destroy_length > 0) {
@@ -38230,6 +38248,16 @@ function pathOf(target, win = globalThis) {
   }
   return null;
 }
+let selectionIds = [];
+function getSelectionIds() {
+  return selectionIds;
+}
+function setSelectionIds(ids) {
+  selectionIds = ids;
+}
+function clearSelectionIds() {
+  selectionIds = [];
+}
 function isDescendant(ancestor, node) {
   let cur = node;
   while (cur) {
@@ -38240,49 +38268,332 @@ function isDescendant(ancestor, node) {
   }
   return false;
 }
-function moveNode(sourceId, parentId, index, win = globalThis) {
-  const child2 = resolveByPath(sourceId, win);
-  const parent = resolveByPath(parentId, win);
-  if (!child2 || !parent) {
-    return null;
-  }
+function canMoveChild(child2, parent) {
   if (child2 === parent) {
-    return null;
-  }
-  if (isDescendant(child2, parent)) {
-    return null;
-  }
-  if (typeof parent.addChild !== "function") {
-    return null;
-  }
-  const desired = index;
-  if (desired === null) {
-    parent.addChild(child2);
-  } else if (typeof parent.addChildAt === "function") {
-    let at = desired;
-    const kids = childrenOf(parent);
-    const oldIndex = kids.indexOf(child2);
-    if (oldIndex >= 0 && at > oldIndex) {
-      at -= 1;
-    }
-    at = Math.max(0, Math.min(at, kids.length - (oldIndex >= 0 ? 1 : 0)));
-    if (oldIndex === at) {
-      return pathOf(child2, win);
-    }
-    parent.addChildAt(child2, at + bitmapPageMeshInsertOffset(parent, at, child2));
-  } else {
-    parent.addChild(child2);
-  }
-  win.$pixi = child2;
-  return pathOf(child2, win);
-}
-function selectNode(pathId, win = globalThis) {
-  const node = resolveByPath(pathId, win);
-  if (!node) {
     return false;
   }
-  win.$pixi = node;
+  if (isDescendant(child2, parent)) {
+    return false;
+  }
+  return typeof parent.addChild === "function";
+}
+function countMovingBeforeIndex(parent, moving, index) {
+  const kids = childrenOf(parent);
+  const limit = Math.min(index, kids.length);
+  let count2 = 0;
+  for (let i2 = 0; i2 < limit; i2++) {
+    const kid = kids[i2];
+    if (kid && moving.has(kid)) {
+      count2 += 1;
+    }
+  }
+  return count2;
+}
+function detachChild(child2) {
+  const currentParent = child2.parent;
+  if (!currentParent || typeof currentParent.removeChild !== "function") {
+    return;
+  }
+  currentParent.removeChild(child2);
+}
+function insertChildAt(parent, child2, desired) {
+  if (typeof parent.addChildAt !== "function") {
+    parent.addChild?.(child2);
+    return;
+  }
+  const kids = childrenOf(parent);
+  const at = Math.max(0, Math.min(desired, kids.length));
+  parent.addChildAt(child2, at + bitmapPageMeshInsertOffset(parent, at, child2));
+}
+function moveNodes(sourceIds, parentId, index, win = globalThis) {
+  const parent = resolveByPath(parentId, win);
+  if (!parent || typeof parent.addChild !== "function") {
+    return null;
+  }
+  const children = [];
+  for (const sourceId of sourceIds) {
+    const child2 = resolveByPath(sourceId, win);
+    if (!child2 || !canMoveChild(child2, parent)) {
+      continue;
+    }
+    children.push(child2);
+  }
+  if (children.length === 0) {
+    return null;
+  }
+  if (index === null) {
+    parent.addChild(...children);
+  } else {
+    const movingSet = new Set(children);
+    let at = Math.max(0, index - countMovingBeforeIndex(parent, movingSet, index));
+    for (const child2 of children) {
+      detachChild(child2);
+    }
+    for (const child2 of children) {
+      insertChildAt(parent, child2, at);
+      at += 1;
+    }
+  }
+  const paths = [];
+  for (const child2 of children) {
+    const nextPath = pathOf(child2, win);
+    if (nextPath) {
+      paths.push(nextPath);
+    }
+  }
+  if (paths.length === 0) {
+    return null;
+  }
+  const primary = children[children.length - 1];
+  if (primary) {
+    win.$pixi = primary;
+  }
+  setSelectionIds(paths);
+  return paths;
+}
+function moveNode(sourceId, parentId, index, win = globalThis) {
+  const paths = moveNodes([sourceId], parentId, index, win);
+  return paths?.[0] ?? null;
+}
+function findTreeNode(root2, id) {
+  if (root2.id === id) {
+    return root2;
+  }
+  for (const child2 of root2.children) {
+    const found = findTreeNode(child2, id);
+    if (found) {
+      return found;
+    }
+  }
+  return null;
+}
+function countTreeNodes(node) {
+  return 1 + node.children.reduce((sum, child2) => sum + countTreeNodes(child2), 0);
+}
+function isAncestorId(ancestorId, nodeId) {
+  return nodeId === ancestorId || nodeId.startsWith(`${ancestorId}.`);
+}
+function parentIdOf(id) {
+  const idx = id.lastIndexOf(".");
+  if (idx < 0) {
+    return null;
+  }
+  return id.slice(0, idx);
+}
+function collectTreeIds(node, into = /* @__PURE__ */ new Set()) {
+  into.add(node.id);
+  for (const child2 of node.children) {
+    collectTreeIds(child2, into);
+  }
+  return into;
+}
+function collectTreeUids(node, into = /* @__PURE__ */ new Set()) {
+  into.add(node.uid);
+  for (const child2 of node.children) {
+    collectTreeUids(child2, into);
+  }
+  return into;
+}
+function collectIdToUid(node, into = /* @__PURE__ */ new Map()) {
+  into.set(node.id, node.uid);
+  for (const child2 of node.children) {
+    collectIdToUid(child2, into);
+  }
+  return into;
+}
+function collectUidToId(node, into = /* @__PURE__ */ new Map()) {
+  into.set(node.uid, node.id);
+  for (const child2 of node.children) {
+    collectUidToId(child2, into);
+  }
+  return into;
+}
+function remapIdByUid(id, prevIdToUid, nextUidToId) {
+  const uid2 = prevIdToUid.get(id);
+  if (uid2 === void 0) {
+    return null;
+  }
+  return nextUidToId.get(uid2) ?? null;
+}
+function remapIdsByUid(ids, prevTree, nextTree) {
+  const prevIdToUid = collectIdToUid(prevTree);
+  const nextUidToId = collectUidToId(nextTree);
+  const next = /* @__PURE__ */ new Set();
+  for (const id of ids) {
+    const remapped = remapIdByUid(id, prevIdToUid, nextUidToId);
+    if (remapped !== null) {
+      next.add(remapped);
+    }
+  }
+  return next;
+}
+function isTreeChanged(prev, next) {
+  if (prev.uid !== next.uid || prev.visible !== next.visible) {
+    return true;
+  }
+  if (prev.children.length !== next.children.length) {
+    return true;
+  }
+  for (let i2 = 0; i2 < prev.children.length; i2++) {
+    const prevChild = prev.children[i2];
+    const nextChild = next.children[i2];
+    if (!prevChild || !nextChild || isTreeChanged(prevChild, nextChild)) {
+      return true;
+    }
+  }
+  return false;
+}
+const TREE_UID_CONTINUITY_THRESHOLD = 0.25;
+function isTreeRewrite(prev, next, threshold = TREE_UID_CONTINUITY_THRESHOLD) {
+  const prevUids = collectTreeUids(prev);
+  if (prevUids.size === 0) {
+    return false;
+  }
+  const nextUids = collectTreeUids(next);
+  let matched = 0;
+  for (const uid2 of prevUids) {
+    if (nextUids.has(uid2)) {
+      matched += 1;
+    }
+  }
+  return matched / prevUids.size < threshold;
+}
+function nodeNameMatches(node, query) {
+  const q = query.trim().toLowerCase();
+  if (!q) {
+    return true;
+  }
+  if (node.label.toLowerCase().includes(q)) {
+    return true;
+  }
+  return node.typeName.toLowerCase().includes(q);
+}
+function filterTreeByName(root2, query) {
+  const q = query.trim().toLowerCase();
+  if (!q) {
+    return root2;
+  }
+  function walk(node) {
+    const children = [];
+    for (const child2 of node.children) {
+      const kept = walk(child2);
+      if (kept) {
+        children.push(kept);
+      }
+    }
+    const filterMatch = nodeNameMatches(node, q);
+    if (!filterMatch && children.length === 0) {
+      return null;
+    }
+    return {
+      id: node.id,
+      uid: node.uid,
+      label: node.label,
+      typeName: node.typeName,
+      visible: node.visible,
+      children,
+      filterMatch
+    };
+  }
+  return walk(root2);
+}
+function sortIdsByTreeOrder(root2, ids) {
+  const want = new Set(ids);
+  const ordered = [];
+  function walk(node) {
+    if (want.has(node.id)) {
+      ordered.push(node.id);
+    }
+    for (const child2 of node.children) {
+      walk(child2);
+    }
+  }
+  walk(root2);
+  return ordered;
+}
+function addSelectedId(selectedIds, id) {
+  const next = [];
+  for (const existing of selectedIds) {
+    if (existing === id) {
+      continue;
+    }
+    if (isAncestorId(existing, id) || isAncestorId(id, existing)) {
+      continue;
+    }
+    next.push(existing);
+  }
+  next.push(id);
+  return next;
+}
+function toggleSelectedId(selectedIds, id) {
+  if (selectedIds.includes(id)) {
+    return selectedIds.filter((existing) => existing !== id);
+  }
+  return addSelectedId(selectedIds, id);
+}
+function normalizeSelectedIds(ids) {
+  let next = [];
+  for (const id of ids) {
+    next = addSelectedId(next, id);
+  }
+  return next;
+}
+function resolveMarqueeSelection(selectedIds, hitIds, additive) {
+  if (hitIds.length === 0) {
+    return null;
+  }
+  if (additive) {
+    return normalizeSelectedIds([...selectedIds, ...hitIds]);
+  }
+  return normalizeSelectedIds(hitIds);
+}
+function remapIdListByUid(ids, prevIdToUid, nextUidToId) {
+  const next = [];
+  for (const id of ids) {
+    const uid2 = prevIdToUid.get(id);
+    if (uid2 === void 0) {
+      continue;
+    }
+    const remapped = nextUidToId.get(uid2);
+    if (remapped !== void 0) {
+      next.push(remapped);
+    }
+  }
+  return next;
+}
+function selectNodes(pathIds, win = globalThis) {
+  if (pathIds.length === 0) {
+    win.$pixi = void 0;
+    clearSelectionIds();
+    return true;
+  }
+  const normalized = normalizeSelectedIds(pathIds);
+  const resolved = [];
+  for (const pathId of normalized) {
+    const node = resolveByPath(pathId, win);
+    if (!node) {
+      continue;
+    }
+    resolved.push(pathId);
+  }
+  if (resolved.length === 0) {
+    win.$pixi = void 0;
+    clearSelectionIds();
+    return false;
+  }
+  const primaryId = resolved[resolved.length - 1];
+  const primary = resolveByPath(primaryId, win);
+  if (!primary) {
+    win.$pixi = void 0;
+    clearSelectionIds();
+    return false;
+  }
+  win.$pixi = primary;
+  setSelectionIds(resolved);
   return true;
+}
+function selectNode(pathId, win = globalThis) {
+  return selectNodes([pathId], win);
 }
 const CUSTOM_LABEL_COLOR = "#111111";
 const UNKNOWN_TYPE_STYLE = {
@@ -38650,8 +38961,10 @@ function createInPageHost() {
   return {
     fetchSnapshot: async () => takeSnapshot(),
     selectNode: async (pathId) => selectNode(pathId),
+    selectNodes: async (pathIds) => selectNodes(pathIds),
     toggleNodeVisible: async (pathId) => toggleNodeVisible(pathId),
-    moveNode: async (sourceId, parentId, index) => moveNode(sourceId, parentId, index)
+    moveNode: async (sourceId, parentId, index) => moveNode(sourceId, parentId, index),
+    moveNodes: async (sourceIds, parentId, index) => moveNodes(sourceIds, parentId, index)
   };
 }
 const PUBLIC_VERSION = "5";
@@ -38747,153 +39060,38 @@ function layoutTree(root2, expandedIds = /* @__PURE__ */ new Set()) {
   const height = Math.max(...flat.map((n2) => n2.y + n2.height)) + (hasCollapsedStub ? STUB_LEN : 0) + 48;
   return { nodes: flat, edges, width, height };
 }
+function sameIds(a2, b2) {
+  if (a2.length !== b2.length) {
+    return false;
+  }
+  for (let i2 = 0; i2 < a2.length; i2++) {
+    if (a2[i2] !== b2[i2]) {
+      return false;
+    }
+  }
+  return true;
+}
 function createSelectionChannel() {
-  let current = { id: null, name: null };
+  let current2 = { id: null, name: null, ids: [] };
   const listeners2 = /* @__PURE__ */ new Set();
   return {
     publish(info) {
-      if (current.id === info.id && current.name === info.name) {
+      if (current2.id === info.id && current2.name === info.name && sameIds(current2.ids, info.ids)) {
         return;
       }
-      current = info;
+      current2 = { id: info.id, name: info.name, ids: info.ids };
       for (const listener of listeners2) {
-        listener(current);
+        listener(current2);
       }
     },
     subscribe(listener) {
       listeners2.add(listener);
-      listener(current);
+      listener(current2);
       return () => {
         listeners2.delete(listener);
       };
     }
   };
-}
-function findTreeNode(root2, id) {
-  if (root2.id === id) {
-    return root2;
-  }
-  for (const child2 of root2.children) {
-    const found = findTreeNode(child2, id);
-    if (found) {
-      return found;
-    }
-  }
-  return null;
-}
-function countTreeNodes(node) {
-  return 1 + node.children.reduce((sum, child2) => sum + countTreeNodes(child2), 0);
-}
-function isAncestorId(ancestorId, nodeId) {
-  return nodeId === ancestorId || nodeId.startsWith(`${ancestorId}.`);
-}
-function parentIdOf(id) {
-  const idx = id.lastIndexOf(".");
-  if (idx < 0) {
-    return null;
-  }
-  return id.slice(0, idx);
-}
-function collectTreeIds(node, into = /* @__PURE__ */ new Set()) {
-  into.add(node.id);
-  for (const child2 of node.children) {
-    collectTreeIds(child2, into);
-  }
-  return into;
-}
-function collectTreeUids(node, into = /* @__PURE__ */ new Set()) {
-  into.add(node.uid);
-  for (const child2 of node.children) {
-    collectTreeUids(child2, into);
-  }
-  return into;
-}
-function collectIdToUid(node, into = /* @__PURE__ */ new Map()) {
-  into.set(node.id, node.uid);
-  for (const child2 of node.children) {
-    collectIdToUid(child2, into);
-  }
-  return into;
-}
-function collectUidToId(node, into = /* @__PURE__ */ new Map()) {
-  into.set(node.uid, node.id);
-  for (const child2 of node.children) {
-    collectUidToId(child2, into);
-  }
-  return into;
-}
-function remapIdByUid(id, prevIdToUid, nextUidToId) {
-  const uid2 = prevIdToUid.get(id);
-  if (uid2 === void 0) {
-    return null;
-  }
-  return nextUidToId.get(uid2) ?? null;
-}
-function remapIdsByUid(ids, prevTree, nextTree) {
-  const prevIdToUid = collectIdToUid(prevTree);
-  const nextUidToId = collectUidToId(nextTree);
-  const next = /* @__PURE__ */ new Set();
-  for (const id of ids) {
-    const remapped = remapIdByUid(id, prevIdToUid, nextUidToId);
-    if (remapped !== null) {
-      next.add(remapped);
-    }
-  }
-  return next;
-}
-const TREE_UID_CONTINUITY_THRESHOLD = 0.25;
-function isTreeRewrite(prev, next, threshold = TREE_UID_CONTINUITY_THRESHOLD) {
-  const prevUids = collectTreeUids(prev);
-  if (prevUids.size === 0) {
-    return false;
-  }
-  const nextUids = collectTreeUids(next);
-  let matched = 0;
-  for (const uid2 of prevUids) {
-    if (nextUids.has(uid2)) {
-      matched += 1;
-    }
-  }
-  return matched / prevUids.size < threshold;
-}
-function nodeNameMatches(node, query) {
-  const q = query.trim().toLowerCase();
-  if (!q) {
-    return true;
-  }
-  if (node.label.toLowerCase().includes(q)) {
-    return true;
-  }
-  return node.typeName.toLowerCase().includes(q);
-}
-function filterTreeByName(root2, query) {
-  const q = query.trim().toLowerCase();
-  if (!q) {
-    return root2;
-  }
-  function walk(node) {
-    const children = [];
-    for (const child2 of node.children) {
-      const kept = walk(child2);
-      if (kept) {
-        children.push(kept);
-      }
-    }
-    const filterMatch = nodeNameMatches(node, q);
-    if (!filterMatch && children.length === 0) {
-      return null;
-    }
-    return {
-      id: node.id,
-      uid: node.uid,
-      label: node.label,
-      typeName: node.typeName,
-      visible: node.visible,
-      children,
-      filterMatch
-    };
-  }
-  return walk(root2);
 }
 function levelNavTarget(nodes, selectedId, key, toEnd) {
   const parent = findLaidParent(nodes, selectedId);
@@ -38937,21 +39135,21 @@ function findLaidParent(nodes, childId) {
   return null;
 }
 function firstDescendantPath(node, expandedIds, expandAlong, toLeaf) {
-  let current = node;
-  while (current.children.length > 0) {
-    if (!expandedIds.has(current.id) && !expandAlong.includes(current.id)) {
-      expandAlong.push(current.id);
+  let current2 = node;
+  while (current2.children.length > 0) {
+    if (!expandedIds.has(current2.id) && !expandAlong.includes(current2.id)) {
+      expandAlong.push(current2.id);
     }
-    const next = current.children[0];
+    const next = current2.children[0];
     if (!next) {
       break;
     }
-    current = next;
+    current2 = next;
     if (!toLeaf) {
-      return current.id;
+      return current2.id;
     }
   }
-  return current.id;
+  return current2.id;
 }
 function depthNavTarget(root2, nodes, expandedIds, selectedId, key, toEnd) {
   if (key === "ArrowUp") {
@@ -39042,7 +39240,10 @@ function collapseOneLevel(root2, nodeId, expandedIds) {
   }
   return true;
 }
-var root$5 = /* @__PURE__ */ from_html(`<div class="help svelte-3l8mbz"><div class="help-head svelte-3l8mbz"><h2 class="help-title svelte-3l8mbz">Keyboard shortcuts</h2> <button type="button" class="btn svelte-3l8mbz">Close</button></div> <dl class="help-list svelte-3l8mbz"><div class="help-row svelte-3l8mbz"><dt class="svelte-3l8mbz"><kbd class="svelte-3l8mbz">Click</kbd></dt> <dd class="svelte-3l8mbz">Select node</dd></div> <div class="help-row svelte-3l8mbz"><dt class="svelte-3l8mbz"><kbd class="svelte-3l8mbz">Click</kbd> again or <kbd class="svelte-3l8mbz">+</kbd> / <kbd class="svelte-3l8mbz">=</kbd></dt> <dd class="svelte-3l8mbz">Expand one level</dd></div> <div class="help-row svelte-3l8mbz"><dt class="svelte-3l8mbz"><kbd class="svelte-3l8mbz">⌥/Alt</kbd>+click or <kbd class="svelte-3l8mbz">-</kbd> / <kbd class="svelte-3l8mbz">_</kbd></dt> <dd class="svelte-3l8mbz">Collapse one level</dd></div> <div class="help-row svelte-3l8mbz"><dt class="svelte-3l8mbz"><kbd class="svelte-3l8mbz">←</kbd> <kbd class="svelte-3l8mbz">→</kbd></dt> <dd class="svelte-3l8mbz">Move among siblings</dd></div> <div class="help-row svelte-3l8mbz"><dt class="svelte-3l8mbz"><kbd class="svelte-3l8mbz">↑</kbd> <kbd class="svelte-3l8mbz">↓</kbd></dt> <dd class="svelte-3l8mbz">Parent / first child (↓ expands)</dd></div> <div class="help-row svelte-3l8mbz"><dt class="svelte-3l8mbz"><kbd class="svelte-3l8mbz">⌥/Alt</kbd>+arrows</dt> <dd class="svelte-3l8mbz">First/last sibling · root / deepest first child</dd></div> <div class="help-row svelte-3l8mbz"><dt class="svelte-3l8mbz"><kbd class="svelte-3l8mbz">I</kbd></dt> <dd class="svelte-3l8mbz">Isolate selected subtree (toggle)</dd></div> <div class="help-row svelte-3l8mbz"><dt class="svelte-3l8mbz"><kbd class="svelte-3l8mbz">H</kbd></dt> <dd class="svelte-3l8mbz">Toggle visible (not Camera3D / Scene3D)</dd></div> <div class="help-row svelte-3l8mbz"><dt class="svelte-3l8mbz">Drag</dt> <dd class="svelte-3l8mbz">Reparent node</dd></div> <div class="help-row svelte-3l8mbz"><dt class="svelte-3l8mbz"><kbd class="svelte-3l8mbz">⌥/Alt</kbd> + number scrub / arrows</dt> <dd class="svelte-3l8mbz">Snap value to nearest step</dd></div> <div class="help-row svelte-3l8mbz"><dt class="svelte-3l8mbz"><kbd class="svelte-3l8mbz">Esc</kbd></dt> <dd class="svelte-3l8mbz">Cancel drag / restore value to start / close this help</dd></div> <div class="help-row svelte-3l8mbz"><dt class="svelte-3l8mbz"><kbd class="svelte-3l8mbz">⌘/Ctrl</kbd>+<kbd class="svelte-3l8mbz">C</kbd> then <kbd class="svelte-3l8mbz">⌘/Ctrl</kbd>+<kbd class="svelte-3l8mbz">V</kbd></dt> <dd class="svelte-3l8mbz">Copy node, paste as child of selection</dd></div> <div class="help-row svelte-3l8mbz"><dt class="svelte-3l8mbz"><kbd class="svelte-3l8mbz">?</kbd></dt> <dd class="svelte-3l8mbz">Toggle this help</dd></div></dl> <p class="help-note svelte-3l8mbz">Selected node is exposed as <code class="svelte-3l8mbz">$pixi</code> in the page console.</p></div>`);
+var root$5 = /* @__PURE__ */ from_html(`<div class="help svelte-3l8mbz"><div class="help-head svelte-3l8mbz"><h2 class="help-title svelte-3l8mbz">Keyboard shortcuts</h2> <button type="button" class="btn svelte-3l8mbz">Close</button></div> <dl class="help-list svelte-3l8mbz"><div class="help-row svelte-3l8mbz"><dt class="svelte-3l8mbz"><kbd class="svelte-3l8mbz">Click</kbd></dt> <dd class="svelte-3l8mbz">Select node</dd></div> <div class="help-row svelte-3l8mbz"><dt class="svelte-3l8mbz"><kbd class="svelte-3l8mbz">⇧/Shift</kbd> or <kbd class="svelte-3l8mbz">⌘/Ctrl</kbd>+click</dt> <dd class="svelte-3l8mbz">Multi-select</dd></div> <div class="help-row svelte-3l8mbz"><dt class="svelte-3l8mbz"><kbd class="svelte-3l8mbz">Click</kbd> again or <kbd class="svelte-3l8mbz">+</kbd> / <kbd class="svelte-3l8mbz">=</kbd></dt> <dd class="svelte-3l8mbz">Expand one level</dd></div> <div class="help-row svelte-3l8mbz"><dt class="svelte-3l8mbz"><kbd class="svelte-3l8mbz">⌥/Alt</kbd>+click or <kbd class="svelte-3l8mbz">-</kbd> / <kbd class="svelte-3l8mbz">_</kbd></dt> <dd class="svelte-3l8mbz">Collapse one level</dd></div> <div class="help-row svelte-3l8mbz"><dt class="svelte-3l8mbz"><kbd class="svelte-3l8mbz">←</kbd> <kbd class="svelte-3l8mbz">→</kbd></dt> <dd class="svelte-3l8mbz">Move among siblings (from primary; replaces a multi-selection)</dd></div> <div class="help-row svelte-3l8mbz"><dt class="svelte-3l8mbz"><kbd class="svelte-3l8mbz">↑</kbd> <kbd class="svelte-3l8mbz">↓</kbd></dt> <dd class="svelte-3l8mbz">Parent / first child (↓ expands; replaces a multi-selection)</dd></div> <div class="help-row svelte-3l8mbz"><dt class="svelte-3l8mbz"><kbd class="svelte-3l8mbz">⌥/Alt</kbd>+arrows</dt> <dd class="svelte-3l8mbz">First/last sibling · root / deepest first child</dd></div> <div class="help-row svelte-3l8mbz"><dt class="svelte-3l8mbz"><kbd class="svelte-3l8mbz">I</kbd></dt> <dd class="svelte-3l8mbz">Isolate selected subtree (enter needs one node; press again to
+        exit)</dd></div> <div class="help-row svelte-3l8mbz"><dt class="svelte-3l8mbz"><kbd class="svelte-3l8mbz">H</kbd></dt> <dd class="svelte-3l8mbz">Toggle visible on every selected node (not Camera3D / Scene3D)</dd></div> <div class="help-row svelte-3l8mbz"><dt class="svelte-3l8mbz">Drag</dt> <dd class="svelte-3l8mbz">Reparent selected node(s)</dd></div> <div class="help-row svelte-3l8mbz"><dt class="svelte-3l8mbz"><kbd class="svelte-3l8mbz">⌥/Alt</kbd> + number scrub / arrows</dt> <dd class="svelte-3l8mbz">Snap value to nearest step</dd></div> <div class="help-row svelte-3l8mbz"><dt class="svelte-3l8mbz"><kbd class="svelte-3l8mbz">Esc</kbd></dt> <dd class="svelte-3l8mbz">Clear selection / cancel drag and restore value / cancel node drag /
+        close this help</dd></div> <div class="help-row svelte-3l8mbz"><dt class="svelte-3l8mbz"><kbd class="svelte-3l8mbz">Shift</kbd>+<kbd class="svelte-3l8mbz">Esc</kbd></dt> <dd class="svelte-3l8mbz">Restore selection cleared by Esc (if nothing else selected or tree
+        unchanged)</dd></div> <div class="help-row svelte-3l8mbz"><dt class="svelte-3l8mbz"><kbd class="svelte-3l8mbz">⌘/Ctrl</kbd>+<kbd class="svelte-3l8mbz">C</kbd> then <kbd class="svelte-3l8mbz">⌘/Ctrl</kbd>+<kbd class="svelte-3l8mbz">V</kbd></dt> <dd class="svelte-3l8mbz">Move selected node(s) under the current selection</dd></div> <div class="help-row svelte-3l8mbz"><dt class="svelte-3l8mbz"><kbd class="svelte-3l8mbz">?</kbd></dt> <dd class="svelte-3l8mbz">Toggle this help</dd></div></dl> <p class="help-note svelte-3l8mbz">Selected node is exposed as <code class="svelte-3l8mbz">$pixi</code> in the page console.</p></div>`);
 const $$css$6 = {
   hash: "svelte-3l8mbz",
   code: ".help.svelte-3l8mbz {display:flex;flex:1;flex-direction:column;gap:16px;padding:24px 32px;overflow:auto;}.help-head.svelte-3l8mbz {display:flex;gap:12px;align-items:center;}.help-title.svelte-3l8mbz {margin:0;font-size:14px;font-weight:700;}.btn.svelte-3l8mbz {padding:4px 10px;font-family:inherit;font-size:11px;font-weight:700;color:#111;cursor:pointer;background:#fff;border:1.5px solid #111;box-shadow:2px 2px 0 #111;}.btn.svelte-3l8mbz:active {transform:translate(1px, 1px);box-shadow:1px 1px 0 #111;}.help-list.svelte-3l8mbz {display:flex;flex-direction:column;gap:8px;margin:0;max-width:560px;}.help-row.svelte-3l8mbz {display:grid;grid-template-columns:minmax(140px, 220px) 1fr;gap:12px;align-items:baseline;}.help-row.svelte-3l8mbz dt:where(.svelte-3l8mbz) {margin:0;font-size:11px;color:#ffe066;}.help-row.svelte-3l8mbz dd:where(.svelte-3l8mbz) {margin:0;font-size:12px;color:#f0f0f0;}.help-row.svelte-3l8mbz kbd:where(.svelte-3l8mbz) {display:inline-block;padding:1px 5px;font-family:inherit;font-size:11px;color:#111;background:#fff;border:1.5px solid #111;box-shadow:1px 1px 0 #111;}.help-note.svelte-3l8mbz {margin:0;max-width:560px;font-size:11px;color:#cfcfcf;}.help-note.svelte-3l8mbz code:where(.svelte-3l8mbz) {color:#ffe066;}"
@@ -39090,10 +39291,10 @@ function Missing_pixi($$anchor, $$props) {
 }
 var root$3 = /* @__PURE__ */ from_html(`<div class="iso svelte-evo3fa"> </div>`);
 var root_1$3 = /* @__PURE__ */ from_html(`<button type="button" class="filter-clear svelte-evo3fa" aria-label="Clear filter">×</button>`);
-var root_2$3 = /* @__PURE__ */ from_html(`<header class="bar svelte-evo3fa"><div class="title svelte-evo3fa">Pixi Scene Inspector</div> <div class="meta svelte-evo3fa"> </div> <button type="button" class="help-btn svelte-evo3fa">?</button> <!> <div class="filter svelte-evo3fa"><input type="text" class="filter-input svelte-evo3fa" placeholder="filter…" spellcheck="false" autocomplete="off" aria-label="Filter nodes by name"/> <!></div> <label class="toggle svelte-evo3fa"><input type="checkbox"/> highlight</label> <label class="toggle svelte-evo3fa"><input type="checkbox"/> live</label> <button type="button" class="btn svelte-evo3fa">Refresh</button></header>`);
+var root_2$3 = /* @__PURE__ */ from_html(`<header class="bar svelte-evo3fa"><div class="title svelte-evo3fa">Pixi Scene Inspector</div> <div class="meta svelte-evo3fa"> </div> <button type="button" class="help-btn svelte-evo3fa">?</button> <!> <div class="filter svelte-evo3fa"><input type="text" class="filter-input svelte-evo3fa" placeholder="filter…" spellcheck="false" autocomplete="off" aria-label="Filter nodes by name"/> <!></div> <label class="toggle svelte-evo3fa"><input type="checkbox"/> highlight</label> <label><input type="checkbox"/> live</label> <button type="button" class="btn svelte-evo3fa">Refresh</button></header>`);
 const $$css$4 = {
   hash: "svelte-evo3fa",
-  code: '.bar.svelte-evo3fa {display:flex;flex-shrink:0;gap:12px;align-items:center;padding:8px 12px;border-bottom:2px solid #2e2e2e;background:#3a3a3a;}.title.svelte-evo3fa {font-size:13px;font-weight:700;letter-spacing:0.02em;}.meta.svelte-evo3fa {overflow:hidden;font-size:11px;color:#bdbdbd;text-overflow:ellipsis;white-space:nowrap;}.help-btn.svelte-evo3fa {display:flex;flex-shrink:0;align-items:center;justify-content:center;width:18px;height:18px;margin-right:auto;padding:0;font-family:inherit;font-size:12px;font-weight:700;line-height:1;color:#bdbdbd;cursor:pointer;background:transparent;border:1.5px solid #bdbdbd;border-radius:50%;}.help-btn.svelte-evo3fa:hover,\n  .help-btn[aria-pressed="true"].svelte-evo3fa {color:#111;background:#fff;border-color:#111;}.iso.svelte-evo3fa {flex-shrink:0;max-width:420px;overflow:hidden;font-size:11px;color:#ffe066;text-overflow:ellipsis;white-space:nowrap;}.toggle.svelte-evo3fa {display:flex;gap:6px;align-items:center;font-size:11px;color:#cfcfcf;user-select:none;}.filter.svelte-evo3fa {display:flex;flex-shrink:0;gap:4px;align-items:center;}.filter-input.svelte-evo3fa {width:120px;padding:3px 6px;font-family:inherit;font-size:11px;color:#f0f0f0;background:#2e2e2e;border:1.5px solid #111;outline:none;}.filter-input.svelte-evo3fa::placeholder {color:#888;}.filter-input.svelte-evo3fa:focus {border-color:#ffe066;}.filter-clear.svelte-evo3fa {display:flex;flex-shrink:0;align-items:center;justify-content:center;width:18px;height:18px;padding:0;font-family:inherit;font-size:12px;font-weight:700;line-height:1;color:#bdbdbd;cursor:pointer;background:transparent;border:1.5px solid #bdbdbd;border-radius:50%;}.filter-clear.svelte-evo3fa:hover {color:#111;background:#fff;border-color:#111;}.btn.svelte-evo3fa {padding:4px 10px;font-family:inherit;font-size:11px;font-weight:700;color:#111;cursor:pointer;background:#fff;border:1.5px solid #111;box-shadow:2px 2px 0 #111;}.btn.svelte-evo3fa:active {transform:translate(1px, 1px);box-shadow:1px 1px 0 #111;}'
+  code: '.bar.svelte-evo3fa {display:flex;flex-shrink:0;gap:12px;align-items:center;padding:8px 12px;border-bottom:2px solid #2e2e2e;background:#3a3a3a;}.title.svelte-evo3fa {font-size:13px;font-weight:700;letter-spacing:0.02em;}.meta.svelte-evo3fa {overflow:hidden;font-size:11px;color:#bdbdbd;text-overflow:ellipsis;white-space:nowrap;}.help-btn.svelte-evo3fa {display:flex;flex-shrink:0;align-items:center;justify-content:center;width:18px;height:18px;margin-right:auto;padding:0;font-family:inherit;font-size:12px;font-weight:700;line-height:1;color:#bdbdbd;cursor:pointer;background:transparent;border:1.5px solid #bdbdbd;border-radius:50%;}.help-btn.svelte-evo3fa:hover,\n  .help-btn[aria-pressed="true"].svelte-evo3fa {color:#111;background:#fff;border-color:#111;}.iso.svelte-evo3fa {flex-shrink:0;max-width:420px;overflow:hidden;font-size:11px;color:#ffe066;text-overflow:ellipsis;white-space:nowrap;}.toggle.svelte-evo3fa {display:flex;gap:6px;align-items:center;font-size:11px;color:#cfcfcf;user-select:none;}.toggle.disabled.svelte-evo3fa {opacity:0.45;}.filter.svelte-evo3fa {display:flex;flex-shrink:0;gap:4px;align-items:center;}.filter-input.svelte-evo3fa {width:120px;padding:3px 6px;font-family:inherit;font-size:11px;color:#f0f0f0;background:#2e2e2e;border:1.5px solid #111;outline:none;}.filter-input.svelte-evo3fa::placeholder {color:#888;}.filter-input.svelte-evo3fa:focus {border-color:#ffe066;}.filter-clear.svelte-evo3fa {display:flex;flex-shrink:0;align-items:center;justify-content:center;width:18px;height:18px;padding:0;font-family:inherit;font-size:12px;font-weight:700;line-height:1;color:#bdbdbd;cursor:pointer;background:transparent;border:1.5px solid #bdbdbd;border-radius:50%;}.filter-clear.svelte-evo3fa:hover {color:#111;background:#fff;border-color:#111;}.btn.svelte-evo3fa {padding:4px 10px;font-family:inherit;font-size:11px;font-weight:700;color:#111;cursor:pointer;background:#fff;border:1.5px solid #111;box-shadow:2px 2px 0 #111;}.btn.svelte-evo3fa:active {transform:translate(1px, 1px);box-shadow:1px 1px 0 #111;}'
 };
 function Panel_bar($$anchor, $$props) {
   push($$props, true);
@@ -39136,6 +39337,7 @@ function Panel_bar($$anchor, $$props) {
   var label = sibling(div_2, 2);
   var input_1 = child(label);
   var label_1 = sibling(label, 2);
+  let classes;
   var input_2 = child(label_1);
   var button_2 = sibling(label_1, 2);
   bind_this(header, ($$value) => set(barEl, $$value), () => get(barEl));
@@ -39146,7 +39348,10 @@ function Panel_bar($$anchor, $$props) {
     set_attribute(button, "aria-pressed", $$props.showHelp);
     set_value(input, $$props.nameFilter);
     set_checked(input_1, $$props.highlightEnabled);
-    set_checked(input_2, $$props.autoRefresh);
+    classes = set_class(label_1, 1, "toggle svelte-evo3fa", null, classes, { disabled: !$$props.liveRefreshAvailable });
+    set_attribute(label_1, "title", $$props.liveRefreshAvailable ? void 0 : "Set interval in extension settings");
+    set_checked(input_2, $$props.autoRefresh && $$props.liveRefreshAvailable);
+    input_2.disabled = !$$props.liveRefreshAvailable;
   });
   delegated("click", button, (e2) => {
     $$props.ontoggleHelp();
@@ -39162,6 +39367,26 @@ function Panel_bar($$anchor, $$props) {
   pop();
 }
 delegate(["click", "input", "change"]);
+function createGestureGate() {
+  let count2 = 0;
+  return {
+    isActive: () => count2 > 0,
+    begin: () => {
+      count2 += 1;
+    },
+    end: () => {
+      if (count2 > 0) {
+        count2 -= 1;
+      }
+    }
+  };
+}
+const numberDragGesture = createGestureGate();
+const treeDragGesture = createGestureGate();
+const highlightTransformGesture = createGestureGate();
+function isBlockingGestureActive() {
+  return numberDragGesture.isActive() || treeDragGesture.isActive() || highlightTransformGesture.isActive();
+}
 function resolvePanelKey(e2, ctx) {
   if (e2.defaultPrevented) {
     return null;
@@ -39175,35 +39400,54 @@ function resolvePanelKey(e2, ctx) {
   if (ctx.showHelp) {
     return null;
   }
-  if ((e2.metaKey || e2.ctrlKey) && (e2.key === "c" || e2.key === "C")) {
-    if (!ctx.selectedId) {
+  if (e2.key === "Escape") {
+    if (isBlockingGestureActive()) {
       return null;
     }
-    return { type: "copy", id: ctx.selectedId };
+    if (e2.shiftKey) {
+      if (ctx.selectedIds.length > 0 || !ctx.canRestoreSelection) {
+        return null;
+      }
+      return { type: "restoreSelection" };
+    }
+    if (ctx.selectedIds.length === 0) {
+      return null;
+    }
+    return { type: "clearSelection" };
+  }
+  if ((e2.metaKey || e2.ctrlKey) && (e2.key === "c" || e2.key === "C")) {
+    if (ctx.selectedIds.length === 0) {
+      return null;
+    }
+    return { type: "copy", ids: [...ctx.selectedIds] };
   }
   if ((e2.metaKey || e2.ctrlKey) && (e2.key === "v" || e2.key === "V")) {
-    if (!ctx.clipboardId || !ctx.selectedId) {
+    if (ctx.clipboardIds.length === 0 || ctx.selectedIds.length === 0) {
+      return null;
+    }
+    const parentId = ctx.selectedIds[ctx.selectedIds.length - 1];
+    if (!parentId) {
       return null;
     }
     return {
       type: "paste",
-      sourceId: ctx.clipboardId,
-      parentId: ctx.selectedId
+      sourceIds: [...ctx.clipboardIds],
+      parentId
     };
   }
   if (e2.metaKey || e2.ctrlKey) {
     return null;
   }
-  if ((e2.key === "i" || e2.key === "I") && ctx.selectedId) {
+  if ((e2.key === "i" || e2.key === "I") && (ctx.isolated || ctx.selectedIds.length === 1)) {
     return { type: "isolate" };
   }
-  if ((e2.key === "h" || e2.key === "H") && ctx.selectedId) {
+  if ((e2.key === "h" || e2.key === "H") && ctx.selectedIds.length > 0) {
     return { type: "toggleVisible" };
   }
-  if ((e2.key === "+" || e2.key === "=") && ctx.selectedId) {
+  if ((e2.key === "+" || e2.key === "=") && ctx.selectedIds.length > 0) {
     return { type: "expand" };
   }
-  if ((e2.key === "-" || e2.key === "_") && ctx.selectedId) {
+  if ((e2.key === "-" || e2.key === "_") && ctx.selectedIds.length > 0) {
     return { type: "collapse" };
   }
   if (e2.key !== "ArrowLeft" && e2.key !== "ArrowRight" && e2.key !== "ArrowUp" && e2.key !== "ArrowDown") {
@@ -39245,6 +39489,8 @@ function ensureMovedParentExpanded(expandedIds, nextTree, movedId) {
   return nextExpanded;
 }
 const GAP_MIN = 8;
+const beginTreeDragGesture = treeDragGesture.begin;
+const endTreeDragGesture = treeDragGesture.end;
 function collectGroups(nodes, rootId) {
   const groups = [];
   const root2 = nodes.find((n2) => n2.id === rootId);
@@ -39317,12 +39563,20 @@ function gapVisual(siblings, index, leftBound, rightBound) {
     height
   };
 }
-function resolveDropTarget(nodes, rootId, sourceId, pointerX, pointerY, canvasWidth) {
-  if (sourceId === rootId) {
+function isBlockedTarget(targetId, sourceIds) {
+  for (const sourceId of sourceIds) {
+    if (targetId === sourceId || isAncestorId(sourceId, targetId)) {
+      return true;
+    }
+  }
+  return false;
+}
+function resolveDropTarget(nodes, rootId, sourceIds, pointerX, pointerY, canvasWidth) {
+  if (sourceIds.length === 0 || sourceIds.includes(rootId)) {
     return null;
   }
   for (const node of nodes) {
-    if (node.id === sourceId || isAncestorId(sourceId, node.id)) {
+    if (isBlockedTarget(node.id, sourceIds)) {
       continue;
     }
     if (pointInRect(pointerX, pointerY, node.x, node.y, node.width, node.height)) {
@@ -39336,7 +39590,7 @@ function resolveDropTarget(nodes, rootId, sourceId, pointerX, pointerY, canvasWi
   const groups = collectGroups(nodes, rootId);
   const rowHits = [];
   for (const group of groups) {
-    if (isAncestorId(sourceId, group.parentId)) {
+    if (isBlockedTarget(group.parentId, sourceIds)) {
       continue;
     }
     const { siblings } = group;
@@ -39534,11 +39788,12 @@ function Tree_node($$anchor, $$props) {
 delegate(["click", "mousedown", "pointerdown", "keydown"]);
 var root = /* @__PURE__ */ from_svg(`<polyline fill="none" stroke="#ffffff" stroke-width="1.5" stroke-linejoin="miter" stroke-linecap="square"></polyline>`);
 var root_1$1 = /* @__PURE__ */ from_svg(`<rect fill="url(#drop-hatch)" opacity="0.95" pointer-events="none"></rect>`);
-var root_2$1 = /* @__PURE__ */ from_html(`<div class="tip svelte-merqpv" role="tooltip"> </div>`);
-var root_3$1 = /* @__PURE__ */ from_html(`<div><svg class="tree svelte-merqpv" role="img" aria-label="Pixi scene inspector"><defs><pattern id="drop-hatch" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="8" height="8" fill="#ffe066"></rect><line x1="0" y1="0" x2="0" y2="8" stroke="#e6b800" stroke-width="3"></line></pattern></defs><!><!><!><!></svg> <!></div>`);
+var root_2$1 = /* @__PURE__ */ from_svg(`<rect class="marquee svelte-merqpv" pointer-events="none"></rect>`);
+var root_3$1 = /* @__PURE__ */ from_html(`<div class="tip svelte-merqpv" role="tooltip"> </div>`);
+var root_4 = /* @__PURE__ */ from_html(`<div><svg class="tree svelte-merqpv" role="img" aria-label="Pixi scene inspector"><defs><pattern id="drop-hatch" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="8" height="8" fill="#ffe066"></rect><line x1="0" y1="0" x2="0" y2="8" stroke="#e6b800" stroke-width="3"></line></pattern></defs><!><!><!><!><!></svg> <!></div>`);
 const $$css$1 = {
   hash: "svelte-merqpv",
-  code: '.tree-wrap.svelte-merqpv {position:relative;flex-shrink:0;-webkit-user-select:none;user-select:none;}.tree-wrap.dragging.svelte-merqpv {cursor:grabbing;}.tree-wrap.dragging.svelte-merqpv .node {cursor:grabbing;}.tree.svelte-merqpv {display:block;-webkit-user-select:none;user-select:none;}.tip.svelte-merqpv {position:absolute;z-index:2;max-width:min(360px, 80vw);padding:4px 8px;border:1.5px solid #111111;border-radius:2px;background:#fff8c8;box-shadow:3px 3px 0 #111111;color:#111111;font-family:"Courier New", Courier, monospace;font-size:11px;font-weight:700;line-height:1.3;overflow-wrap:anywhere;word-break:break-word;pointer-events:none;transform:translate(-50%, calc(-100% - 8px));white-space:pre-wrap;}'
+  code: '.tree-wrap.svelte-merqpv {position:relative;flex-shrink:0;-webkit-user-select:none;user-select:none;}.tree-wrap.dragging.svelte-merqpv {cursor:grabbing;}.tree-wrap.dragging.svelte-merqpv .node {cursor:grabbing;}.tree-wrap.marqueeing.svelte-merqpv {cursor:crosshair;}.tree.svelte-merqpv {display:block;-webkit-user-select:none;user-select:none;}.marquee.svelte-merqpv {fill:rgba(255, 255, 255, 0.18);stroke:#ffffff;stroke-width:1.5;}.tip.svelte-merqpv {position:absolute;z-index:2;max-width:min(360px, 80vw);padding:4px 8px;border:1.5px solid #111111;border-radius:2px;background:#fff8c8;box-shadow:3px 3px 0 #111111;color:#111111;font-family:"Courier New", Courier, monospace;font-size:11px;font-weight:700;line-height:1.3;overflow-wrap:anywhere;word-break:break-word;pointer-events:none;transform:translate(-50%, calc(-100% - 8px));white-space:pre-wrap;}'
 };
 function Scene_tree($$anchor, $$props) {
   push($$props, true);
@@ -39550,16 +39805,19 @@ function Scene_tree($$anchor, $$props) {
   let svgEl = /* @__PURE__ */ state(void 0);
   const DRAG_THRESHOLD = 5;
   let drag = /* @__PURE__ */ state(null);
+  let marquee = /* @__PURE__ */ state(null);
   let suppressClick = false;
   let suppressClickTimer = null;
   let activePointerId = null;
   let lastScrolledId = null;
+  const selectedSet = /* @__PURE__ */ user_derived(() => new Set($$props.selectedIds));
+  const primarySelectedId = /* @__PURE__ */ user_derived(() => $$props.selectedIds.length > 0 ? $$props.selectedIds[$$props.selectedIds.length - 1] : null);
   user_effect(() => {
-    const id = $$props.selectedId;
+    const id = get(primarySelectedId);
     if (id === null || id === void 0 || !get(wrapEl)) {
       return;
     }
-    if (get(drag)) {
+    if (get(drag) || get(marquee)) {
       return;
     }
     if (id === lastScrolledId) {
@@ -39574,6 +39832,30 @@ function Scene_tree($$anchor, $$props) {
   });
   function setDragging(active) {
     $$props.ondragging?.(active);
+  }
+  function rectsIntersect(ax, ay, aw, ah, bx, by, bw, bh) {
+    return ax < bx + bw && ax + aw > bx && ay < by + bh && ay + ah > by;
+  }
+  function collectMarqueeHits(state2) {
+    const hits = [];
+    for (const node of $$props.nodes) {
+      if (rectsIntersect(state2.x, state2.y, state2.width, state2.height, node.x, node.y, node.width, node.height)) {
+        hits.push(node.id);
+      }
+    }
+    return hits;
+  }
+  function bindGestureListeners() {
+    window.addEventListener("pointermove", onWindowPointerMove, true);
+    window.addEventListener("pointerup", onWindowPointerUp, true);
+    window.addEventListener("pointercancel", onWindowPointerCancel, true);
+    window.addEventListener("keydown", onWindowKeyDown, true);
+  }
+  function unbindGestureListeners() {
+    window.removeEventListener("pointermove", onWindowPointerMove, true);
+    window.removeEventListener("pointerup", onWindowPointerUp, true);
+    window.removeEventListener("pointercancel", onWindowPointerCancel, true);
+    window.removeEventListener("keydown", onWindowKeyDown, true);
   }
   function updateDragFromEvent(e2) {
     if (!get(drag)) {
@@ -39604,8 +39886,31 @@ function Scene_tree($$anchor, $$props) {
     if ($$props.rootId === null || $$props.rootId === void 0) {
       return;
     }
-    const drop = resolveDropTarget($$props.nodes, $$props.rootId, get(drag).sourceId, local.x, local.y, $$props.width);
+    const drop = resolveDropTarget($$props.nodes, $$props.rootId, get(drag).sourceIds, local.x, local.y, $$props.width);
     set(drag, { ...get(drag), drop, pointerX: local.x, pointerY: local.y }, true);
+  }
+  function updateMarqueeFromEvent(e2) {
+    if (!get(marquee)) {
+      return;
+    }
+    const local = svgPoint(e2);
+    if (!local) {
+      return;
+    }
+    if (!get(marquee).active) {
+      const dist = Math.hypot(local.x - get(marquee).startX, local.y - get(marquee).startY);
+      if (dist < DRAG_THRESHOLD) {
+        return;
+      }
+      window.getSelection()?.removeAllRanges();
+      setDragging(true);
+      set(marquee, { ...get(marquee), active: true }, true);
+    }
+    const x2 = Math.min(get(marquee).startX, local.x);
+    const y2 = Math.min(get(marquee).startY, local.y);
+    const w2 = Math.abs(local.x - get(marquee).startX);
+    const h2 = Math.abs(local.y - get(marquee).startY);
+    set(marquee, { ...get(marquee), x: x2, y: y2, width: w2, height: h2 }, true);
   }
   function armSuppressClick() {
     suppressClick = true;
@@ -39622,12 +39927,13 @@ function Scene_tree($$anchor, $$props) {
   }
   function finishDrag(commit) {
     const state2 = get(drag);
+    const hadGesture = state2 !== null;
     set(drag, null);
     activePointerId = null;
-    window.removeEventListener("pointermove", onWindowPointerMove, true);
-    window.removeEventListener("pointerup", onWindowPointerUp, true);
-    window.removeEventListener("pointercancel", onWindowPointerCancel, true);
-    window.removeEventListener("keydown", onWindowKeyDown, true);
+    unbindGestureListeners();
+    if (hadGesture) {
+      endTreeDragGesture();
+    }
     if (!state2) {
       return;
     }
@@ -39640,10 +39946,34 @@ function Scene_tree($$anchor, $$props) {
     if (!commit || !state2.drop || !$$props.onmove) {
       return;
     }
-    $$props.onmove(state2.sourceId, state2.drop.parentId, state2.drop.index);
+    $$props.onmove(state2.sourceIds, state2.drop.parentId, state2.drop.index);
+  }
+  function finishMarquee(commit, additive = false) {
+    const state2 = get(marquee);
+    if (!state2) {
+      return;
+    }
+    set(marquee, null);
+    activePointerId = null;
+    unbindGestureListeners();
+    endTreeDragGesture();
+    if (!state2.active) {
+      setDragging(false);
+      return;
+    }
+    setDragging(false);
+    armSuppressClick();
+    if (!commit) {
+      return;
+    }
+    $$props.onselectmany?.(collectMarqueeHits(state2), additive);
   }
   function onWindowPointerMove(e2) {
     if (activePointerId !== null && e2.pointerId !== activePointerId) {
+      return;
+    }
+    if (get(marquee)) {
+      updateMarqueeFromEvent(e2);
       return;
     }
     updateDragFromEvent(e2);
@@ -39655,10 +39985,18 @@ function Scene_tree($$anchor, $$props) {
     if (e2.button !== 0) {
       return;
     }
+    if (get(marquee)) {
+      finishMarquee(true, e2.shiftKey || e2.metaKey || e2.ctrlKey);
+      return;
+    }
     finishDrag(true);
   }
   function onWindowPointerCancel(e2) {
     if (activePointerId !== null && e2.pointerId !== activePointerId) {
+      return;
+    }
+    if (get(marquee)) {
+      finishMarquee(false);
       return;
     }
     finishDrag(false);
@@ -39667,23 +40005,28 @@ function Scene_tree($$anchor, $$props) {
     if (e2.key !== "Escape") {
       return;
     }
+    if (get(marquee)) {
+      e2.preventDefault();
+      e2.stopImmediatePropagation();
+      finishMarquee(false);
+      return;
+    }
     if (!get(drag)) {
       return;
     }
     e2.preventDefault();
-    e2.stopPropagation();
+    e2.stopImmediatePropagation();
     finishDrag(false);
   }
   user_effect(() => () => {
-    window.removeEventListener("pointermove", onWindowPointerMove, true);
-    window.removeEventListener("pointerup", onWindowPointerUp, true);
-    window.removeEventListener("pointercancel", onWindowPointerCancel, true);
-    window.removeEventListener("keydown", onWindowKeyDown, true);
+    if (get(marquee)) {
+      finishMarquee(false);
+    }
+    if (get(drag)) {
+      finishDrag(false);
+    }
     if (suppressClickTimer !== null) {
       clearTimeout(suppressClickTimer);
-    }
-    if (get(drag)?.active) {
-      setDragging(false);
     }
   });
   function clearTipTimers() {
@@ -39702,7 +40045,7 @@ function Scene_tree($$anchor, $$props) {
   }
   user_effect(() => () => hideTip());
   function onNodeEnter(node) {
-    if (get(drag)?.active) {
+    if (get(drag)?.active || get(marquee)?.active) {
       return;
     }
     hideTip();
@@ -39742,8 +40085,14 @@ function Scene_tree($$anchor, $$props) {
       return;
     }
     e2.preventDefault();
-    const toggleExpand = e2.altKey || $$props.selectedId === id;
-    $$props.onselect(id, e2.altKey, toggleExpand);
+    const additive = e2.shiftKey || e2.metaKey || e2.ctrlKey;
+    if (additive) {
+      $$props.onselect(id, e2.altKey, { toggleExpand: false, additive: true });
+      return;
+    }
+    const inMultiSelection = $$props.selectedIds.length > 1 && get(selectedSet).has(id);
+    const toggleExpand = e2.altKey || get(primarySelectedId) === id || inMultiSelection;
+    $$props.onselect(id, e2.altKey, { toggleExpand, additive: false });
   }
   function svgPoint(e2) {
     if (!get(svgEl)) {
@@ -39763,6 +40112,9 @@ function Scene_tree($$anchor, $$props) {
     if (e2.button !== 0) {
       return;
     }
+    if (e2.shiftKey || e2.metaKey || e2.ctrlKey) {
+      return;
+    }
     if (!$$props.onmove || $$props.rootId === null || $$props.rootId === void 0 || node.id === $$props.rootId) {
       return;
     }
@@ -39771,11 +40123,18 @@ function Scene_tree($$anchor, $$props) {
       return;
     }
     hideTip();
+    if (get(marquee)) {
+      finishMarquee(false);
+    }
+    if (get(drag)) {
+      finishDrag(false);
+    }
     activePointerId = e2.pointerId;
+    const movingIds = get(selectedSet).has(node.id) && $$props.selectedIds.length > 1 ? $$props.selectedIds.filter((id) => id !== $$props.rootId) : [node.id];
     set(
       drag,
       {
-        sourceId: node.id,
+        sourceIds: movingIds,
         label: displayLabel(node),
         labelColor: labelColor(node, $$props.rootId),
         visible: node.visible,
@@ -39792,10 +40151,47 @@ function Scene_tree($$anchor, $$props) {
       },
       true
     );
-    window.addEventListener("pointermove", onWindowPointerMove, true);
-    window.addEventListener("pointerup", onWindowPointerUp, true);
-    window.addEventListener("pointercancel", onWindowPointerCancel, true);
-    window.addEventListener("keydown", onWindowKeyDown, true);
+    beginTreeDragGesture();
+    bindGestureListeners();
+  }
+  function onSvgPointerDown(e2) {
+    if (e2.button !== 0) {
+      return;
+    }
+    if (!$$props.onselectmany) {
+      return;
+    }
+    const target = e2.target;
+    if (target instanceof Element && target.closest("[data-node-id]") !== null) {
+      return;
+    }
+    const local = svgPoint(e2);
+    if (!local) {
+      return;
+    }
+    hideTip();
+    if (get(marquee)) {
+      finishMarquee(false);
+    }
+    if (get(drag)) {
+      finishDrag(false);
+    }
+    activePointerId = e2.pointerId;
+    set(
+      marquee,
+      {
+        startX: local.x,
+        startY: local.y,
+        x: local.x,
+        y: local.y,
+        width: 0,
+        height: 0,
+        active: false
+      },
+      true
+    );
+    beginTreeDragGesture();
+    bindGestureListeners();
   }
   const dropNodeId = /* @__PURE__ */ user_derived(() => {
     if (!get(drag)?.active || !get(drag).drop) {
@@ -39814,7 +40210,13 @@ function Scene_tree($$anchor, $$props) {
     }
     return get(drag).drop.visuals.find((v2) => v2.kind === "gap") ?? null;
   });
-  var div = root_3$1();
+  const dragSourceSet = /* @__PURE__ */ user_derived(() => {
+    if (!get(drag)?.active) {
+      return /* @__PURE__ */ new Set();
+    }
+    return new Set(get(drag).sourceIds);
+  });
+  var div = root_4();
   let classes;
   let styles;
   var svg = child(div);
@@ -39829,9 +40231,9 @@ function Scene_tree($$anchor, $$props) {
     {
       let $0 = /* @__PURE__ */ user_derived(() => displayLabel(get(node)));
       let $1 = /* @__PURE__ */ user_derived(() => labelColor(get(node), $$props.rootId));
-      let $2 = /* @__PURE__ */ user_derived(() => $$props.selectedId === get(node).id);
+      let $2 = /* @__PURE__ */ user_derived(() => get(selectedSet).has(get(node).id));
       let $3 = /* @__PURE__ */ user_derived(() => get(dropNodeId) === get(node).id);
-      let $4 = /* @__PURE__ */ user_derived(() => !!(get(drag)?.active && get(drag).sourceId === get(node).id));
+      let $4 = /* @__PURE__ */ user_derived(() => get(dragSourceSet).has(get(node).id));
       Tree_node($$anchor2, {
         get node() {
           return get(node);
@@ -39916,11 +40318,27 @@ function Scene_tree($$anchor, $$props) {
       if (get(drag)?.active) $$render(consequent_1);
     });
   }
-  bind_this(svg, ($$value) => set(svgEl, $$value), () => get(svgEl));
-  var node_5 = sibling(svg, 2);
+  var node_5 = sibling(node_4);
   {
     var consequent_2 = ($$anchor2) => {
-      var div_1 = root_2$1();
+      var rect_1 = root_2$1();
+      template_effect(() => {
+        set_attribute(rect_1, "x", get(marquee).x);
+        set_attribute(rect_1, "y", get(marquee).y);
+        set_attribute(rect_1, "width", get(marquee).width);
+        set_attribute(rect_1, "height", get(marquee).height);
+      });
+      append($$anchor2, rect_1);
+    };
+    if_block(node_5, ($$render) => {
+      if (get(marquee)?.active) $$render(consequent_2);
+    });
+  }
+  bind_this(svg, ($$value) => set(svgEl, $$value), () => get(svgEl));
+  var node_6 = sibling(svg, 2);
+  {
+    var consequent_3 = ($$anchor2) => {
+      var div_1 = root_3$1();
       let styles_1;
       var text = only_child(div_1, true);
       template_effect(() => {
@@ -39929,19 +40347,76 @@ function Scene_tree($$anchor, $$props) {
       });
       append($$anchor2, div_1);
     };
-    if_block(node_5, ($$render) => {
-      if (get(tip)) $$render(consequent_2);
+    if_block(node_6, ($$render) => {
+      if (get(tip)) $$render(consequent_3);
     });
   }
   bind_this(div, ($$value) => set(wrapEl, $$value), () => get(wrapEl));
   template_effect(() => {
-    classes = set_class(div, 1, "tree-wrap svelte-merqpv", null, classes, { dragging: get(drag)?.active });
+    classes = set_class(div, 1, "tree-wrap svelte-merqpv", null, classes, {
+      dragging: get(drag)?.active,
+      marqueeing: get(marquee)?.active
+    });
     styles = set_style(div, "", styles, { width: `${$$props.width}px`, height: `${$$props.height}px` });
     set_attribute(svg, "width", $$props.width);
     set_attribute(svg, "height", $$props.height);
   });
+  delegated("pointerdown", svg, onSvgPointerDown);
   append($$anchor, div);
   pop();
+}
+delegate(["pointerdown"]);
+const DEFAULT_LIVE_REFRESH_INTERVAL_SEC = 1;
+const MIN_LIVE_REFRESH_INTERVAL_SEC = 0;
+const MAX_LIVE_REFRESH_INTERVAL_SEC = 10;
+const LIVE_REFRESH_INTERVAL_STEP = 0.5;
+const LIVE_REFRESH_INTERVAL_EVENT = "pixi-scene-inspector-live-refresh-interval";
+const LIVE_REFRESH_INTERVAL_ATTR = "data-psi-live-refresh-interval";
+function normalizeLiveRefreshInterval(raw) {
+  const value = typeof raw === "number" ? raw : Number(raw);
+  if (!Number.isFinite(value)) {
+    return DEFAULT_LIVE_REFRESH_INTERVAL_SEC;
+  }
+  const clamped = Math.min(
+    MAX_LIVE_REFRESH_INTERVAL_SEC,
+    Math.max(MIN_LIVE_REFRESH_INTERVAL_SEC, value)
+  );
+  return Math.round(clamped / LIVE_REFRESH_INTERVAL_STEP) * LIVE_REFRESH_INTERVAL_STEP;
+}
+function readLiveRefreshIntervalAttr(element = document.documentElement) {
+  const raw = element.getAttribute(LIVE_REFRESH_INTERVAL_ATTR);
+  if (raw === null) {
+    return void 0;
+  }
+  return normalizeLiveRefreshInterval(raw);
+}
+function subscribeLiveRefreshInterval(listener) {
+  const onEvent = (event2) => {
+    if (!(event2 instanceof CustomEvent)) {
+      return;
+    }
+    listener(normalizeLiveRefreshInterval(event2.detail));
+  };
+  const observer = new MutationObserver(() => {
+    const next = readLiveRefreshIntervalAttr();
+    if (next === void 0) {
+      return;
+    }
+    listener(next);
+  });
+  window.addEventListener(LIVE_REFRESH_INTERVAL_EVENT, onEvent);
+  observer.observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: [LIVE_REFRESH_INTERVAL_ATTR]
+  });
+  const initial = readLiveRefreshIntervalAttr();
+  if (initial !== void 0) {
+    listener(initial);
+  }
+  return () => {
+    window.removeEventListener(LIVE_REFRESH_INTERVAL_EVENT, onEvent);
+    observer.disconnect();
+  };
 }
 const EVENT_MODE_OPTIONS = [
   { value: "none", label: "None" },
@@ -40528,14 +41003,14 @@ function normalizePropertyExport(raw) {
   }
   return Object.keys(settings).length > 0 ? settings : void 0;
 }
-function mergePropertyExport(current, patch) {
-  if (!current && !patch) {
+function mergePropertyExport(current2, patch) {
+  if (!current2 && !patch) {
     return void 0;
   }
   const next = {};
   for (const sectionId of PROPERTY_SECTION_IDS) {
     const selection = {
-      ...current?.[sectionId],
+      ...current2?.[sectionId],
       ...patch?.[sectionId]
     };
     if (Object.keys(selection).length > 0) {
@@ -40599,30 +41074,30 @@ function readSettings() {
   }
 }
 function writeSettings(patch) {
-  const current = readSettings();
+  const current2 = readSettings();
   const propertyExport = mergePropertyExport(
-    current.propertyExport,
+    current2.propertyExport,
     patch.propertyExport
   );
-  const propertyExportOutput = patch.propertyExportOutput ?? current.propertyExportOutput;
-  const highlight = patch.highlight ?? current.highlight;
+  const propertyExportOutput = patch.propertyExportOutput ?? current2.propertyExportOutput;
+  const highlight = patch.highlight ?? current2.highlight;
   const next = {
     properties: roundPanelSettings({
-      ...current.properties,
+      ...current2.properties,
       ...patch.properties,
       ...patch.properties?.position ? {
         position: {
-          ...current.properties?.position,
+          ...current2.properties?.position,
           ...patch.properties.position
         }
       } : {}
     }),
     tree: roundPanelSettings({
-      ...current.tree,
+      ...current2.tree,
       ...patch.tree,
       ...patch.tree?.position ? {
         position: {
-          ...current.tree?.position,
+          ...current2.tree?.position,
           ...patch.tree.position
         }
       } : {}
@@ -40659,7 +41134,7 @@ function writePropertyExportOutput(mode) {
   writeSettings({ propertyExportOutput: mode });
 }
 function readHighlightEnabled() {
-  return readSettings().highlight === true;
+  return readSettings().highlight !== false;
 }
 function writeHighlightEnabled(enabled) {
   writeSettings({ highlight: enabled });
@@ -40702,9 +41177,10 @@ const $$css = {
 function App($$anchor, $$props) {
   push($$props, true);
   append_styles$1($$anchor, $$css);
+  const MULTI_SELECTION_TITLE = "multiple nodes selected";
   const selection = prop($$props, "selection", 19, createSelectionChannel);
   let expandedIds = /* @__PURE__ */ state(proxy(/* @__PURE__ */ new Set()));
-  let selectedId = /* @__PURE__ */ state(null);
+  let selectedIds = /* @__PURE__ */ state(proxy([]));
   let didSeedExpand = false;
   let status = /* @__PURE__ */ state("loading");
   let message = /* @__PURE__ */ state("Looking for PixiJS…");
@@ -40716,13 +41192,17 @@ function App($$anchor, $$props) {
   let canvasH = /* @__PURE__ */ state(600);
   let isolatedRootId = /* @__PURE__ */ state(null);
   let highlightEnabled = /* @__PURE__ */ state(proxy(readHighlightEnabled()));
-  let autoRefresh = /* @__PURE__ */ state(true);
+  const initialLiveRefreshInterval = readLiveRefreshIntervalAttr() ?? DEFAULT_LIVE_REFRESH_INTERVAL_SEC;
+  let liveRefreshInterval = /* @__PURE__ */ state(proxy(initialLiveRefreshInterval));
+  let autoRefresh = /* @__PURE__ */ state(initialLiveRefreshInterval > 0);
   let nameFilter = /* @__PURE__ */ state("");
   let lastError = /* @__PURE__ */ state("");
-  let clipboardId = /* @__PURE__ */ state(null);
+  let clipboardIds = /* @__PURE__ */ state(proxy([]));
+  let lastClearedIds = /* @__PURE__ */ state(null);
   let moving = /* @__PURE__ */ state(false);
   let dragging = /* @__PURE__ */ state(false);
   let showHelp = /* @__PURE__ */ state(false);
+  const selectedId = /* @__PURE__ */ user_derived(() => get(selectedIds).length > 0 ? get(selectedIds)[get(selectedIds).length - 1] : null);
   const isolateLabel = /* @__PURE__ */ user_derived(() => {
     if (!get(isolatedRootId) || !get(tree)) {
       return null;
@@ -40731,14 +41211,28 @@ function App($$anchor, $$props) {
     return `isolated${iso ? `: ${iso.label || iso.typeName}` : ""} · press I again to exit`;
   });
   user_effect(() => {
-    if (!get(selectedId) || !get(tree)) {
-      selection().publish({ id: null, name: null });
+    if (!get(tree) || get(selectedIds).length === 0) {
+      selection().publish({ id: null, name: null, ids: [] });
       return;
     }
-    const node = findTreeNode(get(tree), get(selectedId));
+    if (get(selectedIds).length > 1) {
+      selection().publish({
+        id: get(selectedId),
+        name: MULTI_SELECTION_TITLE,
+        ids: get(selectedIds)
+      });
+      return;
+    }
+    const id = get(selectedIds)[0];
+    if (!id) {
+      selection().publish({ id: null, name: null, ids: [] });
+      return;
+    }
+    const node = findTreeNode(get(tree), id);
     selection().publish({
-      id: get(selectedId),
-      name: node ? node.label || node.typeName : null
+      id,
+      name: node ? node.label || node.typeName : null,
+      ids: [id]
     });
   });
   function getViewRoot(root2) {
@@ -40785,16 +41279,22 @@ function App($$anchor, $$props) {
         set(nodes, [], true);
         set(edges, [], true);
         set(isolatedRootId, null);
+        set(lastClearedIds, null);
         return;
       }
       const isFirstTree = get(tree) === null;
       const prevTree = get(tree);
+      const treeChanged = !prevTree || isTreeChanged(prevTree, result.tree);
+      if (treeChanged) {
+        set(lastClearedIds, null);
+      }
       set(tree, result.tree, true);
       if (prevTree && isTreeRewrite(prevTree, result.tree)) {
         set(expandedIds, seedExpandedRoot(result.tree.id), true);
-        set(selectedId, null);
+        set(selectedIds, [], true);
         set(isolatedRootId, null);
-        set(clipboardId, null);
+        set(clipboardIds, [], true);
+        set(lastClearedIds, null);
       } else if (!didSeedExpand) {
         set(expandedIds, seedExpandedRoot(result.tree.id), true);
         didSeedExpand = true;
@@ -40804,21 +41304,21 @@ function App($$anchor, $$props) {
         const nextExpanded = remapIdsByUid(get(expandedIds), prevTree, result.tree);
         nextExpanded.add(result.tree.id);
         set(expandedIds, nextExpanded, true);
-        if (get(selectedId)) {
-          set(selectedId, remapIdByUid(get(selectedId), prevIdToUid, nextUidToId), true);
+        if (get(selectedIds).length > 0) {
+          set(selectedIds, remapIdListByUid(get(selectedIds), prevIdToUid, nextUidToId), true);
         }
         if (get(isolatedRootId)) {
           set(isolatedRootId, remapIdByUid(get(isolatedRootId), prevIdToUid, nextUidToId), true);
         }
-        if (get(clipboardId)) {
-          set(clipboardId, remapIdByUid(get(clipboardId), prevIdToUid, nextUidToId), true);
+        if (get(clipboardIds).length > 0) {
+          set(clipboardIds, remapIdListByUid(get(clipboardIds), prevIdToUid, nextUidToId), true);
         }
       }
       set(source2, result.source, true);
       set(status, "ok");
       relayoutFromTree(result.tree);
-      if (isFirstTree && get(selectedId)) {
-        await highlight(get(selectedId));
+      if (isFirstTree || prevTree) {
+        await applySelection(get(selectedIds));
       }
       set(lastError, "");
     } catch (err) {
@@ -40827,32 +41327,34 @@ function App($$anchor, $$props) {
       set(message, "Failed to read page context");
     }
   }
-  async function applyMove(sourceId, parentId, index) {
-    if (!get(tree) || get(moving)) {
+  async function applyMove(sourceIds, parentId, index) {
+    if (!get(tree) || get(moving) || sourceIds.length === 0) {
       return;
     }
-    if (!canReparent(get(tree), sourceId, parentId)) {
+    const ordered = sortIdsByTreeOrder(get(tree), sourceIds).filter((id) => canReparent(get(tree), id, parentId));
+    if (ordered.length === 0) {
       return;
     }
     set(moving, true);
     try {
-      const newId = await $$props.host.moveNode(sourceId, parentId, index);
-      if (newId === null || newId === void 0) {
+      const newIds = await $$props.host.moveNodes(ordered, parentId, index);
+      if (!newIds || newIds.length === 0) {
         return;
-      }
-      if (get(clipboardId) && get(clipboardId) !== sourceId && isAncestorId(sourceId, get(clipboardId))) {
-        set(clipboardId, null);
       }
       set(moving, false);
       await refresh();
       if (get(tree)) {
-        set(expandedIds, ensureMovedParentExpanded(get(expandedIds), get(tree), newId), true);
+        let nextExpanded = get(expandedIds);
+        for (const newId of newIds) {
+          nextExpanded = ensureMovedParentExpanded(nextExpanded, get(tree), newId);
+        }
+        set(expandedIds, nextExpanded, true);
         relayoutFromTree(get(tree));
       }
-      await highlight(newId);
+      await applySelection(newIds);
       setTimeout(
         () => {
-          void highlight(newId);
+          void applySelection(newIds);
         },
         0
       );
@@ -40862,44 +41364,77 @@ function App($$anchor, $$props) {
       set(moving, false);
     }
   }
-  function onmove(sourceId, parentId, index) {
-    void applyMove(sourceId, parentId, index);
+  function onmove(sourceIds, parentId, index) {
+    void applyMove(sourceIds, parentId, index);
   }
   function ondragging(active) {
     set(dragging, active, true);
   }
-  async function highlight(id) {
-    set(selectedId, id, true);
+  async function applySelection(ids) {
+    if (ids.length > 0) {
+      set(lastClearedIds, null);
+    }
+    set(selectedIds, ids, true);
     try {
-      await $$props.host.selectNode(id);
+      await $$props.host.selectNodes(ids);
     } catch {
     }
   }
+  async function clearSelection() {
+    if (get(selectedIds).length > 0) {
+      set(lastClearedIds, [...get(selectedIds)], true);
+    }
+    set(selectedIds, [], true);
+    try {
+      await $$props.host.selectNodes([]);
+    } catch {
+    }
+  }
+  async function restoreSelection() {
+    if (!get(lastClearedIds) || get(lastClearedIds).length === 0) {
+      return;
+    }
+    await applySelection([...get(lastClearedIds)]);
+  }
   function toggleIsolate() {
-    if (!get(tree) || !get(selectedId)) {
+    if (!get(tree)) {
       return;
     }
     if (get(isolatedRootId)) {
       set(isolatedRootId, null);
-    } else {
-      set(isolatedRootId, get(selectedId), true);
-      const next = new Set(get(expandedIds));
-      next.add(get(selectedId));
-      set(expandedIds, next, true);
+      relayoutFromTree(get(tree));
+      return;
     }
+    if (get(selectedIds).length !== 1) {
+      return;
+    }
+    const id = get(selectedIds)[0];
+    if (!id) {
+      return;
+    }
+    set(isolatedRootId, id, true);
+    const next = new Set(get(expandedIds));
+    next.add(id);
+    set(expandedIds, next, true);
     relayoutFromTree(get(tree));
   }
   async function toggleVisible() {
-    if (!get(selectedId) || !get(tree)) {
-      return;
-    }
-    const selected = findTreeNode(get(tree), get(selectedId));
-    if (selected && !canToggleTreeNodeVisible(selected)) {
+    if (get(selectedIds).length === 0 || !get(tree)) {
       return;
     }
     try {
-      const ok = await $$props.host.toggleNodeVisible(get(selectedId));
-      if (!ok) {
+      let any = false;
+      for (const id of get(selectedIds)) {
+        const node = findTreeNode(get(tree), id);
+        if (node && !canToggleTreeNodeVisible(node)) {
+          continue;
+        }
+        const ok = await $$props.host.toggleNodeVisible(id);
+        if (ok) {
+          any = true;
+        }
+      }
+      if (!any) {
         return;
       }
       await refresh();
@@ -40907,14 +41442,54 @@ function App($$anchor, $$props) {
       set(lastError, err instanceof Error ? err.message : String(err), true);
     }
   }
-  async function onselect(id, altKey, toggleExpand = true) {
-    await highlight(id);
+  async function onselect(id, altKey, options = {}) {
+    const additive = options.additive === true;
+    const toggleExpand = options.toggleExpand !== false;
+    if (additive) {
+      const next2 = toggleSelectedId(get(selectedIds), id);
+      await applySelection(next2);
+      return;
+    }
+    if (get(selectedIds).length > 1 && get(selectedIds).includes(id)) {
+      expandOrCollapseSelection(altKey);
+      return;
+    }
+    await applySelection([id]);
     if (!toggleExpand || !get(tree)) {
       return;
     }
     const viewRoot = getViewRoot(get(tree));
     const next = new Set(get(expandedIds));
     const changed = altKey ? collapseOneLevel(viewRoot, id, next) : expandOneLevel(viewRoot, id, next);
+    if (changed) {
+      set(expandedIds, next, true);
+      relayoutFromTree(get(tree));
+    }
+  }
+  async function onselectmany(ids, additive) {
+    if (!get(tree)) {
+      return;
+    }
+    const ordered = sortIdsByTreeOrder(getViewRoot(get(tree)), ids);
+    const next = resolveMarqueeSelection(get(selectedIds), ordered, additive);
+    if (next === null) {
+      return;
+    }
+    await applySelection(next);
+  }
+  function expandOrCollapseSelection(altKey) {
+    if (!get(tree) || get(selectedIds).length === 0) {
+      return;
+    }
+    const viewRoot = getViewRoot(get(tree));
+    const next = new Set(get(expandedIds));
+    let changed = false;
+    for (const id of get(selectedIds)) {
+      const didChange = altKey ? collapseOneLevel(viewRoot, id, next) : expandOneLevel(viewRoot, id, next);
+      if (didChange) {
+        changed = true;
+      }
+    }
     if (changed) {
       set(expandedIds, next, true);
       relayoutFromTree(get(tree));
@@ -40929,7 +41504,7 @@ function App($$anchor, $$props) {
       if (nextId === null || nextId === void 0) {
         return;
       }
-      void highlight(nextId);
+      void applySelection([nextId]);
       return;
     }
     if (!get(tree)) {
@@ -40948,13 +41523,15 @@ function App($$anchor, $$props) {
       set(expandedIds, next, true);
       relayoutFromTree(get(tree));
     }
-    void highlight(result.selectId);
+    void applySelection([result.selectId]);
   }
   function onkeydown(e2) {
     const action = resolvePanelKey(e2, {
       showHelp: get(showHelp),
-      selectedId: get(selectedId),
-      clipboardId: get(clipboardId)
+      selectedIds: get(selectedIds),
+      clipboardIds: get(clipboardIds),
+      isolated: get(isolatedRootId) !== null,
+      canRestoreSelection: get(lastClearedIds) !== null && get(lastClearedIds).length > 0
     });
     if (!action) {
       return;
@@ -40964,11 +41541,21 @@ function App($$anchor, $$props) {
       case "closeHelp":
         set(showHelp, false);
         break;
+      case "clearSelection":
+        void clearSelection();
+        break;
+      case "restoreSelection":
+        void restoreSelection();
+        break;
       case "copy":
-        set(clipboardId, action.id, true);
+        set(
+          clipboardIds,
+          get(tree) ? sortIdsByTreeOrder(get(tree), action.ids) : action.ids,
+          true
+        );
         break;
       case "paste":
-        void applyMove(action.sourceId, action.parentId, null);
+        void applyMove(action.sourceIds, action.parentId, null);
         break;
       case "isolate":
         toggleIsolate();
@@ -40977,14 +41564,10 @@ function App($$anchor, $$props) {
         void toggleVisible();
         break;
       case "expand":
-        if (get(selectedId)) {
-          void onselect(get(selectedId), false);
-        }
+        expandOrCollapseSelection(false);
         break;
       case "collapse":
-        if (get(selectedId)) {
-          void onselect(get(selectedId), true);
-        }
+        expandOrCollapseSelection(true);
         break;
       case "navigate":
         navigate(action.key, action.toEnd);
@@ -40993,72 +41576,106 @@ function App($$anchor, $$props) {
   }
   onMount(() => {
     void refresh();
-    const id = setInterval(
-      () => {
-        if (get(autoRefresh)) {
-          void refresh();
-        }
-      },
-      1e3
-    );
+    let timerId = 0;
+    const restartTimer = () => {
+      if (timerId !== 0) {
+        clearInterval(timerId);
+        timerId = 0;
+      }
+      if (get(liveRefreshInterval) <= 0) {
+        return;
+      }
+      timerId = window.setInterval(
+        () => {
+          if (get(autoRefresh)) {
+            void refresh();
+          }
+        },
+        get(liveRefreshInterval) * 1e3
+      );
+    };
+    restartTimer();
+    const unsubscribeLiveRefresh = subscribeLiveRefreshInterval((seconds) => {
+      const wasOff = get(liveRefreshInterval) <= 0;
+      set(liveRefreshInterval, seconds, true);
+      if (seconds <= 0) {
+        set(autoRefresh, false);
+      } else if (wasOff) {
+        set(autoRefresh, true);
+      }
+      restartTimer();
+    });
     window.addEventListener("keydown", onkeydown, true);
     return () => {
-      clearInterval(id);
+      if (timerId !== 0) {
+        clearInterval(timerId);
+      }
+      unsubscribeLiveRefresh();
       window.removeEventListener("keydown", onkeydown, true);
     };
   });
   onDestroy(() => {
-    selection().publish({ id: null, name: null });
+    selection().publish({ id: null, name: null, ids: [] });
   });
   var $$exports = { refresh };
   var div = root_3();
   var node_1 = child(div);
-  Panel_bar(node_1, {
-    get message() {
-      return get(message);
-    },
-    get source() {
-      return get(source2);
-    },
-    get showHelp() {
-      return get(showHelp);
-    },
-    get isolateLabel() {
-      return get(isolateLabel);
-    },
-    get highlightEnabled() {
-      return get(highlightEnabled);
-    },
-    onhighlightEnabledChange: (value) => {
-      set(highlightEnabled, value, true);
-      writeHighlightEnabled(value);
-      $$props.setHighlightEnabled?.(value);
-    },
-    get autoRefresh() {
-      return get(autoRefresh);
-    },
-    onautoRefreshChange: (value) => {
-      set(autoRefresh, value, true);
-    },
-    get nameFilter() {
-      return get(nameFilter);
-    },
-    onnameFilterChange: (value) => {
-      set(nameFilter, value, true);
-      if (get(tree)) {
-        relayoutFromTree(get(tree));
+  {
+    let $0 = /* @__PURE__ */ user_derived(() => get(liveRefreshInterval) > 0);
+    Panel_bar(node_1, {
+      get message() {
+        return get(message);
+      },
+      get source() {
+        return get(source2);
+      },
+      get showHelp() {
+        return get(showHelp);
+      },
+      get isolateLabel() {
+        return get(isolateLabel);
+      },
+      get highlightEnabled() {
+        return get(highlightEnabled);
+      },
+      onhighlightEnabledChange: (value) => {
+        set(highlightEnabled, value, true);
+        writeHighlightEnabled(value);
+        $$props.setHighlightEnabled?.(value);
+      },
+      get autoRefresh() {
+        return get(autoRefresh);
+      },
+      get liveRefreshAvailable() {
+        return get($0);
+      },
+      onautoRefreshChange: (value) => {
+        if (get(liveRefreshInterval) <= 0) {
+          set(autoRefresh, false);
+          return;
+        }
+        set(autoRefresh, value, true);
+      },
+      get nameFilter() {
+        return get(nameFilter);
+      },
+      onnameFilterChange: (value) => {
+        set(nameFilter, value, true);
+        if (get(tree)) {
+          relayoutFromTree(get(tree));
+        }
+      },
+      ontoggleHelp: () => {
+        set(showHelp, !get(showHelp));
+      },
+      onrefresh: () => {
+        refresh().catch(() => void 0);
+      },
+      get onBarReady() {
+        return $$props.onBarReady;
       }
-    },
-    ontoggleHelp: () => {
-      set(showHelp, !get(showHelp));
-    },
-    onrefresh: () => {
-      refresh().catch(() => void 0);
-    },
-    get onBarReady() {
-      return $$props.onBarReady;
-    }
-  });
+    });
+  }
   var node_2 = sibling(node_1, 2);
   {
     var consequent = ($$anchor2) => {
@@ -41103,10 +41720,11 @@ function App($$anchor, $$props) {
           get rootId() {
             return get($0);
           },
-          get selectedId() {
-            return get(selectedId);
+          get selectedIds() {
+            return get(selectedIds);
           },
           onselect,
+          onselectmany,
           onmove,
           ondragging
         });
@@ -41577,6 +42195,27 @@ function objectTabIconSvg(size = 16) {
 function textTabIconSvg(size = 16) {
   return `<svg width="${size}" height="${size}" viewBox="0 0 16 16" aria-hidden="true"><path fill="#43c696" d="M3 2.5h10v2.25H9.35V13.5H6.65V4.75H3z"/></svg>`;
 }
+function resolveAliveNodesByIds(ids, win = globalThis) {
+  const nodes = [];
+  for (const id of ids) {
+    const node = resolveByPath(id, win);
+    if (isNodeAlive(node)) {
+      nodes.push(node);
+    }
+  }
+  return nodes;
+}
+function resolveLiveSelectionNodes(win = globalThis) {
+  const ids = getSelectionIds();
+  if (ids.length > 1) {
+    return resolveAliveNodesByIds(ids, win);
+  }
+  const node = win.$pixi;
+  if (isNodeAlive(node)) {
+    return [node];
+  }
+  return [];
+}
 function isPoint(value) {
   return typeof value === "object" && value !== null && typeof value.x === "number" && typeof value.y === "number";
 }
@@ -41698,8 +42337,8 @@ function identityStringMaps(node) {
   ];
 }
 function blendModeMaps(node) {
-  const current = node.blendMode;
-  if (typeof current === "string") {
+  const current2 = node.blendMode;
+  if (typeof current2 === "string") {
     return [
       {
         key: "blendMode",
@@ -41713,7 +42352,7 @@ function blendModeMaps(node) {
       }
     ];
   }
-  if (typeof current === "number") {
+  if (typeof current2 === "number") {
     return [
       {
         key: "blendMode",
@@ -42040,40 +42679,40 @@ function cssColorToHex6(value) {
   const hex = [Number(rgb[1]), Number(rgb[2]), Number(rgb[3])].map((component) => Math.max(0, Math.min(255, component)).toString(16).padStart(2, "0")).join("");
   return `#${hex}`;
 }
-function replaceRgbColorArray(current, parsed) {
+function replaceRgbColorArray(current2, parsed) {
   const rgb = parsedColorToRgb01(parsed);
   if (!rgb) {
-    return current;
+    return current2;
   }
-  const bytes = rgbColorArrayUsesBytes(current);
+  const bytes = rgbColorArrayUsesBytes(current2);
   const components = bytes ? [
     Math.round(rgb[0] * 255),
     Math.round(rgb[1] * 255),
     Math.round(rgb[2] * 255)
   ] : [rgb[0], rgb[1], rgb[2]];
-  if (current.length > 3) {
-    components.push(Number(current[3]));
+  if (current2.length > 3) {
+    components.push(Number(current2[3]));
   }
-  if (Array.isArray(current)) {
+  if (Array.isArray(current2)) {
     return components;
   }
-  if (current instanceof Float32Array) {
+  if (current2 instanceof Float32Array) {
     return Float32Array.from(components);
   }
-  if (current instanceof Uint8ClampedArray) {
+  if (current2 instanceof Uint8ClampedArray) {
     return Uint8ClampedArray.from(components);
   }
-  if (current instanceof Uint8Array) {
+  if (current2 instanceof Uint8Array) {
     return Uint8Array.from(components);
   }
   return components;
 }
-function writeColorValue(current, parsed) {
-  if (isRgbColorArray(current)) {
-    return replaceRgbColorArray(current, parsed);
+function writeColorValue(current2, parsed) {
+  if (isRgbColorArray(current2)) {
+    return replaceRgbColorArray(current2, parsed);
   }
-  if (current && typeof current === "object" && !Array.isArray(current) && isPlainColorSource(current)) {
-    const record = current;
+  if (current2 && typeof current2 === "object" && !Array.isArray(current2) && isPlainColorSource(current2)) {
+    const record = current2;
     if ("color" in record) {
       return { ...record, color: writeColorValue(record.color, parsed) };
     }
@@ -42317,12 +42956,12 @@ function readFillColor(style) {
 }
 function writeFillColor(style, value) {
   const parsed = parseColorString(value);
-  const current = style.fill;
-  if (isFillGradientLike(current) || current && typeof current === "object" && isFillGradientLike(current.fill)) {
+  const current2 = style.fill;
+  if (isFillGradientLike(current2) || current2 && typeof current2 === "object" && isFillGradientLike(current2.fill)) {
     style.fill = parsed;
     return;
   }
-  style.fill = writeColorValue(current, parsed);
+  style.fill = writeColorValue(current2, parsed);
 }
 function normalizeFillColor(value) {
   if (value === void 0) {
@@ -42653,12 +43292,12 @@ function writeFillStops(style, stops, pixi8) {
     color: parseColorString(stop.color),
     offset: Math.max(0, Math.min(1, stop.offset))
   }));
-  const current = style.fill;
+  const current2 = style.fill;
   let existing = null;
-  if (isFillGradientLike(current)) {
-    existing = current;
-  } else if (current && typeof current === "object" && !Array.isArray(current)) {
-    const nested = current.fill;
+  if (isFillGradientLike(current2)) {
+    existing = current2;
+  } else if (current2 && typeof current2 === "object" && !Array.isArray(current2)) {
+    const nested = current2.fill;
     if (isFillGradientLike(nested)) {
       existing = nested;
     }
@@ -43003,8 +43642,8 @@ function writeStrokeMiterLimit(style, value, pixi8) {
   style.stroke = { miterLimit: value };
 }
 function styleStringMap(style, key, prop2) {
-  const current = style[prop2];
-  if (typeof current !== "string") {
+  const current2 = style[prop2];
+  if (typeof current2 !== "string") {
     return null;
   }
   return {
@@ -43019,8 +43658,8 @@ function styleStringMap(style, key, prop2) {
   };
 }
 function styleNumberMap(style, key, prop2) {
-  const current = style[prop2];
-  if (typeof current !== "number") {
+  const current2 = style[prop2];
+  if (typeof current2 !== "number") {
     return null;
   }
   return {
@@ -43035,8 +43674,8 @@ function styleNumberMap(style, key, prop2) {
   };
 }
 function styleBooleanMap(style, key, prop2) {
-  const current = style[prop2];
-  if (typeof current !== "boolean") {
+  const current2 = style[prop2];
+  if (typeof current2 !== "boolean") {
     return null;
   }
   return {
@@ -43051,8 +43690,8 @@ function styleBooleanMap(style, key, prop2) {
   };
 }
 function fontFamilyMap(style) {
-  const current = style.fontFamily;
-  if (typeof current === "string") {
+  const current2 = style.fontFamily;
+  if (typeof current2 === "string") {
     return {
       key: "style.fontFamily",
       get: () => {
@@ -43064,7 +43703,7 @@ function fontFamilyMap(style) {
       }
     };
   }
-  if (Array.isArray(current) && current.every((entry) => typeof entry === "string")) {
+  if (Array.isArray(current2) && current2.every((entry) => typeof entry === "string")) {
     return {
       key: "style.fontFamily",
       get: () => {
@@ -43085,8 +43724,8 @@ function fontFamilyMap(style) {
   return null;
 }
 function fontSizeMap(style) {
-  const current = style.fontSize;
-  if (typeof current === "number") {
+  const current2 = style.fontSize;
+  if (typeof current2 === "number") {
     return {
       key: "style.fontSize",
       get: () => {
@@ -43098,8 +43737,8 @@ function fontSizeMap(style) {
       }
     };
   }
-  if (typeof current === "string") {
-    const parsed = Number.parseFloat(current);
+  if (typeof current2 === "string") {
+    const parsed = Number.parseFloat(current2);
     if (!Number.isFinite(parsed)) {
       return null;
     }
@@ -44312,7 +44951,7 @@ function createColorField(spec, onCommit) {
   valueWrap.appendChild(input);
   root2.appendChild(label);
   root2.appendChild(valueWrap);
-  let current = "";
+  let current2 = "";
   let focused = false;
   let picking = false;
   function syncChrome() {
@@ -44325,7 +44964,7 @@ function createColorField(spec, onCommit) {
     }
   }
   function commit(next) {
-    current = next;
+    current2 = next;
     input.value = next;
     syncSwatch(next);
     onCommit(spec.key, next);
@@ -44346,7 +44985,7 @@ function createColorField(spec, onCommit) {
       input.blur();
     } else if (event2.key === "Escape") {
       event2.preventDefault();
-      input.value = current;
+      input.value = current2;
       input.blur();
     }
   });
@@ -44367,7 +45006,7 @@ function createColorField(spec, onCommit) {
         return;
       }
       const next = typeof value === "string" ? value : "";
-      current = next;
+      current2 = next;
       input.value = next;
       syncSwatch(next);
     },
@@ -44389,6 +45028,7 @@ function snapToStep(value, step) {
 function attachNumberDrag(dragLayer, binding) {
   let startY = 0;
   let startValue = 0;
+  let lastCommitted = 0;
   let accumulatedY = 0;
   let moved = false;
   let dragging = false;
@@ -44398,11 +45038,11 @@ function attachNumberDrag(dragLayer, binding) {
   let edgeLastTs = 0;
   let edgeHoldStartTs = 0;
   const applyAccumulated = () => {
-    if (typeof binding.getValue() !== "number") {
-      return;
-    }
     const steps = accumulatedY / DRAG_PX_PER_STEP;
-    binding.commit(startValue + steps * binding.step);
+    const next = startValue + steps * binding.step;
+    const previous = lastCommitted;
+    lastCommitted = next;
+    binding.commit(next, previous);
   };
   const stopEdgeScroll = () => {
     edgeDir = 0;
@@ -44464,6 +45104,7 @@ function attachNumberDrag(dragLayer, binding) {
     moved = false;
     accumulatedY = 0;
     stopEdgeScroll();
+    numberDragGesture.end();
     window.removeEventListener("pointermove", onWindowPointerMove);
     window.removeEventListener("pointerup", onWindowPointerUp);
     window.removeEventListener("pointercancel", onWindowPointerUp);
@@ -44483,7 +45124,9 @@ function attachNumberDrag(dragLayer, binding) {
     if (pointerId < 0 && !dragging) {
       return;
     }
-    binding.commit(startValue);
+    const previous = lastCommitted;
+    lastCommitted = startValue;
+    binding.commit(startValue, previous);
     endDrag(false);
   };
   const commitSnappedIfAlt = (event2) => {
@@ -44491,13 +45134,14 @@ function attachNumberDrag(dragLayer, binding) {
       return;
     }
     const value = binding.getValue();
-    if (typeof value !== "number") {
-      return;
-    }
-    binding.commit(snapToStep(value, binding.step));
+    const current2 = typeof value === "number" ? value : startValue;
+    const snapped = snapToStep(current2, binding.step);
+    const previous = lastCommitted;
+    lastCommitted = snapped;
+    binding.commit(snapped, previous);
   };
   const onWindowPointerMove = (event2) => {
-    if (pointerId !== event2.pointerId || typeof binding.getValue() !== "number") {
+    if (pointerId !== event2.pointerId) {
       return;
     }
     if ((event2.buttons & 1) === 0) {
@@ -44535,12 +45179,13 @@ function attachNumberDrag(dragLayer, binding) {
       return;
     }
     event2.preventDefault();
-    event2.stopPropagation();
+    event2.stopImmediatePropagation();
     cancelDrag();
   };
   const onPointerDown = (event2) => {
     const value = binding.getValue();
-    if (event2.button !== 0 || typeof value !== "number") {
+    const hasValue = typeof value === "number";
+    if (event2.button !== 0 || !hasValue && !binding.allowEmpty) {
       return;
     }
     endDrag(false);
@@ -44549,8 +45194,10 @@ function attachNumberDrag(dragLayer, binding) {
     accumulatedY = 0;
     edgeDir = 0;
     startY = event2.clientY;
-    startValue = value;
+    startValue = hasValue ? value : 0;
+    lastCommitted = startValue;
     pointerId = event2.pointerId;
+    numberDragGesture.begin();
     dragLayer.setPointerCapture(event2.pointerId);
     window.addEventListener("pointermove", onWindowPointerMove);
     window.addEventListener("pointerup", onWindowPointerUp);
@@ -44678,7 +45325,7 @@ function createNumberField(spec, onCommit) {
   control.appendChild(stepUp);
   root2.appendChild(label);
   root2.appendChild(control);
-  let current;
+  let current2;
   let focused = false;
   let hover = false;
   function syncChrome() {
@@ -44695,30 +45342,29 @@ function createNumberField(spec, onCommit) {
     }
   }
   function setDisplay(value) {
-    current = value;
+    current2 = value;
     if (focused || drag.isDragging()) {
       return;
     }
     input.value = value === void 0 ? "" : formatNumber(value);
   }
-  function commit(next) {
+  function commit(next, source2, previous = current2) {
     const clamped = clampNumber(next, spec.min, spec.max);
-    current = clamped;
+    current2 = clamped;
     input.value = formatNumber(clamped);
-    onCommit(spec.key, clamped);
+    onCommit(spec.key, clamped, { source: source2, previous });
   }
   function nudge(direction, snap = false) {
-    if (typeof current !== "number") {
-      return;
-    }
-    const next = current + direction * spec.step;
-    commit(snap ? snapToStep(next, spec.step) : next);
+    const base = typeof current2 === "number" ? current2 : 0;
+    const next = base + direction * spec.step;
+    commit(snap ? snapToStep(next, spec.step) : next, "nudge", base);
   }
   const drag = attachNumberDrag(dragLayer, {
     step: spec.step,
     dragAccel: spec.dragAccel,
-    commit,
-    getValue: () => current,
+    commit: (value, previous) => commit(value, "scrub", previous),
+    getValue: () => current2,
+    allowEmpty: true,
     onSyncChrome: syncChrome,
     onClickFocus: () => {
       input.focus();
@@ -44752,9 +45398,9 @@ function createNumberField(spec, onCommit) {
     syncChrome();
     const parsed = Number.parseFloat(input.value.trim());
     if (Number.isFinite(parsed)) {
-      commit(parsed);
+      commit(parsed, "input");
     } else {
-      input.value = current === void 0 ? "" : formatNumber(current);
+      input.value = current2 === void 0 ? "" : formatNumber(current2);
     }
   });
   input.addEventListener("keydown", (event2) => {
@@ -44763,7 +45409,7 @@ function createNumberField(spec, onCommit) {
       input.blur();
     } else if (event2.key === "Escape") {
       event2.preventDefault();
-      input.value = current === void 0 ? "" : formatNumber(current);
+      input.value = current2 === void 0 ? "" : formatNumber(current2);
       input.blur();
     } else if (event2.key === "ArrowUp") {
       event2.preventDefault();
@@ -44854,7 +45500,7 @@ function createFillStopsField(spec, onCommit) {
   });
   root2.appendChild(list);
   root2.appendChild(addButton);
-  let current = [];
+  let current2 = [];
   let busyCount = 0;
   let picking = false;
   let offsetDragging = false;
@@ -44867,7 +45513,7 @@ function createFillStopsField(spec, onCommit) {
   }
   function commit(next, rebuild) {
     beginBusy();
-    current = cloneFillStops(next);
+    current2 = cloneFillStops(next);
     try {
       onCommit(spec.key, cloneFillStops(next));
       if (rebuild) {
@@ -44887,7 +45533,7 @@ function createFillStopsField(spec, onCommit) {
   }
   function renderRows() {
     clearRows();
-    current.forEach((stop, index) => {
+    current2.forEach((stop, index) => {
       const row = document.createElement("div");
       Object.assign(row.style, {
         display: "flex",
@@ -44985,7 +45631,7 @@ function createFillStopsField(spec, onCommit) {
       removeButton.setAttribute("aria-label", "Remove color");
       removeButton.type = "button";
       removeButton.innerHTML = closeIconSvg(10);
-      removeButton.disabled = current.length <= 1;
+      removeButton.disabled = current2.length <= 1;
       Object.assign(removeButton.style, {
         flex: "0 0 22px",
         width: "22px",
@@ -44995,9 +45641,9 @@ function createFillStopsField(spec, onCommit) {
         border: "0",
         borderRadius: "3px",
         outline: "none",
-        background: current.length <= 1 ? "#4a3a3a" : "#5a3030",
-        color: current.length <= 1 ? "#8a6a6a" : "#ff8a8a",
-        cursor: current.length <= 1 ? "default" : "pointer",
+        background: current2.length <= 1 ? "#4a3a3a" : "#5a3030",
+        color: current2.length <= 1 ? "#8a6a6a" : "#ff8a8a",
+        cursor: current2.length <= 1 ? "default" : "pointer",
         display: "inline-flex",
         alignItems: "center",
         justifyContent: "center",
@@ -45021,7 +45667,7 @@ function createFillStopsField(spec, onCommit) {
       }
       function commitOffset(value) {
         const clamped = Math.max(0, Math.min(1, value));
-        const next = cloneFillStops(current);
+        const next = cloneFillStops(current2);
         next[index] = { ...next[index], offset: clamped };
         offsetInput.value = formatNumber(clamped);
         commit(next, false);
@@ -45029,7 +45675,7 @@ function createFillStopsField(spec, onCommit) {
       const offsetDrag = attachNumberDrag(offsetDragLayer, {
         step: OFFSET_STEP,
         dragAccel: OFFSET_DRAG_ACCEL,
-        getValue: () => current[index]?.offset,
+        getValue: () => current2[index]?.offset,
         commit: commitOffset,
         onSyncChrome: () => {
           offsetDragging = offsetDrag.isDragging();
@@ -45046,7 +45692,7 @@ function createFillStopsField(spec, onCommit) {
       });
       colorInput.addEventListener("blur", () => {
         syncColorChrome(false);
-        const next = cloneFillStops(current);
+        const next = cloneFillStops(current2);
         next[index] = { ...next[index], color: colorInput.value };
         commit(next, false);
         endBusy();
@@ -45057,7 +45703,7 @@ function createFillStopsField(spec, onCommit) {
           colorInput.blur();
         } else if (event2.key === "Escape") {
           event2.preventDefault();
-          colorInput.value = current[index]?.color ?? "";
+          colorInput.value = current2[index]?.color ?? "";
           colorInput.blur();
         }
       });
@@ -45082,7 +45728,7 @@ function createFillStopsField(spec, onCommit) {
         if (parsed !== null) {
           commitOffset(parsed);
         } else {
-          offsetInput.value = formatNumber(current[index]?.offset ?? 0);
+          offsetInput.value = formatNumber(current2[index]?.offset ?? 0);
         }
         endBusy();
       });
@@ -45092,17 +45738,17 @@ function createFillStopsField(spec, onCommit) {
           offsetInput.blur();
         } else if (event2.key === "Escape") {
           event2.preventDefault();
-          offsetInput.value = formatNumber(current[index]?.offset ?? 0);
+          offsetInput.value = formatNumber(current2[index]?.offset ?? 0);
           offsetInput.blur();
         } else if (event2.key === "ArrowUp") {
           event2.preventDefault();
-          const value = current[index]?.offset;
+          const value = current2[index]?.offset;
           if (typeof value === "number") {
             commitOffset(value + OFFSET_STEP);
           }
         } else if (event2.key === "ArrowDown") {
           event2.preventDefault();
-          const value = current[index]?.offset;
+          const value = current2[index]?.offset;
           if (typeof value === "number") {
             commitOffset(value - OFFSET_STEP);
           }
@@ -45110,7 +45756,7 @@ function createFillStopsField(spec, onCommit) {
       });
       swatch.addEventListener("input", () => {
         picking = true;
-        const next = cloneFillStops(current);
+        const next = cloneFillStops(current2);
         next[index] = { ...next[index], color: swatch.value };
         colorInput.value = swatch.value;
         commit(next, false);
@@ -45119,10 +45765,10 @@ function createFillStopsField(spec, onCommit) {
         });
       });
       removeButton.addEventListener("click", () => {
-        if (current.length <= 1) {
+        if (current2.length <= 1) {
           return;
         }
-        const next = cloneFillStops(current);
+        const next = cloneFillStops(current2);
         next.splice(index, 1);
         commit(next, true);
       });
@@ -45147,7 +45793,7 @@ function createFillStopsField(spec, onCommit) {
     addButton.style.background = "#3f3f3f";
   });
   addButton.addEventListener("click", () => {
-    const next = cloneFillStops(current);
+    const next = cloneFillStops(current2);
     if (next.length === 0) {
       next.push({ color: "#ffffff", offset: 0 });
     } else if (next.length === 1) {
@@ -45170,10 +45816,10 @@ function createFillStopsField(spec, onCommit) {
         return;
       }
       const next = Array.isArray(value) ? cloneFillStops(value) : [];
-      if (sameFillStops(current, next)) {
+      if (sameFillStops(current2, next)) {
         return;
       }
-      current = next;
+      current2 = next;
       renderRows();
     },
     isBusy: () => busyCount > 0 || picking || offsetDragging,
@@ -45279,7 +45925,19 @@ function createSection(title, initiallyExpanded, onExportClick) {
   });
   toggle.appendChild(chevron);
   toggle.appendChild(label);
-  const exportBtn = createExportButton(onExportClick);
+  let exportEnabled = true;
+  const exportBtn = createExportButton(() => {
+    if (!exportEnabled) {
+      return;
+    }
+    onExportClick();
+  });
+  function applyExportEnabled() {
+    exportBtn.disabled = !exportEnabled;
+    exportBtn.style.opacity = exportEnabled ? "1" : "0.35";
+    exportBtn.style.cursor = exportEnabled ? "pointer" : "default";
+    exportBtn.style.pointerEvents = exportEnabled ? "auto" : "none";
+  }
   header.appendChild(toggle);
   header.appendChild(exportBtn);
   const body = document.createElement("div");
@@ -45301,6 +45959,7 @@ function createSection(title, initiallyExpanded, onExportClick) {
     applyExpanded();
   });
   applyExpanded();
+  applyExportEnabled();
   root2.appendChild(header);
   root2.appendChild(body);
   return {
@@ -45309,6 +45968,10 @@ function createSection(title, initiallyExpanded, onExportClick) {
     setExpanded: (next) => {
       expanded = next;
       applyExpanded();
+    },
+    setExportEnabled: (enabled) => {
+      exportEnabled = enabled;
+      applyExportEnabled();
     }
   };
 }
@@ -45335,9 +45998,9 @@ function createSelectField(spec, onCommit) {
   const emptyOption = document.createElement("option");
   emptyOption.value = "";
   emptyOption.textContent = "";
-  function rebuildOptions(current2) {
+  function rebuildOptions(current22) {
     select.replaceChildren();
-    const showEmpty = spec.allowEmpty === true || current2 === "" || !spec.options.some((option) => option.value === current2);
+    const showEmpty = spec.allowEmpty === true || current22 === "" || !spec.options.some((option) => option.value === current22);
     if (showEmpty) {
       select.appendChild(emptyOption);
     }
@@ -45347,23 +46010,23 @@ function createSelectField(spec, onCommit) {
       option.textContent = optionSpec.label;
       select.appendChild(option);
     }
-    if (current2 !== "" && !spec.options.some((option) => option.value === current2)) {
+    if (current22 !== "" && !spec.options.some((option) => option.value === current22)) {
       const custom = document.createElement("option");
-      custom.value = current2;
-      custom.textContent = current2;
+      custom.value = current22;
+      custom.textContent = current22;
       select.appendChild(custom);
     }
-    select.value = current2;
+    select.value = current22;
   }
   rebuildOptions("");
   root2.appendChild(label);
   root2.appendChild(select);
   let busy = false;
-  let current = "";
+  let current2 = "";
   select.addEventListener("change", () => {
     busy = true;
-    current = select.value;
-    onCommit(spec.key, current);
+    current2 = select.value;
+    onCommit(spec.key, current2);
     queueMicrotask(() => {
       busy = false;
     });
@@ -45376,10 +46039,10 @@ function createSelectField(spec, onCommit) {
         return;
       }
       const next = typeof value === "string" ? value : "";
-      if (next === current && select.value === next) {
+      if (next === current2 && select.value === next) {
         return;
       }
-      current = next;
+      current2 = next;
       rebuildOptions(next);
     },
     isBusy: () => busy,
@@ -45411,13 +46074,13 @@ function createTextField(spec, onCommit) {
   });
   root2.appendChild(label);
   root2.appendChild(input);
-  let current = "";
+  let current2 = "";
   let focused = false;
   function syncChrome() {
     input.style.background = focused ? "#222" : "#545454";
   }
   function commit(next) {
-    current = next;
+    current2 = next;
     input.value = next;
     onCommit(spec.key, next);
   }
@@ -45437,7 +46100,7 @@ function createTextField(spec, onCommit) {
       input.blur();
     } else if (event2.key === "Escape") {
       event2.preventDefault();
-      input.value = current;
+      input.value = current2;
       input.blur();
     }
   });
@@ -45450,7 +46113,7 @@ function createTextField(spec, onCommit) {
         return;
       }
       const next = typeof value === "string" ? value : "";
-      current = next;
+      current2 = next;
       input.value = next;
     },
     isBusy: () => focused,
@@ -45607,15 +46270,53 @@ function createPropertiesTabs(initial, onChange) {
     }
   };
 }
+const MULTI_TRANSFORM_KEYS = /* @__PURE__ */ new Set([
+  "position.x",
+  "position.y",
+  "scale.x",
+  "scale.y",
+  "rotation",
+  "angle"
+]);
+function findNumberMapping(node, key) {
+  return mapsForNode(node).numbers.find((entry) => entry.key === key);
+}
+function readTransformNumber(node, key) {
+  return findNumberMapping(node, key)?.get();
+}
+function writeTransformNumber(node, key, value) {
+  findNumberMapping(node, key)?.set(value);
+}
+function applyTransformNumber(nodes, key, value, info) {
+  if (nodes.length <= 1 || !MULTI_TRANSFORM_KEYS.has(key)) {
+    return;
+  }
+  const delta = value - (info.previous ?? 0);
+  for (const node of nodes) {
+    const mapping = findNumberMapping(node, key);
+    if (!mapping) {
+      continue;
+    }
+    if (info.source === "input") {
+      mapping.set(value);
+    } else {
+      const current2 = mapping.get();
+      if (typeof current2 === "number") {
+        mapping.set(current2 + delta);
+      }
+    }
+  }
+}
 const POLL_MS = 200;
 function emptyTextMaps() {
   return { numbers: [], booleans: [], strings: [], fillStops: null };
 }
-function bindField(field, present, read) {
+function bindField(field, present, read, numberKey) {
   return {
     root: field.root,
     destroy: field.destroy,
     present,
+    numberKey,
     sync: (maps) => {
       if (field.isBusy()) {
         return;
@@ -45681,11 +46382,19 @@ function createPropertiesForm(selection) {
   let textMaps = emptyTextMaps();
   let activeExportDialog = null;
   let selectedId = null;
+  let selectedIds = [];
   let selectedNodeName = null;
   function currentExportMaps() {
     return { object: objectMaps, text: textMaps };
   }
-  function applyNumber(key, value) {
+  function selectedNodes() {
+    return resolveAliveNodesByIds(selectedIds);
+  }
+  function applyNumber(key, value, info) {
+    if (selectedIds.length > 1) {
+      applyTransformNumber(selectedNodes(), key, value, info);
+      return;
+    }
     if (!isNodeAlive(selectedNode())) {
       return;
     }
@@ -45707,7 +46416,11 @@ function createPropertiesForm(selection) {
       const typeName = typeNameOf(node);
       const display = value || typeName || null;
       selectedNodeName = display;
-      selection.publish({ id: selectedId, name: display });
+      selection.publish({
+        id: selectedId,
+        name: display,
+        ids: selectedId ? [selectedId] : []
+      });
     }
   }
   function applyFillStops(key, value) {
@@ -45720,6 +46433,9 @@ function createPropertiesForm(selection) {
     textMaps.fillStops?.set(value);
   }
   function openSectionExport(sectionId, title) {
+    if (selectedIds.length > 1) {
+      return;
+    }
     activeExportDialog?.close();
     activeExportDialog = openExportDialog({
       kind: "section",
@@ -45746,10 +46462,12 @@ function createPropertiesForm(selection) {
     for (const fieldSpec of section.fields) {
       if (fieldSpec.kind === "number") {
         const field = createNumberField(fieldSpec, applyNumber);
+        const numberKey = isTextNumberKey(fieldSpec.key) ? void 0 : fieldSpec.key;
         fields.push(bindField(
           field,
-          (maps) => !!resolveNumberMap(maps, field.key),
-          (maps) => resolveNumberMap(maps, field.key)?.get()
+          (maps) => !!resolveNumberMap(maps, fieldSpec.key),
+          (maps) => resolveNumberMap(maps, fieldSpec.key)?.get(),
+          numberKey
         ));
         ui.body.appendChild(field.root);
       } else if (fieldSpec.kind === "boolean") {
@@ -45798,17 +46516,21 @@ function createPropertiesForm(selection) {
       id: section.id,
       root: ui.root,
       fields,
-      syncVisibility: (nextObject, nextText) => {
+      syncVisibility: (nextObject, nextText, multi) => {
         const maps = { object: nextObject, text: nextText };
         let any = false;
         for (const field of fields) {
-          const show = field.present(maps);
+          let show = field.present(maps);
+          if (multi) {
+            show = section.id === "transform" && !!field.numberKey && MULTI_TRANSFORM_KEYS.has(field.numberKey);
+          }
           field.root.style.display = show ? "flex" : "none";
           if (show) {
             any = true;
           }
         }
         ui.root.style.display = any ? "block" : "none";
+        ui.setExportEnabled(!multi);
       },
       syncValues: (nextObject, nextText) => {
         const maps = { object: nextObject, text: nextText };
@@ -45841,12 +46563,72 @@ function createPropertiesForm(selection) {
     }
     win.$pixi = void 0;
     selectedId = null;
+    selectedIds = [];
     selectedNodeName = null;
-    selection.publish({ id: null, name: null });
+    clearSelectionIds();
+    selection.publish({ id: null, name: null, ids: [] });
     return null;
+  }
+  function readSharedNumber(key, nodes) {
+    let shared;
+    let first = true;
+    for (const node of nodes) {
+      const maps = mapsForNode(node);
+      const value = resolveNumberMap({ object: maps, text: emptyTextMaps() }, key)?.get();
+      if (first) {
+        shared = value;
+        first = false;
+        continue;
+      }
+      if (value !== shared) {
+        return void 0;
+      }
+    }
+    return first ? void 0 : shared;
+  }
+  function multiObjectMaps(nodes) {
+    const numbers = [];
+    for (const key of MULTI_TRANSFORM_KEYS) {
+      let available = false;
+      for (const node of nodes) {
+        const maps = mapsForNode(node);
+        if (resolveNumberMap({ object: maps, text: emptyTextMaps() }, key)) {
+          available = true;
+          break;
+        }
+      }
+      if (!available) {
+        continue;
+      }
+      const shared = readSharedNumber(key, nodes);
+      numbers.push({
+        key,
+        get: () => shared,
+        set: () => void 0
+      });
+    }
+    return { numbers, booleans: [], strings: [] };
   }
   function syncFromNode() {
     try {
+      if (selectedIds.length > 1) {
+        const nodes = selectedNodes();
+        objectMaps = multiObjectMaps(nodes);
+        textMaps = emptyTextMaps();
+        tabs.setTextAvailable(false);
+        tabs.setActive("object");
+        showTab("object");
+        objectPane.style.visibility = nodes.length > 0 ? "visible" : "hidden";
+        textPane.style.visibility = "hidden";
+        for (const section of builtObject) {
+          section.syncVisibility(objectMaps, textMaps, true);
+          section.syncValues(objectMaps, textMaps);
+        }
+        for (const section of builtText) {
+          section.root.style.display = "none";
+        }
+        return;
+      }
       const node = selectedNode();
       objectMaps = mapsForNode(node);
       textMaps = textMapsForNode(node);
@@ -45857,13 +46639,13 @@ function createPropertiesForm(selection) {
       tabs.setTextAvailable(hasText);
       if (hasObject) {
         for (const section of builtObject) {
-          section.syncVisibility(objectMaps, textMaps);
+          section.syncVisibility(objectMaps, textMaps, false);
           section.syncValues(objectMaps, textMaps);
         }
       }
       if (hasText) {
         for (const section of builtText) {
-          section.syncVisibility(objectMaps, textMaps);
+          section.syncVisibility(objectMaps, textMaps, false);
           section.syncValues(objectMaps, textMaps);
         }
       } else {
@@ -45884,8 +46666,11 @@ function createPropertiesForm(selection) {
   const unsubscribeSelection = selection.subscribe((info) => {
     selectedId = info.id;
     selectedNodeName = info.name;
+    selectedIds = info.ids;
     if (info.id === null && info.name === null) {
-      globalThis.$pixi = void 0;
+      const win = globalThis;
+      win.$pixi = void 0;
+      clearSelectionIds();
     }
     syncFromNode();
   });
@@ -46074,12 +46859,15 @@ function createPropertiesPanel(options) {
     button.style.opacity = enabled ? "1" : "0.4";
     button.style.cursor = enabled ? "pointer" : "default";
   }
-  function setTitleName(name) {
+  let selectedIds = [];
+  function setTitleName(name, ids = []) {
     selectedName = name;
+    selectedIds = ids;
     title.textContent = name ?? "Select a node";
     title.title = title.textContent;
-    setHeaderActionEnabled(copyBtn, name !== null);
-    setHeaderActionEnabled(exportBtn, name !== null);
+    const single = name !== null && ids.length <= 1;
+    setHeaderActionEnabled(copyBtn, single);
+    setHeaderActionEnabled(exportBtn, single);
   }
   function flashTitleName() {
     titleFlash?.cancel();
@@ -46123,7 +46911,7 @@ function createPropertiesPanel(options) {
   copyBtn.addEventListener("click", (event2) => {
     event2.preventDefault();
     event2.stopPropagation();
-    if (selectedName === null) {
+    if (selectedName === null || selectedIds.length > 1) {
       return;
     }
     void navigator.clipboard.writeText(selectedName);
@@ -46136,7 +46924,7 @@ function createPropertiesPanel(options) {
   exportBtn.addEventListener("click", (event2) => {
     event2.preventDefault();
     event2.stopPropagation();
-    if (selectedName === null) {
+    if (selectedName === null || selectedIds.length > 1) {
       return;
     }
     form.openNodeExport(selectedName);
@@ -46161,7 +46949,7 @@ function createPropertiesPanel(options) {
   options.onShellRightChange(chrome.shellInsetPx(), false);
   chrome.addCleanup(
     options.selection.subscribe((info) => {
-      setTitleName(info.name);
+      setTitleName(info.name, info.ids);
     })
   );
   return {
@@ -46175,12 +46963,133 @@ function createPropertiesPanel(options) {
     destroy: chrome.destroy
   };
 }
+const DEFAULT_HIGHLIGHT_FILL = "#408cff";
+const DEFAULT_HIGHLIGHT_STROKE = "#2878ff";
+const DEFAULT_FILL_ALPHA = 0.35;
+const DEFAULT_FILL_DRAG_ALPHA = 0.1;
+const STROKE_ALPHA = 1;
+const STROKE_DRAG_ALPHA = 0.5;
+const DEFAULT_HIGHLIGHT_COLORS = {
+  fill: DEFAULT_HIGHLIGHT_FILL,
+  stroke: DEFAULT_HIGHLIGHT_STROKE,
+  fillAlpha: DEFAULT_FILL_ALPHA,
+  fillDragAlpha: DEFAULT_FILL_DRAG_ALPHA
+};
+const HIGHLIGHT_COLORS_EVENT = "pixi-scene-inspector-highlight-colors";
+const HIGHLIGHT_COLORS_ATTR = "data-psi-highlight-colors";
+const MARK_FILL = "rgba(255, 255, 255, 1)";
+let current = { ...DEFAULT_HIGHLIGHT_COLORS };
+function parseHex6(raw) {
+  const match = /^#?([0-9a-f]{6})$/i.exec(raw.trim());
+  if (!match) {
+    return void 0;
+  }
+  return `#${match[1].toLowerCase()}`;
+}
+function hexToRgb(hex) {
+  const normalized = parseHex6(hex) ?? DEFAULT_HIGHLIGHT_FILL;
+  const value = Number.parseInt(normalized.slice(1), 16);
+  return {
+    r: value >> 16 & 255,
+    g: value >> 8 & 255,
+    b: value & 255
+  };
+}
+function rgbaFromHex(hex, alpha) {
+  const { r: r2, g: g2, b: b2 } = hexToRgb(hex);
+  return `rgba(${r2}, ${g2}, ${b2}, ${alpha})`;
+}
+function normalizeHighlightColor(raw, fallback) {
+  if (typeof raw !== "string") {
+    return fallback;
+  }
+  return parseHex6(raw) ?? fallback;
+}
+function normalizeHighlightAlpha(raw, fallback) {
+  const value = typeof raw === "number" ? raw : Number(raw);
+  if (!Number.isFinite(value)) {
+    return fallback;
+  }
+  return Math.min(1, Math.max(0, value));
+}
+function normalizeHighlightColors(raw) {
+  if (!raw || typeof raw !== "object") {
+    return { ...DEFAULT_HIGHLIGHT_COLORS };
+  }
+  const record = raw;
+  return {
+    fill: normalizeHighlightColor(record.fill, DEFAULT_HIGHLIGHT_FILL),
+    stroke: normalizeHighlightColor(record.stroke, DEFAULT_HIGHLIGHT_STROKE),
+    fillAlpha: normalizeHighlightAlpha(record.fillAlpha, DEFAULT_FILL_ALPHA),
+    fillDragAlpha: normalizeHighlightAlpha(record.fillDragAlpha, DEFAULT_FILL_DRAG_ALPHA)
+  };
+}
+function highlightFill() {
+  return rgbaFromHex(current.fill, current.fillAlpha);
+}
+function highlightFillDrag() {
+  return rgbaFromHex(current.fill, current.fillDragAlpha);
+}
+function highlightStroke() {
+  return rgbaFromHex(current.stroke, STROKE_ALPHA);
+}
+function highlightStrokeDrag() {
+  return rgbaFromHex(current.stroke, STROKE_DRAG_ALPHA);
+}
+function setHighlightColors(colors) {
+  current = normalizeHighlightColors(colors);
+}
+function readHighlightColorsAttr(element = document.documentElement) {
+  const raw = element.getAttribute(HIGHLIGHT_COLORS_ATTR);
+  if (!raw) {
+    return void 0;
+  }
+  try {
+    return normalizeHighlightColors(JSON.parse(raw));
+  } catch {
+    return void 0;
+  }
+}
+function subscribeHighlightColors(listener) {
+  const onEvent = (event2) => {
+    if (!(event2 instanceof CustomEvent)) {
+      return;
+    }
+    const next = normalizeHighlightColors(event2.detail);
+    setHighlightColors(next);
+    listener(next);
+  };
+  const observer = new MutationObserver(() => {
+    const next = readHighlightColorsAttr();
+    if (!next) {
+      return;
+    }
+    setHighlightColors(next);
+    listener(next);
+  });
+  window.addEventListener(HIGHLIGHT_COLORS_EVENT, onEvent);
+  observer.observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: [HIGHLIGHT_COLORS_ATTR]
+  });
+  const initial = readHighlightColorsAttr();
+  if (initial) {
+    setHighlightColors(initial);
+    listener(initial);
+  }
+  return () => {
+    window.removeEventListener(HIGHLIGHT_COLORS_EVENT, onEvent);
+    observer.disconnect();
+  };
+}
 const OVERLAY_ID = "pixi-scene-inspector-selection-highlight";
-const FILL = "rgba(64, 140, 255, 0.35)";
-const STROKE = "rgba(40, 120, 255, 0.95)";
-const ANCHOR_FILL = "rgba(255, 255, 255, 1)";
 const EMPTY_SIZE = 4;
 const ANCHOR_SIZE = 6;
+const HANDLE_SIZE = 8;
+const ROTATE_STALK = 18;
+const POSITION_STEP = 1;
+const ROTATION_STEP = 0.025;
+const SCALE_STEP = 0.01;
 function asFiniteNumber(value) {
   return typeof value === "number" && Number.isFinite(value) ? value : null;
 }
@@ -46281,6 +47190,458 @@ function hasAnchor(node) {
   }
   return asFiniteNumber(anchor.x) !== null && asFiniteNumber(anchor.y) !== null;
 }
+function worldCorners(bounds, matrix) {
+  const points = [
+    { x: bounds.minX, y: bounds.minY },
+    { x: bounds.maxX, y: bounds.minY },
+    { x: bounds.maxX, y: bounds.maxY },
+    { x: bounds.minX, y: bounds.maxY }
+  ];
+  return points.map((point) => ({
+    x: matrix.a * point.x + matrix.c * point.y + matrix.tx,
+    y: matrix.b * point.x + matrix.d * point.y + matrix.ty
+  }));
+}
+function localToRoot(paint, lx, ly) {
+  const { matrix } = paint;
+  return {
+    x: matrix.a * lx + matrix.c * ly + matrix.tx,
+    y: matrix.b * lx + matrix.d * ly + matrix.ty
+  };
+}
+function localToScreen(paint, lx, ly) {
+  const point = localToRoot(paint, lx, ly);
+  return {
+    x: paint.rootLeft + point.x,
+    y: paint.rootTop + point.y
+  };
+}
+function worldDeltaToLocal(matrix, dx, dy) {
+  const det = matrix.a * matrix.d - matrix.b * matrix.c;
+  if (!(Math.abs(det) > 1e-12)) {
+    return null;
+  }
+  return {
+    x: (matrix.d * dx - matrix.c * dy) / det,
+    y: (matrix.a * dy - matrix.b * dx) / det
+  };
+}
+function worldDeltaToParentLocal(node, dxWorld, dyWorld) {
+  const parent = node.parent;
+  if (!parent) {
+    return { x: dxWorld, y: dyWorld };
+  }
+  const matrix = readWorldTransform(parent);
+  if (!matrix) {
+    return { x: dxWorld, y: dyWorld };
+  }
+  return worldDeltaToLocal(matrix, dxWorld, dyWorld) ?? { x: dxWorld, y: dyWorld };
+}
+function normalize2(x2, y2) {
+  const len = Math.hypot(x2, y2);
+  if (!(len > 1e-8)) {
+    return null;
+  }
+  return { x: x2 / len, y: y2 / len };
+}
+function project(px, py, ox, oy, axis) {
+  return (px - ox) * axis.x + (py - oy) * axis.y;
+}
+function keysForDragMode(mode) {
+  if (mode === "move") {
+    return ["position.x", "position.y"];
+  }
+  if (mode === "rotate") {
+    return ["rotation"];
+  }
+  if (mode === "scaleX") {
+    return ["scale.x"];
+  }
+  if (mode === "scaleY") {
+    return ["scale.y"];
+  }
+  return ["scale.x", "scale.y"];
+}
+function scaleTipLocal(mode, width, height) {
+  if (mode === "scaleX") {
+    return { x: width, y: height / 2 };
+  }
+  if (mode === "scaleY") {
+    return { x: width / 2, y: height };
+  }
+  return { x: width, y: height };
+}
+function snapshotKeys(nodes, keys) {
+  const out2 = [];
+  for (const node of nodes) {
+    const values = /* @__PURE__ */ new Map();
+    for (const key of keys) {
+      const value = readTransformNumber(node, key);
+      if (typeof value === "number") {
+        values.set(key, value);
+      }
+    }
+    if (values.size > 0) {
+      out2.push({ node, values });
+    }
+  }
+  return out2;
+}
+function restoreSnapshots(snapshots) {
+  for (const entry of snapshots) {
+    for (const [key, value] of entry.values) {
+      writeTransformNumber(entry.node, key, value);
+    }
+  }
+}
+function attachHighlightTransformDrag(host) {
+  const { overlay, getPaint, resolveNodes } = host;
+  const {
+    root: root2,
+    box,
+    outline,
+    rotateHandle,
+    scaleXHandle,
+    scaleYHandle,
+    uniformHandle
+  } = overlay;
+  let dragMode = null;
+  let dragPointerId = -1;
+  let dragStartClientX = 0;
+  let dragStartClientY = 0;
+  let dragLastClientX = 0;
+  let dragLastClientY = 0;
+  let dragStartAngle = 0;
+  let dragStartDist = 0;
+  let dragSnapshots = [];
+  let dragPaint = null;
+  let dragScaleGuide = null;
+  let dragShift = false;
+  let dragAlt = false;
+  function endDrag() {
+    if (dragPointerId < 0 && !dragMode) {
+      return;
+    }
+    const wasActive = dragMode !== null || dragPointerId >= 0;
+    dragMode = null;
+    dragPointerId = -1;
+    dragSnapshots = [];
+    dragPaint = null;
+    dragScaleGuide = null;
+    dragShift = false;
+    dragAlt = false;
+    window.removeEventListener("pointermove", onWindowPointerMove);
+    window.removeEventListener("pointerup", onWindowPointerUp);
+    window.removeEventListener("pointercancel", onWindowPointerUp);
+    window.removeEventListener("keydown", onWindowKeyDown, true);
+    window.removeEventListener("keyup", onWindowKeyUp, true);
+    if (wasActive) {
+      box.style.background = highlightFill();
+      outline.setAttribute("stroke", highlightStroke());
+      highlightTransformGesture.end();
+    }
+  }
+  function cancelDrag() {
+    if (!dragMode) {
+      return;
+    }
+    restoreSnapshots(dragSnapshots);
+    endDrag();
+  }
+  function applyMove(clientX, clientY, snap, lockAxis) {
+    const base = dragPaint;
+    if (!base) {
+      return;
+    }
+    let dx = (clientX - dragStartClientX) / base.canvasScaleX;
+    let dy = (clientY - dragStartClientY) / base.canvasScaleY;
+    if (lockAxis) {
+      if (Math.abs(dx) >= Math.abs(dy)) {
+        dy = 0;
+      } else {
+        dx = 0;
+      }
+    }
+    for (const entry of dragSnapshots) {
+      const local = worldDeltaToParentLocal(entry.node, dx, dy);
+      const sx = entry.values.get("position.x");
+      const sy = entry.values.get("position.y");
+      if (typeof sx === "number") {
+        const next = sx + local.x;
+        writeTransformNumber(
+          entry.node,
+          "position.x",
+          snap ? snapToStep(next, POSITION_STEP) : next
+        );
+      }
+      if (typeof sy === "number") {
+        const next = sy + local.y;
+        writeTransformNumber(
+          entry.node,
+          "position.y",
+          snap ? snapToStep(next, POSITION_STEP) : next
+        );
+      }
+    }
+  }
+  function applyRotate(clientX, clientY, snap) {
+    const base = dragPaint;
+    if (!base) {
+      return;
+    }
+    const center = localToScreen(base, base.width / 2, base.height / 2);
+    const angle = Math.atan2(clientY - center.y, clientX - center.x);
+    const delta = angle - dragStartAngle;
+    for (const entry of dragSnapshots) {
+      const start = entry.values.get("rotation");
+      if (typeof start === "number") {
+        const next = start + delta;
+        writeTransformNumber(
+          entry.node,
+          "rotation",
+          snap ? snapToStep(next, ROTATION_STEP) : next
+        );
+      }
+    }
+  }
+  function pivotScreenCentroid(nodes, paint) {
+    let sumX = 0;
+    let sumY = 0;
+    let count2 = 0;
+    for (const node of nodes) {
+      const world = readWorldTransform(node);
+      if (!world) {
+        continue;
+      }
+      sumX += paint.rootLeft + world.tx * paint.canvasScaleX;
+      sumY += paint.rootTop + world.ty * paint.canvasScaleY;
+      count2 += 1;
+    }
+    if (count2 === 0) {
+      return null;
+    }
+    return {
+      x: sumX / count2,
+      y: sumY / count2
+    };
+  }
+  function scaleAxisUnit(base, mode, nodes) {
+    const origin = pivotScreenCentroid(nodes, base) ?? localToScreen(base, base.width / 2, base.height / 2);
+    const local = scaleTipLocal(mode, base.width, base.height);
+    const tip = localToScreen(base, local.x, local.y);
+    const axis = normalize2(tip.x - origin.x, tip.y - origin.y);
+    return axis ? { origin, axis } : null;
+  }
+  function applyScale(clientX, clientY, mode, snap) {
+    const base = dragPaint;
+    const guide = dragScaleGuide;
+    if (!base || !guide || !(Math.abs(dragStartDist) > 1e-6)) {
+      return;
+    }
+    const dist = project(clientX, clientY, guide.origin.x, guide.origin.y, guide.axis);
+    const ratio = dist / dragStartDist;
+    if (!Number.isFinite(ratio)) {
+      return;
+    }
+    for (const entry of dragSnapshots) {
+      if (mode === "scaleX" || mode === "scaleUniform") {
+        const start = entry.values.get("scale.x");
+        if (typeof start === "number") {
+          const next = start * ratio;
+          writeTransformNumber(
+            entry.node,
+            "scale.x",
+            snap ? snapToStep(next, SCALE_STEP) : next
+          );
+        }
+      }
+      if (mode === "scaleY" || mode === "scaleUniform") {
+        const start = entry.values.get("scale.y");
+        if (typeof start === "number") {
+          const next = start * ratio;
+          writeTransformNumber(
+            entry.node,
+            "scale.y",
+            snap ? snapToStep(next, SCALE_STEP) : next
+          );
+        }
+      }
+    }
+  }
+  function applyDragAt(clientX, clientY, snap, lockAxis) {
+    if (!dragMode) {
+      return;
+    }
+    dragLastClientX = clientX;
+    dragLastClientY = clientY;
+    if (dragMode === "move") {
+      applyMove(clientX, clientY, snap, lockAxis);
+    } else if (dragMode === "rotate") {
+      applyRotate(clientX, clientY, snap);
+    } else {
+      applyScale(clientX, clientY, dragMode, snap);
+    }
+  }
+  function applyDrag(event2) {
+    dragShift = event2.shiftKey;
+    dragAlt = event2.altKey;
+    applyDragAt(event2.clientX, event2.clientY, dragAlt, dragShift);
+  }
+  function reapplyDragModifiers() {
+    if (!dragMode) {
+      return;
+    }
+    applyDragAt(dragLastClientX, dragLastClientY, dragAlt, dragShift);
+  }
+  function onWindowPointerMove(event2) {
+    if (event2.pointerId !== dragPointerId || !dragMode) {
+      return;
+    }
+    if ((event2.buttons & 1) === 0) {
+      applyDrag(event2);
+      endDrag();
+      return;
+    }
+    applyDrag(event2);
+  }
+  function onWindowPointerUp(event2) {
+    if (event2.pointerId !== dragPointerId) {
+      return;
+    }
+    applyDrag(event2);
+    endDrag();
+  }
+  function onWindowKeyDown(event2) {
+    if (!dragMode) {
+      return;
+    }
+    if (event2.key === "Escape") {
+      event2.preventDefault();
+      event2.stopImmediatePropagation();
+      cancelDrag();
+      return;
+    }
+    if (event2.key === "Shift") {
+      dragShift = true;
+      reapplyDragModifiers();
+    } else if (event2.key === "Alt") {
+      dragAlt = true;
+      reapplyDragModifiers();
+    }
+  }
+  function onWindowKeyUp(event2) {
+    if (!dragMode) {
+      return;
+    }
+    if (event2.key === "Shift") {
+      dragShift = false;
+      reapplyDragModifiers();
+    } else if (event2.key === "Alt") {
+      dragAlt = false;
+      reapplyDragModifiers();
+    }
+  }
+  function beginDrag(mode, event2) {
+    const paint = getPaint();
+    if (dragMode || !paint || root2.style.display === "none") {
+      return;
+    }
+    const nodes = resolveNodes();
+    if (nodes.length === 0) {
+      return;
+    }
+    const snapshots = snapshotKeys(nodes, keysForDragMode(mode));
+    if (snapshots.length === 0) {
+      return;
+    }
+    dragMode = mode;
+    dragPointerId = event2.pointerId;
+    dragStartClientX = event2.clientX;
+    dragStartClientY = event2.clientY;
+    dragLastClientX = event2.clientX;
+    dragLastClientY = event2.clientY;
+    dragShift = event2.shiftKey;
+    dragAlt = event2.altKey;
+    dragSnapshots = snapshots;
+    dragPaint = { ...paint, matrix: { ...paint.matrix } };
+    box.style.background = highlightFillDrag();
+    outline.setAttribute("stroke", highlightStrokeDrag());
+    highlightTransformGesture.begin();
+    if (mode === "rotate") {
+      const center = localToScreen(dragPaint, dragPaint.width / 2, dragPaint.height / 2);
+      dragStartAngle = Math.atan2(event2.clientY - center.y, event2.clientX - center.x);
+    } else if (mode === "scaleX" || mode === "scaleY" || mode === "scaleUniform") {
+      const guide = scaleAxisUnit(dragPaint, mode, nodes);
+      dragScaleGuide = guide;
+      dragStartDist = guide ? project(event2.clientX, event2.clientY, guide.origin.x, guide.origin.y, guide.axis) : 0;
+      if (!(Math.abs(dragStartDist) > 1e-6) && guide) {
+        const local = scaleTipLocal(mode, dragPaint.width, dragPaint.height);
+        const tip = localToScreen(dragPaint, local.x, local.y);
+        dragStartDist = project(tip.x, tip.y, guide.origin.x, guide.origin.y, guide.axis);
+      }
+    }
+    window.addEventListener("pointermove", onWindowPointerMove);
+    window.addEventListener("pointerup", onWindowPointerUp);
+    window.addEventListener("pointercancel", onWindowPointerUp);
+    window.addEventListener("keydown", onWindowKeyDown, true);
+    window.addEventListener("keyup", onWindowKeyUp, true);
+    event2.preventDefault();
+    event2.stopPropagation();
+  }
+  function onBoxPointerDown(event2) {
+    if (event2.button !== 0 || event2.target !== box) {
+      return;
+    }
+    beginDrag("move", event2);
+  }
+  function bindHandle(handle, mode) {
+    handle.addEventListener("pointerdown", (event2) => {
+      if (event2.button !== 0) {
+        return;
+      }
+      beginDrag(mode, event2);
+    });
+  }
+  box.addEventListener("pointerdown", onBoxPointerDown);
+  bindHandle(rotateHandle, "rotate");
+  bindHandle(scaleXHandle, "scaleX");
+  bindHandle(scaleYHandle, "scaleY");
+  bindHandle(uniformHandle, "scaleUniform");
+  return {
+    cancel: cancelDrag
+  };
+}
+function placeAtRoot(el, x2, y2, half = HANDLE_SIZE / 2) {
+  el.style.left = `${x2 - half}px`;
+  el.style.top = `${y2 - half}px`;
+}
+function styleHandle(el, cursor) {
+  Object.assign(el.style, {
+    position: "absolute",
+    width: `${HANDLE_SIZE}px`,
+    height: `${HANDLE_SIZE}px`,
+    boxSizing: "border-box",
+    background: MARK_FILL,
+    border: `1px solid ${highlightStroke()}`,
+    pointerEvents: "auto",
+    cursor,
+    zIndex: "2",
+    touchAction: "none"
+  });
+}
+function applyHighlightPaint(overlay) {
+  const fill = highlightFill();
+  const stroke = highlightStroke();
+  overlay.box.style.background = fill;
+  overlay.outline.setAttribute("stroke", stroke);
+  overlay.rotateStalk.style.background = stroke;
+  const border = `1px solid ${stroke}`;
+  overlay.rotateHandle.style.border = border;
+  overlay.scaleXHandle.style.border = border;
+  overlay.scaleYHandle.style.border = border;
+  overlay.uniformHandle.style.border = border;
+  overlay.anchorMark.style.border = border;
+}
 function createOverlayRoot() {
   document.getElementById(OVERLAY_ID)?.remove();
   const root2 = document.createElement("div");
@@ -46291,7 +47652,7 @@ function createOverlayRoot() {
     top: "0",
     width: "0",
     height: "0",
-    overflow: "hidden",
+    overflow: "visible",
     pointerEvents: "none",
     zIndex: "2147483640",
     display: "none"
@@ -46301,12 +47662,54 @@ function createOverlayRoot() {
     position: "absolute",
     left: "0",
     top: "0",
-    boxSizing: "border-box",
     transformOrigin: "0 0",
-    background: FILL,
-    border: `1px solid ${STROKE}`,
-    willChange: "transform"
+    background: highlightFill(),
+    willChange: "transform",
+    pointerEvents: "auto",
+    cursor: "move",
+    touchAction: "none"
   });
+  const outlineSvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  Object.assign(outlineSvg.style, {
+    position: "absolute",
+    left: "0",
+    top: "0",
+    width: "1px",
+    height: "1px",
+    overflow: "visible",
+    pointerEvents: "none"
+  });
+  const outline = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+  outline.setAttribute("fill", "none");
+  outline.setAttribute("stroke", highlightStroke());
+  outline.setAttribute("stroke-width", "1");
+  outline.setAttribute("vector-effect", "non-scaling-stroke");
+  outlineSvg.appendChild(outline);
+  const rotateStalk = document.createElement("div");
+  Object.assign(rotateStalk.style, {
+    position: "absolute",
+    left: "0",
+    top: "0",
+    width: `${ROTATE_STALK}px`,
+    height: "1px",
+    background: highlightStroke(),
+    pointerEvents: "none",
+    transformOrigin: "0 50%",
+    zIndex: "1",
+    display: "none"
+  });
+  const rotateHandle = document.createElement("div");
+  styleHandle(rotateHandle, "pointer");
+  rotateHandle.style.display = "none";
+  const scaleXHandle = document.createElement("div");
+  styleHandle(scaleXHandle, "pointer");
+  scaleXHandle.style.display = "none";
+  const scaleYHandle = document.createElement("div");
+  styleHandle(scaleYHandle, "pointer");
+  scaleYHandle.style.display = "none";
+  const uniformHandle = document.createElement("div");
+  styleHandle(uniformHandle, "pointer");
+  uniformHandle.style.display = "none";
   const anchorMark = document.createElement("div");
   Object.assign(anchorMark.style, {
     position: "absolute",
@@ -46316,25 +47719,81 @@ function createOverlayRoot() {
     height: `${ANCHOR_SIZE}px`,
     boxSizing: "border-box",
     borderRadius: "50%",
-    background: ANCHOR_FILL,
-    border: `1px solid ${STROKE}`,
+    background: MARK_FILL,
+    border: `1px solid ${highlightStroke()}`,
     display: "none",
-    willChange: "transform"
+    willChange: "transform",
+    pointerEvents: "none"
   });
   root2.appendChild(box);
+  root2.appendChild(outlineSvg);
+  root2.appendChild(rotateStalk);
+  root2.appendChild(rotateHandle);
+  root2.appendChild(scaleXHandle);
+  root2.appendChild(scaleYHandle);
+  root2.appendChild(uniformHandle);
   root2.appendChild(anchorMark);
   document.body.appendChild(root2);
-  return { root: root2, box, anchorMark };
+  return {
+    root: root2,
+    box,
+    outline,
+    anchorMark,
+    rotateStalk,
+    rotateHandle,
+    scaleXHandle,
+    scaleYHandle,
+    uniformHandle
+  };
+}
+function setHandlesVisible(overlay, visible) {
+  const display = visible ? "block" : "none";
+  overlay.rotateStalk.style.display = display;
+  overlay.rotateHandle.style.display = display;
+  overlay.scaleXHandle.style.display = display;
+  overlay.scaleYHandle.style.display = display;
+  overlay.uniformHandle.style.display = display;
+  overlay.box.style.pointerEvents = visible ? "auto" : "none";
+}
+function layoutHandles(overlay, next) {
+  const top = localToRoot(next, next.width / 2, 0);
+  const right = localToRoot(next, next.width, next.height / 2);
+  const bottom = localToRoot(next, next.width / 2, next.height);
+  const corner = localToRoot(next, next.width, next.height);
+  const outward = normalize2(-next.matrix.c, -next.matrix.d) ?? { x: 0, y: -1 };
+  const rotateTip = {
+    x: top.x + outward.x * ROTATE_STALK,
+    y: top.y + outward.y * ROTATE_STALK
+  };
+  overlay.rotateStalk.style.left = `${top.x}px`;
+  overlay.rotateStalk.style.top = `${top.y}px`;
+  overlay.rotateStalk.style.transform = `rotate(${Math.atan2(outward.y, outward.x)}rad)`;
+  placeAtRoot(overlay.rotateHandle, rotateTip.x, rotateTip.y);
+  placeAtRoot(overlay.scaleXHandle, right.x, right.y);
+  placeAtRoot(overlay.scaleYHandle, bottom.x, bottom.y);
+  placeAtRoot(overlay.uniformHandle, corner.x, corner.y);
 }
 function installSelectionHighlight(win = globalThis) {
-  const { root: root2, box, anchorMark } = createOverlayRoot();
+  const overlay = createOverlayRoot();
+  const { root: root2, box, outline, anchorMark } = overlay;
   let frame = 0;
   let running = false;
   let destroyed = false;
   let enabled = readHighlightEnabled();
+  let paint = null;
+  const unsubscribeColors = subscribeHighlightColors(() => {
+    applyHighlightPaint(overlay);
+  });
+  const drag = attachHighlightTransformDrag({
+    overlay,
+    getPaint: () => paint,
+    resolveNodes: () => resolveLiveSelectionNodes(win)
+  });
   function hide() {
     root2.style.display = "none";
     anchorMark.style.display = "none";
+    paint = null;
+    setHandlesVisible(overlay, false);
   }
   function stop() {
     if (!running) {
@@ -46345,28 +47804,35 @@ function installSelectionHighlight(win = globalThis) {
     frame = 0;
     hide();
   }
-  function tick() {
-    if (destroyed || !enabled) {
-      running = false;
-      frame = 0;
-      hide();
-      return;
-    }
-    frame = requestAnimationFrame(tick);
-    const node = win.$pixi;
-    if (!isNodeAlive(node)) {
-      hide();
-      return;
-    }
-    const canvas = findPixiCanvas(win);
+  function publishPaint(width, height, matrix, rect, scaleX, scaleY) {
+    const transform2 = `matrix(${matrix.a}, ${matrix.b}, ${matrix.c}, ${matrix.d}, ${matrix.tx}, ${matrix.ty})`;
+    root2.style.display = "block";
+    root2.style.left = `${rect.left}px`;
+    root2.style.top = `${rect.top}px`;
+    root2.style.width = `${rect.width}px`;
+    root2.style.height = `${rect.height}px`;
+    box.style.width = `${width}px`;
+    box.style.height = `${height}px`;
+    box.style.transform = transform2;
+    outline.setAttribute("width", String(width));
+    outline.setAttribute("height", String(height));
+    outline.setAttribute("transform", transform2);
+    setHandlesVisible(overlay, true);
+    paint = {
+      width,
+      height,
+      matrix,
+      rootLeft: rect.left,
+      rootTop: rect.top,
+      canvasScaleX: scaleX,
+      canvasScaleY: scaleY
+    };
+    layoutHandles(overlay, paint);
+  }
+  function paintSingle(node, scaleX, scaleY, rect) {
     const matrix = readWorldTransform(node);
     const bounds = readLocalBounds(node);
-    if (!canvas || !matrix || !bounds) {
-      hide();
-      return;
-    }
-    const rect = canvas.getBoundingClientRect();
-    if (!(rect.width > 0) || !(rect.height > 0)) {
+    if (!matrix || !bounds) {
       hide();
       return;
     }
@@ -46382,23 +47848,13 @@ function installSelectionHighlight(win = globalThis) {
       width = EMPTY_SIZE;
       height = EMPTY_SIZE;
     }
-    const screen = readScreenSize(win, canvas);
-    const scaleX = rect.width / screen.width;
-    const scaleY = rect.height / screen.height;
     const a2 = matrix.a * scaleX;
     const b2 = matrix.b * scaleY;
     const c2 = matrix.c * scaleX;
     const d2 = matrix.d * scaleY;
     const tx = (matrix.a * minX + matrix.c * minY + matrix.tx) * scaleX;
     const ty = (matrix.b * minX + matrix.d * minY + matrix.ty) * scaleY;
-    root2.style.display = "block";
-    root2.style.left = `${rect.left}px`;
-    root2.style.top = `${rect.top}px`;
-    root2.style.width = `${rect.width}px`;
-    root2.style.height = `${rect.height}px`;
-    box.style.width = `${width}px`;
-    box.style.height = `${height}px`;
-    box.style.transform = `matrix(${a2}, ${b2}, ${c2}, ${d2}, ${tx}, ${ty})`;
+    publishPaint(width, height, { a: a2, b: b2, c: c2, d: d2, tx, ty }, rect, scaleX, scaleY);
     if (hasAnchor(node)) {
       const half = ANCHOR_SIZE / 2;
       const originX = matrix.tx * scaleX - half;
@@ -46408,6 +47864,89 @@ function installSelectionHighlight(win = globalThis) {
     } else {
       anchorMark.style.display = "none";
     }
+  }
+  function paintUnion(nodes, scaleX, scaleY, rect) {
+    let minX = Number.POSITIVE_INFINITY;
+    let minY = Number.POSITIVE_INFINITY;
+    let maxX = Number.NEGATIVE_INFINITY;
+    let maxY = Number.NEGATIVE_INFINITY;
+    let any = false;
+    for (const node of nodes) {
+      const matrix = readWorldTransform(node);
+      const bounds = readLocalBounds(node);
+      if (!matrix || !bounds) {
+        continue;
+      }
+      let local = bounds;
+      const localWidth = bounds.maxX - bounds.minX;
+      const localHeight = bounds.maxY - bounds.minY;
+      if (!(localWidth > 0) || !(localHeight > 0)) {
+        const cx = (bounds.minX + bounds.maxX) / 2;
+        const cy = (bounds.minY + bounds.maxY) / 2;
+        local = {
+          minX: cx - EMPTY_SIZE / 2,
+          minY: cy - EMPTY_SIZE / 2,
+          maxX: cx + EMPTY_SIZE / 2,
+          maxY: cy + EMPTY_SIZE / 2
+        };
+      }
+      for (const corner of worldCorners(local, matrix)) {
+        any = true;
+        minX = Math.min(minX, corner.x);
+        minY = Math.min(minY, corner.y);
+        maxX = Math.max(maxX, corner.x);
+        maxY = Math.max(maxY, corner.y);
+      }
+    }
+    if (!any) {
+      hide();
+      return;
+    }
+    const left = minX * scaleX;
+    const top = minY * scaleY;
+    const width = Math.max(EMPTY_SIZE, (maxX - minX) * scaleX);
+    const height = Math.max(EMPTY_SIZE, (maxY - minY) * scaleY);
+    publishPaint(
+      width,
+      height,
+      { a: 1, b: 0, c: 0, d: 1, tx: left, ty: top },
+      rect,
+      scaleX,
+      scaleY
+    );
+    anchorMark.style.display = "none";
+  }
+  function tick() {
+    if (destroyed || !enabled) {
+      running = false;
+      frame = 0;
+      hide();
+      return;
+    }
+    frame = requestAnimationFrame(tick);
+    const canvas = findPixiCanvas(win);
+    if (!canvas) {
+      hide();
+      return;
+    }
+    const rect = canvas.getBoundingClientRect();
+    if (!(rect.width > 0) || !(rect.height > 0)) {
+      hide();
+      return;
+    }
+    const screen = readScreenSize(win, canvas);
+    const scaleX = rect.width / screen.width;
+    const scaleY = rect.height / screen.height;
+    const nodes = resolveLiveSelectionNodes(win);
+    if (nodes.length > 1) {
+      paintUnion(nodes, scaleX, scaleY, rect);
+      return;
+    }
+    if (nodes.length === 1 && nodes[0]) {
+      paintSingle(nodes[0], scaleX, scaleY, rect);
+      return;
+    }
+    hide();
   }
   function start() {
     if (destroyed || !enabled || running) {
@@ -46423,11 +47962,14 @@ function installSelectionHighlight(win = globalThis) {
       if (next) {
         start();
       } else {
+        drag.cancel();
         stop();
       }
     },
     destroy: () => {
       destroyed = true;
+      unsubscribeColors();
+      drag.cancel();
       stop();
       root2.remove();
     }
