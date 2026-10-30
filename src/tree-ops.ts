@@ -218,12 +218,7 @@ function nodeNameMatches(node: TreeNodeData, query: string): boolean
         return true;
     }
 
-    if (node.label.toLowerCase().includes(q))
-    {
-        return true;
-    }
-
-    return node.typeName.toLowerCase().includes(q);
+    return node.label.toLowerCase().includes(q);
 }
 
 export function filterTreeByName(root: TreeNodeData, query: string): TreeNodeData | null
