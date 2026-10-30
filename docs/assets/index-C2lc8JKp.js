@@ -1,4 +1,4 @@
-const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/browserAll-D26c_Z-f.js","assets/webworkerAll-BTN0GUoD.js","assets/Filter-B5l4scwC.js","assets/WebGPURenderer-DXCCH5pq.js","assets/getTexelRangeRects-tJzfmWw-.js","assets/RenderTargetSystem-Db00nRui.js","assets/WebGLRenderer-RJvVxNxn.js","assets/CanvasRenderer-D-dlIJyc.js"])))=>i.map(i=>d[i]);
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/browserAll-W6dcJSA3.js","assets/webworkerAll-DDGKWLJu.js","assets/Filter-DANXV-zo.js","assets/WebGPURenderer-BYMDU00-.js","assets/getTexelRangeRects-BgS9_tq5.js","assets/RenderTargetSystem-Be_T5XB0.js","assets/WebGLRenderer-C91deDyU.js","assets/CanvasRenderer-CxAHUcd4.js"])))=>i.map(i=>d[i]);
 (function polyfill() {
   const relList = document.createElement("link").relList;
   if (relList && relList.supports && relList.supports("modulepreload")) return;
@@ -355,7 +355,7 @@ const browserExt = {
   },
   test: () => true,
   load: async () => {
-    await __vitePreload(() => import("./browserAll-D26c_Z-f.js"), true ? __vite__mapDeps([0,1,2]) : void 0);
+    await __vitePreload(() => import("./browserAll-W6dcJSA3.js"), true ? __vite__mapDeps([0,1,2]) : void 0);
   }
 };
 const webworkerExt = {
@@ -366,7 +366,7 @@ const webworkerExt = {
   },
   test: () => typeof self !== "undefined" && self.WorkerGlobalScope !== void 0,
   load: async () => {
-    await __vitePreload(() => import("./webworkerAll-BTN0GUoD.js"), true ? __vite__mapDeps([1,2]) : void 0);
+    await __vitePreload(() => import("./webworkerAll-DDGKWLJu.js"), true ? __vite__mapDeps([1,2]) : void 0);
   }
 };
 class ObservablePoint {
@@ -13297,7 +13297,7 @@ async function autoDetectRenderer(options) {
     const rendererType = preferredOrder[i2];
     if (rendererType === "webgpu" && await isWebGPUSupported()) {
       const { WebGPURenderer } = await __vitePreload(async () => {
-        const { WebGPURenderer: WebGPURenderer2 } = await import("./WebGPURenderer-DXCCH5pq.js");
+        const { WebGPURenderer: WebGPURenderer2 } = await import("./WebGPURenderer-BYMDU00-.js");
         return { WebGPURenderer: WebGPURenderer2 };
       }, true ? __vite__mapDeps([3,4,5,2]) : void 0);
       RendererClass = WebGPURenderer;
@@ -13307,7 +13307,7 @@ async function autoDetectRenderer(options) {
       options.failIfMajorPerformanceCaveat ?? AbstractRenderer.defaultOptions.failIfMajorPerformanceCaveat
     )) {
       const { WebGLRenderer } = await __vitePreload(async () => {
-        const { WebGLRenderer: WebGLRenderer2 } = await import("./WebGLRenderer-RJvVxNxn.js");
+        const { WebGLRenderer: WebGLRenderer2 } = await import("./WebGLRenderer-C91deDyU.js");
         return { WebGLRenderer: WebGLRenderer2 };
       }, true ? __vite__mapDeps([6,4,5,2]) : void 0);
       RendererClass = WebGLRenderer;
@@ -13315,7 +13315,7 @@ async function autoDetectRenderer(options) {
       break;
     } else if (rendererType === "canvas") {
       const { CanvasRenderer } = await __vitePreload(async () => {
-        const { CanvasRenderer: CanvasRenderer2 } = await import("./CanvasRenderer-D-dlIJyc.js");
+        const { CanvasRenderer: CanvasRenderer2 } = await import("./CanvasRenderer-CxAHUcd4.js");
         return { CanvasRenderer: CanvasRenderer2 };
       }, true ? __vite__mapDeps([7,5,2]) : void 0);
       RendererClass = CanvasRenderer;
@@ -34025,6 +34025,7 @@ const ASYNC = 1 << 22;
 const ERROR_VALUE = 1 << 23;
 const STATE_SYMBOL = /* @__PURE__ */ Symbol("$state");
 const COMPONENT_SYMBOL = /* @__PURE__ */ Symbol("component");
+const LEGACY_PROPS = /* @__PURE__ */ Symbol("legacy props");
 const LOADING_ATTR_SYMBOL = /* @__PURE__ */ Symbol("");
 const ATTRIBUTES_CACHE = /* @__PURE__ */ Symbol("attributes");
 const CLASS_CACHE = /* @__PURE__ */ Symbol("class");
@@ -34041,6 +34042,10 @@ const IS_XHTML = (
 const EACH_ITEM_REACTIVE = 1;
 const EACH_INDEX_REACTIVE = 1 << 1;
 const EACH_ITEM_IMMUTABLE = 1 << 4;
+const PROPS_IS_IMMUTABLE = 1;
+const PROPS_IS_UPDATED = 1 << 2;
+const PROPS_IS_BINDABLE = 1 << 3;
+const PROPS_IS_LAZY_INITIAL = 1 << 4;
 const TEMPLATE_FRAGMENT = 1;
 const TEMPLATE_USE_IMPORT_NODE = 1 << 1;
 const HYDRATION_ERROR = {};
@@ -34098,6 +34103,11 @@ function effect_orphan(rune) {
 function effect_update_depth_exceeded() {
   {
     throw new Error(`https://svelte.dev/e/effect_update_depth_exceeded`);
+  }
+}
+function props_invalid_value(key) {
+  {
+    throw new Error(`https://svelte.dev/e/props_invalid_value`);
   }
 }
 function state_descriptors_fixed() {
@@ -38060,27 +38070,71 @@ function bind_this(element_or_component = mark_as_component(), update, get_value
   });
   return element_or_component;
 }
+let is_store_binding = false;
+function capture_store_binding(fn) {
+  var previous_is_store_binding = is_store_binding;
+  try {
+    is_store_binding = false;
+    return [fn(), is_store_binding];
+  } finally {
+    is_store_binding = previous_is_store_binding;
+  }
+}
 function prop(props, key, flags2, fallback) {
+  var runes = true;
+  var bindable = (flags2 & PROPS_IS_BINDABLE) !== 0;
+  var lazy = (flags2 & PROPS_IS_LAZY_INITIAL) !== 0;
+  var fallback_value = (
+    /** @type {V} */
+    fallback
+  );
+  var fallback_dirty = true;
   var fallback_signal = (
     /** @type {Derived<V> | undefined} */
     void 0
   );
   var get_fallback = () => {
-    {
+    if (lazy && runes) {
       fallback_signal ??= /* @__PURE__ */ derived(
         /** @type {() => V} */
         fallback
       );
       return get(fallback_signal);
     }
+    if (fallback_dirty) {
+      fallback_dirty = false;
+      fallback_value = lazy ? untrack(
+        /** @type {() => V} */
+        fallback
+      ) : (
+        /** @type {V} */
+        fallback
+      );
+    }
+    return fallback_value;
   };
+  let setter;
+  if (bindable) {
+    var is_entry_props = STATE_SYMBOL in props || LEGACY_PROPS in props;
+    setter = get_descriptor(props, key)?.set ?? (is_entry_props && key in props ? (v2) => props[key] = v2 : void 0);
+  }
   var initial_value;
-  {
+  var is_store_sub = false;
+  if (bindable) {
+    [initial_value, is_store_sub] = capture_store_binding(() => (
+      /** @type {V} */
+      props[key]
+    ));
+  } else {
     initial_value = /** @type {V} */
     props[key];
   }
   if (initial_value === void 0 && fallback !== void 0) {
     initial_value = get_fallback();
+    if (setter) {
+      props_invalid_value();
+      setter(initial_value);
+    }
   }
   var getter;
   {
@@ -38090,12 +38144,56 @@ function prop(props, key, flags2, fallback) {
         props[key]
       );
       if (value === void 0) return get_fallback();
+      fallback_dirty = true;
       return value;
     };
   }
-  {
+  if ((flags2 & PROPS_IS_UPDATED) === 0) {
     return getter;
   }
+  if (setter) {
+    var legacy_parent = props.$$legacy;
+    return (
+      /** @type {() => V} */
+      (function(value, mutation) {
+        if (arguments.length > 0) {
+          if (!mutation || legacy_parent || is_store_sub) {
+            setter(mutation ? getter() : value);
+          }
+          return value;
+        }
+        return getter();
+      })
+    );
+  }
+  var overridden = false;
+  var d2 = ((flags2 & PROPS_IS_IMMUTABLE) !== 0 ? derived : derived_safe_equal)(() => {
+    overridden = false;
+    return getter();
+  });
+  if (bindable) get(d2);
+  var parent_effect = (
+    /** @type {Effect} */
+    active_effect
+  );
+  return (
+    /** @type {() => V} */
+    (function(value, mutation) {
+      if (arguments.length > 0) {
+        const new_value = mutation ? get(d2) : bindable ? proxy(value) : value;
+        set(d2, new_value);
+        overridden = true;
+        if (fallback_value !== void 0) {
+          fallback_value = new_value;
+        }
+        return value;
+      }
+      if (is_destroying_effect && overridden || (parent_effect.f & DESTROYED) !== 0) {
+        return d2.v;
+      }
+      return get(d2);
+    })
+  );
 }
 function onMount(fn) {
   if (component_context === null) {
@@ -38379,6 +38477,17 @@ function parentIdOf(id) {
     return null;
   }
   return id.slice(0, idx);
+}
+function expandPathsToIds(expandedIds, ids) {
+  const next = new Set(expandedIds);
+  for (const id of ids) {
+    let current2 = parentIdOf(id);
+    while (current2) {
+      next.add(current2);
+      current2 = parentIdOf(current2);
+    }
+  }
+  return next;
 }
 function collectTreeIds(node, into = /* @__PURE__ */ new Set()) {
   into.add(node.id);
@@ -39798,6 +39907,7 @@ const $$css$1 = {
 function Scene_tree($$anchor, $$props) {
   push($$props, true);
   append_styles$1($$anchor, $$css$1);
+  const revealToken = prop($$props, "revealToken", 3, 0);
   let tip = /* @__PURE__ */ state(null);
   let showTimer = null;
   let hideTimer = null;
@@ -39810,17 +39920,22 @@ function Scene_tree($$anchor, $$props) {
   let suppressClickTimer = null;
   let activePointerId = null;
   let lastScrolledId = null;
+  let lastScrolledRevealToken = 0;
   const selectedSet = /* @__PURE__ */ user_derived(() => new Set($$props.selectedIds));
   const primarySelectedId = /* @__PURE__ */ user_derived(() => $$props.selectedIds.length > 0 ? $$props.selectedIds[$$props.selectedIds.length - 1] : null);
   user_effect(() => {
     const id = get(primarySelectedId);
+    const token = revealToken();
     if (id === null || id === void 0 || !get(wrapEl)) {
       return;
     }
     if (get(drag) || get(marquee)) {
       return;
     }
-    if (id === lastScrolledId) {
+    if (!$$props.nodes.some((node) => node.id === id)) {
+      return;
+    }
+    if (id === lastScrolledId && token === lastScrolledRevealToken) {
       return;
     }
     const el = get(wrapEl).querySelector(`[data-node-id="${CSS.escape(id)}"]`);
@@ -39828,6 +39943,7 @@ function Scene_tree($$anchor, $$props) {
       return;
     }
     lastScrolledId = id;
+    lastScrolledRevealToken = token;
     el.scrollIntoView({ block: "nearest", inline: "nearest" });
   });
   function setDragging(active) {
@@ -41196,6 +41312,7 @@ function App($$anchor, $$props) {
   let liveRefreshInterval = /* @__PURE__ */ state(proxy(initialLiveRefreshInterval));
   let autoRefresh = /* @__PURE__ */ state(initialLiveRefreshInterval > 0);
   let nameFilter = /* @__PURE__ */ state("");
+  let selectionReveal = /* @__PURE__ */ state(0);
   let lastError = /* @__PURE__ */ state("");
   let clipboardIds = /* @__PURE__ */ state(proxy([]));
   let lastClearedIds = /* @__PURE__ */ state(null);
@@ -41660,7 +41777,14 @@ function App($$anchor, $$props) {
         return get(nameFilter);
       },
       onnameFilterChange: (value) => {
-        set(nameFilter, value, true);
+        const wasFiltering = get(nameFilter).trim().length > 0;
+        const nextFilter = value;
+        const isFiltering = nextFilter.trim().length > 0;
+        set(nameFilter, nextFilter, true);
+        if (wasFiltering && !isFiltering && get(selectedIds).length > 0) {
+          set(expandedIds, expandPathsToIds(get(expandedIds), get(selectedIds)), true);
+          set(selectionReveal, get(selectionReveal) + 1);
+        }
         if (get(tree)) {
           relayoutFromTree(get(tree));
         }
@@ -41722,6 +41846,9 @@ function App($$anchor, $$props) {
           },
           get selectedIds() {
             return get(selectedIds);
+          },
+          get revealToken() {
+            return get(selectionReveal);
           },
           onselect,
           onselectmany,

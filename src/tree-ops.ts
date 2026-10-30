@@ -42,6 +42,25 @@ export function parentIdOf(id: string): string | null
     return id.slice(0, idx);
 }
 
+export function expandPathsToIds(expandedIds: ReadonlySet<string>, ids: Array<string>): Set<string>
+{
+    const next = new Set(expandedIds);
+
+    for (const id of ids)
+    {
+        let current = parentIdOf(id);
+
+        while (current)
+        {
+            next.add(current);
+
+            current = parentIdOf(current);
+        }
+    }
+
+    return next;
+}
+
 export function collectTreeIds(node: TreeNodeData, into: Set<string> = new Set()): Set<string>
 {
     into.add(node.id);
