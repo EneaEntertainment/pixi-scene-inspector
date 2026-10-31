@@ -1,4 +1,5 @@
 import { isNodeAlive, type PageGlobals, type PixiNode, type PixiPoint } from '../../page-ops/pixi-node';
+import { isParticleNode } from '../../page-ops/root';
 import { isPixi8 } from '../../page-ops/types';
 import { colorToString, parseColorString } from '../text/colors';
 
@@ -197,6 +198,12 @@ function readIdentityString(value: unknown): string
 function identityStringMaps(node: PixiNode): Array<PropertyMapping<string>>
 {
     const win = globalThis as PageGlobals;
+
+    if (isParticleNode(node, win))
+    {
+        return [];
+    }
+
     const useLabel = isPixi8(node, win);
 
     if (useLabel)
