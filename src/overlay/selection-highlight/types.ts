@@ -43,6 +43,7 @@ export type OverlayRoot = {
     root: HTMLDivElement;
     box: HTMLDivElement;
     outline: SVGRectElement;
+    pivotMark: HTMLDivElement;
     anchorMark: HTMLDivElement;
     rotateStalk: HTMLDivElement;
     rotateHandle: HTMLDivElement;

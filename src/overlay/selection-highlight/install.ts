@@ -3,7 +3,15 @@ import { resolveLiveSelectionNodes } from '../../page-ops/resolve-selection';
 import { readHighlightEnabled } from '../shell/settings';
 import { ANCHOR_SIZE, EMPTY_SIZE } from './constants';
 import { attachHighlightTransformDrag } from './drag';
-import { findPixiCanvas, hasAnchor, readLocalBounds, readScreenSize, readWorldTransform, worldCorners } from './geometry';
+import {
+    findPixiCanvas,
+    hasAnchor,
+    readLocalBounds,
+    readPivot,
+    readScreenSize,
+    readWorldTransform,
+    worldCorners,
+} from './geometry';
 import { applyHighlightPaint, createOverlayRoot, layoutHandles, setHandlesVisible } from './overlay-dom';
 
 import type { PageGlobals, PixiNode } from '../../page-ops/pixi-node';
@@ -14,7 +22,7 @@ export function installSelectionHighlight(
 ): SelectionHighlight
 {
     const overlay = createOverlayRoot();
-    const { root, box, outline, anchorMark } = overlay;
+    const { root, box, outline, pivotMark, anchorMark } = overlay;
 
     let frame = 0;
     let running = false;
@@ -36,6 +44,7 @@ export function installSelectionHighlight(
     function hide()
     {
         root.style.display = 'none';
+        pivotMark.style.display = 'none';
         anchorMark.style.display = 'none';
         paint = null;
 
@@ -134,9 +143,24 @@ export function installSelectionHighlight(
 
         publishPaint(width, height, { a, b, c, d, tx, ty }, rect, scaleX, scaleY);
 
+        const half = ANCHOR_SIZE / 2;
+        const pivot = readPivot(node);
+
+        if (pivot)
+        {
+            const pivotX = (((matrix.a * pivot.x) + (matrix.c * pivot.y) + matrix.tx) * scaleX) - half;
+            const pivotY = (((matrix.b * pivot.x) + (matrix.d * pivot.y) + matrix.ty) * scaleY) - half;
+
+            pivotMark.style.display = 'block';
+            pivotMark.style.transform = `translate(${pivotX}px, ${pivotY}px)`;
+        }
+        else
+        {
+            pivotMark.style.display = 'none';
+        }
+
         if (hasAnchor(node))
         {
-            const half = ANCHOR_SIZE / 2;
             const originX = (matrix.tx * scaleX) - half;
             const originY = (matrix.ty * scaleY) - half;
 
@@ -215,6 +239,7 @@ export function installSelectionHighlight(
             scaleY,
         );
 
+        pivotMark.style.display = 'none';
         anchorMark.style.display = 'none';
     }
 

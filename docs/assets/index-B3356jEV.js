@@ -1,4 +1,4 @@
-const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/browserAll-CemooVpH.js","assets/webworkerAll-BmmbFDDk.js","assets/Filter-CcjE80dJ.js","assets/WebGPURenderer-CNKIzJ4J.js","assets/getTexelRangeRects-B4Sqtt6G.js","assets/RenderTargetSystem-BN3ut3ML.js","assets/WebGLRenderer-Dv0KPMCt.js","assets/CanvasRenderer-C3Xn8TyL.js"])))=>i.map(i=>d[i]);
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/browserAll-aY_0XAQu.js","assets/webworkerAll-D9EnG6BN.js","assets/Filter-DBNy6a-q.js","assets/WebGPURenderer-B2gH0rfF.js","assets/getTexelRangeRects-DdbgMZA0.js","assets/RenderTargetSystem-DmWXJTnr.js","assets/WebGLRenderer-0ws7zF6Y.js","assets/CanvasRenderer-D_MyVtKo.js"])))=>i.map(i=>d[i]);
 (function polyfill() {
   const relList = document.createElement("link").relList;
   if (relList && relList.supports && relList.supports("modulepreload")) return;
@@ -355,7 +355,7 @@ const browserExt = {
   },
   test: () => true,
   load: async () => {
-    await __vitePreload(() => import("./browserAll-CemooVpH.js"), true ? __vite__mapDeps([0,1,2]) : void 0);
+    await __vitePreload(() => import("./browserAll-aY_0XAQu.js"), true ? __vite__mapDeps([0,1,2]) : void 0);
   }
 };
 const webworkerExt = {
@@ -366,7 +366,7 @@ const webworkerExt = {
   },
   test: () => typeof self !== "undefined" && self.WorkerGlobalScope !== void 0,
   load: async () => {
-    await __vitePreload(() => import("./webworkerAll-BmmbFDDk.js"), true ? __vite__mapDeps([1,2]) : void 0);
+    await __vitePreload(() => import("./webworkerAll-D9EnG6BN.js"), true ? __vite__mapDeps([1,2]) : void 0);
   }
 };
 class ObservablePoint {
@@ -13297,7 +13297,7 @@ async function autoDetectRenderer(options) {
     const rendererType = preferredOrder[i2];
     if (rendererType === "webgpu" && await isWebGPUSupported()) {
       const { WebGPURenderer } = await __vitePreload(async () => {
-        const { WebGPURenderer: WebGPURenderer2 } = await import("./WebGPURenderer-CNKIzJ4J.js");
+        const { WebGPURenderer: WebGPURenderer2 } = await import("./WebGPURenderer-B2gH0rfF.js");
         return { WebGPURenderer: WebGPURenderer2 };
       }, true ? __vite__mapDeps([3,4,5,2]) : void 0);
       RendererClass = WebGPURenderer;
@@ -13307,7 +13307,7 @@ async function autoDetectRenderer(options) {
       options.failIfMajorPerformanceCaveat ?? AbstractRenderer.defaultOptions.failIfMajorPerformanceCaveat
     )) {
       const { WebGLRenderer } = await __vitePreload(async () => {
-        const { WebGLRenderer: WebGLRenderer2 } = await import("./WebGLRenderer-Dv0KPMCt.js");
+        const { WebGLRenderer: WebGLRenderer2 } = await import("./WebGLRenderer-0ws7zF6Y.js");
         return { WebGLRenderer: WebGLRenderer2 };
       }, true ? __vite__mapDeps([6,4,5,2]) : void 0);
       RendererClass = WebGLRenderer;
@@ -13315,7 +13315,7 @@ async function autoDetectRenderer(options) {
       break;
     } else if (rendererType === "canvas") {
       const { CanvasRenderer } = await __vitePreload(async () => {
-        const { CanvasRenderer: CanvasRenderer2 } = await import("./CanvasRenderer-C3Xn8TyL.js");
+        const { CanvasRenderer: CanvasRenderer2 } = await import("./CanvasRenderer-D_MyVtKo.js");
         return { CanvasRenderer: CanvasRenderer2 };
       }, true ? __vite__mapDeps([7,5,2]) : void 0);
       RendererClass = CanvasRenderer;
@@ -47446,6 +47446,18 @@ function hasAnchor(node) {
   }
   return asFiniteNumber(anchor.x) !== null && asFiniteNumber(anchor.y) !== null;
 }
+function readPivot(node) {
+  const pivot = node.pivot;
+  if (!pivot) {
+    return null;
+  }
+  const x2 = asFiniteNumber(pivot.x);
+  const y2 = asFiniteNumber(pivot.y);
+  if (x2 === null || y2 === null) {
+    return null;
+  }
+  return { x: x2, y: y2 };
+}
 function worldCorners(bounds, matrix) {
   const points = [
     { x: bounds.minX, y: bounds.minY },
@@ -47896,6 +47908,8 @@ function applyHighlightPaint(overlay) {
   overlay.scaleXHandle.style.border = border;
   overlay.scaleYHandle.style.border = border;
   overlay.uniformHandle.style.border = border;
+  overlay.pivotMark.style.background = fill;
+  overlay.pivotMark.style.border = border;
   overlay.anchorMark.style.border = border;
 }
 function createOverlayRoot() {
@@ -47966,8 +47980,7 @@ function createOverlayRoot() {
   const uniformHandle = document.createElement("div");
   styleHandle(uniformHandle, "pointer");
   uniformHandle.style.display = "none";
-  const anchorMark = document.createElement("div");
-  Object.assign(anchorMark.style, {
+  const markStyle = {
     position: "absolute",
     left: "0",
     top: "0",
@@ -47975,11 +47988,20 @@ function createOverlayRoot() {
     height: `${ANCHOR_SIZE}px`,
     boxSizing: "border-box",
     borderRadius: "50%",
-    background: MARK_FILL,
     border: `1px solid ${highlightStroke()}`,
     display: "none",
     willChange: "transform",
     pointerEvents: "none"
+  };
+  const pivotMark = document.createElement("div");
+  Object.assign(pivotMark.style, {
+    ...markStyle,
+    background: highlightFill()
+  });
+  const anchorMark = document.createElement("div");
+  Object.assign(anchorMark.style, {
+    ...markStyle,
+    background: MARK_FILL
   });
   root2.appendChild(box);
   root2.appendChild(outlineSvg);
@@ -47988,12 +48010,14 @@ function createOverlayRoot() {
   root2.appendChild(scaleXHandle);
   root2.appendChild(scaleYHandle);
   root2.appendChild(uniformHandle);
+  root2.appendChild(pivotMark);
   root2.appendChild(anchorMark);
   document.body.appendChild(root2);
   return {
     root: root2,
     box,
     outline,
+    pivotMark,
     anchorMark,
     rotateStalk,
     rotateHandle,
@@ -48031,7 +48055,7 @@ function layoutHandles(overlay, next) {
 }
 function installSelectionHighlight(win = globalThis) {
   const overlay = createOverlayRoot();
-  const { root: root2, box, outline, anchorMark } = overlay;
+  const { root: root2, box, outline, pivotMark, anchorMark } = overlay;
   let frame = 0;
   let running = false;
   let destroyed = false;
@@ -48047,6 +48071,7 @@ function installSelectionHighlight(win = globalThis) {
   });
   function hide() {
     root2.style.display = "none";
+    pivotMark.style.display = "none";
     anchorMark.style.display = "none";
     paint = null;
     setHandlesVisible(overlay, false);
@@ -48111,8 +48136,17 @@ function installSelectionHighlight(win = globalThis) {
     const tx = (matrix.a * minX + matrix.c * minY + matrix.tx) * scaleX;
     const ty = (matrix.b * minX + matrix.d * minY + matrix.ty) * scaleY;
     publishPaint(width, height, { a: a2, b: b2, c: c2, d: d2, tx, ty }, rect, scaleX, scaleY);
+    const half = ANCHOR_SIZE / 2;
+    const pivot = readPivot(node);
+    if (pivot) {
+      const pivotX = (matrix.a * pivot.x + matrix.c * pivot.y + matrix.tx) * scaleX - half;
+      const pivotY = (matrix.b * pivot.x + matrix.d * pivot.y + matrix.ty) * scaleY - half;
+      pivotMark.style.display = "block";
+      pivotMark.style.transform = `translate(${pivotX}px, ${pivotY}px)`;
+    } else {
+      pivotMark.style.display = "none";
+    }
     if (hasAnchor(node)) {
-      const half = ANCHOR_SIZE / 2;
       const originX = matrix.tx * scaleX - half;
       const originY = matrix.ty * scaleY - half;
       anchorMark.style.display = "block";
@@ -48170,6 +48204,7 @@ function installSelectionHighlight(win = globalThis) {
       scaleX,
       scaleY
     );
+    pivotMark.style.display = "none";
     anchorMark.style.display = "none";
   }
   function tick() {

@@ -45,6 +45,8 @@ export function applyHighlightPaint(overlay: OverlayRoot)
     overlay.scaleXHandle.style.border = border;
     overlay.scaleYHandle.style.border = border;
     overlay.uniformHandle.style.border = border;
+    overlay.pivotMark.style.background = fill;
+    overlay.pivotMark.style.border = border;
     overlay.anchorMark.style.border = border;
 }
 
@@ -137,9 +139,7 @@ export function createOverlayRoot(): OverlayRoot
     styleHandle(uniformHandle, 'pointer');
     uniformHandle.style.display = 'none';
 
-    const anchorMark = document.createElement('div');
-
-    Object.assign(anchorMark.style, {
+    const markStyle = {
         position      : 'absolute',
         left          : '0',
         top           : '0',
@@ -147,11 +147,24 @@ export function createOverlayRoot(): OverlayRoot
         height        : `${ANCHOR_SIZE}px`,
         boxSizing     : 'border-box',
         borderRadius  : '50%',
-        background    : MARK_FILL,
         border        : `1px solid ${highlightStroke()}`,
         display       : 'none',
         willChange    : 'transform',
         pointerEvents : 'none',
+    } as const;
+
+    const pivotMark = document.createElement('div');
+
+    Object.assign(pivotMark.style, {
+        ...markStyle,
+        background: highlightFill(),
+    });
+
+    const anchorMark = document.createElement('div');
+
+    Object.assign(anchorMark.style, {
+        ...markStyle,
+        background: MARK_FILL,
     });
 
     root.appendChild(box);
@@ -161,13 +174,16 @@ export function createOverlayRoot(): OverlayRoot
     root.appendChild(scaleXHandle);
     root.appendChild(scaleYHandle);
     root.appendChild(uniformHandle);
+    root.appendChild(pivotMark);
     root.appendChild(anchorMark);
+
     document.body.appendChild(root);
 
     return {
         root,
         box,
         outline,
+        pivotMark,
         anchorMark,
         rotateStalk,
         rotateHandle,
