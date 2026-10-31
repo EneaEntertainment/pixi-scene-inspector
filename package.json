@@ -16,8 +16,7 @@
     "lint": "eslint \"src/**/*.{ts,svelte}\" \"demo/**/*.{ts,svelte}\"",
     "lint:fix": "eslint \"src/**/*.{ts,svelte}\" \"demo/**/*.{ts,svelte}\" --fix",
     "demo": "vite --config demo/vite.config.ts",
-    "demo:build": "vite build --config demo/vite.config.ts",
-    "preview-ui": "vite --config demo/vite.config.ts --open /preview.html"
+    "demo:build": "vite build --config demo/vite.config.ts"
   },
   "devDependencies": {
     "@pixi/eslint-config": "^6.0.0",

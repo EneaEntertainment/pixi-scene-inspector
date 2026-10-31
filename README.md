@@ -188,12 +188,6 @@ The canvas is letterboxed to a fixed safe size inside `#game` and rescales on `w
 
 The live scene exercises core display-object types from `pixi.js` (containers, sprites including `GifSprite`, text variants, graphics, meshes, `ParticleContainer`, `RenderContainer`, `DOMContainer`, `RenderLayer`), plus inspector UX cases (long / empty labels, hidden nodes, nested depth, text fill/stroke/shadow). **Spine** is intentionally omitted for now.
 
-UI-only preview (no Pixi page, mock tree):
-
-```bash
-npm run preview-ui
-```
-
 ## Develop
 
 ```bash
