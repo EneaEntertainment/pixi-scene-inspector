@@ -16,6 +16,7 @@ export function buildSpritesSection(textures: DemoTextures): Container
     sprite.width = 32;
     sprite.height = 32;
     sprite.position.set(15, 18);
+    sprite.tint = 0x4ade80;
     sprite.eventMode = 'static';
     sprite.cursor = 'grab';
 

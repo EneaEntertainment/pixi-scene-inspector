@@ -1,4 +1,4 @@
-const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/browserAll-sDMCAhEL.js","assets/webworkerAll-X9Gmo5G8.js","assets/Filter-CdqFoxVc.js","assets/WebGPURenderer-CKVU7iJa.js","assets/getTexelRangeRects-Ip1wih5e.js","assets/RenderTargetSystem-B6NUYIXW.js","assets/WebGLRenderer-C3t3NZhN.js","assets/CanvasRenderer-4WsNSAmJ.js"])))=>i.map(i=>d[i]);
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/browserAll-CpfIX4Gm.js","assets/webworkerAll-Dc4NJYw7.js","assets/Filter-BCU7w3nt.js","assets/WebGPURenderer-BcKIGeI-.js","assets/getTexelRangeRects-Ce6PMD2k.js","assets/RenderTargetSystem-CNieEnr8.js","assets/WebGLRenderer-DbhkJclA.js","assets/CanvasRenderer-eANAb5td.js"])))=>i.map(i=>d[i]);
 (function polyfill() {
   const relList = document.createElement("link").relList;
   if (relList && relList.supports && relList.supports("modulepreload")) return;
@@ -355,7 +355,7 @@ const browserExt = {
   },
   test: () => true,
   load: async () => {
-    await __vitePreload(() => import("./browserAll-sDMCAhEL.js"), true ? __vite__mapDeps([0,1,2]) : void 0);
+    await __vitePreload(() => import("./browserAll-CpfIX4Gm.js"), true ? __vite__mapDeps([0,1,2]) : void 0);
   }
 };
 const webworkerExt = {
@@ -366,7 +366,7 @@ const webworkerExt = {
   },
   test: () => typeof self !== "undefined" && self.WorkerGlobalScope !== void 0,
   load: async () => {
-    await __vitePreload(() => import("./webworkerAll-X9Gmo5G8.js"), true ? __vite__mapDeps([1,2]) : void 0);
+    await __vitePreload(() => import("./webworkerAll-Dc4NJYw7.js"), true ? __vite__mapDeps([1,2]) : void 0);
   }
 };
 class ObservablePoint {
@@ -13297,7 +13297,7 @@ async function autoDetectRenderer(options) {
     const rendererType = preferredOrder[i2];
     if (rendererType === "webgpu" && await isWebGPUSupported()) {
       const { WebGPURenderer } = await __vitePreload(async () => {
-        const { WebGPURenderer: WebGPURenderer2 } = await import("./WebGPURenderer-CKVU7iJa.js");
+        const { WebGPURenderer: WebGPURenderer2 } = await import("./WebGPURenderer-BcKIGeI-.js");
         return { WebGPURenderer: WebGPURenderer2 };
       }, true ? __vite__mapDeps([3,4,5,2]) : void 0);
       RendererClass = WebGPURenderer;
@@ -13307,7 +13307,7 @@ async function autoDetectRenderer(options) {
       options.failIfMajorPerformanceCaveat ?? AbstractRenderer.defaultOptions.failIfMajorPerformanceCaveat
     )) {
       const { WebGLRenderer } = await __vitePreload(async () => {
-        const { WebGLRenderer: WebGLRenderer2 } = await import("./WebGLRenderer-C3t3NZhN.js");
+        const { WebGLRenderer: WebGLRenderer2 } = await import("./WebGLRenderer-DbhkJclA.js");
         return { WebGLRenderer: WebGLRenderer2 };
       }, true ? __vite__mapDeps([6,4,5,2]) : void 0);
       RendererClass = WebGLRenderer;
@@ -13315,7 +13315,7 @@ async function autoDetectRenderer(options) {
       break;
     } else if (rendererType === "canvas") {
       const { CanvasRenderer } = await __vitePreload(async () => {
-        const { CanvasRenderer: CanvasRenderer2 } = await import("./CanvasRenderer-4WsNSAmJ.js");
+        const { CanvasRenderer: CanvasRenderer2 } = await import("./CanvasRenderer-eANAb5td.js");
         return { CanvasRenderer: CanvasRenderer2 };
       }, true ? __vite__mapDeps([7,5,2]) : void 0);
       RendererClass = CanvasRenderer;
@@ -40751,6 +40751,7 @@ const OBJECT_CATALOG_SECTIONS = [
     id: "rendering",
     title: "Rendering",
     fields: [
+      { kind: "color", key: "tint", label: "tint" },
       {
         kind: "select",
         key: "blendMode",
@@ -42340,6 +42341,215 @@ function resolveLiveSelectionNodes(win = globalThis) {
   }
   return [];
 }
+function isRgbColorArray(value) {
+  if (Array.isArray(value)) {
+    if (value.length < 3 || value.length > 4) {
+      return false;
+    }
+    if (!value.every((entry) => typeof entry === "number" && Number.isFinite(entry))) {
+      return false;
+    }
+    return !value.some((entry) => entry > 255);
+  }
+  if (value instanceof Float32Array || value instanceof Uint8Array || value instanceof Uint8ClampedArray) {
+    return value.length >= 3 && value.length <= 4;
+  }
+  return false;
+}
+function rgbColorArrayUsesBytes(value) {
+  if (value instanceof Uint8Array || value instanceof Uint8ClampedArray) {
+    return true;
+  }
+  return Number(value[0]) > 1 || Number(value[1]) > 1 || Number(value[2]) > 1;
+}
+function rgbColorArrayToHex(value) {
+  const bytes = rgbColorArrayUsesBytes(value);
+  const toByte = (component) => {
+    const scaled = bytes ? component : component * 255;
+    return Math.max(0, Math.min(255, Math.round(scaled)));
+  };
+  const hex = [toByte(Number(value[0])), toByte(Number(value[1])), toByte(Number(value[2]))].map((component) => component.toString(16).padStart(2, "0")).join("");
+  return `#${hex}`;
+}
+function parsedColorToRgb01(parsed) {
+  if (typeof parsed === "number" && Number.isFinite(parsed)) {
+    const int2 = parsed >>> 0;
+    return [
+      (int2 >> 16 & 255) / 255,
+      (int2 >> 8 & 255) / 255,
+      (int2 & 255) / 255
+    ];
+  }
+  if (typeof parsed !== "string" || parsed.trim() === "") {
+    return null;
+  }
+  const hex = cssColorToHex6(parsed);
+  if (!hex) {
+    return null;
+  }
+  const int = Number.parseInt(hex.slice(1), 16);
+  return [
+    (int >> 16 & 255) / 255,
+    (int >> 8 & 255) / 255,
+    (int & 255) / 255
+  ];
+}
+function cssColorToHex6(value) {
+  const trimmed = value.trim();
+  if (trimmed === "") {
+    return null;
+  }
+  if (/^#([0-9a-fA-F]{3})$/.test(trimmed)) {
+    const r2 = trimmed[1];
+    const g2 = trimmed[2];
+    const b2 = trimmed[3];
+    return `#${r2}${r2}${g2}${g2}${b2}${b2}`.toLowerCase();
+  }
+  if (/^#([0-9a-fA-F]{6})([0-9a-fA-F]{2})?$/.test(trimmed)) {
+    return trimmed.slice(0, 7).toLowerCase();
+  }
+  if (/^0x[0-9a-fA-F]+$/.test(trimmed)) {
+    return `#${Number(trimmed).toString(16).padStart(6, "0").slice(-6)}`;
+  }
+  if (/^[0-9]+$/.test(trimmed)) {
+    return `#${Number(trimmed).toString(16).padStart(6, "0").slice(-6)}`;
+  }
+  if (typeof document === "undefined") {
+    return null;
+  }
+  const canvas = document.createElement("canvas");
+  canvas.width = 1;
+  canvas.height = 1;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) {
+    return null;
+  }
+  ctx.fillStyle = "#000000";
+  ctx.fillStyle = trimmed;
+  const normalized = String(ctx.fillStyle);
+  if (/^#[0-9a-fA-F]{6}$/.test(normalized)) {
+    return normalized.toLowerCase();
+  }
+  const rgb = /^rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/.exec(normalized);
+  if (!rgb) {
+    return null;
+  }
+  const hex = [Number(rgb[1]), Number(rgb[2]), Number(rgb[3])].map((component) => Math.max(0, Math.min(255, component)).toString(16).padStart(2, "0")).join("");
+  return `#${hex}`;
+}
+function replaceRgbColorArray(current2, parsed) {
+  const rgb = parsedColorToRgb01(parsed);
+  if (!rgb) {
+    return current2;
+  }
+  const bytes = rgbColorArrayUsesBytes(current2);
+  const components = bytes ? [
+    Math.round(rgb[0] * 255),
+    Math.round(rgb[1] * 255),
+    Math.round(rgb[2] * 255)
+  ] : [rgb[0], rgb[1], rgb[2]];
+  if (current2.length > 3) {
+    components.push(Number(current2[3]));
+  }
+  if (Array.isArray(current2)) {
+    return components;
+  }
+  if (current2 instanceof Float32Array) {
+    return Float32Array.from(components);
+  }
+  if (current2 instanceof Uint8ClampedArray) {
+    return Uint8ClampedArray.from(components);
+  }
+  if (current2 instanceof Uint8Array) {
+    return Uint8Array.from(components);
+  }
+  return components;
+}
+function writeColorValue(current2, parsed) {
+  if (isRgbColorArray(current2)) {
+    return replaceRgbColorArray(current2, parsed);
+  }
+  if (current2 && typeof current2 === "object" && !Array.isArray(current2) && isPlainColorSource(current2)) {
+    const record = current2;
+    if ("color" in record) {
+      return { ...record, color: writeColorValue(record.color, parsed) };
+    }
+    return { ...record, color: parsed };
+  }
+  return parsed;
+}
+function colorToString(value) {
+  if (typeof value === "string") {
+    return value;
+  }
+  if (typeof value === "number" && Number.isFinite(value)) {
+    const hex = (value >>> 0).toString(16).padStart(6, "0");
+    return `#${hex.slice(-6)}`;
+  }
+  if (isRgbColorArray(value)) {
+    return rgbColorArrayToHex(value);
+  }
+  if (value && typeof value === "object") {
+    const record = value;
+    if ("toHex" in record && typeof record.toHex === "function") {
+      try {
+        const hex = record.toHex();
+        if (typeof hex === "string") {
+          return hex;
+        }
+      } catch {
+      }
+    }
+    if ("toNumber" in record && typeof record.toNumber === "function") {
+      try {
+        const num = record.toNumber();
+        if (typeof num === "number") {
+          return colorToString(num);
+        }
+      } catch {
+      }
+    }
+  }
+  return void 0;
+}
+function parseColorString(value) {
+  const trimmed = value.trim();
+  if (trimmed === "") {
+    return trimmed;
+  }
+  if (/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$/.test(trimmed)) {
+    return trimmed;
+  }
+  if (/^0x[0-9a-fA-F]+$/.test(trimmed)) {
+    return Number(trimmed);
+  }
+  if (/^[0-9]+$/.test(trimmed)) {
+    return Number(trimmed);
+  }
+  return trimmed;
+}
+function isPlainColorSource(value) {
+  if (typeof value === "string" || typeof value === "number") {
+    return true;
+  }
+  if (!value || typeof value !== "object") {
+    return false;
+  }
+  if (Array.isArray(value) || isRgbColorArray(value)) {
+    return false;
+  }
+  const record = value;
+  if ("color" in record || "alpha" in record) {
+    if ("fill" in record && record.fill !== void 0 && record.fill !== null) {
+      return false;
+    }
+    return true;
+  }
+  if ("toHex" in record || "toNumber" in record) {
+    return true;
+  }
+  return false;
+}
 function isPoint(value) {
   return typeof value === "object" && value !== null && typeof value.x === "number" && typeof value.y === "number";
 }
@@ -42610,6 +42820,18 @@ function mapsForNode(node) {
       }
     )
   );
+  if (colorToString(node.tint) !== void 0) {
+    strings.push({
+      key: "tint",
+      get: () => colorToString(node.tint),
+      set: (value) => {
+        try {
+          node.tint = parseColorString(value);
+        } catch {
+        }
+      }
+    });
+  }
   booleans.push(
     ...directBoolean(
       "visible",
@@ -42706,215 +42928,6 @@ function findBooleanMap(maps, key) {
 }
 function findStringMap(maps, key) {
   return maps.strings.find((entry) => entry.key === key);
-}
-function isRgbColorArray(value) {
-  if (Array.isArray(value)) {
-    if (value.length < 3 || value.length > 4) {
-      return false;
-    }
-    if (!value.every((entry) => typeof entry === "number" && Number.isFinite(entry))) {
-      return false;
-    }
-    return !value.some((entry) => entry > 255);
-  }
-  if (value instanceof Float32Array || value instanceof Uint8Array || value instanceof Uint8ClampedArray) {
-    return value.length >= 3 && value.length <= 4;
-  }
-  return false;
-}
-function rgbColorArrayUsesBytes(value) {
-  if (value instanceof Uint8Array || value instanceof Uint8ClampedArray) {
-    return true;
-  }
-  return Number(value[0]) > 1 || Number(value[1]) > 1 || Number(value[2]) > 1;
-}
-function rgbColorArrayToHex(value) {
-  const bytes = rgbColorArrayUsesBytes(value);
-  const toByte = (component) => {
-    const scaled = bytes ? component : component * 255;
-    return Math.max(0, Math.min(255, Math.round(scaled)));
-  };
-  const hex = [toByte(Number(value[0])), toByte(Number(value[1])), toByte(Number(value[2]))].map((component) => component.toString(16).padStart(2, "0")).join("");
-  return `#${hex}`;
-}
-function parsedColorToRgb01(parsed) {
-  if (typeof parsed === "number" && Number.isFinite(parsed)) {
-    const int2 = parsed >>> 0;
-    return [
-      (int2 >> 16 & 255) / 255,
-      (int2 >> 8 & 255) / 255,
-      (int2 & 255) / 255
-    ];
-  }
-  if (typeof parsed !== "string" || parsed.trim() === "") {
-    return null;
-  }
-  const hex = cssColorToHex6(parsed);
-  if (!hex) {
-    return null;
-  }
-  const int = Number.parseInt(hex.slice(1), 16);
-  return [
-    (int >> 16 & 255) / 255,
-    (int >> 8 & 255) / 255,
-    (int & 255) / 255
-  ];
-}
-function cssColorToHex6(value) {
-  const trimmed = value.trim();
-  if (trimmed === "") {
-    return null;
-  }
-  if (/^#([0-9a-fA-F]{3})$/.test(trimmed)) {
-    const r2 = trimmed[1];
-    const g2 = trimmed[2];
-    const b2 = trimmed[3];
-    return `#${r2}${r2}${g2}${g2}${b2}${b2}`.toLowerCase();
-  }
-  if (/^#([0-9a-fA-F]{6})([0-9a-fA-F]{2})?$/.test(trimmed)) {
-    return trimmed.slice(0, 7).toLowerCase();
-  }
-  if (/^0x[0-9a-fA-F]+$/.test(trimmed)) {
-    return `#${Number(trimmed).toString(16).padStart(6, "0").slice(-6)}`;
-  }
-  if (/^[0-9]+$/.test(trimmed)) {
-    return `#${Number(trimmed).toString(16).padStart(6, "0").slice(-6)}`;
-  }
-  if (typeof document === "undefined") {
-    return null;
-  }
-  const canvas = document.createElement("canvas");
-  canvas.width = 1;
-  canvas.height = 1;
-  const ctx = canvas.getContext("2d");
-  if (!ctx) {
-    return null;
-  }
-  ctx.fillStyle = "#000000";
-  ctx.fillStyle = trimmed;
-  const normalized = String(ctx.fillStyle);
-  if (/^#[0-9a-fA-F]{6}$/.test(normalized)) {
-    return normalized.toLowerCase();
-  }
-  const rgb = /^rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/.exec(normalized);
-  if (!rgb) {
-    return null;
-  }
-  const hex = [Number(rgb[1]), Number(rgb[2]), Number(rgb[3])].map((component) => Math.max(0, Math.min(255, component)).toString(16).padStart(2, "0")).join("");
-  return `#${hex}`;
-}
-function replaceRgbColorArray(current2, parsed) {
-  const rgb = parsedColorToRgb01(parsed);
-  if (!rgb) {
-    return current2;
-  }
-  const bytes = rgbColorArrayUsesBytes(current2);
-  const components = bytes ? [
-    Math.round(rgb[0] * 255),
-    Math.round(rgb[1] * 255),
-    Math.round(rgb[2] * 255)
-  ] : [rgb[0], rgb[1], rgb[2]];
-  if (current2.length > 3) {
-    components.push(Number(current2[3]));
-  }
-  if (Array.isArray(current2)) {
-    return components;
-  }
-  if (current2 instanceof Float32Array) {
-    return Float32Array.from(components);
-  }
-  if (current2 instanceof Uint8ClampedArray) {
-    return Uint8ClampedArray.from(components);
-  }
-  if (current2 instanceof Uint8Array) {
-    return Uint8Array.from(components);
-  }
-  return components;
-}
-function writeColorValue(current2, parsed) {
-  if (isRgbColorArray(current2)) {
-    return replaceRgbColorArray(current2, parsed);
-  }
-  if (current2 && typeof current2 === "object" && !Array.isArray(current2) && isPlainColorSource(current2)) {
-    const record = current2;
-    if ("color" in record) {
-      return { ...record, color: writeColorValue(record.color, parsed) };
-    }
-    return { ...record, color: parsed };
-  }
-  return parsed;
-}
-function colorToString(value) {
-  if (typeof value === "string") {
-    return value;
-  }
-  if (typeof value === "number" && Number.isFinite(value)) {
-    const hex = (value >>> 0).toString(16).padStart(6, "0");
-    return `#${hex.slice(-6)}`;
-  }
-  if (isRgbColorArray(value)) {
-    return rgbColorArrayToHex(value);
-  }
-  if (value && typeof value === "object") {
-    const record = value;
-    if ("toHex" in record && typeof record.toHex === "function") {
-      try {
-        const hex = record.toHex();
-        if (typeof hex === "string") {
-          return hex;
-        }
-      } catch {
-      }
-    }
-    if ("toNumber" in record && typeof record.toNumber === "function") {
-      try {
-        const num = record.toNumber();
-        if (typeof num === "number") {
-          return colorToString(num);
-        }
-      } catch {
-      }
-    }
-  }
-  return void 0;
-}
-function parseColorString(value) {
-  const trimmed = value.trim();
-  if (trimmed === "") {
-    return trimmed;
-  }
-  if (/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$/.test(trimmed)) {
-    return trimmed;
-  }
-  if (/^0x[0-9a-fA-F]+$/.test(trimmed)) {
-    return Number(trimmed);
-  }
-  if (/^[0-9]+$/.test(trimmed)) {
-    return Number(trimmed);
-  }
-  return trimmed;
-}
-function isPlainColorSource(value) {
-  if (typeof value === "string" || typeof value === "number") {
-    return true;
-  }
-  if (!value || typeof value !== "object") {
-    return false;
-  }
-  if (Array.isArray(value) || isRgbColorArray(value)) {
-    return false;
-  }
-  const record = value;
-  if ("color" in record || "alpha" in record) {
-    if ("fill" in record && record.fill !== void 0 && record.fill !== null) {
-      return false;
-    }
-    return true;
-  }
-  if ("toHex" in record || "toNumber" in record) {
-    return true;
-  }
-  return false;
 }
 const DEFAULT_DROP_SHADOW = {
   alpha: 1,
@@ -49933,6 +49946,7 @@ function buildSpritesSection(textures) {
   sprite.width = 32;
   sprite.height = 32;
   sprite.position.set(15, 18);
+  sprite.tint = 4906624;
   sprite.eventMode = "static";
   sprite.cursor = "grab";
   const anim = new AnimatedSprite({
@@ -50115,7 +50129,7 @@ function canvasTexture(color, width = 32, height = 32) {
   return Texture.from(canvasFill(color, width, height));
 }
 function createDemoTextures(app) {
-  const solidGfx = new Graphics().rect(0, 0, 48, 48).fill(4906624);
+  const solidGfx = new Graphics().rect(0, 0, 48, 48).fill(16777215);
   const solid = app.renderer.generateTexture(solidGfx);
   solidGfx.destroy();
   const checkerGfx = new Graphics();

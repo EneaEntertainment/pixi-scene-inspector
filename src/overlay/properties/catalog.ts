@@ -215,6 +215,7 @@ const OBJECT_CATALOG_SECTIONS: Array<CatalogSectionSpec> = [
         id     : 'rendering',
         title  : 'Rendering',
         fields : [
+            { kind: 'color', key: 'tint', label: 'tint' },
             {
                 kind    : 'select',
                 key     : 'blendMode',

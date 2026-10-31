@@ -1,5 +1,6 @@
 import { isNodeAlive, type PageGlobals, type PixiNode, type PixiPoint } from '../../page-ops/pixi-node';
 import { isPixi8 } from '../../page-ops/types';
+import { colorToString, parseColorString } from '../text/colors';
 
 type PropertyKey =
     | 'position.x'
@@ -28,7 +29,8 @@ type PropertyKey =
     | 'buttonMode'
     | 'interactiveChildren'
     | 'label'
-    | 'name';
+    | 'name'
+    | 'tint';
 
 export type BooleanPropertyKey =
     | 'visible'
@@ -43,7 +45,8 @@ export type StringPropertyKey =
     | 'cursor'
     | 'blendMode'
     | 'label'
-    | 'name';
+    | 'name'
+    | 'tint';
 
 export type NumberPropertyKey = Exclude<
     PropertyKey,
@@ -441,6 +444,27 @@ export function mapsForNode(node: PixiNode | null | undefined): NodePropertyMaps
             },
         ),
     );
+
+    if (colorToString(node.tint) !== undefined)
+    {
+        strings.push({
+            key: 'tint',
+
+            get: () => colorToString(node.tint),
+
+            set: (value) =>
+            {
+                try
+                {
+                    node.tint = parseColorString(value);
+                }
+                catch
+                {
+                    void 0;
+                }
+            },
+        });
+    }
 
     booleans.push(
         ...directBoolean(
