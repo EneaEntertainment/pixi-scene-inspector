@@ -1,4 +1,4 @@
-const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/browserAll-CpfIX4Gm.js","assets/webworkerAll-Dc4NJYw7.js","assets/Filter-BCU7w3nt.js","assets/WebGPURenderer-BcKIGeI-.js","assets/getTexelRangeRects-Ce6PMD2k.js","assets/RenderTargetSystem-CNieEnr8.js","assets/WebGLRenderer-DbhkJclA.js","assets/CanvasRenderer-eANAb5td.js"])))=>i.map(i=>d[i]);
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/browserAll-DufI4YHE.js","assets/webworkerAll-ubPnXywU.js","assets/Filter-BVbpDU43.js","assets/WebGPURenderer-BALFEIiz.js","assets/getTexelRangeRects-CubHUNgM.js","assets/RenderTargetSystem-Dz2v4ie9.js","assets/WebGLRenderer-BimFQ7o9.js","assets/CanvasRenderer-DmE-CQxs.js"])))=>i.map(i=>d[i]);
 (function polyfill() {
   const relList = document.createElement("link").relList;
   if (relList && relList.supports && relList.supports("modulepreload")) return;
@@ -355,7 +355,7 @@ const browserExt = {
   },
   test: () => true,
   load: async () => {
-    await __vitePreload(() => import("./browserAll-CpfIX4Gm.js"), true ? __vite__mapDeps([0,1,2]) : void 0);
+    await __vitePreload(() => import("./browserAll-DufI4YHE.js"), true ? __vite__mapDeps([0,1,2]) : void 0);
   }
 };
 const webworkerExt = {
@@ -366,7 +366,7 @@ const webworkerExt = {
   },
   test: () => typeof self !== "undefined" && self.WorkerGlobalScope !== void 0,
   load: async () => {
-    await __vitePreload(() => import("./webworkerAll-Dc4NJYw7.js"), true ? __vite__mapDeps([1,2]) : void 0);
+    await __vitePreload(() => import("./webworkerAll-ubPnXywU.js"), true ? __vite__mapDeps([1,2]) : void 0);
   }
 };
 class ObservablePoint {
@@ -13297,7 +13297,7 @@ async function autoDetectRenderer(options) {
     const rendererType = preferredOrder[i2];
     if (rendererType === "webgpu" && await isWebGPUSupported()) {
       const { WebGPURenderer } = await __vitePreload(async () => {
-        const { WebGPURenderer: WebGPURenderer2 } = await import("./WebGPURenderer-BcKIGeI-.js");
+        const { WebGPURenderer: WebGPURenderer2 } = await import("./WebGPURenderer-BALFEIiz.js");
         return { WebGPURenderer: WebGPURenderer2 };
       }, true ? __vite__mapDeps([3,4,5,2]) : void 0);
       RendererClass = WebGPURenderer;
@@ -13307,7 +13307,7 @@ async function autoDetectRenderer(options) {
       options.failIfMajorPerformanceCaveat ?? AbstractRenderer.defaultOptions.failIfMajorPerformanceCaveat
     )) {
       const { WebGLRenderer } = await __vitePreload(async () => {
-        const { WebGLRenderer: WebGLRenderer2 } = await import("./WebGLRenderer-DbhkJclA.js");
+        const { WebGLRenderer: WebGLRenderer2 } = await import("./WebGLRenderer-BimFQ7o9.js");
         return { WebGLRenderer: WebGLRenderer2 };
       }, true ? __vite__mapDeps([6,4,5,2]) : void 0);
       RendererClass = WebGLRenderer;
@@ -13315,7 +13315,7 @@ async function autoDetectRenderer(options) {
       break;
     } else if (rendererType === "canvas") {
       const { CanvasRenderer } = await __vitePreload(async () => {
-        const { CanvasRenderer: CanvasRenderer2 } = await import("./CanvasRenderer-eANAb5td.js");
+        const { CanvasRenderer: CanvasRenderer2 } = await import("./CanvasRenderer-DmE-CQxs.js");
         return { CanvasRenderer: CanvasRenderer2 };
       }, true ? __vite__mapDeps([7,5,2]) : void 0);
       RendererClass = CanvasRenderer;
@@ -38241,16 +38241,29 @@ function getRoot(win = globalThis) {
   return findRoot(win)?.root ?? null;
 }
 function listedChildren(node) {
+  let kids = [];
   if (Array.isArray(node.children)) {
-    return node.children;
+    kids = node.children;
+  } else if (node.children && typeof node.children === "object" && Array.isArray(node.children.list)) {
+    kids = node.children.list;
+  } else if (Array.isArray(node.list)) {
+    kids = node.list;
   }
-  if (node.children && typeof node.children === "object" && Array.isArray(node.children.list)) {
-    return node.children.list;
+  const particles = node.particleChildren;
+  if (!Array.isArray(particles) || particles.length === 0) {
+    return kids;
   }
-  if (Array.isArray(node.list)) {
-    return node.list;
+  if (kids.length === 0) {
+    return particles;
   }
-  return [];
+  const seen2 = new Set(kids);
+  const merged = kids.slice();
+  for (const particle of particles) {
+    if (!seen2.has(particle)) {
+      merged.push(particle);
+    }
+  }
+  return merged;
 }
 function bitmapPageMeshes(node) {
   const pages = node._activePagesMeshData;
@@ -38302,6 +38315,24 @@ function childrenOf(node) {
     return [root3d].concat(kids);
   }
   return kids;
+}
+function isParticleContainerNode(node) {
+  return !!node && Array.isArray(node.particleChildren);
+}
+function isParticleNode(node, win = globalThis) {
+  if (!node) {
+    return false;
+  }
+  const id = pathOf(node, win);
+  if (!id) {
+    return false;
+  }
+  const cut = id.lastIndexOf(".");
+  if (cut < 0) {
+    return false;
+  }
+  const parent = resolveByPath(id.slice(0, cut), win);
+  return !!parent && Array.isArray(parent.particleChildren) && parent.particleChildren.indexOf(node) >= 0;
 }
 function resolveByPath(pathId, win = globalThis) {
   const path2 = pathId.split(".").map((n2) => Number(n2));
@@ -38366,11 +38397,14 @@ function isDescendant(ancestor, node) {
   }
   return false;
 }
-function canMoveChild(child2, parent) {
+function canMoveChild(child2, parent, win) {
   if (child2 === parent) {
     return false;
   }
   if (isDescendant(child2, parent)) {
+    return false;
+  }
+  if (isParticleNode(child2, win) || isParticleContainerNode(parent)) {
     return false;
   }
   return typeof parent.addChild === "function";
@@ -38405,13 +38439,13 @@ function insertChildAt(parent, child2, desired) {
 }
 function moveNodes(sourceIds, parentId, index, win = globalThis) {
   const parent = resolveByPath(parentId, win);
-  if (!parent || typeof parent.addChild !== "function") {
+  if (!parent || typeof parent.addChild !== "function" || isParticleContainerNode(parent)) {
     return null;
   }
   const children = [];
   for (const sourceId of sourceIds) {
     const child2 = resolveByPath(sourceId, win);
-    if (!child2 || !canMoveChild(child2, parent)) {
+    if (!child2 || !canMoveChild(child2, parent, win)) {
       continue;
     }
     children.push(child2);
@@ -38711,6 +38745,7 @@ const NODE_TYPE_STYLES = [
   { name: "Container", short: "CONTAINER", color: "#c41e1e" },
   { name: "DisplayObject", short: "DISP_OBJ", color: "#c41e1e" },
   { name: "ParticleContainer", short: "PARTICLE", color: "#c41e1e" },
+  { name: "Particle", short: "PARTICLE", color: "#c41e1e" },
   { name: "RenderContainer", short: "RENDER_CTR", color: "#c41e1e" },
   { name: "DOMContainer", short: "DOM_CONT", color: "#c41e1e" },
   { name: "RenderLayer", short: "R_LAYER", color: "#c41e1e" },
@@ -38792,6 +38827,7 @@ const NODE_TYPE_INSTANCEOF_ORDER = [
   "Light",
   "Container3D",
   "View3D",
+  "Particle",
   "ParticleContainer",
   "RenderContainer",
   "DOMContainer",
@@ -39564,6 +39600,12 @@ function resolvePanelKey(e2, ctx) {
   }
   return { type: "navigate", key: e2.key, toEnd: e2.altKey };
 }
+function isParticleTypeName(typeName) {
+  return typeName === "Particle";
+}
+function isParticleHostTypeName(typeName) {
+  return typeName === "ParticleContainer" || typeName === "ParticleContainer3D";
+}
 function canReparent(tree, sourceId, parentId) {
   if (sourceId === tree.id) {
     return false;
@@ -39572,6 +39614,14 @@ function canReparent(tree, sourceId, parentId) {
     return false;
   }
   if (isAncestorId(sourceId, parentId)) {
+    return false;
+  }
+  const source2 = findTreeNode(tree, sourceId);
+  const parent = findTreeNode(tree, parentId);
+  if (!source2 || !parent) {
+    return false;
+  }
+  if (isParticleTypeName(source2.typeName) || isParticleHostTypeName(parent.typeName)) {
     return false;
   }
   return true;
@@ -39677,12 +39727,28 @@ function isBlockedTarget(targetId, sourceIds) {
   }
   return false;
 }
+function typeNameById(nodes, id) {
+  for (const node of nodes) {
+    if (node.id === id) {
+      return node.typeName;
+    }
+  }
+  return void 0;
+}
+function cannotAcceptChildren(typeName) {
+  return typeName === "Particle" || typeName === "ParticleContainer" || typeName === "ParticleContainer3D";
+}
 function resolveDropTarget(nodes, rootId, sourceIds, pointerX, pointerY, canvasWidth) {
   if (sourceIds.length === 0 || sourceIds.includes(rootId)) {
     return null;
   }
+  for (const sourceId of sourceIds) {
+    if (typeNameById(nodes, sourceId) === "Particle") {
+      return null;
+    }
+  }
   for (const node of nodes) {
-    if (isBlockedTarget(node.id, sourceIds)) {
+    if (isBlockedTarget(node.id, sourceIds) || cannotAcceptChildren(node.typeName)) {
       continue;
     }
     if (pointInRect(pointerX, pointerY, node.x, node.y, node.width, node.height)) {
@@ -39696,7 +39762,7 @@ function resolveDropTarget(nodes, rootId, sourceIds, pointerX, pointerY, canvasW
   const groups = collectGroups(nodes, rootId);
   const rowHits = [];
   for (const group of groups) {
-    if (isBlockedTarget(group.parentId, sourceIds)) {
+    if (isBlockedTarget(group.parentId, sourceIds) || cannotAcceptChildren(typeNameById(nodes, group.parentId))) {
       continue;
     }
     const { siblings } = group;
@@ -40228,7 +40294,7 @@ function Scene_tree($$anchor, $$props) {
     if (e2.shiftKey || e2.metaKey || e2.ctrlKey) {
       return;
     }
-    if (!$$props.onmove || $$props.rootId === null || $$props.rootId === void 0 || node.id === $$props.rootId) {
+    if (!$$props.onmove || $$props.rootId === null || $$props.rootId === void 0 || node.id === $$props.rootId || node.typeName === "Particle") {
       return;
     }
     const local = svgPoint(e2);
@@ -40243,7 +40309,13 @@ function Scene_tree($$anchor, $$props) {
       finishDrag(false);
     }
     activePointerId = e2.pointerId;
-    const movingIds = get(selectedSet).has(node.id) && $$props.selectedIds.length > 1 ? $$props.selectedIds.filter((id) => id !== $$props.rootId) : [node.id];
+    const movingIds = (get(selectedSet).has(node.id) && $$props.selectedIds.length > 1 ? $$props.selectedIds.filter((id) => id !== $$props.rootId) : [node.id]).filter((id) => {
+      const laid = $$props.nodes.find((entry) => entry.id === id);
+      return laid?.typeName !== "Particle";
+    });
+    if (movingIds.length === 0) {
+      return;
+    }
     set(
       drag,
       {
@@ -42803,10 +42875,54 @@ function mapsForNode(node) {
       }
     )
   );
-  numbers.push(...pointAxis(node, "scale", "x", "scale.x"));
-  numbers.push(...pointAxis(node, "scale", "y", "scale.y"));
-  numbers.push(...pointAxis(node, "anchor", "x", "anchor.x"));
-  numbers.push(...pointAxis(node, "anchor", "y", "anchor.y"));
+  numbers.push(
+    ...pointAxis(
+      node,
+      "scale",
+      "x",
+      "scale.x",
+      () => node.scaleX,
+      (value) => {
+        node.scaleX = value;
+      }
+    )
+  );
+  numbers.push(
+    ...pointAxis(
+      node,
+      "scale",
+      "y",
+      "scale.y",
+      () => node.scaleY,
+      (value) => {
+        node.scaleY = value;
+      }
+    )
+  );
+  numbers.push(
+    ...pointAxis(
+      node,
+      "anchor",
+      "x",
+      "anchor.x",
+      () => node.anchorX,
+      (value) => {
+        node.anchorX = value;
+      }
+    )
+  );
+  numbers.push(
+    ...pointAxis(
+      node,
+      "anchor",
+      "y",
+      "anchor.y",
+      () => node.anchorY,
+      (value) => {
+        node.anchorY = value;
+      }
+    )
+  );
   numbers.push(...pointAxis(node, "pivot", "x", "pivot.x"));
   numbers.push(...pointAxis(node, "pivot", "y", "pivot.y"));
   numbers.push(...pointAxis(node, "skew", "x", "skew.x"));
@@ -48710,7 +48826,14 @@ function buildSpecialSection(textures) {
   const section = labeledSection("special");
   const particles = new ParticleContainer({
     texture: textures.solid,
-    boundsArea: new Rectangle(0, 0, 72, 41)
+    boundsArea: new Rectangle(0, 0, 72, 41),
+    dynamicProperties: {
+      position: true,
+      rotation: true,
+      vertex: true,
+      uvs: true,
+      color: true
+    }
   });
   particles.label = "Particles";
   particles.position.set(0, 0);

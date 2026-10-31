@@ -19,6 +19,14 @@ export function buildSpecialSection(textures: DemoTextures): Container
     const particles = new ParticleContainer({
         texture    : textures.solid,
         boundsArea : new Rectangle(0, 0, 72, 41),
+
+        dynamicProperties: {
+            position : true,
+            rotation : true,
+            vertex   : true,
+            uvs      : true,
+            color    : true,
+        },
     });
 
     particles.label = 'Particles';

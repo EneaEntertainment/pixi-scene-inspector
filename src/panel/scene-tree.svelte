@@ -543,7 +543,8 @@
       !onmove ||
       rootId === null ||
       rootId === undefined ||
-      node.id === rootId
+      node.id === rootId ||
+      node.typeName === "Particle"
     ) {
       return;
     }
@@ -566,10 +567,19 @@
 
     activePointerId = e.pointerId;
 
-    const movingIds =
+    const movingIds = (
       selectedSet.has(node.id) && selectedIds.length > 1
         ? selectedIds.filter((id) => id !== rootId)
-        : [node.id];
+        : [node.id]
+    ).filter((id) => {
+      const laid = nodes.find((entry) => entry.id === id);
+
+      return laid?.typeName !== "Particle";
+    });
+
+    if (movingIds.length === 0) {
+      return;
+    }
 
     drag = {
       sourceIds: movingIds,

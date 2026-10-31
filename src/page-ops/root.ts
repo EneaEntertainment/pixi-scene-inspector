@@ -45,26 +45,45 @@ function getRoot(win: PageGlobals = globalThis as PageGlobals): PixiNode | null
 
 function listedChildren(node: PixiNode): Array<PixiNode>
 {
+    let kids: Array<PixiNode> = [];
+
     if (Array.isArray(node.children))
     {
-        return node.children;
+        kids = node.children;
     }
-
-    if (
-        node.children
-    && typeof node.children === 'object'
-    && Array.isArray(node.children.list)
-    )
+    else if (node.children && typeof node.children === 'object' && Array.isArray(node.children.list))
     {
-        return node.children.list;
+        kids = node.children.list;
     }
-
-    if (Array.isArray(node.list))
+    else if (Array.isArray(node.list))
     {
-        return node.list;
+        kids = node.list;
     }
 
-    return [];
+    const particles = node.particleChildren;
+
+    if (!Array.isArray(particles) || particles.length === 0)
+    {
+        return kids;
+    }
+
+    if (kids.length === 0)
+    {
+        return particles;
+    }
+
+    const seen = new Set(kids);
+    const merged = kids.slice();
+
+    for (const particle of particles)
+    {
+        if (!seen.has(particle))
+        {
+            merged.push(particle);
+        }
+    }
+
+    return merged;
 }
 
 function bitmapPageMeshes(node: PixiNode): Set<PixiNode> | null
@@ -155,6 +174,41 @@ export function childrenOf(node: PixiNode | null | undefined): Array<PixiNode>
     }
 
     return kids;
+}
+
+export function isParticleContainerNode(node: PixiNode | null | undefined): boolean
+{
+    return !!node && Array.isArray(node.particleChildren);
+}
+
+export function isParticleNode(node: PixiNode | null | undefined, win: PageGlobals = globalThis as PageGlobals): boolean
+{
+    if (!node)
+    {
+        return false;
+    }
+
+    const id = pathOf(node, win);
+
+    if (!id)
+    {
+        return false;
+    }
+
+    const cut = id.lastIndexOf('.');
+
+    if (cut < 0)
+    {
+        return false;
+    }
+
+    const parent = resolveByPath(id.slice(0, cut), win);
+
+    return (
+        !!parent
+        && Array.isArray(parent.particleChildren)
+        && parent.particleChildren.indexOf(node) >= 0
+    );
 }
 
 export function resolveByPath(pathId: string, win: PageGlobals = globalThis as PageGlobals): PixiNode | null

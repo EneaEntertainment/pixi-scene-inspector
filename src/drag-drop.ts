@@ -158,6 +158,28 @@ function isBlockedTarget(targetId: string, sourceIds: ReadonlyArray<string>): bo
     return false;
 }
 
+function typeNameById(nodes: Array<LaidOutNode>, id: string): string | undefined
+{
+    for (const node of nodes)
+    {
+        if (node.id === id)
+        {
+            return node.typeName;
+        }
+    }
+
+    return undefined;
+}
+
+function cannotAcceptChildren(typeName: string | undefined): boolean
+{
+    return (
+        typeName === 'Particle'
+        || typeName === 'ParticleContainer'
+        || typeName === 'ParticleContainer3D'
+    );
+}
+
 export function resolveDropTarget(
     nodes: Array<LaidOutNode>,
     rootId: string,
@@ -172,9 +194,17 @@ export function resolveDropTarget(
         return null;
     }
 
+    for (const sourceId of sourceIds)
+    {
+        if (typeNameById(nodes, sourceId) === 'Particle')
+        {
+            return null;
+        }
+    }
+
     for (const node of nodes)
     {
-        if (isBlockedTarget(node.id, sourceIds))
+        if (isBlockedTarget(node.id, sourceIds) || cannotAcceptChildren(node.typeName))
         {
             continue;
         }
@@ -196,7 +226,7 @@ export function resolveDropTarget(
 
     for (const group of groups)
     {
-        if (isBlockedTarget(group.parentId, sourceIds))
+        if (isBlockedTarget(group.parentId, sourceIds) || cannotAcceptChildren(typeNameById(nodes, group.parentId)))
         {
             continue;
         }

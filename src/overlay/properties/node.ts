@@ -425,10 +425,62 @@ export function mapsForNode(node: PixiNode | null | undefined): NodePropertyMaps
         ),
     );
 
-    numbers.push(...pointAxis(node, 'scale', 'x', 'scale.x'));
-    numbers.push(...pointAxis(node, 'scale', 'y', 'scale.y'));
-    numbers.push(...pointAxis(node, 'anchor', 'x', 'anchor.x'));
-    numbers.push(...pointAxis(node, 'anchor', 'y', 'anchor.y'));
+    numbers.push(
+        ...pointAxis(
+            node,
+            'scale',
+            'x',
+            'scale.x',
+            () => node.scaleX,
+            (value) =>
+            {
+                node.scaleX = value;
+            },
+        ),
+    );
+
+    numbers.push(
+        ...pointAxis(
+            node,
+            'scale',
+            'y',
+            'scale.y',
+            () => node.scaleY,
+            (value) =>
+            {
+                node.scaleY = value;
+            },
+        ),
+    );
+
+    numbers.push(
+        ...pointAxis(
+            node,
+            'anchor',
+            'x',
+            'anchor.x',
+            () => node.anchorX,
+            (value) =>
+            {
+                node.anchorX = value;
+            },
+        ),
+    );
+
+    numbers.push(
+        ...pointAxis(
+            node,
+            'anchor',
+            'y',
+            'anchor.y',
+            () => node.anchorY,
+            (value) =>
+            {
+                node.anchorY = value;
+            },
+        ),
+    );
+
     numbers.push(...pointAxis(node, 'pivot', 'x', 'pivot.x'));
     numbers.push(...pointAxis(node, 'pivot', 'y', 'pivot.y'));
     numbers.push(...pointAxis(node, 'skew', 'x', 'skew.x'));
