@@ -1,3 +1,8 @@
+import {
+    createDocumentSettingChannel,
+    parseJsonDocumentSetting,
+} from './document-setting-channel';
+
 export type HighlightColorSettings = {
     fill: string;
     stroke: string;
@@ -12,6 +17,7 @@ const DEFAULT_FILL_DRAG_ALPHA = 0.1;
 
 const STROKE_ALPHA = 1;
 const STROKE_DRAG_ALPHA = 0.5;
+const GUIDE_STROKE_ALPHA = 0.5;
 
 export const DEFAULT_HIGHLIGHT_COLORS: HighlightColorSettings = {
     fill          : DEFAULT_HIGHLIGHT_FILL,
@@ -121,91 +127,24 @@ export function highlightStrokeDrag(): string
     return rgbaFromHex(current.stroke, STROKE_DRAG_ALPHA);
 }
 
+export function highlightGuideStroke(): string
+{
+    return rgbaFromHex(current.stroke, GUIDE_STROKE_ALPHA);
+}
+
 function setHighlightColors(colors: HighlightColorSettings)
 {
     current = normalizeHighlightColors(colors);
 }
 
-function readHighlightColorsAttr(element: Element = document.documentElement): HighlightColorSettings | undefined
-{
-    const raw = element.getAttribute(HIGHLIGHT_COLORS_ATTR);
+const channel = createDocumentSettingChannel<HighlightColorSettings>({
+    attr      : HIGHLIGHT_COLORS_ATTR,
+    event     : HIGHLIGHT_COLORS_EVENT,
+    serialize : (value) => JSON.stringify(value),
+    parse     : (raw) => parseJsonDocumentSetting(raw, normalizeHighlightColors),
+    normalize : normalizeHighlightColors,
+    apply     : setHighlightColors,
+});
 
-    if (!raw)
-    {
-        return undefined;
-    }
-
-    try
-    {
-        return normalizeHighlightColors(JSON.parse(raw) as unknown);
-    }
-    catch
-    {
-        return undefined;
-    }
-}
-
-function writeHighlightColorsAttr(colors: HighlightColorSettings, element: Element = document.documentElement)
-{
-    element.setAttribute(HIGHLIGHT_COLORS_ATTR, JSON.stringify(colors));
-}
-
-export function publishHighlightColors(colors: HighlightColorSettings)
-{
-    const next = normalizeHighlightColors(colors);
-
-    setHighlightColors(next);
-    writeHighlightColorsAttr(next);
-
-    window.dispatchEvent(new CustomEvent(HIGHLIGHT_COLORS_EVENT, { detail: next }));
-}
-
-export function subscribeHighlightColors(listener: (colors: HighlightColorSettings) => void): () => void
-{
-    const onEvent = (event: Event) =>
-    {
-        if (!(event instanceof CustomEvent))
-        {
-            return;
-        }
-
-        const next = normalizeHighlightColors(event.detail);
-
-        setHighlightColors(next);
-        listener(next);
-    };
-
-    const observer = new MutationObserver(() =>
-    {
-        const next = readHighlightColorsAttr();
-
-        if (!next)
-        {
-            return;
-        }
-
-        setHighlightColors(next);
-        listener(next);
-    });
-
-    window.addEventListener(HIGHLIGHT_COLORS_EVENT, onEvent);
-
-    observer.observe(document.documentElement, {
-        attributes      : true,
-        attributeFilter : [HIGHLIGHT_COLORS_ATTR],
-    });
-
-    const initial = readHighlightColorsAttr();
-
-    if (initial)
-    {
-        setHighlightColors(initial);
-        listener(initial);
-    }
-
-    return () =>
-    {
-        window.removeEventListener(HIGHLIGHT_COLORS_EVENT, onEvent);
-        observer.disconnect();
-    };
-}
+export const publishHighlightColors = channel.publish;
+export const subscribeHighlightColors = channel.subscribe;

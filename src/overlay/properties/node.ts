@@ -1,5 +1,7 @@
 import { isNodeAlive, type PageGlobals, type PixiNode, type PixiPoint } from '../../page-ops/pixi-node';
+import { isParticleNode } from '../../page-ops/root';
 import { isPixi8 } from '../../page-ops/types';
+import { colorToString, parseColorString } from '../text/colors';
 
 type PropertyKey =
     | 'position.x'
@@ -28,7 +30,8 @@ type PropertyKey =
     | 'buttonMode'
     | 'interactiveChildren'
     | 'label'
-    | 'name';
+    | 'name'
+    | 'tint';
 
 export type BooleanPropertyKey =
     | 'visible'
@@ -43,7 +46,8 @@ export type StringPropertyKey =
     | 'cursor'
     | 'blendMode'
     | 'label'
-    | 'name';
+    | 'name'
+    | 'tint';
 
 export type NumberPropertyKey = Exclude<
     PropertyKey,
@@ -194,6 +198,12 @@ function readIdentityString(value: unknown): string
 function identityStringMaps(node: PixiNode): Array<PropertyMapping<string>>
 {
     const win = globalThis as PageGlobals;
+
+    if (isParticleNode(node, win))
+    {
+        return [];
+    }
+
     const useLabel = isPixi8(node, win);
 
     if (useLabel)
@@ -422,10 +432,62 @@ export function mapsForNode(node: PixiNode | null | undefined): NodePropertyMaps
         ),
     );
 
-    numbers.push(...pointAxis(node, 'scale', 'x', 'scale.x'));
-    numbers.push(...pointAxis(node, 'scale', 'y', 'scale.y'));
-    numbers.push(...pointAxis(node, 'anchor', 'x', 'anchor.x'));
-    numbers.push(...pointAxis(node, 'anchor', 'y', 'anchor.y'));
+    numbers.push(
+        ...pointAxis(
+            node,
+            'scale',
+            'x',
+            'scale.x',
+            () => node.scaleX,
+            (value) =>
+            {
+                node.scaleX = value;
+            },
+        ),
+    );
+
+    numbers.push(
+        ...pointAxis(
+            node,
+            'scale',
+            'y',
+            'scale.y',
+            () => node.scaleY,
+            (value) =>
+            {
+                node.scaleY = value;
+            },
+        ),
+    );
+
+    numbers.push(
+        ...pointAxis(
+            node,
+            'anchor',
+            'x',
+            'anchor.x',
+            () => node.anchorX,
+            (value) =>
+            {
+                node.anchorX = value;
+            },
+        ),
+    );
+
+    numbers.push(
+        ...pointAxis(
+            node,
+            'anchor',
+            'y',
+            'anchor.y',
+            () => node.anchorY,
+            (value) =>
+            {
+                node.anchorY = value;
+            },
+        ),
+    );
+
     numbers.push(...pointAxis(node, 'pivot', 'x', 'pivot.x'));
     numbers.push(...pointAxis(node, 'pivot', 'y', 'pivot.y'));
     numbers.push(...pointAxis(node, 'skew', 'x', 'skew.x'));
@@ -441,6 +503,27 @@ export function mapsForNode(node: PixiNode | null | undefined): NodePropertyMaps
             },
         ),
     );
+
+    if (colorToString(node.tint) !== undefined)
+    {
+        strings.push({
+            key: 'tint',
+
+            get: () => colorToString(node.tint),
+
+            set: (value) =>
+            {
+                try
+                {
+                    node.tint = parseColorString(value);
+                }
+                catch
+                {
+                    void 0;
+                }
+            },
+        });
+    }
 
     booleans.push(
         ...directBoolean(

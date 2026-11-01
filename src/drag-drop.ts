@@ -1,13 +1,8 @@
-import { treeDragGesture } from './gesture-active';
 import { isAncestorId } from './tree-ops';
 
 import type { LaidOutNode } from './types';
 
 const GAP_MIN = 8;
-
-export const beginTreeDragGesture = treeDragGesture.begin;
-export const endTreeDragGesture = treeDragGesture.end;
-export const isTreeDragGestureActive = treeDragGesture.isActive;
 
 type DropVisual =
   | { kind: 'gap'; x: number; y: number; width: number; height: number }
@@ -158,6 +153,28 @@ function isBlockedTarget(targetId: string, sourceIds: ReadonlyArray<string>): bo
     return false;
 }
 
+function typeNameById(nodes: Array<LaidOutNode>, id: string): string | undefined
+{
+    for (const node of nodes)
+    {
+        if (node.id === id)
+        {
+            return node.typeName;
+        }
+    }
+
+    return undefined;
+}
+
+function cannotAcceptChildren(typeName: string | undefined): boolean
+{
+    return (
+        typeName === 'Particle'
+        || typeName === 'ParticleContainer'
+        || typeName === 'ParticleContainer3D'
+    );
+}
+
 export function resolveDropTarget(
     nodes: Array<LaidOutNode>,
     rootId: string,
@@ -172,9 +189,17 @@ export function resolveDropTarget(
         return null;
     }
 
+    for (const sourceId of sourceIds)
+    {
+        if (typeNameById(nodes, sourceId) === 'Particle')
+        {
+            return null;
+        }
+    }
+
     for (const node of nodes)
     {
-        if (isBlockedTarget(node.id, sourceIds))
+        if (isBlockedTarget(node.id, sourceIds) || cannotAcceptChildren(node.typeName))
         {
             continue;
         }
@@ -196,7 +221,7 @@ export function resolveDropTarget(
 
     for (const group of groups)
     {
-        if (isBlockedTarget(group.parentId, sourceIds))
+        if (isBlockedTarget(group.parentId, sourceIds) || cannotAcceptChildren(typeNameById(nodes, group.parentId)))
         {
             continue;
         }

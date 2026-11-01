@@ -2,10 +2,12 @@ import {
     readExtensionSettings,
     resetHighlightColors,
     writeHighlightColors,
+    writeHighlightGuides,
     writeLiveRefreshInterval,
     writeToggleHotkey,
 } from './extension-settings';
 import { DEFAULT_HIGHLIGHT_COLORS, normalizeHighlightAlpha, normalizeHighlightColor } from './highlight-colors';
+import { DEFAULT_HIGHLIGHT_GUIDES } from './highlight-guides';
 import { DEFAULT_TOGGLE_HOTKEY, formatHotkey, hotkeyFromKeyboardEvent } from './hotkey';
 import {
     DEFAULT_LIVE_REFRESH_INTERVAL_SEC,
@@ -16,6 +18,7 @@ import {
 } from './live-refresh';
 
 import type { HighlightColorSettings } from './highlight-colors';
+import type { HighlightGuidesSettings } from './highlight-guides';
 import type { HotkeyChord } from './hotkey';
 
 function requireInput(id: string): HTMLInputElement
@@ -62,11 +65,14 @@ const highlightFillInput = requireInput('highlight-fill');
 const highlightStrokeInput = requireInput('highlight-stroke');
 const highlightFillAlphaInput = requireInput('highlight-fill-alpha');
 const highlightFillDragAlphaInput = requireInput('highlight-fill-drag-alpha');
+const highlightGuidesIdleInput = requireInput('highlight-guides-idle');
+const highlightGuidesDragInput = requireInput('highlight-guides-drag');
 const resetColorsButton = requireButton('reset-colors');
 
 let current: HotkeyChord = DEFAULT_TOGGLE_HOTKEY;
 let currentColors: HighlightColorSettings = { ...DEFAULT_HIGHLIGHT_COLORS };
 let currentLiveRefresh = DEFAULT_LIVE_REFRESH_INTERVAL_SEC;
+let currentHighlightGuides: HighlightGuidesSettings = { ...DEFAULT_HIGHLIGHT_GUIDES };
 let recording = false;
 
 liveRefreshInput.min = String(MIN_LIVE_REFRESH_INTERVAL_SEC);
@@ -107,6 +113,13 @@ function renderLiveRefresh(seconds: number)
     liveRefreshValue.textContent = formatLiveRefreshLabel(currentLiveRefresh);
 }
 
+function renderHighlightGuides(settings: HighlightGuidesSettings)
+{
+    currentHighlightGuides = settings;
+    highlightGuidesIdleInput.checked = settings.idle;
+    highlightGuidesDragInput.checked = settings.drag;
+}
+
 function setRecording(next: boolean)
 {
     recording = next;
@@ -134,6 +147,21 @@ async function saveLiveRefresh(seconds: number)
     const next = await writeLiveRefreshInterval(seconds);
 
     renderLiveRefresh(next);
+}
+
+async function saveHighlightGuides(settings: HighlightGuidesSettings)
+{
+    const next = await writeHighlightGuides(settings);
+
+    renderHighlightGuides(next);
+}
+
+function guidesFromInputs(): HighlightGuidesSettings
+{
+    return {
+        idle : highlightGuidesIdleInput.checked,
+        drag : highlightGuidesDragInput.checked,
+    };
 }
 
 shortcutInput.addEventListener('focus', () =>
@@ -254,6 +282,17 @@ liveRefreshInput.addEventListener('change', () =>
     });
 });
 
+function onGuidesChange()
+{
+    void saveHighlightGuides(guidesFromInputs()).catch(() =>
+    {
+        renderHighlightGuides(currentHighlightGuides);
+    });
+}
+
+highlightGuidesIdleInput.addEventListener('change', onGuidesChange);
+highlightGuidesDragInput.addEventListener('change', onGuidesChange);
+
 resetColorsButton.addEventListener('click', () =>
 {
     void resetHighlightColors()
@@ -269,11 +308,13 @@ void readExtensionSettings()
     {
         renderChord(settings.toggleHotkey);
         renderColors(settings.highlightColors);
+        renderHighlightGuides(settings.highlightGuides);
         renderLiveRefresh(settings.liveRefreshInterval);
     })
     .catch(() =>
     {
         renderChord(DEFAULT_TOGGLE_HOTKEY);
         renderColors(DEFAULT_HIGHLIGHT_COLORS);
+        renderHighlightGuides(DEFAULT_HIGHLIGHT_GUIDES);
         renderLiveRefresh(DEFAULT_LIVE_REFRESH_INTERVAL_SEC);
     });

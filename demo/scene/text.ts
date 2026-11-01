@@ -55,7 +55,8 @@ export function buildTextSection(): Container
     });
 
     rich.label = 'RichText';
-    rich.position.set(0, 0);
+    rich.anchor.set(0.5);
+    rich.position.set(rich.width * 0.5, rich.height * 0.5);
 
     const longNamed = new Text({
         text  : 'long',

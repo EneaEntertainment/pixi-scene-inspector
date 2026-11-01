@@ -164,6 +164,26 @@ export function hasAnchor(node: PixiNode): boolean
     return asFiniteNumber(anchor.x) !== null && asFiniteNumber(anchor.y) !== null;
 }
 
+export function readPivot(node: PixiNode): { x: number; y: number } | null
+{
+    const pivot = node.pivot;
+
+    if (!pivot)
+    {
+        return null;
+    }
+
+    const x = asFiniteNumber(pivot.x);
+    const y = asFiniteNumber(pivot.y);
+
+    if (x === null || y === null)
+    {
+        return null;
+    }
+
+    return { x, y };
+}
+
 export function worldCorners(bounds: LocalBounds, matrix: MatrixLike): Array<{ x: number; y: number }>
 {
     const points = [

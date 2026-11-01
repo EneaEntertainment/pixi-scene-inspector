@@ -6,6 +6,7 @@ export type PixiPoint = {
 export type PixiNode = {
     children?: Array<PixiNode> | { list?: Array<PixiNode> };
     list?: Array<PixiNode>;
+    particleChildren?: Array<PixiNode>;
     root?: PixiNode;
     visible?: boolean;
     alpha?: number;
@@ -26,7 +27,11 @@ export type PixiNode = {
     blendMode?: string | number;
     position?: PixiPoint;
     scale?: PixiPoint;
+    scaleX?: number;
+    scaleY?: number;
     anchor?: PixiPoint;
+    anchorX?: number;
+    anchorY?: number;
     pivot?: PixiPoint;
     skew?: PixiPoint;
     label?: unknown;

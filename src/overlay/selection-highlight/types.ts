@@ -23,6 +23,8 @@ export type BoxPaint = {
     matrix: MatrixLike;
     rootLeft: number;
     rootTop: number;
+    viewRight: number;
+    viewBottom: number;
     canvasScaleX: number;
     canvasScaleY: number;
 };
@@ -43,6 +45,9 @@ export type OverlayRoot = {
     root: HTMLDivElement;
     box: HTMLDivElement;
     outline: SVGRectElement;
+    guideLines: Array<SVGLineElement>;
+    guidesSvg: SVGSVGElement;
+    pivotMark: HTMLDivElement;
     anchorMark: HTMLDivElement;
     rotateStalk: HTMLDivElement;
     rotateHandle: HTMLDivElement;

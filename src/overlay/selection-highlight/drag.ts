@@ -2,7 +2,7 @@ import { highlightTransformGesture } from '../../gesture-active';
 import { highlightFill, highlightFillDrag, highlightStroke, highlightStrokeDrag } from '../../highlight-colors';
 import { snapToStep } from '../fields/number-drag';
 import { readTransformNumber, writeTransformNumber } from '../properties/transform-apply';
-import { POSITION_STEP, ROTATION_STEP, SCALE_STEP } from './constants';
+import { ANGLE_STEP, POSITION_STEP, SCALE_STEP } from './constants';
 import { readWorldTransform } from './geometry';
 import { localToScreen, normalize2, project, worldDeltaToParentLocal } from './math';
 
@@ -14,6 +14,7 @@ export type HighlightDragHost = {
     overlay: OverlayRoot;
     getPaint: () => BoxPaint | null;
     resolveNodes: () => Array<PixiNode>;
+    setGuidesDragging: (dragging: boolean) => void;
 };
 
 export type HighlightDragController = {
@@ -29,7 +30,7 @@ function keysForDragMode(mode: DragMode): Array<NumberPropertyKey>
 
     if (mode === 'rotate')
     {
-        return ['rotation'];
+        return ['angle'];
     }
 
     if (mode === 'scaleX')
@@ -100,7 +101,7 @@ function restoreSnapshots(snapshots: Array<NodeSnapshot>)
 
 export function attachHighlightTransformDrag(host: HighlightDragHost): HighlightDragController
 {
-    const { overlay, getPaint, resolveNodes } = host;
+    const { overlay, getPaint, resolveNodes, setGuidesDragging } = host;
     const {
         root,
         box,
@@ -156,6 +157,7 @@ export function attachHighlightTransformDrag(host: HighlightDragHost): Highlight
             box.style.background = highlightFill();
 
             outline.setAttribute('stroke', highlightStroke());
+            setGuidesDragging(false);
 
             highlightTransformGesture.end();
         }
@@ -236,21 +238,21 @@ export function attachHighlightTransformDrag(host: HighlightDragHost): Highlight
         }
 
         const center = localToScreen(base, base.width / 2, base.height / 2);
-        const angle = Math.atan2(clientY - center.y, clientX - center.x);
-        const delta = angle - dragStartAngle;
+        const pointerAngle = Math.atan2(clientY - center.y, clientX - center.x);
+        const deltaDeg = (pointerAngle - dragStartAngle) * (180 / Math.PI);
 
         for (const entry of dragSnapshots)
         {
-            const start = entry.values.get('rotation');
+            const start = entry.values.get('angle');
 
             if (typeof start === 'number')
             {
-                const next = start + delta;
+                const next = start + deltaDeg;
 
                 writeTransformNumber(
                     entry.node,
-                    'rotation',
-                    snap ? snapToStep(next, ROTATION_STEP) : next,
+                    'angle',
+                    snap ? snapToStep(next, ANGLE_STEP) : next,
                 );
             }
         }
@@ -517,6 +519,7 @@ export function attachHighlightTransformDrag(host: HighlightDragHost): Highlight
         box.style.background = highlightFillDrag();
 
         outline.setAttribute('stroke', highlightStrokeDrag());
+        setGuidesDragging(true);
         highlightTransformGesture.begin();
 
         if (mode === 'rotate')

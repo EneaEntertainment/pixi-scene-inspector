@@ -1,4 +1,11 @@
-import { bitmapPageMeshInsertOffset, childrenOf, pathOf, resolveByPath } from './root';
+import {
+    bitmapPageMeshInsertOffset,
+    childrenOf,
+    isParticleContainerNode,
+    isParticleNode,
+    pathOf,
+    resolveByPath,
+} from './root';
 import { setSelectionIds } from './selection-ids';
 
 import type { PageGlobals, PixiNode } from './pixi-node';
@@ -20,7 +27,7 @@ function isDescendant(ancestor: PixiNode, node: PixiNode): boolean
     return false;
 }
 
-function canMoveChild(child: PixiNode, parent: PixiNode): boolean
+function canMoveChild(child: PixiNode, parent: PixiNode, win: PageGlobals): boolean
 {
     if (child === parent)
     {
@@ -28,6 +35,11 @@ function canMoveChild(child: PixiNode, parent: PixiNode): boolean
     }
 
     if (isDescendant(child, parent))
+    {
+        return false;
+    }
+
+    if (isParticleNode(child, win) || isParticleContainerNode(parent))
     {
         return false;
     }
@@ -90,7 +102,7 @@ export function moveNodes(
 {
     const parent = resolveByPath(parentId, win);
 
-    if (!parent || typeof parent.addChild !== 'function')
+    if (!parent || typeof parent.addChild !== 'function' || isParticleContainerNode(parent))
     {
         return null;
     }
@@ -101,7 +113,7 @@ export function moveNodes(
     {
         const child = resolveByPath(sourceId, win);
 
-        if (!child || !canMoveChild(child, parent))
+        if (!child || !canMoveChild(child, parent, win))
         {
             continue;
         }

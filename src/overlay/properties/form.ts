@@ -180,16 +180,11 @@ export function createPropertiesForm(selection: SelectionChannel): PropertiesFor
         return { object: objectMaps, text: textMaps };
     }
 
-    function selectedNodes(): Array<PixiNode>
-    {
-        return resolveAliveNodesByIds(selectedIds);
-    }
-
     function applyNumber(key: FieldNumberKey, value: number, info: NumberCommitInfo)
     {
         if (selectedIds.length > 1)
         {
-            applyTransformNumber(selectedNodes(), key as NumberPropertyKey, value, info);
+            applyTransformNumber(resolveAliveNodesByIds(selectedIds), key as NumberPropertyKey, value, info);
 
             return;
         }
@@ -532,7 +527,7 @@ export function createPropertiesForm(selection: SelectionChannel): PropertiesFor
         {
             if (selectedIds.length > 1)
             {
-                const nodes = selectedNodes();
+                const nodes = resolveAliveNodesByIds(selectedIds);
 
                 objectMaps = multiObjectMaps(nodes);
                 textMaps = emptyTextMaps();

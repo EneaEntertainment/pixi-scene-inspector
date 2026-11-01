@@ -3,11 +3,6 @@ import { ctorName, type PageGlobals, type PixiNode } from './pixi-node';
 
 const KNOWN = new Set(KNOWN_NODE_TYPE_NAMES);
 
-function normalizeTypeName(name: string): string
-{
-    return matchKnownTypeName(name, KNOWN);
-}
-
 function typeNameFromPrototype(node: PixiNode): string
 {
     let proto = Object.getPrototypeOf(node) as object | null;
@@ -16,7 +11,7 @@ function typeNameFromPrototype(node: PixiNode): string
     {
         const raw = (proto as { constructor?: { name?: string } }).constructor
             ?.name;
-        const name = normalizeTypeName(raw ?? '');
+        const name = matchKnownTypeName(raw ?? '', KNOWN);
 
         if (name)
         {
@@ -77,7 +72,7 @@ export function typeNameOf(node: PixiNode | null | undefined, win: PageGlobals =
     return (
         typeNameFromPrototype(node)
     || typeNameFromPixiGlobal(node, win)
-    || normalizeTypeName(ctorName(node))
+    || matchKnownTypeName(ctorName(node), KNOWN)
     || ctorName(node)
     || 'Object'
     );
@@ -153,7 +148,7 @@ export function customLabelOf(
     if (
         ctor
     && ctor !== typeName
-    && !normalizeTypeName(ctor)
+    && !matchKnownTypeName(ctor, KNOWN)
     && !KNOWN.has(ctor)
     )
     {

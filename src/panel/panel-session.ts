@@ -1,7 +1,20 @@
 import { isHideBlockedTypeName } from '../node-type-config';
-import { isAncestorId, parentIdOf, remapIdsByUid } from '../tree-ops';
+import { findTreeNode, isAncestorId, parentIdOf, remapIdsByUid } from '../tree-ops';
 
 import type { TreeNodeData } from '../types';
+
+function isParticleTypeName(typeName: string): boolean
+{
+    return typeName === 'Particle';
+}
+
+function isParticleHostTypeName(typeName: string): boolean
+{
+    return (
+        typeName === 'ParticleContainer'
+        || typeName === 'ParticleContainer3D'
+    );
+}
 
 export function canReparent(
     tree: TreeNodeData,
@@ -20,6 +33,19 @@ export function canReparent(
     }
 
     if (isAncestorId(sourceId, parentId))
+    {
+        return false;
+    }
+
+    const source = findTreeNode(tree, sourceId);
+    const parent = findTreeNode(tree, parentId);
+
+    if (!source || !parent)
+    {
+        return false;
+    }
+
+    if (isParticleTypeName(source.typeName) || isParticleHostTypeName(parent.typeName))
     {
         return false;
     }

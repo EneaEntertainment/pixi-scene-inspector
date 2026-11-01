@@ -38,7 +38,7 @@ function canvasTexture(color: string, width = 32, height = 32): Texture<CanvasSo
 
 export function createDemoTextures(app: Application): DemoTextures
 {
-    const solidGfx = new Graphics().rect(0, 0, 48, 48).fill(0x4ade80);
+    const solidGfx = new Graphics().rect(0, 0, 48, 48).fill(0xffffff);
     const solid = app.renderer.generateTexture(solidGfx);
 
     solidGfx.destroy();

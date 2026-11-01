@@ -6,6 +6,11 @@ import {
     type HighlightColorSettings,
     normalizeHighlightColors,
 } from './highlight-colors';
+import {
+    HIGHLIGHT_GUIDES_STORAGE_KEY,
+    type HighlightGuidesSettings,
+    normalizeHighlightGuides,
+} from './highlight-guides';
 import { DEFAULT_TOGGLE_HOTKEY, type HotkeyChord, normalizeHotkeyChord } from './hotkey';
 import {
     DEFAULT_LIVE_REFRESH_INTERVAL_SEC,
@@ -18,6 +23,7 @@ export const TOGGLE_HOTKEY_STORAGE_KEY = 'toggleHotkey';
 export type ExtensionSettings = {
     toggleHotkey: HotkeyChord;
     highlightColors: HighlightColorSettings;
+    highlightGuides: HighlightGuidesSettings;
     liveRefreshInterval: number;
 };
 
@@ -58,12 +64,14 @@ export async function readExtensionSettings(): Promise<ExtensionSettings>
         HIGHLIGHT_COLORS_STORAGE_KEY,
         HIGHLIGHT_FILL_STORAGE_KEY,
         HIGHLIGHT_STROKE_STORAGE_KEY,
+        HIGHLIGHT_GUIDES_STORAGE_KEY,
         LIVE_REFRESH_INTERVAL_STORAGE_KEY,
     ]);
 
     return {
         toggleHotkey        : resolveToggleHotkey(result[TOGGLE_HOTKEY_STORAGE_KEY]),
         highlightColors     : resolveStoredHighlightColors(result),
+        highlightGuides     : normalizeHighlightGuides(result[HIGHLIGHT_GUIDES_STORAGE_KEY]),
         liveRefreshInterval : resolveLiveRefreshInterval(result[LIVE_REFRESH_INTERVAL_STORAGE_KEY]),
     };
 }
@@ -97,6 +105,19 @@ export async function writeLiveRefreshInterval(seconds: number): Promise<number>
 
     await chrome.storage.sync.set({
         [LIVE_REFRESH_INTERVAL_STORAGE_KEY]: next,
+    });
+
+    return next;
+}
+
+export async function writeHighlightGuides(
+    settings: HighlightGuidesSettings,
+): Promise<HighlightGuidesSettings>
+{
+    const next = normalizeHighlightGuides(settings);
+
+    await chrome.storage.sync.set({
+        [HIGHLIGHT_GUIDES_STORAGE_KEY]: next,
     });
 
     return next;

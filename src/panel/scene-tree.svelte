@@ -1,10 +1,9 @@
 <script lang="ts">
   import {
-    beginTreeDragGesture,
-    endTreeDragGesture,
     type DropTarget,
     resolveDropTarget,
   } from "../drag-drop";
+  import { treeDragGesture } from "../gesture-active";
   import DragGhost from "./drag-ghost.svelte";
   import { displayLabel, fullLabel, labelColor } from "./node-label";
   import TreeNode from "./tree-node.svelte";
@@ -285,7 +284,7 @@
     unbindGestureListeners();
 
     if (hadGesture) {
-      endTreeDragGesture();
+      treeDragGesture.end();
     }
 
     if (!state) {
@@ -319,7 +318,7 @@
     activePointerId = null;
 
     unbindGestureListeners();
-    endTreeDragGesture();
+    treeDragGesture.end();
 
     if (!state.active) {
       setDragging(false);
@@ -543,7 +542,8 @@
       !onmove ||
       rootId === null ||
       rootId === undefined ||
-      node.id === rootId
+      node.id === rootId ||
+      node.typeName === "Particle"
     ) {
       return;
     }
@@ -566,10 +566,19 @@
 
     activePointerId = e.pointerId;
 
-    const movingIds =
+    const movingIds = (
       selectedSet.has(node.id) && selectedIds.length > 1
         ? selectedIds.filter((id) => id !== rootId)
-        : [node.id];
+        : [node.id]
+    ).filter((id) => {
+      const laid = nodes.find((entry) => entry.id === id);
+
+      return laid?.typeName !== "Particle";
+    });
+
+    if (movingIds.length === 0) {
+      return;
+    }
 
     drag = {
       sourceIds: movingIds,
@@ -588,7 +597,7 @@
       drop: null,
     };
 
-    beginTreeDragGesture();
+    treeDragGesture.begin();
     bindGestureListeners();
   }
 
@@ -638,7 +647,7 @@
       active: false,
     };
 
-    beginTreeDragGesture();
+    treeDragGesture.begin();
     bindGestureListeners();
   }
 

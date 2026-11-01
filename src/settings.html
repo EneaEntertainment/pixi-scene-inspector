@@ -68,11 +68,22 @@
     }
 
     .color-row,
-    .alpha-row {
+    .alpha-row,
+    .toggle-row {
       display: flex;
       gap: 8px;
       align-items: center;
       justify-content: space-between;
+    }
+
+    .toggle-row label {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      color: var(--muted);
+      font-size: 12px;
+      cursor: pointer;
+      user-select: none;
     }
 
     .color-row span,
@@ -230,6 +241,22 @@
       </div>
       <div class="row">
         <button id="reset-colors" type="button">Reset colors</button>
+      </div>
+    </div>
+    <div class="field">
+      <div class="label">Highlight guides</div>
+      <p class="hint">Guide lines extending from the selection box edges.</p>
+      <div class="toggle-row">
+        <label>
+          <input id="highlight-guides-idle" type="checkbox" aria-label="Show guides when not dragging" />
+          Show guides when not dragging
+        </label>
+      </div>
+      <div class="toggle-row">
+        <label>
+          <input id="highlight-guides-drag" type="checkbox" checked aria-label="Show guides while dragging" />
+          Show guides while dragging
+        </label>
       </div>
     </div>
   </div>

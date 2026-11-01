@@ -1,4 +1,4 @@
-const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/browserAll-sDMCAhEL.js","assets/webworkerAll-X9Gmo5G8.js","assets/Filter-CdqFoxVc.js","assets/WebGPURenderer-CKVU7iJa.js","assets/getTexelRangeRects-Ip1wih5e.js","assets/RenderTargetSystem-B6NUYIXW.js","assets/WebGLRenderer-C3t3NZhN.js","assets/CanvasRenderer-4WsNSAmJ.js"])))=>i.map(i=>d[i]);
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/browserAll-DHVv3QHx.js","assets/webworkerAll-vNfEhMVR.js","assets/Filter-oViJlE_O.js","assets/WebGPURenderer-EK1Xtz6X.js","assets/getTexelRangeRects-UiGQt2rz.js","assets/RenderTargetSystem-BDHJoGXF.js","assets/WebGLRenderer-Bim8TT49.js","assets/CanvasRenderer-B9XhwUel.js"])))=>i.map(i=>d[i]);
 (function polyfill() {
   const relList = document.createElement("link").relList;
   if (relList && relList.supports && relList.supports("modulepreload")) return;
@@ -355,7 +355,7 @@ const browserExt = {
   },
   test: () => true,
   load: async () => {
-    await __vitePreload(() => import("./browserAll-sDMCAhEL.js"), true ? __vite__mapDeps([0,1,2]) : void 0);
+    await __vitePreload(() => import("./browserAll-DHVv3QHx.js"), true ? __vite__mapDeps([0,1,2]) : void 0);
   }
 };
 const webworkerExt = {
@@ -366,7 +366,7 @@ const webworkerExt = {
   },
   test: () => typeof self !== "undefined" && self.WorkerGlobalScope !== void 0,
   load: async () => {
-    await __vitePreload(() => import("./webworkerAll-X9Gmo5G8.js"), true ? __vite__mapDeps([1,2]) : void 0);
+    await __vitePreload(() => import("./webworkerAll-vNfEhMVR.js"), true ? __vite__mapDeps([1,2]) : void 0);
   }
 };
 class ObservablePoint {
@@ -13297,7 +13297,7 @@ async function autoDetectRenderer(options) {
     const rendererType = preferredOrder[i2];
     if (rendererType === "webgpu" && await isWebGPUSupported()) {
       const { WebGPURenderer } = await __vitePreload(async () => {
-        const { WebGPURenderer: WebGPURenderer2 } = await import("./WebGPURenderer-CKVU7iJa.js");
+        const { WebGPURenderer: WebGPURenderer2 } = await import("./WebGPURenderer-EK1Xtz6X.js");
         return { WebGPURenderer: WebGPURenderer2 };
       }, true ? __vite__mapDeps([3,4,5,2]) : void 0);
       RendererClass = WebGPURenderer;
@@ -13307,7 +13307,7 @@ async function autoDetectRenderer(options) {
       options.failIfMajorPerformanceCaveat ?? AbstractRenderer.defaultOptions.failIfMajorPerformanceCaveat
     )) {
       const { WebGLRenderer } = await __vitePreload(async () => {
-        const { WebGLRenderer: WebGLRenderer2 } = await import("./WebGLRenderer-C3t3NZhN.js");
+        const { WebGLRenderer: WebGLRenderer2 } = await import("./WebGLRenderer-Bim8TT49.js");
         return { WebGLRenderer: WebGLRenderer2 };
       }, true ? __vite__mapDeps([6,4,5,2]) : void 0);
       RendererClass = WebGLRenderer;
@@ -13315,7 +13315,7 @@ async function autoDetectRenderer(options) {
       break;
     } else if (rendererType === "canvas") {
       const { CanvasRenderer } = await __vitePreload(async () => {
-        const { CanvasRenderer: CanvasRenderer2 } = await import("./CanvasRenderer-4WsNSAmJ.js");
+        const { CanvasRenderer: CanvasRenderer2 } = await import("./CanvasRenderer-B9XhwUel.js");
         return { CanvasRenderer: CanvasRenderer2 };
       }, true ? __vite__mapDeps([7,5,2]) : void 0);
       RendererClass = CanvasRenderer;
@@ -33924,7 +33924,7 @@ const DEFAULT_TOGGLE_HOTKEY = {
 };
 const HOTKEY_CONFIG_EVENT = "pixi-scene-inspector-hotkey-config";
 const HOTKEY_ATTR = "data-psi-hotkey";
-function asBoolean(value) {
+function asBoolean$1(value) {
   return value === true;
 }
 function normalizeHotkeyChord(raw) {
@@ -33938,10 +33938,10 @@ function normalizeHotkeyChord(raw) {
   }
   return {
     code,
-    shift: asBoolean(record.shift),
-    ctrl: asBoolean(record.ctrl),
-    alt: asBoolean(record.alt),
-    meta: asBoolean(record.meta)
+    shift: asBoolean$1(record.shift),
+    ctrl: asBoolean$1(record.ctrl),
+    alt: asBoolean$1(record.alt),
+    meta: asBoolean$1(record.meta)
   };
 }
 function codesMatch(eventCode, chordCode) {
@@ -38241,16 +38241,29 @@ function getRoot(win = globalThis) {
   return findRoot(win)?.root ?? null;
 }
 function listedChildren(node) {
+  let kids = [];
   if (Array.isArray(node.children)) {
-    return node.children;
+    kids = node.children;
+  } else if (node.children && typeof node.children === "object" && Array.isArray(node.children.list)) {
+    kids = node.children.list;
+  } else if (Array.isArray(node.list)) {
+    kids = node.list;
   }
-  if (node.children && typeof node.children === "object" && Array.isArray(node.children.list)) {
-    return node.children.list;
+  const particles = node.particleChildren;
+  if (!Array.isArray(particles) || particles.length === 0) {
+    return kids;
   }
-  if (Array.isArray(node.list)) {
-    return node.list;
+  if (kids.length === 0) {
+    return particles;
   }
-  return [];
+  const seen2 = new Set(kids);
+  const merged = kids.slice();
+  for (const particle of particles) {
+    if (!seen2.has(particle)) {
+      merged.push(particle);
+    }
+  }
+  return merged;
 }
 function bitmapPageMeshes(node) {
   const pages = node._activePagesMeshData;
@@ -38302,6 +38315,24 @@ function childrenOf(node) {
     return [root3d].concat(kids);
   }
   return kids;
+}
+function isParticleContainerNode(node) {
+  return !!node && Array.isArray(node.particleChildren);
+}
+function isParticleNode(node, win = globalThis) {
+  if (!node) {
+    return false;
+  }
+  const id = pathOf(node, win);
+  if (!id) {
+    return false;
+  }
+  const cut = id.lastIndexOf(".");
+  if (cut < 0) {
+    return false;
+  }
+  const parent = resolveByPath(id.slice(0, cut), win);
+  return !!parent && Array.isArray(parent.particleChildren) && parent.particleChildren.indexOf(node) >= 0;
 }
 function resolveByPath(pathId, win = globalThis) {
   const path2 = pathId.split(".").map((n2) => Number(n2));
@@ -38366,11 +38397,14 @@ function isDescendant(ancestor, node) {
   }
   return false;
 }
-function canMoveChild(child2, parent) {
+function canMoveChild(child2, parent, win) {
   if (child2 === parent) {
     return false;
   }
   if (isDescendant(child2, parent)) {
+    return false;
+  }
+  if (isParticleNode(child2, win) || isParticleContainerNode(parent)) {
     return false;
   }
   return typeof parent.addChild === "function";
@@ -38405,13 +38439,13 @@ function insertChildAt(parent, child2, desired) {
 }
 function moveNodes(sourceIds, parentId, index, win = globalThis) {
   const parent = resolveByPath(parentId, win);
-  if (!parent || typeof parent.addChild !== "function") {
+  if (!parent || typeof parent.addChild !== "function" || isParticleContainerNode(parent)) {
     return null;
   }
   const children = [];
   for (const sourceId of sourceIds) {
     const child2 = resolveByPath(sourceId, win);
-    if (!child2 || !canMoveChild(child2, parent)) {
+    if (!child2 || !canMoveChild(child2, parent, win)) {
       continue;
     }
     children.push(child2);
@@ -38711,6 +38745,7 @@ const NODE_TYPE_STYLES = [
   { name: "Container", short: "CONTAINER", color: "#c41e1e" },
   { name: "DisplayObject", short: "DISP_OBJ", color: "#c41e1e" },
   { name: "ParticleContainer", short: "PARTICLE", color: "#c41e1e" },
+  { name: "Particle", short: "PARTICLE", color: "#c41e1e" },
   { name: "RenderContainer", short: "RENDER_CTR", color: "#c41e1e" },
   { name: "DOMContainer", short: "DOM_CONT", color: "#c41e1e" },
   { name: "RenderLayer", short: "R_LAYER", color: "#c41e1e" },
@@ -38792,6 +38827,7 @@ const NODE_TYPE_INSTANCEOF_ORDER = [
   "Light",
   "Container3D",
   "View3D",
+  "Particle",
   "ParticleContainer",
   "RenderContainer",
   "DOMContainer",
@@ -38868,14 +38904,11 @@ function ctorName(node) {
   return ctor?.name ?? "";
 }
 const KNOWN = new Set(KNOWN_NODE_TYPE_NAMES);
-function normalizeTypeName(name) {
-  return matchKnownTypeName(name, KNOWN);
-}
 function typeNameFromPrototype(node) {
   let proto = Object.getPrototypeOf(node);
   while (proto && proto !== Object.prototype) {
     const raw = proto.constructor?.name;
-    const name = normalizeTypeName(raw ?? "");
+    const name = matchKnownTypeName(raw ?? "", KNOWN);
     if (name) {
       return name;
     }
@@ -38909,7 +38942,7 @@ function typeNameOf(node, win = globalThis) {
   if (node._view3d && node._view3d.root === node) {
     return "Scene3D";
   }
-  return typeNameFromPrototype(node) || typeNameFromPixiGlobal(node, win) || normalizeTypeName(ctorName(node)) || ctorName(node) || "Object";
+  return typeNameFromPrototype(node) || typeNameFromPixiGlobal(node, win) || matchKnownTypeName(ctorName(node), KNOWN) || ctorName(node) || "Object";
 }
 function isPixi8(root2, win = globalThis) {
   const ver = win.PIXI?.VERSION;
@@ -38947,7 +38980,7 @@ function customLabelOf(node, useLabel, win = globalThis) {
     return raw;
   }
   const ctor = ctorName(node);
-  if (ctor && ctor !== typeName && !normalizeTypeName(ctor) && !KNOWN.has(ctor)) {
+  if (ctor && ctor !== typeName && !matchKnownTypeName(ctor, KNOWN) && !KNOWN.has(ctor)) {
     return String(ctor);
   }
   return "";
@@ -39564,6 +39597,12 @@ function resolvePanelKey(e2, ctx) {
   }
   return { type: "navigate", key: e2.key, toEnd: e2.altKey };
 }
+function isParticleTypeName(typeName) {
+  return typeName === "Particle";
+}
+function isParticleHostTypeName(typeName) {
+  return typeName === "ParticleContainer" || typeName === "ParticleContainer3D";
+}
 function canReparent(tree, sourceId, parentId) {
   if (sourceId === tree.id) {
     return false;
@@ -39572,6 +39611,14 @@ function canReparent(tree, sourceId, parentId) {
     return false;
   }
   if (isAncestorId(sourceId, parentId)) {
+    return false;
+  }
+  const source2 = findTreeNode(tree, sourceId);
+  const parent = findTreeNode(tree, parentId);
+  if (!source2 || !parent) {
+    return false;
+  }
+  if (isParticleTypeName(source2.typeName) || isParticleHostTypeName(parent.typeName)) {
     return false;
   }
   return true;
@@ -39595,8 +39642,6 @@ function ensureMovedParentExpanded(expandedIds, nextTree, movedId) {
   return nextExpanded;
 }
 const GAP_MIN = 8;
-const beginTreeDragGesture = treeDragGesture.begin;
-const endTreeDragGesture = treeDragGesture.end;
 function collectGroups(nodes, rootId) {
   const groups = [];
   const root2 = nodes.find((n2) => n2.id === rootId);
@@ -39677,12 +39722,28 @@ function isBlockedTarget(targetId, sourceIds) {
   }
   return false;
 }
+function typeNameById(nodes, id) {
+  for (const node of nodes) {
+    if (node.id === id) {
+      return node.typeName;
+    }
+  }
+  return void 0;
+}
+function cannotAcceptChildren(typeName) {
+  return typeName === "Particle" || typeName === "ParticleContainer" || typeName === "ParticleContainer3D";
+}
 function resolveDropTarget(nodes, rootId, sourceIds, pointerX, pointerY, canvasWidth) {
   if (sourceIds.length === 0 || sourceIds.includes(rootId)) {
     return null;
   }
+  for (const sourceId of sourceIds) {
+    if (typeNameById(nodes, sourceId) === "Particle") {
+      return null;
+    }
+  }
   for (const node of nodes) {
-    if (isBlockedTarget(node.id, sourceIds)) {
+    if (isBlockedTarget(node.id, sourceIds) || cannotAcceptChildren(node.typeName)) {
       continue;
     }
     if (pointInRect(pointerX, pointerY, node.x, node.y, node.width, node.height)) {
@@ -39696,7 +39757,7 @@ function resolveDropTarget(nodes, rootId, sourceIds, pointerX, pointerY, canvasW
   const groups = collectGroups(nodes, rootId);
   const rowHits = [];
   for (const group of groups) {
-    if (isBlockedTarget(group.parentId, sourceIds)) {
+    if (isBlockedTarget(group.parentId, sourceIds) || cannotAcceptChildren(typeNameById(nodes, group.parentId))) {
       continue;
     }
     const { siblings } = group;
@@ -40045,7 +40106,7 @@ function Scene_tree($$anchor, $$props) {
     activePointerId = null;
     unbindGestureListeners();
     if (hadGesture) {
-      endTreeDragGesture();
+      treeDragGesture.end();
     }
     if (!state2) {
       return;
@@ -40069,7 +40130,7 @@ function Scene_tree($$anchor, $$props) {
     set(marquee, null);
     activePointerId = null;
     unbindGestureListeners();
-    endTreeDragGesture();
+    treeDragGesture.end();
     if (!state2.active) {
       setDragging(false);
       return;
@@ -40228,7 +40289,7 @@ function Scene_tree($$anchor, $$props) {
     if (e2.shiftKey || e2.metaKey || e2.ctrlKey) {
       return;
     }
-    if (!$$props.onmove || $$props.rootId === null || $$props.rootId === void 0 || node.id === $$props.rootId) {
+    if (!$$props.onmove || $$props.rootId === null || $$props.rootId === void 0 || node.id === $$props.rootId || node.typeName === "Particle") {
       return;
     }
     const local = svgPoint(e2);
@@ -40243,7 +40304,13 @@ function Scene_tree($$anchor, $$props) {
       finishDrag(false);
     }
     activePointerId = e2.pointerId;
-    const movingIds = get(selectedSet).has(node.id) && $$props.selectedIds.length > 1 ? $$props.selectedIds.filter((id) => id !== $$props.rootId) : [node.id];
+    const movingIds = (get(selectedSet).has(node.id) && $$props.selectedIds.length > 1 ? $$props.selectedIds.filter((id) => id !== $$props.rootId) : [node.id]).filter((id) => {
+      const laid = $$props.nodes.find((entry) => entry.id === id);
+      return laid?.typeName !== "Particle";
+    });
+    if (movingIds.length === 0) {
+      return;
+    }
     set(
       drag,
       {
@@ -40264,7 +40331,7 @@ function Scene_tree($$anchor, $$props) {
       },
       true
     );
-    beginTreeDragGesture();
+    treeDragGesture.begin();
     bindGestureListeners();
   }
   function onSvgPointerDown(e2) {
@@ -40303,7 +40370,7 @@ function Scene_tree($$anchor, $$props) {
       },
       true
     );
-    beginTreeDragGesture();
+    treeDragGesture.begin();
     bindGestureListeners();
   }
   const dropNodeId = /* @__PURE__ */ user_derived(() => {
@@ -40479,6 +40546,67 @@ function Scene_tree($$anchor, $$props) {
   pop();
 }
 delegate(["pointerdown"]);
+function parseJsonDocumentSetting(raw, normalize) {
+  try {
+    return normalize(JSON.parse(raw));
+  } catch {
+    return void 0;
+  }
+}
+function createDocumentSettingChannel(options) {
+  const { attr, event: event2, serialize, parse: parse2, normalize, apply } = options;
+  function readAttr(element = document.documentElement) {
+    const raw = element.getAttribute(attr);
+    if (raw === null) {
+      return void 0;
+    }
+    return parse2(raw);
+  }
+  function publish(value) {
+    const next = normalize(value);
+    apply?.(next);
+    document.documentElement.setAttribute(attr, serialize(next));
+    window.dispatchEvent(new CustomEvent(event2, { detail: next }));
+    return next;
+  }
+  function subscribe(listener) {
+    const onEvent = (eventValue) => {
+      if (!(eventValue instanceof CustomEvent)) {
+        return;
+      }
+      const next = normalize(eventValue.detail);
+      apply?.(next);
+      listener(next);
+    };
+    const observer = new MutationObserver(() => {
+      const next = readAttr();
+      if (next === void 0) {
+        return;
+      }
+      apply?.(next);
+      listener(next);
+    });
+    window.addEventListener(event2, onEvent);
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: [attr]
+    });
+    const initial = readAttr();
+    if (initial !== void 0) {
+      apply?.(initial);
+      listener(initial);
+    }
+    return () => {
+      window.removeEventListener(event2, onEvent);
+      observer.disconnect();
+    };
+  }
+  return {
+    readAttr,
+    publish,
+    subscribe
+  };
+}
 const DEFAULT_LIVE_REFRESH_INTERVAL_SEC = 1;
 const MIN_LIVE_REFRESH_INTERVAL_SEC = 0;
 const MAX_LIVE_REFRESH_INTERVAL_SEC = 10;
@@ -40496,41 +40624,15 @@ function normalizeLiveRefreshInterval(raw) {
   );
   return Math.round(clamped / LIVE_REFRESH_INTERVAL_STEP) * LIVE_REFRESH_INTERVAL_STEP;
 }
-function readLiveRefreshIntervalAttr(element = document.documentElement) {
-  const raw = element.getAttribute(LIVE_REFRESH_INTERVAL_ATTR);
-  if (raw === null) {
-    return void 0;
-  }
-  return normalizeLiveRefreshInterval(raw);
-}
-function subscribeLiveRefreshInterval(listener) {
-  const onEvent = (event2) => {
-    if (!(event2 instanceof CustomEvent)) {
-      return;
-    }
-    listener(normalizeLiveRefreshInterval(event2.detail));
-  };
-  const observer = new MutationObserver(() => {
-    const next = readLiveRefreshIntervalAttr();
-    if (next === void 0) {
-      return;
-    }
-    listener(next);
-  });
-  window.addEventListener(LIVE_REFRESH_INTERVAL_EVENT, onEvent);
-  observer.observe(document.documentElement, {
-    attributes: true,
-    attributeFilter: [LIVE_REFRESH_INTERVAL_ATTR]
-  });
-  const initial = readLiveRefreshIntervalAttr();
-  if (initial !== void 0) {
-    listener(initial);
-  }
-  return () => {
-    window.removeEventListener(LIVE_REFRESH_INTERVAL_EVENT, onEvent);
-    observer.disconnect();
-  };
-}
+const channel$2 = createDocumentSettingChannel({
+  attr: LIVE_REFRESH_INTERVAL_ATTR,
+  event: LIVE_REFRESH_INTERVAL_EVENT,
+  serialize: (value) => String(value),
+  parse: (raw) => normalizeLiveRefreshInterval(raw),
+  normalize: normalizeLiveRefreshInterval
+});
+const readLiveRefreshIntervalAttr = channel$2.readAttr;
+const subscribeLiveRefreshInterval = channel$2.subscribe;
 const EVENT_MODE_OPTIONS = [
   { value: "none", label: "None" },
   { value: "passive", label: "Passive" },
@@ -40751,6 +40853,7 @@ const OBJECT_CATALOG_SECTIONS = [
     id: "rendering",
     title: "Rendering",
     fields: [
+      { kind: "color", key: "tint", label: "tint" },
       {
         kind: "select",
         key: "blendMode",
@@ -42340,373 +42443,6 @@ function resolveLiveSelectionNodes(win = globalThis) {
   }
   return [];
 }
-function isPoint(value) {
-  return typeof value === "object" && value !== null && typeof value.x === "number" && typeof value.y === "number";
-}
-function directNumber(key, get2, set2) {
-  if (typeof get2() !== "number") {
-    return [];
-  }
-  return [{ key, get: get2, set: set2 }];
-}
-function directBoolean(key, get2, set2) {
-  if (typeof get2() !== "boolean") {
-    return [];
-  }
-  return [{ key, get: get2, set: set2 }];
-}
-function directString(key, get2, set2) {
-  if (typeof get2() !== "string") {
-    return [];
-  }
-  return [{ key, get: get2, set: set2 }];
-}
-const BLEND_MODE_FROM_V7 = [
-  "normal",
-  "add",
-  "multiply",
-  "screen",
-  "overlay",
-  "darken",
-  "lighten",
-  "color-dodge",
-  "color-burn",
-  "hard-light",
-  "soft-light",
-  "difference",
-  "exclusion",
-  "hue",
-  "saturation",
-  "color",
-  "luminosity",
-  "normal-npm",
-  "add-npm",
-  "screen-npm",
-  "none",
-  "src-in",
-  "src-out",
-  "src-atop",
-  "dst-over",
-  "dst-in",
-  "erase",
-  "dst-atop",
-  "subtract",
-  "xor"
-];
-const BLEND_MODE_TO_V7 = {
-  normal: 0,
-  "src-over": 0,
-  add: 1,
-  multiply: 2,
-  screen: 3,
-  overlay: 4,
-  darken: 5,
-  lighten: 6,
-  "color-dodge": 7,
-  "color-burn": 8,
-  "hard-light": 9,
-  "soft-light": 10,
-  difference: 11,
-  exclusion: 12,
-  hue: 13,
-  saturation: 14,
-  color: 15,
-  luminosity: 16,
-  "normal-npm": 17,
-  "add-npm": 18,
-  "screen-npm": 19,
-  none: 20,
-  "src-in": 21,
-  "src-out": 22,
-  "src-atop": 23,
-  "dst-over": 24,
-  "dst-in": 25,
-  erase: 26,
-  "dst-out": 26,
-  "dst-atop": 27,
-  subtract: 28,
-  xor: 29
-};
-function readIdentityString(value) {
-  if (typeof value === "string") {
-    return value;
-  }
-  if (value === null || value === void 0) {
-    return "";
-  }
-  return String(value);
-}
-function identityStringMaps(node) {
-  const win = globalThis;
-  const useLabel = isPixi8(node, win);
-  if (useLabel) {
-    return [
-      {
-        key: "label",
-        get: () => readIdentityString(node.label),
-        set: (value) => {
-          node.label = value;
-        }
-      }
-    ];
-  }
-  return [
-    {
-      key: "name",
-      get: () => readIdentityString(node.name),
-      set: (value) => {
-        node.name = value;
-      }
-    }
-  ];
-}
-function blendModeMaps(node) {
-  const current2 = node.blendMode;
-  if (typeof current2 === "string") {
-    return [
-      {
-        key: "blendMode",
-        get: () => {
-          const value = node.blendMode;
-          return typeof value === "string" ? value : void 0;
-        },
-        set: (value) => {
-          node.blendMode = value;
-        }
-      }
-    ];
-  }
-  if (typeof current2 === "number") {
-    return [
-      {
-        key: "blendMode",
-        get: () => {
-          const value = node.blendMode;
-          if (typeof value !== "number") {
-            return void 0;
-          }
-          if (value >= 0 && value < BLEND_MODE_FROM_V7.length) {
-            return BLEND_MODE_FROM_V7[value] ?? String(value);
-          }
-          return String(value);
-        },
-        set: (value) => {
-          const mapped = BLEND_MODE_TO_V7[value];
-          if (typeof mapped === "number") {
-            node.blendMode = mapped;
-          }
-        }
-      }
-    ];
-  }
-  return [];
-}
-function pointAxis(node, nested, axis, key, fallbackGet, fallbackSet) {
-  const point = node[nested];
-  if (isPoint(point)) {
-    return [
-      {
-        key,
-        get: () => point[axis],
-        set: (value) => {
-          point[axis] = value;
-        }
-      }
-    ];
-  }
-  if (fallbackGet && fallbackSet && typeof fallbackGet() === "number") {
-    return [
-      {
-        key,
-        get: fallbackGet,
-        set: fallbackSet
-      }
-    ];
-  }
-  return [];
-}
-function mapsForNode(node) {
-  if (!isNodeAlive(node)) {
-    return { numbers: [], booleans: [], strings: [] };
-  }
-  const numbers = [];
-  const booleans = [];
-  const strings = [];
-  strings.push(...identityStringMaps(node));
-  numbers.push(
-    ...pointAxis(
-      node,
-      "position",
-      "x",
-      "position.x",
-      () => node.x,
-      (value) => {
-        node.x = value;
-      }
-    )
-  );
-  numbers.push(
-    ...pointAxis(
-      node,
-      "position",
-      "y",
-      "position.y",
-      () => node.y,
-      (value) => {
-        node.y = value;
-      }
-    )
-  );
-  numbers.push(
-    ...directNumber(
-      "width",
-      () => node.width,
-      (value) => {
-        node.width = value;
-      }
-    )
-  );
-  numbers.push(
-    ...directNumber(
-      "height",
-      () => node.height,
-      (value) => {
-        node.height = value;
-      }
-    )
-  );
-  numbers.push(
-    ...directNumber(
-      "rotation",
-      () => node.rotation,
-      (value) => {
-        node.rotation = value;
-      }
-    )
-  );
-  numbers.push(
-    ...directNumber(
-      "angle",
-      () => node.angle,
-      (value) => {
-        node.angle = value;
-      }
-    )
-  );
-  numbers.push(...pointAxis(node, "scale", "x", "scale.x"));
-  numbers.push(...pointAxis(node, "scale", "y", "scale.y"));
-  numbers.push(...pointAxis(node, "anchor", "x", "anchor.x"));
-  numbers.push(...pointAxis(node, "anchor", "y", "anchor.y"));
-  numbers.push(...pointAxis(node, "pivot", "x", "pivot.x"));
-  numbers.push(...pointAxis(node, "pivot", "y", "pivot.y"));
-  numbers.push(...pointAxis(node, "skew", "x", "skew.x"));
-  numbers.push(...pointAxis(node, "skew", "y", "skew.y"));
-  numbers.push(
-    ...directNumber(
-      "alpha",
-      () => node.alpha,
-      (value) => {
-        node.alpha = value;
-      }
-    )
-  );
-  booleans.push(
-    ...directBoolean(
-      "visible",
-      () => node.visible,
-      (value) => {
-        node.visible = value;
-      }
-    )
-  );
-  booleans.push(
-    ...directBoolean(
-      "sortableChildren",
-      () => node.sortableChildren,
-      (value) => {
-        node.sortableChildren = value;
-      }
-    )
-  );
-  numbers.push(
-    ...directNumber(
-      "zIndex",
-      () => node.zIndex,
-      (value) => {
-        node.zIndex = value;
-      }
-    )
-  );
-  booleans.push(
-    ...directBoolean(
-      "cullable",
-      () => node.cullable,
-      (value) => {
-        node.cullable = value;
-      }
-    )
-  );
-  strings.push(...blendModeMaps(node));
-  booleans.push(
-    ...directBoolean(
-      "interactiveChildren",
-      () => node.interactiveChildren,
-      (value) => {
-        node.interactiveChildren = value;
-      }
-    )
-  );
-  if (typeof node.eventMode === "string") {
-    strings.push(
-      ...directString(
-        "eventMode",
-        () => node.eventMode,
-        (value) => {
-          node.eventMode = value;
-        }
-      )
-    );
-    strings.push({
-      key: "cursor",
-      get: () => {
-        const cursor = node.cursor;
-        return typeof cursor === "string" ? cursor : "";
-      },
-      set: (value) => {
-        node.cursor = value === "" ? void 0 : value;
-      }
-    });
-  } else {
-    booleans.push(
-      ...directBoolean(
-        "interactive",
-        () => node.interactive,
-        (value) => {
-          node.interactive = value;
-        }
-      )
-    );
-    booleans.push(
-      ...directBoolean(
-        "buttonMode",
-        () => node.buttonMode,
-        (value) => {
-          node.buttonMode = value;
-        }
-      )
-    );
-  }
-  return { numbers, booleans, strings };
-}
-function findNumberMap(maps, key) {
-  return maps.numbers.find((entry) => entry.key === key);
-}
-function findBooleanMap(maps, key) {
-  return maps.booleans.find((entry) => entry.key === key);
-}
-function findStringMap(maps, key) {
-  return maps.strings.find((entry) => entry.key === key);
-}
 function isRgbColorArray(value) {
   if (Array.isArray(value)) {
     if (value.length < 3 || value.length > 4) {
@@ -42915,6 +42651,432 @@ function isPlainColorSource(value) {
     return true;
   }
   return false;
+}
+function isPoint(value) {
+  return typeof value === "object" && value !== null && typeof value.x === "number" && typeof value.y === "number";
+}
+function directNumber(key, get2, set2) {
+  if (typeof get2() !== "number") {
+    return [];
+  }
+  return [{ key, get: get2, set: set2 }];
+}
+function directBoolean(key, get2, set2) {
+  if (typeof get2() !== "boolean") {
+    return [];
+  }
+  return [{ key, get: get2, set: set2 }];
+}
+function directString(key, get2, set2) {
+  if (typeof get2() !== "string") {
+    return [];
+  }
+  return [{ key, get: get2, set: set2 }];
+}
+const BLEND_MODE_FROM_V7 = [
+  "normal",
+  "add",
+  "multiply",
+  "screen",
+  "overlay",
+  "darken",
+  "lighten",
+  "color-dodge",
+  "color-burn",
+  "hard-light",
+  "soft-light",
+  "difference",
+  "exclusion",
+  "hue",
+  "saturation",
+  "color",
+  "luminosity",
+  "normal-npm",
+  "add-npm",
+  "screen-npm",
+  "none",
+  "src-in",
+  "src-out",
+  "src-atop",
+  "dst-over",
+  "dst-in",
+  "erase",
+  "dst-atop",
+  "subtract",
+  "xor"
+];
+const BLEND_MODE_TO_V7 = {
+  normal: 0,
+  "src-over": 0,
+  add: 1,
+  multiply: 2,
+  screen: 3,
+  overlay: 4,
+  darken: 5,
+  lighten: 6,
+  "color-dodge": 7,
+  "color-burn": 8,
+  "hard-light": 9,
+  "soft-light": 10,
+  difference: 11,
+  exclusion: 12,
+  hue: 13,
+  saturation: 14,
+  color: 15,
+  luminosity: 16,
+  "normal-npm": 17,
+  "add-npm": 18,
+  "screen-npm": 19,
+  none: 20,
+  "src-in": 21,
+  "src-out": 22,
+  "src-atop": 23,
+  "dst-over": 24,
+  "dst-in": 25,
+  erase: 26,
+  "dst-out": 26,
+  "dst-atop": 27,
+  subtract: 28,
+  xor: 29
+};
+function readIdentityString(value) {
+  if (typeof value === "string") {
+    return value;
+  }
+  if (value === null || value === void 0) {
+    return "";
+  }
+  return String(value);
+}
+function identityStringMaps(node) {
+  const win = globalThis;
+  if (isParticleNode(node, win)) {
+    return [];
+  }
+  const useLabel = isPixi8(node, win);
+  if (useLabel) {
+    return [
+      {
+        key: "label",
+        get: () => readIdentityString(node.label),
+        set: (value) => {
+          node.label = value;
+        }
+      }
+    ];
+  }
+  return [
+    {
+      key: "name",
+      get: () => readIdentityString(node.name),
+      set: (value) => {
+        node.name = value;
+      }
+    }
+  ];
+}
+function blendModeMaps(node) {
+  const current2 = node.blendMode;
+  if (typeof current2 === "string") {
+    return [
+      {
+        key: "blendMode",
+        get: () => {
+          const value = node.blendMode;
+          return typeof value === "string" ? value : void 0;
+        },
+        set: (value) => {
+          node.blendMode = value;
+        }
+      }
+    ];
+  }
+  if (typeof current2 === "number") {
+    return [
+      {
+        key: "blendMode",
+        get: () => {
+          const value = node.blendMode;
+          if (typeof value !== "number") {
+            return void 0;
+          }
+          if (value >= 0 && value < BLEND_MODE_FROM_V7.length) {
+            return BLEND_MODE_FROM_V7[value] ?? String(value);
+          }
+          return String(value);
+        },
+        set: (value) => {
+          const mapped = BLEND_MODE_TO_V7[value];
+          if (typeof mapped === "number") {
+            node.blendMode = mapped;
+          }
+        }
+      }
+    ];
+  }
+  return [];
+}
+function pointAxis(node, nested, axis, key, fallbackGet, fallbackSet) {
+  const point = node[nested];
+  if (isPoint(point)) {
+    return [
+      {
+        key,
+        get: () => point[axis],
+        set: (value) => {
+          point[axis] = value;
+        }
+      }
+    ];
+  }
+  if (fallbackGet && fallbackSet && typeof fallbackGet() === "number") {
+    return [
+      {
+        key,
+        get: fallbackGet,
+        set: fallbackSet
+      }
+    ];
+  }
+  return [];
+}
+function mapsForNode(node) {
+  if (!isNodeAlive(node)) {
+    return { numbers: [], booleans: [], strings: [] };
+  }
+  const numbers = [];
+  const booleans = [];
+  const strings = [];
+  strings.push(...identityStringMaps(node));
+  numbers.push(
+    ...pointAxis(
+      node,
+      "position",
+      "x",
+      "position.x",
+      () => node.x,
+      (value) => {
+        node.x = value;
+      }
+    )
+  );
+  numbers.push(
+    ...pointAxis(
+      node,
+      "position",
+      "y",
+      "position.y",
+      () => node.y,
+      (value) => {
+        node.y = value;
+      }
+    )
+  );
+  numbers.push(
+    ...directNumber(
+      "width",
+      () => node.width,
+      (value) => {
+        node.width = value;
+      }
+    )
+  );
+  numbers.push(
+    ...directNumber(
+      "height",
+      () => node.height,
+      (value) => {
+        node.height = value;
+      }
+    )
+  );
+  numbers.push(
+    ...directNumber(
+      "rotation",
+      () => node.rotation,
+      (value) => {
+        node.rotation = value;
+      }
+    )
+  );
+  numbers.push(
+    ...directNumber(
+      "angle",
+      () => node.angle,
+      (value) => {
+        node.angle = value;
+      }
+    )
+  );
+  numbers.push(
+    ...pointAxis(
+      node,
+      "scale",
+      "x",
+      "scale.x",
+      () => node.scaleX,
+      (value) => {
+        node.scaleX = value;
+      }
+    )
+  );
+  numbers.push(
+    ...pointAxis(
+      node,
+      "scale",
+      "y",
+      "scale.y",
+      () => node.scaleY,
+      (value) => {
+        node.scaleY = value;
+      }
+    )
+  );
+  numbers.push(
+    ...pointAxis(
+      node,
+      "anchor",
+      "x",
+      "anchor.x",
+      () => node.anchorX,
+      (value) => {
+        node.anchorX = value;
+      }
+    )
+  );
+  numbers.push(
+    ...pointAxis(
+      node,
+      "anchor",
+      "y",
+      "anchor.y",
+      () => node.anchorY,
+      (value) => {
+        node.anchorY = value;
+      }
+    )
+  );
+  numbers.push(...pointAxis(node, "pivot", "x", "pivot.x"));
+  numbers.push(...pointAxis(node, "pivot", "y", "pivot.y"));
+  numbers.push(...pointAxis(node, "skew", "x", "skew.x"));
+  numbers.push(...pointAxis(node, "skew", "y", "skew.y"));
+  numbers.push(
+    ...directNumber(
+      "alpha",
+      () => node.alpha,
+      (value) => {
+        node.alpha = value;
+      }
+    )
+  );
+  if (colorToString(node.tint) !== void 0) {
+    strings.push({
+      key: "tint",
+      get: () => colorToString(node.tint),
+      set: (value) => {
+        try {
+          node.tint = parseColorString(value);
+        } catch {
+        }
+      }
+    });
+  }
+  booleans.push(
+    ...directBoolean(
+      "visible",
+      () => node.visible,
+      (value) => {
+        node.visible = value;
+      }
+    )
+  );
+  booleans.push(
+    ...directBoolean(
+      "sortableChildren",
+      () => node.sortableChildren,
+      (value) => {
+        node.sortableChildren = value;
+      }
+    )
+  );
+  numbers.push(
+    ...directNumber(
+      "zIndex",
+      () => node.zIndex,
+      (value) => {
+        node.zIndex = value;
+      }
+    )
+  );
+  booleans.push(
+    ...directBoolean(
+      "cullable",
+      () => node.cullable,
+      (value) => {
+        node.cullable = value;
+      }
+    )
+  );
+  strings.push(...blendModeMaps(node));
+  booleans.push(
+    ...directBoolean(
+      "interactiveChildren",
+      () => node.interactiveChildren,
+      (value) => {
+        node.interactiveChildren = value;
+      }
+    )
+  );
+  if (typeof node.eventMode === "string") {
+    strings.push(
+      ...directString(
+        "eventMode",
+        () => node.eventMode,
+        (value) => {
+          node.eventMode = value;
+        }
+      )
+    );
+    strings.push({
+      key: "cursor",
+      get: () => {
+        const cursor = node.cursor;
+        return typeof cursor === "string" ? cursor : "";
+      },
+      set: (value) => {
+        node.cursor = value === "" ? void 0 : value;
+      }
+    });
+  } else {
+    booleans.push(
+      ...directBoolean(
+        "interactive",
+        () => node.interactive,
+        (value) => {
+          node.interactive = value;
+        }
+      )
+    );
+    booleans.push(
+      ...directBoolean(
+        "buttonMode",
+        () => node.buttonMode,
+        (value) => {
+          node.buttonMode = value;
+        }
+      )
+    );
+  }
+  return { numbers, booleans, strings };
+}
+function findNumberMap(maps, key) {
+  return maps.numbers.find((entry) => entry.key === key);
+}
+function findBooleanMap(maps, key) {
+  return maps.booleans.find((entry) => entry.key === key);
+}
+function findStringMap(maps, key) {
+  return maps.strings.find((entry) => entry.key === key);
 }
 const DEFAULT_DROP_SHADOW = {
   alpha: 1,
@@ -44183,17 +44345,8 @@ function resolveStringMap(maps, key) {
   }
   return findStringMap(maps.object, key);
 }
-function findExportNumber(maps, key) {
-  return resolveNumberMap(maps, key);
-}
-function findExportBoolean(maps, key) {
-  return resolveBooleanMap(maps, key);
-}
-function findExportString(maps, key) {
-  return resolveStringMap(maps, key);
-}
 function fillGradientTypeExportValue(maps) {
-  const value = findExportString(maps, "style.fillGradientType")?.get();
+  const value = resolveStringMap(maps, "style.fillGradientType")?.get();
   if (value === "horizontal") {
     return 1;
   }
@@ -44223,25 +44376,25 @@ function collectFillExportValue(maps) {
 }
 function isExportPropAvailable(maps, spec) {
   if (spec.kind === "point") {
-    return !!findExportNumber(maps, spec.xKey) || !!findExportNumber(maps, spec.yKey);
+    return !!resolveNumberMap(maps, spec.xKey) || !!resolveNumberMap(maps, spec.yKey);
   }
   if (spec.kind === "number") {
-    return !!findExportNumber(maps, spec.key);
+    return !!resolveNumberMap(maps, spec.key);
   }
   if (spec.kind === "boolean") {
-    return !!findExportBoolean(maps, spec.key);
+    return !!resolveBooleanMap(maps, spec.key);
   }
   if (spec.kind === "fill") {
     return !!maps.text.fillStops && maps.text.fillStops.key === spec.key;
   }
-  return !!findExportString(maps, spec.key);
+  return !!resolveStringMap(maps, spec.key);
 }
 function availableExportPropsForSection(sectionId, maps) {
   return exportPropsForSection(sectionId).filter((spec) => isExportPropAvailable(maps, spec));
 }
 function readPoint(maps, xKey, yKey) {
-  const x2 = findExportNumber(maps, xKey)?.get();
-  const y2 = findExportNumber(maps, yKey)?.get();
+  const x2 = resolveNumberMap(maps, xKey)?.get();
+  const y2 = resolveNumberMap(maps, yKey)?.get();
   if (typeof x2 !== "number" && typeof y2 !== "number") {
     return void 0;
   }
@@ -44262,17 +44415,17 @@ function collectBlendModeExportValue(maps) {
       return value;
     }
   }
-  return findExportString(maps, "blendMode")?.get();
+  return resolveStringMap(maps, "blendMode")?.get();
 }
 function collectPropValue(maps, spec) {
   if (spec.kind === "point") {
     return readPoint(maps, spec.xKey, spec.yKey);
   }
   if (spec.kind === "number") {
-    return findExportNumber(maps, spec.key)?.get();
+    return resolveNumberMap(maps, spec.key)?.get();
   }
   if (spec.kind === "boolean") {
-    return findExportBoolean(maps, spec.key)?.get();
+    return resolveBooleanMap(maps, spec.key)?.get();
   }
   if (spec.kind === "fill") {
     return collectFillExportValue(maps);
@@ -44280,7 +44433,7 @@ function collectPropValue(maps, spec) {
   if (spec.key === "blendMode") {
     return collectBlendModeExportValue(maps);
   }
-  return findExportString(maps, spec.key)?.get();
+  return resolveStringMap(maps, spec.key)?.get();
 }
 function isStyleExportId(id) {
   return id.startsWith("style.");
@@ -46511,12 +46664,9 @@ function createPropertiesForm(selection) {
   function currentExportMaps() {
     return { object: objectMaps, text: textMaps };
   }
-  function selectedNodes() {
-    return resolveAliveNodesByIds(selectedIds);
-  }
   function applyNumber(key, value, info) {
     if (selectedIds.length > 1) {
-      applyTransformNumber(selectedNodes(), key, value, info);
+      applyTransformNumber(resolveAliveNodesByIds(selectedIds), key, value, info);
       return;
     }
     if (!isNodeAlive(selectedNode())) {
@@ -46736,7 +46886,7 @@ function createPropertiesForm(selection) {
   function syncFromNode() {
     try {
       if (selectedIds.length > 1) {
-        const nodes = selectedNodes();
+        const nodes = resolveAliveNodesByIds(selectedIds);
         objectMaps = multiObjectMaps(nodes);
         textMaps = emptyTextMaps();
         tabs.setTextAvailable(false);
@@ -47093,6 +47243,7 @@ const DEFAULT_FILL_ALPHA = 0.35;
 const DEFAULT_FILL_DRAG_ALPHA = 0.1;
 const STROKE_ALPHA = 1;
 const STROKE_DRAG_ALPHA = 0.5;
+const GUIDE_STROKE_ALPHA = 0.5;
 const DEFAULT_HIGHLIGHT_COLORS = {
   fill: DEFAULT_HIGHLIGHT_FILL,
   stroke: DEFAULT_HIGHLIGHT_STROKE,
@@ -47160,59 +47311,56 @@ function highlightStroke() {
 function highlightStrokeDrag() {
   return rgbaFromHex(current.stroke, STROKE_DRAG_ALPHA);
 }
+function highlightGuideStroke() {
+  return rgbaFromHex(current.stroke, GUIDE_STROKE_ALPHA);
+}
 function setHighlightColors(colors) {
   current = normalizeHighlightColors(colors);
 }
-function readHighlightColorsAttr(element = document.documentElement) {
-  const raw = element.getAttribute(HIGHLIGHT_COLORS_ATTR);
-  if (!raw) {
-    return void 0;
-  }
-  try {
-    return normalizeHighlightColors(JSON.parse(raw));
-  } catch {
-    return void 0;
-  }
+const channel$1 = createDocumentSettingChannel({
+  attr: HIGHLIGHT_COLORS_ATTR,
+  event: HIGHLIGHT_COLORS_EVENT,
+  serialize: (value) => JSON.stringify(value),
+  parse: (raw) => parseJsonDocumentSetting(raw, normalizeHighlightColors),
+  normalize: normalizeHighlightColors,
+  apply: setHighlightColors
+});
+const subscribeHighlightColors = channel$1.subscribe;
+const DEFAULT_HIGHLIGHT_GUIDES = {
+  idle: false,
+  drag: true
+};
+const HIGHLIGHT_GUIDES_EVENT = "pixi-scene-inspector-highlight-guides";
+const HIGHLIGHT_GUIDES_ATTR = "data-psi-highlight-guides";
+function asBoolean(raw, fallback) {
+  return typeof raw === "boolean" ? raw : fallback;
 }
-function subscribeHighlightColors(listener) {
-  const onEvent = (event2) => {
-    if (!(event2 instanceof CustomEvent)) {
-      return;
-    }
-    const next = normalizeHighlightColors(event2.detail);
-    setHighlightColors(next);
-    listener(next);
-  };
-  const observer = new MutationObserver(() => {
-    const next = readHighlightColorsAttr();
-    if (!next) {
-      return;
-    }
-    setHighlightColors(next);
-    listener(next);
-  });
-  window.addEventListener(HIGHLIGHT_COLORS_EVENT, onEvent);
-  observer.observe(document.documentElement, {
-    attributes: true,
-    attributeFilter: [HIGHLIGHT_COLORS_ATTR]
-  });
-  const initial = readHighlightColorsAttr();
-  if (initial) {
-    setHighlightColors(initial);
-    listener(initial);
+function normalizeHighlightGuides(raw) {
+  if (!raw || typeof raw !== "object") {
+    return { ...DEFAULT_HIGHLIGHT_GUIDES };
   }
-  return () => {
-    window.removeEventListener(HIGHLIGHT_COLORS_EVENT, onEvent);
-    observer.disconnect();
+  const record = raw;
+  return {
+    idle: asBoolean(record.idle, DEFAULT_HIGHLIGHT_GUIDES.idle),
+    drag: asBoolean(record.drag, DEFAULT_HIGHLIGHT_GUIDES.drag)
   };
 }
+const channel = createDocumentSettingChannel({
+  attr: HIGHLIGHT_GUIDES_ATTR,
+  event: HIGHLIGHT_GUIDES_EVENT,
+  serialize: (value) => JSON.stringify(value),
+  parse: (raw) => parseJsonDocumentSetting(raw, normalizeHighlightGuides),
+  normalize: normalizeHighlightGuides
+});
+const readHighlightGuidesAttr = channel.readAttr;
+const subscribeHighlightGuides = channel.subscribe;
 const OVERLAY_ID = "pixi-scene-inspector-selection-highlight";
 const EMPTY_SIZE = 4;
 const ANCHOR_SIZE = 6;
 const HANDLE_SIZE = 8;
 const ROTATE_STALK = 18;
 const POSITION_STEP = 1;
-const ROTATION_STEP = 0.025;
+const ANGLE_STEP = 1;
 const SCALE_STEP = 0.01;
 function asFiniteNumber(value) {
   return typeof value === "number" && Number.isFinite(value) ? value : null;
@@ -47314,6 +47462,18 @@ function hasAnchor(node) {
   }
   return asFiniteNumber(anchor.x) !== null && asFiniteNumber(anchor.y) !== null;
 }
+function readPivot(node) {
+  const pivot = node.pivot;
+  if (!pivot) {
+    return null;
+  }
+  const x2 = asFiniteNumber(pivot.x);
+  const y2 = asFiniteNumber(pivot.y);
+  if (x2 === null || y2 === null) {
+    return null;
+  }
+  return { x: x2, y: y2 };
+}
 function worldCorners(bounds, matrix) {
   const points = [
     { x: bounds.minX, y: bounds.minY },
@@ -47371,12 +47531,111 @@ function normalize2(x2, y2) {
 function project(px, py, ox, oy, axis) {
   return (px - ox) * axis.x + (py - oy) * axis.y;
 }
+function clipInfiniteLineToRect(ax, ay, bx, by, left, top, right, bottom) {
+  const dx = bx - ax;
+  const dy = by - ay;
+  if (!(Math.abs(dx) > 1e-12) && !(Math.abs(dy) > 1e-12)) {
+    return null;
+  }
+  const hits = [];
+  const pushHit = (t2, x2, y2) => {
+    if (x2 < left - 1e-6 || x2 > right + 1e-6 || y2 < top - 1e-6 || y2 > bottom + 1e-6) {
+      return;
+    }
+    for (const hit of hits) {
+      if (Math.abs(hit.t - t2) < 1e-9) {
+        return;
+      }
+    }
+    hits.push({
+      x: Math.min(right, Math.max(left, x2)),
+      y: Math.min(bottom, Math.max(top, y2)),
+      t: t2
+    });
+  };
+  if (Math.abs(dx) > 1e-12) {
+    const tLeft = (left - ax) / dx;
+    pushHit(tLeft, left, ay + tLeft * dy);
+    const tRight = (right - ax) / dx;
+    pushHit(tRight, right, ay + tRight * dy);
+  }
+  if (Math.abs(dy) > 1e-12) {
+    const tTop = (top - ay) / dy;
+    pushHit(tTop, ax + tTop * dx, top);
+    const tBottom = (bottom - ay) / dy;
+    pushHit(tBottom, ax + tBottom * dx, bottom);
+  }
+  if (hits.length < 2) {
+    return null;
+  }
+  hits.sort((a2, b2) => a2.t - b2.t);
+  const first = hits[0];
+  const last = hits[hits.length - 1];
+  if (!first || !last) {
+    return null;
+  }
+  return {
+    x1: first.x,
+    y1: first.y,
+    x2: last.x,
+    y2: last.y
+  };
+}
+function outwardEdgeSegments(ax, ay, bx, by, left, top, right, bottom) {
+  const clipped = clipInfiniteLineToRect(ax, ay, bx, by, left, top, right, bottom);
+  if (!clipped) {
+    return [];
+  }
+  const dx = bx - ax;
+  const dy = by - ay;
+  const len2 = dx * dx + dy * dy;
+  if (!(len2 > 1e-16)) {
+    return [];
+  }
+  const tOf = (x2, y2) => ((x2 - ax) * dx + (y2 - ay) * dy) / len2;
+  const pointAt = (t2) => ({
+    x: ax + t2 * dx,
+    y: ay + t2 * dy
+  });
+  const tClipA = tOf(clipped.x1, clipped.y1);
+  const tClipB = tOf(clipped.x2, clipped.y2);
+  const tMin = Math.min(tClipA, tClipB);
+  const tMax = Math.max(tClipA, tClipB);
+  const segments = [];
+  if (tMin < -1e-8) {
+    const endT = Math.min(0, tMax);
+    if (endT - tMin > 1e-8) {
+      const start = pointAt(tMin);
+      const end = pointAt(endT);
+      segments.push({
+        x1: start.x,
+        y1: start.y,
+        x2: end.x,
+        y2: end.y
+      });
+    }
+  }
+  if (tMax > 1 + 1e-8) {
+    const startT = Math.max(1, tMin);
+    if (tMax - startT > 1e-8) {
+      const start = pointAt(startT);
+      const end = pointAt(tMax);
+      segments.push({
+        x1: start.x,
+        y1: start.y,
+        x2: end.x,
+        y2: end.y
+      });
+    }
+  }
+  return segments;
+}
 function keysForDragMode(mode) {
   if (mode === "move") {
     return ["position.x", "position.y"];
   }
   if (mode === "rotate") {
-    return ["rotation"];
+    return ["angle"];
   }
   if (mode === "scaleX") {
     return ["scale.x"];
@@ -47419,7 +47678,7 @@ function restoreSnapshots(snapshots) {
   }
 }
 function attachHighlightTransformDrag(host) {
-  const { overlay, getPaint, resolveNodes } = host;
+  const { overlay, getPaint, resolveNodes, setGuidesDragging } = host;
   const {
     root: root2,
     box,
@@ -47462,6 +47721,7 @@ function attachHighlightTransformDrag(host) {
     if (wasActive) {
       box.style.background = highlightFill();
       outline.setAttribute("stroke", highlightStroke());
+      setGuidesDragging(false);
       highlightTransformGesture.end();
     }
   }
@@ -47514,16 +47774,16 @@ function attachHighlightTransformDrag(host) {
       return;
     }
     const center = localToScreen(base, base.width / 2, base.height / 2);
-    const angle = Math.atan2(clientY - center.y, clientX - center.x);
-    const delta = angle - dragStartAngle;
+    const pointerAngle = Math.atan2(clientY - center.y, clientX - center.x);
+    const deltaDeg = (pointerAngle - dragStartAngle) * (180 / Math.PI);
     for (const entry of dragSnapshots) {
-      const start = entry.values.get("rotation");
+      const start = entry.values.get("angle");
       if (typeof start === "number") {
-        const next = start + delta;
+        const next = start + deltaDeg;
         writeTransformNumber(
           entry.node,
-          "rotation",
-          snap ? snapToStep(next, ROTATION_STEP) : next
+          "angle",
+          snap ? snapToStep(next, ANGLE_STEP) : next
         );
       }
     }
@@ -47690,6 +47950,7 @@ function attachHighlightTransformDrag(host) {
     dragPaint = { ...paint, matrix: { ...paint.matrix } };
     box.style.background = highlightFillDrag();
     outline.setAttribute("stroke", highlightStrokeDrag());
+    setGuidesDragging(true);
     highlightTransformGesture.begin();
     if (mode === "rotate") {
       const center = localToScreen(dragPaint, dragPaint.width / 2, dragPaint.height / 2);
@@ -47756,6 +48017,7 @@ function styleHandle(el, cursor) {
 function applyHighlightPaint(overlay) {
   const fill = highlightFill();
   const stroke = highlightStroke();
+  const guideStroke = highlightGuideStroke();
   overlay.box.style.background = fill;
   overlay.outline.setAttribute("stroke", stroke);
   overlay.rotateStalk.style.background = stroke;
@@ -47764,7 +48026,12 @@ function applyHighlightPaint(overlay) {
   overlay.scaleXHandle.style.border = border;
   overlay.scaleYHandle.style.border = border;
   overlay.uniformHandle.style.border = border;
+  overlay.pivotMark.style.background = fill;
+  overlay.pivotMark.style.border = border;
   overlay.anchorMark.style.border = border;
+  for (const line of overlay.guideLines) {
+    line.setAttribute("stroke", guideStroke);
+  }
 }
 function createOverlayRoot() {
   document.getElementById(OVERLAY_ID)?.remove();
@@ -47809,6 +48076,29 @@ function createOverlayRoot() {
   outline.setAttribute("stroke-width", "1");
   outline.setAttribute("vector-effect", "non-scaling-stroke");
   outlineSvg.appendChild(outline);
+  const guidesSvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  Object.assign(guidesSvg.style, {
+    position: "absolute",
+    left: "0",
+    top: "0",
+    width: "1px",
+    height: "1px",
+    overflow: "visible",
+    pointerEvents: "none",
+    display: "none",
+    zIndex: "0"
+  });
+  const guideLines = [];
+  const guideStroke = highlightGuideStroke();
+  for (let i2 = 0; i2 < 8; i2 += 1) {
+    const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+    line.setAttribute("stroke", guideStroke);
+    line.setAttribute("stroke-width", "1");
+    line.setAttribute("stroke-dasharray", "4 4");
+    line.setAttribute("vector-effect", "non-scaling-stroke");
+    guidesSvg.appendChild(line);
+    guideLines.push(line);
+  }
   const rotateStalk = document.createElement("div");
   Object.assign(rotateStalk.style, {
     position: "absolute",
@@ -47834,8 +48124,7 @@ function createOverlayRoot() {
   const uniformHandle = document.createElement("div");
   styleHandle(uniformHandle, "pointer");
   uniformHandle.style.display = "none";
-  const anchorMark = document.createElement("div");
-  Object.assign(anchorMark.style, {
+  const markStyle = {
     position: "absolute",
     left: "0",
     top: "0",
@@ -47843,25 +48132,39 @@ function createOverlayRoot() {
     height: `${ANCHOR_SIZE}px`,
     boxSizing: "border-box",
     borderRadius: "50%",
-    background: MARK_FILL,
     border: `1px solid ${highlightStroke()}`,
     display: "none",
     willChange: "transform",
     pointerEvents: "none"
+  };
+  const pivotMark = document.createElement("div");
+  Object.assign(pivotMark.style, {
+    ...markStyle,
+    background: highlightFill()
+  });
+  const anchorMark = document.createElement("div");
+  Object.assign(anchorMark.style, {
+    ...markStyle,
+    background: MARK_FILL
   });
   root2.appendChild(box);
   root2.appendChild(outlineSvg);
+  root2.appendChild(guidesSvg);
   root2.appendChild(rotateStalk);
   root2.appendChild(rotateHandle);
   root2.appendChild(scaleXHandle);
   root2.appendChild(scaleYHandle);
   root2.appendChild(uniformHandle);
+  root2.appendChild(pivotMark);
   root2.appendChild(anchorMark);
   document.body.appendChild(root2);
   return {
     root: root2,
     box,
     outline,
+    guideLines,
+    guidesSvg,
+    pivotMark,
     anchorMark,
     rotateStalk,
     rotateHandle,
@@ -47869,6 +48172,58 @@ function createOverlayRoot() {
     scaleYHandle,
     uniformHandle
   };
+}
+function setGuidesVisible(overlay, visible) {
+  overlay.guidesSvg.style.display = visible ? "block" : "none";
+}
+function clearGuideLine(line) {
+  line.setAttribute("x1", "0");
+  line.setAttribute("y1", "0");
+  line.setAttribute("x2", "0");
+  line.setAttribute("y2", "0");
+}
+function layoutGuides(overlay, paint) {
+  const topLeft = localToScreen(paint, 0, 0);
+  const topRight = localToScreen(paint, paint.width, 0);
+  const bottomRight = localToScreen(paint, paint.width, paint.height);
+  const bottomLeft = localToScreen(paint, 0, paint.height);
+  const edges = [
+    { a: topLeft, b: topRight },
+    { a: topRight, b: bottomRight },
+    { a: bottomRight, b: bottomLeft },
+    { a: bottomLeft, b: topLeft }
+  ];
+  let lineIndex = 0;
+  for (const edge of edges) {
+    const segments = outwardEdgeSegments(
+      edge.a.x,
+      edge.a.y,
+      edge.b.x,
+      edge.b.y,
+      paint.rootLeft,
+      paint.rootTop,
+      paint.viewRight,
+      paint.viewBottom
+    );
+    for (const segment2 of segments) {
+      const line = overlay.guideLines[lineIndex];
+      lineIndex += 1;
+      if (!line) {
+        continue;
+      }
+      line.setAttribute("x1", String(segment2.x1 - paint.rootLeft));
+      line.setAttribute("y1", String(segment2.y1 - paint.rootTop));
+      line.setAttribute("x2", String(segment2.x2 - paint.rootLeft));
+      line.setAttribute("y2", String(segment2.y2 - paint.rootTop));
+    }
+  }
+  while (lineIndex < overlay.guideLines.length) {
+    const line = overlay.guideLines[lineIndex];
+    lineIndex += 1;
+    if (line) {
+      clearGuideLine(line);
+    }
+  }
 }
 function setHandlesVisible(overlay, visible) {
   const display = visible ? "block" : "none";
@@ -47899,25 +48254,48 @@ function layoutHandles(overlay, next) {
 }
 function installSelectionHighlight(win = globalThis) {
   const overlay = createOverlayRoot();
-  const { root: root2, box, outline, anchorMark } = overlay;
+  const { root: root2, box, outline, pivotMark, anchorMark } = overlay;
   let frame = 0;
   let running = false;
   let destroyed = false;
   let enabled = readHighlightEnabled();
+  let guidesSettings = readHighlightGuidesAttr() ?? { ...DEFAULT_HIGHLIGHT_GUIDES };
+  let guidesDragging = false;
   let paint = null;
   const unsubscribeColors = subscribeHighlightColors(() => {
     applyHighlightPaint(overlay);
   });
+  function guidesWanted() {
+    return guidesDragging ? guidesSettings.drag : guidesSettings.idle;
+  }
+  function syncGuidesVisibility() {
+    const visible = paint !== null && guidesWanted();
+    setGuidesVisible(overlay, visible);
+    if (visible && paint) {
+      layoutGuides(overlay, paint);
+    }
+  }
+  const unsubscribeGuides = subscribeHighlightGuides((next) => {
+    guidesSettings = next;
+    syncGuidesVisibility();
+  });
   const drag = attachHighlightTransformDrag({
     overlay,
     getPaint: () => paint,
-    resolveNodes: () => resolveLiveSelectionNodes(win)
+    resolveNodes: () => resolveLiveSelectionNodes(win),
+    setGuidesDragging: (dragging) => {
+      guidesDragging = dragging;
+      syncGuidesVisibility();
+    }
   });
   function hide() {
     root2.style.display = "none";
+    pivotMark.style.display = "none";
     anchorMark.style.display = "none";
     paint = null;
+    guidesDragging = false;
     setHandlesVisible(overlay, false);
+    setGuidesVisible(overlay, false);
   }
   function stop() {
     if (!running) {
@@ -47948,10 +48326,13 @@ function installSelectionHighlight(win = globalThis) {
       matrix,
       rootLeft: rect.left,
       rootTop: rect.top,
+      viewRight: rect.right,
+      viewBottom: rect.bottom,
       canvasScaleX: scaleX,
       canvasScaleY: scaleY
     };
     layoutHandles(overlay, paint);
+    syncGuidesVisibility();
   }
   function paintSingle(node, scaleX, scaleY, rect) {
     const matrix = readWorldTransform(node);
@@ -47979,8 +48360,17 @@ function installSelectionHighlight(win = globalThis) {
     const tx = (matrix.a * minX + matrix.c * minY + matrix.tx) * scaleX;
     const ty = (matrix.b * minX + matrix.d * minY + matrix.ty) * scaleY;
     publishPaint(width, height, { a: a2, b: b2, c: c2, d: d2, tx, ty }, rect, scaleX, scaleY);
+    const half = ANCHOR_SIZE / 2;
+    const pivot = readPivot(node);
+    if (pivot) {
+      const pivotX = (matrix.a * pivot.x + matrix.c * pivot.y + matrix.tx) * scaleX - half;
+      const pivotY = (matrix.b * pivot.x + matrix.d * pivot.y + matrix.ty) * scaleY - half;
+      pivotMark.style.display = "block";
+      pivotMark.style.transform = `translate(${pivotX}px, ${pivotY}px)`;
+    } else {
+      pivotMark.style.display = "none";
+    }
     if (hasAnchor(node)) {
-      const half = ANCHOR_SIZE / 2;
       const originX = matrix.tx * scaleX - half;
       const originY = matrix.ty * scaleY - half;
       anchorMark.style.display = "block";
@@ -48038,6 +48428,7 @@ function installSelectionHighlight(win = globalThis) {
       scaleX,
       scaleY
     );
+    pivotMark.style.display = "none";
     anchorMark.style.display = "none";
   }
   function tick() {
@@ -48093,6 +48484,7 @@ function installSelectionHighlight(win = globalThis) {
     destroy: () => {
       destroyed = true;
       unsubscribeColors();
+      unsubscribeGuides();
       drag.cancel();
       stop();
       root2.remove();
@@ -48239,23 +48631,22 @@ function readNumberGetter(target, key, fallback) {
 }
 function installViewportPatches(getSize) {
   const patches = [];
-  const size = () => getSize();
   const readNativeWidth = readNumberGetter(window, "innerWidth", () => window.innerWidth);
   const readNativeHeight = readNumberGetter(
     window,
     "innerHeight",
     () => window.innerHeight
   );
-  const windowH = patchNumberGetter(window, "innerHeight", () => size().height);
-  const windowW = patchNumberGetter(window, "innerWidth", () => size().width);
+  const windowH = patchNumberGetter(window, "innerHeight", () => getSize().height);
+  const windowW = patchNumberGetter(window, "innerWidth", () => getSize().width);
   if (windowH) {
     patches.push(windowH);
   }
   if (windowW) {
     patches.push(windowW);
   }
-  const protoH = patchNumberGetter(Window.prototype, "innerHeight", () => size().height);
-  const protoW = patchNumberGetter(Window.prototype, "innerWidth", () => size().width);
+  const protoH = patchNumberGetter(Window.prototype, "innerHeight", () => getSize().height);
+  const protoW = patchNumberGetter(Window.prototype, "innerWidth", () => getSize().width);
   if (protoH) {
     patches.push(protoH);
   }
@@ -48272,7 +48663,7 @@ function installViewportPatches(getSize) {
       "clientHeight",
       function patchedClientHeight() {
         if (this === document.documentElement) {
-          return size().height;
+          return getSize().height;
         }
         return origClientH.call(this);
       }
@@ -48287,7 +48678,7 @@ function installViewportPatches(getSize) {
       "clientWidth",
       function patchedClientWidth() {
         if (this === document.documentElement) {
-          return size().width;
+          return getSize().width;
         }
         return origClientW.call(this);
       }
@@ -48298,8 +48689,8 @@ function installViewportPatches(getSize) {
   }
   const vv = window.visualViewport;
   if (vv) {
-    const vvH = patchNumberGetter(vv, "height", () => size().height);
-    const vvW = patchNumberGetter(vv, "width", () => size().width);
+    const vvH = patchNumberGetter(vv, "height", () => getSize().height);
+    const vvW = patchNumberGetter(vv, "width", () => getSize().width);
     if (vvH) {
       patches.push(vvH);
     }
@@ -48412,8 +48803,6 @@ function dockPixiSceneInspector(options) {
   const cleanups = [];
   let properties = null;
   const selection = createSelectionChannel();
-  const selectionHighlight = installSelectionHighlight();
-  cleanups.push(() => selectionHighlight.destroy());
   const treePanel = createTreePanel({
     id: TREE_ID,
     resizable,
@@ -48459,6 +48848,8 @@ function dockPixiSceneInspector(options) {
   document.body.appendChild(properties.element);
   cleanups.push(isolateEditableKeyEvents(treePanel.element));
   cleanups.push(isolateEditableKeyEvents(properties.element));
+  const selectionHighlight = installSelectionHighlight();
+  cleanups.push(() => selectionHighlight.destroy());
   const viewportPatches = installViewportPatches(() => ({
     width: Math.max(1, Math.round(shell.getBoundingClientRect().width || nativeW - (properties?.shellRightPx() ?? 0))),
     height: Math.max(1, Math.round(shell.getBoundingClientRect().height || nativeH - treePanel.shellBottomPx()))
@@ -48697,7 +49088,14 @@ function buildSpecialSection(textures) {
   const section = labeledSection("special");
   const particles = new ParticleContainer({
     texture: textures.solid,
-    boundsArea: new Rectangle(0, 0, 72, 41)
+    boundsArea: new Rectangle(0, 0, 72, 41),
+    dynamicProperties: {
+      position: true,
+      rotation: true,
+      vertex: true,
+      uvs: true,
+      color: true
+    }
   });
   particles.label = "Particles";
   particles.position.set(0, 0);
@@ -49933,6 +50331,7 @@ function buildSpritesSection(textures) {
   sprite.width = 32;
   sprite.height = 32;
   sprite.position.set(15, 18);
+  sprite.tint = 4906624;
   sprite.eventMode = "static";
   sprite.cursor = "grab";
   const anim = new AnimatedSprite({
@@ -50017,7 +50416,8 @@ function buildTextSection() {
     }
   });
   rich.label = "RichText";
-  rich.position.set(0, 0);
+  rich.anchor.set(0.5);
+  rich.position.set(rich.width * 0.5, rich.height * 0.5);
   const longNamed = new Text$1({
     text: "long",
     style: { fill: 16764006, fontSize: 18 }
@@ -50115,7 +50515,7 @@ function canvasTexture(color, width = 32, height = 32) {
   return Texture.from(canvasFill(color, width, height));
 }
 function createDemoTextures(app) {
-  const solidGfx = new Graphics().rect(0, 0, 48, 48).fill(4906624);
+  const solidGfx = new Graphics().rect(0, 0, 48, 48).fill(16777215);
   const solid = app.renderer.generateTexture(solidGfx);
   solidGfx.destroy();
   const checkerGfx = new Graphics();
