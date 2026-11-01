@@ -1,14 +1,10 @@
 import { createChromePanel, MODE_BTN_STYLE } from '../shell/chrome-panel';
 import { copyIconSvg, dockRightIconSvg, exportIconSvg, floatIconSvg } from '../shell/panel-icons';
 import { floatRectFromPanelSettings, readPanelSettings } from '../shell/settings';
+import { DEFAULT_FLOAT_HEIGHT, FLOAT_MIN_H, HEADER_H, Z_INDEX } from './constants';
 import { createPropertiesForm } from './form';
 
 import type { SelectionChannel } from '../../selection-channel';
-
-const DEFAULT_FLOAT_HEIGHT = 280;
-const HEADER_H = 32;
-const FLOAT_MIN_H = HEADER_H + 40;
-const Z_INDEX = '2147483647';
 
 export type PropertiesPanel = {
     element: HTMLElement;

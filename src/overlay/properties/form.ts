@@ -15,6 +15,7 @@ import {
 } from './fields';
 import { isTextNumberKey, resolveBooleanMap, resolveNumberMap, resolveStringMap } from './keys';
 import { mapsForNode } from './node';
+import { createSpineSection } from './spine-section';
 import { createPropertiesTabs } from './tabs';
 import { textMapsForNode } from './text';
 import { applyTransformNumber, MULTI_TRANSFORM_KEYS } from './transform-apply';
@@ -416,9 +417,16 @@ export function createPropertiesForm(selection: SelectionChannel): PropertiesFor
         pane.appendChild(ui.root);
     }
 
+    const spineSection = createSpineSection();
+
     for (const section of OBJECT_FORM_SECTIONS)
     {
         buildSection(section, objectPane, builtObject);
+
+        if (section.id === 'identity')
+        {
+            objectPane.appendChild(spineSection.root);
+        }
     }
 
     for (const section of TEXT_FORM_SECTIONS)
@@ -550,6 +558,8 @@ export function createPropertiesForm(selection: SelectionChannel): PropertiesFor
                     section.root.style.display = 'none';
                 }
 
+                spineSection.sync(null);
+
                 return;
             }
 
@@ -599,6 +609,8 @@ export function createPropertiesForm(selection: SelectionChannel): PropertiesFor
                     section.root.style.display = 'none';
                 }
             }
+
+            spineSection.sync(node);
         }
         catch
         {
@@ -610,6 +622,7 @@ export function createPropertiesForm(selection: SelectionChannel): PropertiesFor
             textPane.style.visibility = 'hidden';
 
             tabs.setTextAvailable(false);
+            spineSection.sync(null);
         }
     }
 
@@ -650,6 +663,7 @@ export function createPropertiesForm(selection: SelectionChannel): PropertiesFor
             window.clearInterval(timer);
             unsubscribeSelection();
             tabs.destroy();
+            spineSection.destroy();
 
             for (const section of [...builtObject, ...builtText])
             {

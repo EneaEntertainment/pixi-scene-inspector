@@ -4,6 +4,7 @@ import { buildGraphicsSection } from './graphics';
 import { DEMO_SAFE_HEIGHT, DEMO_SAFE_WIDTH } from './layout';
 import { buildMeshesSection } from './meshes';
 import { buildSpecialSection } from './special';
+import { buildSpineSection } from './spine';
 import { buildSpritesSection } from './sprites';
 import { buildTextSection } from './text';
 
@@ -12,13 +13,13 @@ import type { DemoTextures } from '../textures';
 const PAD_X = 26;
 const PAD_Y = 31;
 const COLS = 3;
-const ROWS = 2;
+const ROWS = 3;
 const COL_GAP = 41;
-const ROW_GAP = 61;
+const ROW_GAP = 40;
 const COL_W = Math.floor((DEMO_SAFE_WIDTH - (PAD_X * 2) - (COL_GAP * (COLS - 1))) / COLS);
 const ROW_H = Math.floor((DEMO_SAFE_HEIGHT - (PAD_Y * 2) - (ROW_GAP * (ROWS - 1))) / ROWS);
 
-export function buildDemoScene(textures: DemoTextures): Container
+export async function buildDemoScene(textures: DemoTextures): Promise<Container>
 {
     const root = new Container();
 
@@ -31,6 +32,8 @@ export function buildDemoScene(textures: DemoTextures): Container
         buildGraphicsSection(),
         buildMeshesSection(textures),
         buildSpecialSection(textures),
+
+        await buildSpineSection(),
     ];
 
     for (let i = 0; i < sections.length; i++)

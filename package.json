@@ -19,6 +19,7 @@
     "demo:build": "vite build --config demo/vite.config.ts"
   },
   "devDependencies": {
+    "@esotericsoftware/spine-pixi-v8": "~4.3.0",
     "@pixi/eslint-config": "^6.0.0",
     "@sveltejs/vite-plugin-svelte": "^6.2.1",
     "esbuild": "^0.25.10",

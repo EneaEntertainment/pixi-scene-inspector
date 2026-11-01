@@ -52,7 +52,7 @@ async function main()
     (globalThis as { __PIXI_APP__?: Application }).__PIXI_APP__ = app;
 
     const textures = createDemoTextures(app);
-    const scene = buildDemoScene(textures);
+    const scene = await buildDemoScene(textures);
 
     app.stage.label = 'stage';
     app.stage.addChild(scene);
