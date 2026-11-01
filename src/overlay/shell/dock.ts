@@ -158,9 +158,6 @@ export function dockPixiSceneInspector(options?: DockPixiSceneInspectorOptions):
     const cleanups: Array<() => void> = [];
     let properties: PropertiesPanel | null = null;
     const selection = createSelectionChannel();
-    const selectionHighlight = installSelectionHighlight();
-
-    cleanups.push(() => selectionHighlight.destroy());
 
     const treePanel = createTreePanel({
         id            : TREE_ID,
@@ -225,6 +222,10 @@ export function dockPixiSceneInspector(options?: DockPixiSceneInspectorOptions):
     document.body.appendChild(properties.element);
     cleanups.push(isolateEditableKeyEvents(treePanel.element));
     cleanups.push(isolateEditableKeyEvents(properties.element));
+
+    const selectionHighlight = installSelectionHighlight();
+
+    cleanups.push(() => selectionHighlight.destroy());
 
     const viewportPatches = installViewportPatches(() => ({
         width  : Math.max(1, Math.round(shell.getBoundingClientRect().width || nativeW - (properties?.shellRightPx() ?? 0))),

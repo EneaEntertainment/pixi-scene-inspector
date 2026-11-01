@@ -1,10 +1,9 @@
 <script lang="ts">
   import {
-    beginTreeDragGesture,
-    endTreeDragGesture,
     type DropTarget,
     resolveDropTarget,
   } from "../drag-drop";
+  import { treeDragGesture } from "../gesture-active";
   import DragGhost from "./drag-ghost.svelte";
   import { displayLabel, fullLabel, labelColor } from "./node-label";
   import TreeNode from "./tree-node.svelte";
@@ -285,7 +284,7 @@
     unbindGestureListeners();
 
     if (hadGesture) {
-      endTreeDragGesture();
+      treeDragGesture.end();
     }
 
     if (!state) {
@@ -319,7 +318,7 @@
     activePointerId = null;
 
     unbindGestureListeners();
-    endTreeDragGesture();
+    treeDragGesture.end();
 
     if (!state.active) {
       setDragging(false);
@@ -598,7 +597,7 @@
       drop: null,
     };
 
-    beginTreeDragGesture();
+    treeDragGesture.begin();
     bindGestureListeners();
   }
 
@@ -648,7 +647,7 @@
       active: false,
     };
 
-    beginTreeDragGesture();
+    treeDragGesture.begin();
     bindGestureListeners();
   }
 

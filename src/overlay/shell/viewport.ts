@@ -60,7 +60,6 @@ export function readNumberGetter(target: object, key: string, fallback: () => nu
 export function installViewportPatches(getSize: () => { width: number; height: number }): ViewportPatches
 {
     const patches: Array<GetterPatch> = [];
-    const size = () => getSize();
 
     const readNativeWidth = readNumberGetter(window, 'innerWidth', () => window.innerWidth);
     const readNativeHeight = readNumberGetter(
@@ -69,8 +68,8 @@ export function installViewportPatches(getSize: () => { width: number; height: n
         () => window.innerHeight,
     );
 
-    const windowH = patchNumberGetter(window, 'innerHeight', () => size().height);
-    const windowW = patchNumberGetter(window, 'innerWidth', () => size().width);
+    const windowH = patchNumberGetter(window, 'innerHeight', () => getSize().height);
+    const windowW = patchNumberGetter(window, 'innerWidth', () => getSize().width);
 
     if (windowH)
     {
@@ -82,8 +81,8 @@ export function installViewportPatches(getSize: () => { width: number; height: n
         patches.push(windowW);
     }
 
-    const protoH = patchNumberGetter(Window.prototype, 'innerHeight', () => size().height);
-    const protoW = patchNumberGetter(Window.prototype, 'innerWidth', () => size().width);
+    const protoH = patchNumberGetter(Window.prototype, 'innerHeight', () => getSize().height);
+    const protoW = patchNumberGetter(Window.prototype, 'innerWidth', () => getSize().width);
 
     if (protoH)
     {
@@ -109,7 +108,7 @@ export function installViewportPatches(getSize: () => { width: number; height: n
             {
                 if (this === document.documentElement)
                 {
-                    return size().height;
+                    return getSize().height;
                 }
 
                 return origClientH.call(this);
@@ -131,7 +130,7 @@ export function installViewportPatches(getSize: () => { width: number; height: n
             {
                 if (this === document.documentElement)
                 {
-                    return size().width;
+                    return getSize().width;
                 }
 
                 return origClientW.call(this);
@@ -148,8 +147,8 @@ export function installViewportPatches(getSize: () => { width: number; height: n
 
     if (vv)
     {
-        const vvH = patchNumberGetter(vv, 'height', () => size().height);
-        const vvW = patchNumberGetter(vv, 'width', () => size().width);
+        const vvH = patchNumberGetter(vv, 'height', () => getSize().height);
+        const vvW = patchNumberGetter(vv, 'width', () => getSize().width);
 
         if (vvH)
         {

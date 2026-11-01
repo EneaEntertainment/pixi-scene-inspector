@@ -1,10 +1,11 @@
 import {
     highlightFill,
+    highlightGuideStroke,
     highlightStroke,
     MARK_FILL,
 } from '../../highlight-colors';
 import { ANCHOR_SIZE, HANDLE_SIZE, OVERLAY_ID, ROTATE_STALK } from './constants';
-import { localToRoot, normalize2 } from './math';
+import { localToRoot, localToScreen, normalize2, outwardEdgeSegments } from './math';
 
 import type { BoxPaint, OverlayRoot } from './types';
 
@@ -34,6 +35,7 @@ export function applyHighlightPaint(overlay: OverlayRoot)
 {
     const fill = highlightFill();
     const stroke = highlightStroke();
+    const guideStroke = highlightGuideStroke();
 
     overlay.box.style.background = fill;
     overlay.outline.setAttribute('stroke', stroke);
@@ -48,6 +50,11 @@ export function applyHighlightPaint(overlay: OverlayRoot)
     overlay.pivotMark.style.background = fill;
     overlay.pivotMark.style.border = border;
     overlay.anchorMark.style.border = border;
+
+    for (const line of overlay.guideLines)
+    {
+        line.setAttribute('stroke', guideStroke);
+    }
 }
 
 export function createOverlayRoot(): OverlayRoot
@@ -103,6 +110,35 @@ export function createOverlayRoot(): OverlayRoot
     outline.setAttribute('stroke-width', '1');
     outline.setAttribute('vector-effect', 'non-scaling-stroke');
     outlineSvg.appendChild(outline);
+
+    const guidesSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+
+    Object.assign(guidesSvg.style, {
+        position      : 'absolute',
+        left          : '0',
+        top           : '0',
+        width         : '1px',
+        height        : '1px',
+        overflow      : 'visible',
+        pointerEvents : 'none',
+        display       : 'none',
+        zIndex        : '0',
+    });
+
+    const guideLines: Array<SVGLineElement> = [];
+    const guideStroke = highlightGuideStroke();
+
+    for (let i = 0; i < 8; i += 1)
+    {
+        const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+
+        line.setAttribute('stroke', guideStroke);
+        line.setAttribute('stroke-width', '1');
+        line.setAttribute('stroke-dasharray', '4 4');
+        line.setAttribute('vector-effect', 'non-scaling-stroke');
+        guidesSvg.appendChild(line);
+        guideLines.push(line);
+    }
 
     const rotateStalk = document.createElement('div');
 
@@ -169,6 +205,7 @@ export function createOverlayRoot(): OverlayRoot
 
     root.appendChild(box);
     root.appendChild(outlineSvg);
+    root.appendChild(guidesSvg);
     root.appendChild(rotateStalk);
     root.appendChild(rotateHandle);
     root.appendChild(scaleXHandle);
@@ -183,6 +220,8 @@ export function createOverlayRoot(): OverlayRoot
         root,
         box,
         outline,
+        guideLines,
+        guidesSvg,
         pivotMark,
         anchorMark,
         rotateStalk,
@@ -191,6 +230,77 @@ export function createOverlayRoot(): OverlayRoot
         scaleYHandle,
         uniformHandle,
     };
+}
+
+export function setGuidesVisible(overlay: OverlayRoot, visible: boolean)
+{
+    overlay.guidesSvg.style.display = visible ? 'block' : 'none';
+}
+
+function clearGuideLine(line: SVGLineElement)
+{
+    line.setAttribute('x1', '0');
+    line.setAttribute('y1', '0');
+    line.setAttribute('x2', '0');
+    line.setAttribute('y2', '0');
+}
+
+export function layoutGuides(overlay: OverlayRoot, paint: BoxPaint)
+{
+    const topLeft = localToScreen(paint, 0, 0);
+    const topRight = localToScreen(paint, paint.width, 0);
+    const bottomRight = localToScreen(paint, paint.width, paint.height);
+    const bottomLeft = localToScreen(paint, 0, paint.height);
+    const edges: Array<{ a: { x: number; y: number }; b: { x: number; y: number } }> = [
+        { a: topLeft, b: topRight },
+        { a: topRight, b: bottomRight },
+        { a: bottomRight, b: bottomLeft },
+        { a: bottomLeft, b: topLeft },
+    ];
+    let lineIndex = 0;
+
+    for (const edge of edges)
+    {
+        const segments = outwardEdgeSegments(
+            edge.a.x,
+            edge.a.y,
+            edge.b.x,
+            edge.b.y,
+            paint.rootLeft,
+            paint.rootTop,
+            paint.viewRight,
+            paint.viewBottom,
+        );
+
+        for (const segment of segments)
+        {
+            const line = overlay.guideLines[lineIndex];
+
+            lineIndex += 1;
+
+            if (!line)
+            {
+                continue;
+            }
+
+            line.setAttribute('x1', String(segment.x1 - paint.rootLeft));
+            line.setAttribute('y1', String(segment.y1 - paint.rootTop));
+            line.setAttribute('x2', String(segment.x2 - paint.rootLeft));
+            line.setAttribute('y2', String(segment.y2 - paint.rootTop));
+        }
+    }
+
+    while (lineIndex < overlay.guideLines.length)
+    {
+        const line = overlay.guideLines[lineIndex];
+
+        lineIndex += 1;
+
+        if (line)
+        {
+            clearGuideLine(line);
+        }
+    }
 }
 
 export function setHandlesVisible(overlay: OverlayRoot, visible: boolean)

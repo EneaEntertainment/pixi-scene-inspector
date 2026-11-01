@@ -1,4 +1,10 @@
 import { subscribeHighlightColors } from '../../highlight-colors';
+import {
+    DEFAULT_HIGHLIGHT_GUIDES,
+    type HighlightGuidesSettings,
+    readHighlightGuidesAttr,
+    subscribeHighlightGuides,
+} from '../../highlight-guides';
 import { resolveLiveSelectionNodes } from '../../page-ops/resolve-selection';
 import { readHighlightEnabled } from '../shell/settings';
 import { ANCHOR_SIZE, EMPTY_SIZE } from './constants';
@@ -12,7 +18,14 @@ import {
     readWorldTransform,
     worldCorners,
 } from './geometry';
-import { applyHighlightPaint, createOverlayRoot, layoutHandles, setHandlesVisible } from './overlay-dom';
+import {
+    applyHighlightPaint,
+    createOverlayRoot,
+    layoutGuides,
+    layoutHandles,
+    setGuidesVisible,
+    setHandlesVisible,
+} from './overlay-dom';
 
 import type { PageGlobals, PixiNode } from '../../page-ops/pixi-node';
 import type { BoxPaint, MatrixLike, SelectionHighlight } from './types';
@@ -28,6 +41,8 @@ export function installSelectionHighlight(
     let running = false;
     let destroyed = false;
     let enabled = readHighlightEnabled();
+    let guidesSettings: HighlightGuidesSettings = readHighlightGuidesAttr() ?? { ...DEFAULT_HIGHLIGHT_GUIDES };
+    let guidesDragging = false;
     let paint: BoxPaint | null = null;
 
     const unsubscribeColors = subscribeHighlightColors(() =>
@@ -35,10 +50,38 @@ export function installSelectionHighlight(
         applyHighlightPaint(overlay);
     });
 
+    function guidesWanted(): boolean
+    {
+        return guidesDragging ? guidesSettings.drag : guidesSettings.idle;
+    }
+
+    function syncGuidesVisibility()
+    {
+        const visible = paint !== null && guidesWanted();
+
+        setGuidesVisible(overlay, visible);
+
+        if (visible && paint)
+        {
+            layoutGuides(overlay, paint);
+        }
+    }
+
+    const unsubscribeGuides = subscribeHighlightGuides((next) =>
+    {
+        guidesSettings = next;
+        syncGuidesVisibility();
+    });
+
     const drag = attachHighlightTransformDrag({
         overlay,
-        getPaint     : () => paint,
-        resolveNodes : () => resolveLiveSelectionNodes(win),
+        getPaint          : () => paint,
+        resolveNodes      : () => resolveLiveSelectionNodes(win),
+        setGuidesDragging : (dragging) =>
+        {
+            guidesDragging = dragging;
+            syncGuidesVisibility();
+        },
     });
 
     function hide()
@@ -47,8 +90,10 @@ export function installSelectionHighlight(
         pivotMark.style.display = 'none';
         anchorMark.style.display = 'none';
         paint = null;
+        guidesDragging = false;
 
         setHandlesVisible(overlay, false);
+        setGuidesVisible(overlay, false);
     }
 
     function stop()
@@ -99,11 +144,14 @@ export function installSelectionHighlight(
             matrix,
             rootLeft     : rect.left,
             rootTop      : rect.top,
+            viewRight    : rect.right,
+            viewBottom   : rect.bottom,
             canvasScaleX : scaleX,
             canvasScaleY : scaleY,
         };
 
         layoutHandles(overlay, paint);
+        syncGuidesVisibility();
     }
 
     function paintSingle(node: PixiNode, scaleX: number, scaleY: number, rect: DOMRect)
@@ -331,6 +379,7 @@ export function installSelectionHighlight(
             destroyed = true;
 
             unsubscribeColors();
+            unsubscribeGuides();
             drag.cancel();
             stop();
             root.remove();

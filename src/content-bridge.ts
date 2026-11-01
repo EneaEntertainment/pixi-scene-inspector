@@ -11,6 +11,12 @@ import {
     HIGHLIGHT_STROKE_STORAGE_KEY,
     publishHighlightColors,
 } from './highlight-colors';
+import {
+    DEFAULT_HIGHLIGHT_GUIDES,
+    HIGHLIGHT_GUIDES_STORAGE_KEY,
+    normalizeHighlightGuides,
+    publishHighlightGuides,
+} from './highlight-guides';
 import { DEFAULT_TOGGLE_HOTKEY, publishHotkeyConfig } from './hotkey';
 import {
     DEFAULT_LIVE_REFRESH_INTERVAL_SEC,
@@ -26,12 +32,14 @@ async function syncFromStorage()
 
         publishHotkeyConfig(settings.toggleHotkey);
         publishHighlightColors(settings.highlightColors);
+        publishHighlightGuides(settings.highlightGuides);
         publishLiveRefreshInterval(settings.liveRefreshInterval);
     }
     catch
     {
         publishHotkeyConfig(DEFAULT_TOGGLE_HOTKEY);
         publishHighlightColors(DEFAULT_HIGHLIGHT_COLORS);
+        publishHighlightGuides(DEFAULT_HIGHLIGHT_GUIDES);
         publishLiveRefreshInterval(DEFAULT_LIVE_REFRESH_INTERVAL_SEC);
     }
 }
@@ -74,5 +82,12 @@ chrome.storage.onChanged.addListener((changes, areaName) =>
     if (liveRefreshChange)
     {
         publishLiveRefreshInterval(resolveLiveRefreshInterval(liveRefreshChange.newValue));
+    }
+
+    const highlightGuidesChange = changes[HIGHLIGHT_GUIDES_STORAGE_KEY];
+
+    if (highlightGuidesChange)
+    {
+        publishHighlightGuides(normalizeHighlightGuides(highlightGuidesChange.newValue));
     }
 });

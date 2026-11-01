@@ -4,28 +4,13 @@ import { exportPropsForSection, PROPERTY_SECTION_IDS } from '../properties/catal
 import { resolveBooleanMap, resolveNumberMap, resolveStringMap } from '../properties/keys';
 
 import type { ExportPropSpec } from '../properties/catalog';
-import type { FieldBooleanKey, FieldNumberKey, FieldStringKey, PropertyMapsPair } from '../properties/keys';
+import type { PropertyMapsPair } from '../properties/keys';
 import type { NumberPropertyKey } from '../properties/node';
 import type { PropertyExportSectionId } from '../shell/settings';
 
 export type ExportPropertyMaps = PropertyMapsPair;
 
 type ExportPropId = string;
-
-function findExportNumber(maps: ExportPropertyMaps, key: FieldNumberKey): { get: () => number | undefined } | undefined
-{
-    return resolveNumberMap(maps, key);
-}
-
-function findExportBoolean(maps: ExportPropertyMaps, key: FieldBooleanKey): { get: () => boolean | undefined } | undefined
-{
-    return resolveBooleanMap(maps, key);
-}
-
-function findExportString(maps: ExportPropertyMaps, key: FieldStringKey): { get: () => string | undefined } | undefined
-{
-    return resolveStringMap(maps, key);
-}
 
 type FillStyleExport = {
     fill: string | Array<string>;
@@ -35,7 +20,7 @@ type FillStyleExport = {
 
 function fillGradientTypeExportValue(maps: ExportPropertyMaps): number | undefined
 {
-    const value = findExportString(maps, 'style.fillGradientType')?.get();
+    const value = resolveStringMap(maps, 'style.fillGradientType')?.get();
 
     if (value === 'horizontal')
     {
@@ -85,19 +70,19 @@ function isExportPropAvailable(maps: ExportPropertyMaps, spec: ExportPropSpec): 
     if (spec.kind === 'point')
     {
         return (
-            !!findExportNumber(maps, spec.xKey)
-            || !!findExportNumber(maps, spec.yKey)
+            !!resolveNumberMap(maps, spec.xKey)
+            || !!resolveNumberMap(maps, spec.yKey)
         );
     }
 
     if (spec.kind === 'number')
     {
-        return !!findExportNumber(maps, spec.key);
+        return !!resolveNumberMap(maps, spec.key);
     }
 
     if (spec.kind === 'boolean')
     {
-        return !!findExportBoolean(maps, spec.key);
+        return !!resolveBooleanMap(maps, spec.key);
     }
 
     if (spec.kind === 'fill')
@@ -105,7 +90,7 @@ function isExportPropAvailable(maps: ExportPropertyMaps, spec: ExportPropSpec): 
         return !!maps.text.fillStops && maps.text.fillStops.key === spec.key;
     }
 
-    return !!findExportString(maps, spec.key);
+    return !!resolveStringMap(maps, spec.key);
 }
 
 export function availableExportPropsForSection(
@@ -123,8 +108,8 @@ function readPoint(
     yKey: NumberPropertyKey,
 ): Record<string, number> | undefined
 {
-    const x = findExportNumber(maps, xKey)?.get();
-    const y = findExportNumber(maps, yKey)?.get();
+    const x = resolveNumberMap(maps, xKey)?.get();
+    const y = resolveNumberMap(maps, yKey)?.get();
 
     if (typeof x !== 'number' && typeof y !== 'number')
     {
@@ -160,7 +145,7 @@ function collectBlendModeExportValue(maps: ExportPropertyMaps): string | number 
         }
     }
 
-    return findExportString(maps, 'blendMode')?.get();
+    return resolveStringMap(maps, 'blendMode')?.get();
 }
 
 function collectPropValue(maps: ExportPropertyMaps, spec: ExportPropSpec): unknown
@@ -172,12 +157,12 @@ function collectPropValue(maps: ExportPropertyMaps, spec: ExportPropSpec): unkno
 
     if (spec.kind === 'number')
     {
-        return findExportNumber(maps, spec.key)?.get();
+        return resolveNumberMap(maps, spec.key)?.get();
     }
 
     if (spec.kind === 'boolean')
     {
-        return findExportBoolean(maps, spec.key)?.get();
+        return resolveBooleanMap(maps, spec.key)?.get();
     }
 
     if (spec.kind === 'fill')
@@ -190,7 +175,7 @@ function collectPropValue(maps: ExportPropertyMaps, spec: ExportPropSpec): unkno
         return collectBlendModeExportValue(maps);
     }
 
-    return findExportString(maps, spec.key)?.get();
+    return resolveStringMap(maps, spec.key)?.get();
 }
 
 function isStyleExportId(id: ExportPropId): boolean

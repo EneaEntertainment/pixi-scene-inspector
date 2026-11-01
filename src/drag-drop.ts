@@ -1,13 +1,8 @@
-import { treeDragGesture } from './gesture-active';
 import { isAncestorId } from './tree-ops';
 
 import type { LaidOutNode } from './types';
 
 const GAP_MIN = 8;
-
-export const beginTreeDragGesture = treeDragGesture.begin;
-export const endTreeDragGesture = treeDragGesture.end;
-export const isTreeDragGestureActive = treeDragGesture.isActive;
 
 type DropVisual =
   | { kind: 'gap'; x: number; y: number; width: number; height: number }
