@@ -1,5 +1,6 @@
 import { KNOWN_NODE_TYPE_NAMES, matchKnownTypeName, NODE_TYPE_INSTANCEOF_ORDER } from '../node-type-config';
 import { ctorName, type PageGlobals, type PixiNode } from './pixi-node';
+import { isSpineLike } from './spine';
 
 const KNOWN = new Set(KNOWN_NODE_TYPE_NAMES);
 
@@ -73,6 +74,7 @@ export function typeNameOf(node: PixiNode | null | undefined, win: PageGlobals =
         typeNameFromPrototype(node)
     || typeNameFromPixiGlobal(node, win)
     || matchKnownTypeName(ctorName(node), KNOWN)
+    || (isSpineLike(node) ? 'Spine' : '')
     || ctorName(node)
     || 'Object'
     );

@@ -1,6 +1,6 @@
 import { createExportButton } from '../export/button';
 
-export function createSection(title: string, initiallyExpanded: boolean, onExportClick: () => void): {
+export function createSection(title: string, initiallyExpanded: boolean, onExportClick?: () => void): {
     root: HTMLElement;
     body: HTMLElement;
     setExpanded: (expanded: boolean) => void;
@@ -78,18 +78,25 @@ export function createSection(title: string, initiallyExpanded: boolean, onExpor
 
     let exportEnabled = true;
 
-    const exportBtn = createExportButton(() =>
+    const exportBtn = onExportClick
+        ? createExportButton(() =>
+        {
+            if (!exportEnabled)
+            {
+                return;
+            }
+
+            onExportClick();
+        })
+        : null;
+
+    function applyExportEnabled()
     {
-        if (!exportEnabled)
+        if (!exportBtn)
         {
             return;
         }
 
-        onExportClick();
-    });
-
-    function applyExportEnabled()
-    {
         exportBtn.disabled = !exportEnabled;
         exportBtn.style.opacity = exportEnabled ? '1' : '0.35';
         exportBtn.style.cursor = exportEnabled ? 'pointer' : 'default';
@@ -97,7 +104,11 @@ export function createSection(title: string, initiallyExpanded: boolean, onExpor
     }
 
     header.appendChild(toggle);
-    header.appendChild(exportBtn);
+
+    if (exportBtn)
+    {
+        header.appendChild(exportBtn);
+    }
 
     const body = document.createElement('div');
 

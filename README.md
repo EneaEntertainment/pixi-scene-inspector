@@ -186,7 +186,7 @@ The demo exposes `globalThis.__PIXI_APP__` and calls `installPixiSceneInspectorH
 
 The canvas is letterboxed to a fixed safe size inside `#game` and rescales on `window` `resize` (including when the docked shell shrinks the viewport).
 
-The live scene exercises core display-object types from `pixi.js` (containers, sprites including `GifSprite`, text variants, graphics, meshes, `ParticleContainer`, `RenderContainer`, `DOMContainer`, `RenderLayer`), plus inspector UX cases (long / empty labels, hidden nodes, nested depth, text fill/stroke/shadow). **Spine** is intentionally omitted for now.
+The live scene exercises core display-object types from `pixi.js` (containers, sprites including `GifSprite`, text variants, graphics, meshes, `ParticleContainer`, `RenderContainer`, `DOMContainer`, `RenderLayer`) and a Spine 4.3 **Spineboy** example (`@esotericsoftware/spine-pixi-v8`), plus inspector UX cases (long / empty labels, hidden nodes, nested depth, text fill/stroke/shadow).
 
 ## Develop
 
@@ -209,3 +209,5 @@ Thanks to [bfanger/pixi-inspector](https://github.com/bfanger/pixi-inspector) fo
 ## License
 
 [MIT](https://opensource.org/licenses/MIT)
+
+Demo Spineboy assets under `demo/public/spineboy/` are © Esoteric Software LLC and are redistributed with their [license.txt](demo/public/spineboy/license.txt) (non-commercial image use; project file public domain). Spine Runtimes require a [Spine Editor license](https://esotericsoftware.com/spine-purchase) to distribute products that integrate them.
