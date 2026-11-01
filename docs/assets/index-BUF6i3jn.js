@@ -1,4 +1,4 @@
-const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/browserAll-82KF-oo8.js","assets/webworkerAll-CzC8gHaD.js","assets/Filter-D5SoFbmr.js","assets/WebGPURenderer-C-z87kkn.js","assets/getTexelRangeRects-BmSCNxn4.js","assets/RenderTargetSystem-DUvpE_L_.js","assets/WebGLRenderer-EX9ybs53.js","assets/CanvasRenderer-BNuagXsV.js"])))=>i.map(i=>d[i]);
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/browserAll-BAh1EW-n.js","assets/webworkerAll-CgA4U4Cl.js","assets/Filter-DPVLVzbz.js","assets/WebGPURenderer-Cfn52Bul.js","assets/getTexelRangeRects-yGbkAcPy.js","assets/RenderTargetSystem-C7IJO3ki.js","assets/WebGLRenderer-DBl1mvxh.js","assets/CanvasRenderer-CvxnJaK2.js"])))=>i.map(i=>d[i]);
 (function polyfill() {
   const relList = document.createElement("link").relList;
   if (relList && relList.supports && relList.supports("modulepreload")) return;
@@ -355,7 +355,7 @@ const browserExt = {
   },
   test: () => true,
   load: async () => {
-    await __vitePreload(() => import("./browserAll-82KF-oo8.js"), true ? __vite__mapDeps([0,1,2]) : void 0);
+    await __vitePreload(() => import("./browserAll-BAh1EW-n.js"), true ? __vite__mapDeps([0,1,2]) : void 0);
   }
 };
 const webworkerExt = {
@@ -366,7 +366,7 @@ const webworkerExt = {
   },
   test: () => typeof self !== "undefined" && self.WorkerGlobalScope !== void 0,
   load: async () => {
-    await __vitePreload(() => import("./webworkerAll-CzC8gHaD.js"), true ? __vite__mapDeps([1,2]) : void 0);
+    await __vitePreload(() => import("./webworkerAll-CgA4U4Cl.js"), true ? __vite__mapDeps([1,2]) : void 0);
   }
 };
 class ObservablePoint {
@@ -13297,7 +13297,7 @@ async function autoDetectRenderer(options) {
     const rendererType = preferredOrder[i2];
     if (rendererType === "webgpu" && await isWebGPUSupported()) {
       const { WebGPURenderer } = await __vitePreload(async () => {
-        const { WebGPURenderer: WebGPURenderer2 } = await import("./WebGPURenderer-C-z87kkn.js");
+        const { WebGPURenderer: WebGPURenderer2 } = await import("./WebGPURenderer-Cfn52Bul.js");
         return { WebGPURenderer: WebGPURenderer2 };
       }, true ? __vite__mapDeps([3,4,5,2]) : void 0);
       RendererClass = WebGPURenderer;
@@ -13307,7 +13307,7 @@ async function autoDetectRenderer(options) {
       options.failIfMajorPerformanceCaveat ?? AbstractRenderer.defaultOptions.failIfMajorPerformanceCaveat
     )) {
       const { WebGLRenderer } = await __vitePreload(async () => {
-        const { WebGLRenderer: WebGLRenderer2 } = await import("./WebGLRenderer-EX9ybs53.js");
+        const { WebGLRenderer: WebGLRenderer2 } = await import("./WebGLRenderer-DBl1mvxh.js");
         return { WebGLRenderer: WebGLRenderer2 };
       }, true ? __vite__mapDeps([6,4,5,2]) : void 0);
       RendererClass = WebGLRenderer;
@@ -13315,7 +13315,7 @@ async function autoDetectRenderer(options) {
       break;
     } else if (rendererType === "canvas") {
       const { CanvasRenderer } = await __vitePreload(async () => {
-        const { CanvasRenderer: CanvasRenderer2 } = await import("./CanvasRenderer-BNuagXsV.js");
+        const { CanvasRenderer: CanvasRenderer2 } = await import("./CanvasRenderer-CvxnJaK2.js");
         return { CanvasRenderer: CanvasRenderer2 };
       }, true ? __vite__mapDeps([7,5,2]) : void 0);
       RendererClass = CanvasRenderer;
@@ -66219,8 +66219,7 @@ async function buildSpineSection() {
     scale: 0.22
   });
   spineboy.label = "Spineboy";
-  spineboy.state.data.defaultMix = 0.2;
-  spineboy.state.setAnimation(0, "run", true);
+  spineboy.state.setAnimation(0, "walk", true);
   spineboy.position.set(70, 150);
   section.addChild(spineboy);
   return section;
