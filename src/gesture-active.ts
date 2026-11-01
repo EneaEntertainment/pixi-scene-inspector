@@ -29,10 +29,12 @@ export function createGestureGate(): GestureGate
 export const numberDragGesture = createGestureGate();
 export const treeDragGesture = createGestureGate();
 export const highlightTransformGesture = createGestureGate();
+export const exportDialogGesture = createGestureGate();
 
 export function isBlockingGestureActive(): boolean
 {
     return numberDragGesture.isActive()
         || treeDragGesture.isActive()
-        || highlightTransformGesture.isActive();
+        || highlightTransformGesture.isActive()
+        || exportDialogGesture.isActive();
 }

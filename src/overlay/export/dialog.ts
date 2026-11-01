@@ -1,4 +1,5 @@
 import { isolateEditableKeyEvents } from '../../editable-keys';
+import { exportDialogGesture } from '../../gesture-active';
 import { exportPropsForSection, PROPERTY_SECTION_IDS, PROPERTY_SECTION_TITLES } from '../properties/catalog';
 import { closeIconSvg } from '../shell/panel-icons';
 import {
@@ -526,7 +527,7 @@ export function openExportDialog(options: ExportDialogOptions): ExportDialog
         }
 
         event.preventDefault();
-        event.stopPropagation();
+        event.stopImmediatePropagation();
         close();
     };
 
@@ -542,6 +543,7 @@ export function openExportDialog(options: ExportDialogOptions): ExportDialog
 
         closed = true;
 
+        exportDialogGesture.end();
         stopEditableKeys?.();
         stopEditableKeys = null;
 
@@ -550,6 +552,7 @@ export function openExportDialog(options: ExportDialogOptions): ExportDialog
         overlay.remove();
     }
 
+    exportDialogGesture.begin();
     overlay.addEventListener('pointerdown', onOverlayPointerDown);
     window.addEventListener('keydown', onKeyDown, true);
     document.body.appendChild(overlay);
