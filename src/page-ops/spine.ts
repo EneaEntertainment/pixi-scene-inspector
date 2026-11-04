@@ -1,6 +1,6 @@
 import type { PixiNode } from './pixi-node';
 
-type SpineAnimationRef = {
+type SpineNamedRef = {
     name?: string;
 };
 
@@ -11,12 +11,26 @@ type SpineTrackEntry = {
     nextTrackLast?: number;
     animationStart?: number;
     animationEnd?: number;
-    animation: SpineAnimationRef | null;
+    animation: SpineNamedRef | null;
     isComplete?: () => boolean;
 };
 
 type SpineAnimationListener = {
     complete?: (entry: SpineTrackEntry) => void;
+};
+
+type SpineSkeletonData = {
+    animations?: Array<SpineNamedRef>;
+    skins?: Array<SpineNamedRef>;
+    findSkin?: (skinName: string) => SpineNamedRef | null;
+};
+
+type SpineSkeleton = {
+    data?: SpineSkeletonData;
+    skin?: SpineNamedRef | null;
+    setSkin?: (skin: SpineNamedRef | null) => void;
+    setSkinByName?: (skinName: string) => void;
+    setupPoseSlots?: () => void;
 };
 
 type SpineAnimationState = {
@@ -27,14 +41,7 @@ type SpineAnimationState = {
     getTrack?: (trackIndex: number) => SpineTrackEntry | null;
     addListener?: (listener: SpineAnimationListener) => void;
     removeListener?: (listener: SpineAnimationListener) => void;
-};
-
-type SpineSkeletonData = {
-    animations?: Array<SpineAnimationRef>;
-};
-
-type SpineSkeleton = {
-    data?: SpineSkeletonData;
+    apply?: (skeleton: SpineSkeleton) => void;
 };
 
 type SpineNode = PixiNode & {
@@ -72,20 +79,18 @@ export function isSpineLike(node: PixiNode): boolean
     return typeof asSpine(node).state?.setAnimation === 'function';
 }
 
-function namesFrom(data: SpineSkeletonData | undefined): Array<string>
+function namesFrom(items: Array<SpineNamedRef> | undefined): Array<string>
 {
-    const animations = data?.animations;
-
-    if (!animations)
+    if (!items)
     {
         return [];
     }
 
     const names: Array<string> = [];
 
-    for (let i = 0; i < animations.length; i++)
+    for (let i = 0; i < items.length; i++)
     {
-        const name = animations[i]?.name;
+        const name = items[i]?.name;
 
         if (typeof name === 'string' && name !== '')
         {
@@ -94,6 +99,21 @@ function namesFrom(data: SpineSkeletonData | undefined): Array<string>
     }
 
     return names;
+}
+
+function namedList(
+    spine: SpineNode,
+    pick: (data: SpineSkeletonData | undefined) => Array<SpineNamedRef> | undefined,
+): Array<string>
+{
+    const fromSkeleton = namesFrom(pick(spine.skeleton?.data));
+
+    if (fromSkeleton.length > 0)
+    {
+        return fromSkeleton;
+    }
+
+    return namesFrom(pick(spine.spineData));
 }
 
 function currentEntry(node: SpineNode): SpineTrackEntry | null
@@ -199,15 +219,75 @@ function ensurePlayback(node: SpineNode): Playback | null
 
 export function spineAnimationNames(node: PixiNode): Array<string>
 {
-    const spine = asSpine(node);
-    const fromSkeleton = namesFrom(spine.skeleton?.data);
+    return namedList(asSpine(node), (data) => data?.animations);
+}
 
-    if (fromSkeleton.length > 0)
+export function spineSkinNames(node: PixiNode): Array<string>
+{
+    return namedList(asSpine(node), (data) => data?.skins);
+}
+
+export function spineCurrentSkinName(node: PixiNode): string | undefined
+{
+    const name = asSpine(node).skeleton?.skin?.name;
+
+    if (typeof name !== 'string' || name === '')
     {
-        return fromSkeleton;
+        return undefined;
     }
 
-    return namesFrom(spine.spineData);
+    return name;
+}
+
+export function spineSetSkin(node: PixiNode, skinName: string): boolean
+{
+    if (skinName === '')
+    {
+        return false;
+    }
+
+    const spine = asSpine(node);
+    const skeleton = spine.skeleton;
+
+    if (!skeleton)
+    {
+        return false;
+    }
+
+    try
+    {
+        if (typeof skeleton.setSkinByName === 'function')
+        {
+            skeleton.setSkinByName(skinName);
+        }
+        else if (typeof skeleton.setSkin === 'function')
+        {
+            const skin = skeleton.data?.findSkin?.(skinName)
+                ?? skeleton.data?.skins?.find((item) => item.name === skinName)
+                ?? null;
+
+            if (!skin)
+            {
+                return false;
+            }
+
+            skeleton.setSkin(skin);
+        }
+        else
+        {
+            return false;
+        }
+
+        skeleton.setupPoseSlots?.();
+        spine.state?.apply?.(skeleton);
+        spine.update?.(0);
+    }
+    catch
+    {
+        return false;
+    }
+
+    return true;
 }
 
 function entryAnimationName(entry: SpineTrackEntry | null): string | undefined

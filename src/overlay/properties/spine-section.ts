@@ -1,12 +1,15 @@
 import {
     spineAnimationNames,
     spineCanResume,
+    spineCurrentSkinName,
     spinePause,
     spinePlay,
     spinePlaybackInfo,
     spineRelease,
     spineResume,
     spineSetLoop,
+    spineSetSkin,
+    spineSkinNames,
     spineStop,
 } from '../../page-ops/spine';
 import { typeNameOf } from '../../page-ops/types';
@@ -20,6 +23,23 @@ export type SpineSection = {
     root: HTMLElement;
     sync: (node: PixiNode | null) => void;
     destroy: () => void;
+};
+
+const SELECT_STYLE: Record<string, string> = {
+    flex         : FIELD_CONTROL_FLEX,
+    minWidth     : '0',
+    height       : '22px',
+    margin       : '0',
+    padding      : '0 4px',
+    border       : '0',
+    borderRadius : '3px',
+    outline      : 'none',
+    background   : '#2a2a2a',
+    color        : '#e5e5e5',
+    font         : 'inherit',
+    fontSize     : '12px',
+    boxSizing    : 'border-box',
+    cursor       : 'pointer',
 };
 
 function iconSvg(body: string): string
@@ -111,26 +131,23 @@ function sameNames(left: Array<string>, right: Array<string>): boolean
 export function createSpineSection(): SpineSection
 {
     const ui = createSection('Animation', true);
+
+    const skinRow = createFieldRoot();
+    const skinLabel = createFieldLabel('skin');
+    const skinSelect = document.createElement('select');
+
+    Object.assign(skinSelect.style, SELECT_STYLE);
+
+    skinRow.style.display = 'none';
+
+    skinSelect.setAttribute('aria-label', 'skin');
+    skinRow.append(skinLabel, skinSelect);
+
     const selectRow = createFieldRoot();
     const label = createFieldLabel('animation');
     const select = document.createElement('select');
 
-    Object.assign(select.style, {
-        flex         : FIELD_CONTROL_FLEX,
-        minWidth     : '0',
-        height       : '22px',
-        margin       : '0',
-        padding      : '0 4px',
-        border       : '0',
-        borderRadius : '3px',
-        outline      : 'none',
-        background   : '#2a2a2a',
-        color        : '#e5e5e5',
-        font         : 'inherit',
-        fontSize     : '12px',
-        boxSizing    : 'border-box',
-        cursor       : 'pointer',
-    });
+    Object.assign(select.style, SELECT_STYLE);
 
     select.setAttribute('aria-label', 'animation');
 
@@ -148,13 +165,15 @@ export function createSpineSection(): SpineSection
 
     controls.append(playBtn, stopBtn, loopBtn);
     selectRow.append(label, select);
-    ui.body.append(selectRow, controls);
+    ui.body.append(skinRow, selectRow, controls);
 
     ui.root.style.display = 'none';
 
     let boundNode: PixiNode | null = null;
     let optionNames: Array<string> = [];
+    let skinOptionNames: Array<string> = [];
     let selected = '';
+    let selectedSkin = '';
     let playing = false;
     let paused = false;
     let loop = false;
@@ -197,26 +216,26 @@ export function createSpineSection(): SpineSection
         renderControls();
     }
 
-    function setOptions(names: Array<string>)
+    function fillSelect(
+        selectEl: HTMLSelectElement,
+        names: Array<string>,
+        current: string,
+        knownNames: Array<string>,
+        assignKnown: (next: Array<string>) => void,
+    )
     {
-        if (!names.includes(selected))
+        if (sameNames(names, knownNames))
         {
-            selected = names[0] ?? '';
-        }
-
-        if (sameNames(names, optionNames))
-        {
-            if (select.value !== selected && document.activeElement !== select)
+            if (selectEl.value !== current && document.activeElement !== selectEl)
             {
-                select.value = selected;
+                selectEl.value = current;
             }
 
             return;
         }
 
-        optionNames = names.slice();
-
-        select.replaceChildren();
+        assignKnown(names.slice());
+        selectEl.replaceChildren();
 
         for (const name of names)
         {
@@ -225,13 +244,55 @@ export function createSpineSection(): SpineSection
             option.value = name;
             option.textContent = name;
 
-            select.appendChild(option);
+            selectEl.appendChild(option);
         }
 
-        if (document.activeElement !== select)
+        if (document.activeElement !== selectEl)
         {
-            select.value = selected;
+            selectEl.value = current;
         }
+    }
+
+    function setOptions(names: Array<string>)
+    {
+        if (!names.includes(selected))
+        {
+            selected = names[0] ?? '';
+        }
+
+        fillSelect(select, names, selected, optionNames, (next) =>
+        {
+            optionNames = next;
+        });
+    }
+
+    function setSkinOptions(names: Array<string>)
+    {
+        const onlyDefault = names.length === 1 && names[0] === 'default';
+
+        if (names.length === 0 || onlyDefault)
+        {
+            selectedSkin = '';
+            skinOptionNames = [];
+
+            skinSelect.replaceChildren();
+
+            skinRow.style.display = 'none';
+
+            return;
+        }
+
+        skinRow.style.display = 'flex';
+
+        if (!names.includes(selectedSkin))
+        {
+            selectedSkin = names[0] ?? '';
+        }
+
+        fillSelect(skinSelect, names, selectedSkin, skinOptionNames, (next) =>
+        {
+            skinOptionNames = next;
+        });
     }
 
     function hide()
@@ -248,7 +309,10 @@ export function createSpineSection(): SpineSection
         loop = false;
         loopSynced = false;
         selected = '';
+        selectedSkin = '';
         optionNames = [];
+        skinOptionNames = [];
+        skinRow.style.display = 'none';
         ui.root.style.display = 'none';
 
         renderControls();
@@ -285,11 +349,13 @@ export function createSpineSection(): SpineSection
             loop = false;
             loopSynced = false;
             selected = '';
+            selectedSkin = '';
         }
 
         const info = spinePlaybackInfo(node);
-
+        const skinNames = spineSkinNames(node);
         const editingAnimation = document.activeElement === select;
+        const editingSkin = document.activeElement === skinSelect;
 
         if (!editingAnimation)
         {
@@ -300,6 +366,20 @@ export function createSpineSection(): SpineSection
             else if (!names.includes(selected))
             {
                 selected = names[0] ?? '';
+            }
+        }
+
+        if (!editingSkin)
+        {
+            const currentSkin = spineCurrentSkinName(node);
+
+            if (currentSkin && skinNames.includes(currentSkin))
+            {
+                selectedSkin = currentSkin;
+            }
+            else if (!skinNames.includes(selectedSkin))
+            {
+                selectedSkin = skinNames[0] ?? '';
             }
         }
 
@@ -314,9 +394,22 @@ export function createSpineSection(): SpineSection
 
         ui.root.style.display = 'block';
 
+        setSkinOptions(skinNames);
         setOptions(names);
         renderControls();
     }
+
+    skinSelect.addEventListener('change', () =>
+    {
+        selectedSkin = skinSelect.value;
+
+        if (boundNode)
+        {
+            spineSetSkin(boundNode, selectedSkin);
+        }
+
+        skinSelect.blur();
+    });
 
     select.addEventListener('change', () =>
     {

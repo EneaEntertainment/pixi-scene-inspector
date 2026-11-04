@@ -1,4 +1,4 @@
-const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/browserAll-C57zJ0Xj.js","assets/webworkerAll-CDEwF4RM.js","assets/Filter-utCcVwpt.js","assets/WebGPURenderer-B_O6uHhO.js","assets/getTexelRangeRects-Dr5KS7Sc.js","assets/RenderTargetSystem-DAwqQwc9.js","assets/WebGLRenderer-DY_r24ja.js","assets/CanvasRenderer-BzgTVfNR.js"])))=>i.map(i=>d[i]);
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/browserAll-Cja1rqpP.js","assets/webworkerAll-NabDlz6i.js","assets/Filter-DRs4HzYX.js","assets/WebGPURenderer-Be1Hoefx.js","assets/getTexelRangeRects-GE4Z0FQ-.js","assets/RenderTargetSystem-BbRmsZ5N.js","assets/WebGLRenderer-C7aECCr3.js","assets/CanvasRenderer-CNRw6AJL.js"])))=>i.map(i=>d[i]);
 (function polyfill() {
   const relList = document.createElement("link").relList;
   if (relList && relList.supports && relList.supports("modulepreload")) return;
@@ -355,7 +355,7 @@ const browserExt = {
   },
   test: () => true,
   load: async () => {
-    await __vitePreload(() => import("./browserAll-C57zJ0Xj.js"), true ? __vite__mapDeps([0,1,2]) : void 0);
+    await __vitePreload(() => import("./browserAll-Cja1rqpP.js"), true ? __vite__mapDeps([0,1,2]) : void 0);
   }
 };
 const webworkerExt = {
@@ -366,7 +366,7 @@ const webworkerExt = {
   },
   test: () => typeof self !== "undefined" && self.WorkerGlobalScope !== void 0,
   load: async () => {
-    await __vitePreload(() => import("./webworkerAll-CDEwF4RM.js"), true ? __vite__mapDeps([1,2]) : void 0);
+    await __vitePreload(() => import("./webworkerAll-NabDlz6i.js"), true ? __vite__mapDeps([1,2]) : void 0);
   }
 };
 class ObservablePoint {
@@ -13297,7 +13297,7 @@ async function autoDetectRenderer(options) {
     const rendererType = preferredOrder[i2];
     if (rendererType === "webgpu" && await isWebGPUSupported()) {
       const { WebGPURenderer } = await __vitePreload(async () => {
-        const { WebGPURenderer: WebGPURenderer2 } = await import("./WebGPURenderer-B_O6uHhO.js");
+        const { WebGPURenderer: WebGPURenderer2 } = await import("./WebGPURenderer-Be1Hoefx.js");
         return { WebGPURenderer: WebGPURenderer2 };
       }, true ? __vite__mapDeps([3,4,5,2]) : void 0);
       RendererClass = WebGPURenderer;
@@ -13307,7 +13307,7 @@ async function autoDetectRenderer(options) {
       options.failIfMajorPerformanceCaveat ?? AbstractRenderer.defaultOptions.failIfMajorPerformanceCaveat
     )) {
       const { WebGLRenderer } = await __vitePreload(async () => {
-        const { WebGLRenderer: WebGLRenderer2 } = await import("./WebGLRenderer-DY_r24ja.js");
+        const { WebGLRenderer: WebGLRenderer2 } = await import("./WebGLRenderer-C7aECCr3.js");
         return { WebGLRenderer: WebGLRenderer2 };
       }, true ? __vite__mapDeps([6,4,5,2]) : void 0);
       RendererClass = WebGLRenderer;
@@ -13315,7 +13315,7 @@ async function autoDetectRenderer(options) {
       break;
     } else if (rendererType === "canvas") {
       const { CanvasRenderer } = await __vitePreload(async () => {
-        const { CanvasRenderer: CanvasRenderer2 } = await import("./CanvasRenderer-BzgTVfNR.js");
+        const { CanvasRenderer: CanvasRenderer2 } = await import("./CanvasRenderer-CNRw6AJL.js");
         return { CanvasRenderer: CanvasRenderer2 };
       }, true ? __vite__mapDeps([7,5,2]) : void 0);
       RendererClass = CanvasRenderer;
@@ -40961,19 +40961,25 @@ function asSpine(node) {
 function isSpineLike(node) {
   return typeof asSpine(node).state?.setAnimation === "function";
 }
-function namesFrom(data) {
-  const animations = data?.animations;
-  if (!animations) {
+function namesFrom(items) {
+  if (!items) {
     return [];
   }
   const names = [];
-  for (let i2 = 0; i2 < animations.length; i2++) {
-    const name = animations[i2]?.name;
+  for (let i2 = 0; i2 < items.length; i2++) {
+    const name = items[i2]?.name;
     if (typeof name === "string" && name !== "") {
       names.push(name);
     }
   }
   return names;
+}
+function namedList(spine, pick) {
+  const fromSkeleton = namesFrom(pick(spine.skeleton?.data));
+  if (fromSkeleton.length > 0) {
+    return fromSkeleton;
+  }
+  return namesFrom(pick(spine.spineData));
 }
 function currentEntry(node) {
   const state2 = node.state;
@@ -41034,12 +41040,46 @@ function ensurePlayback(node) {
   return playback;
 }
 function spineAnimationNames(node) {
-  const spine = asSpine(node);
-  const fromSkeleton = namesFrom(spine.skeleton?.data);
-  if (fromSkeleton.length > 0) {
-    return fromSkeleton;
+  return namedList(asSpine(node), (data) => data?.animations);
+}
+function spineSkinNames(node) {
+  return namedList(asSpine(node), (data) => data?.skins);
+}
+function spineCurrentSkinName(node) {
+  const name = asSpine(node).skeleton?.skin?.name;
+  if (typeof name !== "string" || name === "") {
+    return void 0;
   }
-  return namesFrom(spine.spineData);
+  return name;
+}
+function spineSetSkin(node, skinName) {
+  if (skinName === "") {
+    return false;
+  }
+  const spine = asSpine(node);
+  const skeleton = spine.skeleton;
+  if (!skeleton) {
+    return false;
+  }
+  try {
+    if (typeof skeleton.setSkinByName === "function") {
+      skeleton.setSkinByName(skinName);
+    } else if (typeof skeleton.setSkin === "function") {
+      const skin = skeleton.data?.findSkin?.(skinName) ?? skeleton.data?.skins?.find((item) => item.name === skinName) ?? null;
+      if (!skin) {
+        return false;
+      }
+      skeleton.setSkin(skin);
+    } else {
+      return false;
+    }
+    skeleton.setupPoseSlots?.();
+    spine.state?.apply?.(skeleton);
+    spine.update?.(0);
+  } catch {
+    return false;
+  }
+  return true;
 }
 function entryAnimationName(entry) {
   const name = entry?.animation?.name;
@@ -48773,6 +48813,22 @@ function createTextField(spec, onCommit) {
     }
   };
 }
+const SELECT_STYLE = {
+  flex: FIELD_CONTROL_FLEX,
+  minWidth: "0",
+  height: "22px",
+  margin: "0",
+  padding: "0 4px",
+  border: "0",
+  borderRadius: "3px",
+  outline: "none",
+  background: "#2a2a2a",
+  color: "#e5e5e5",
+  font: "inherit",
+  fontSize: "12px",
+  boxSizing: "border-box",
+  cursor: "pointer"
+};
 function iconSvg(body) {
   return `<svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true">${body}</svg>`;
 }
@@ -48833,25 +48889,17 @@ function sameNames(left, right) {
 }
 function createSpineSection() {
   const ui = createSection("Animation", true);
+  const skinRow = createFieldRoot();
+  const skinLabel = createFieldLabel("skin");
+  const skinSelect = document.createElement("select");
+  Object.assign(skinSelect.style, SELECT_STYLE);
+  skinRow.style.display = "none";
+  skinSelect.setAttribute("aria-label", "skin");
+  skinRow.append(skinLabel, skinSelect);
   const selectRow = createFieldRoot();
   const label = createFieldLabel("animation");
   const select = document.createElement("select");
-  Object.assign(select.style, {
-    flex: FIELD_CONTROL_FLEX,
-    minWidth: "0",
-    height: "22px",
-    margin: "0",
-    padding: "0 4px",
-    border: "0",
-    borderRadius: "3px",
-    outline: "none",
-    background: "#2a2a2a",
-    color: "#e5e5e5",
-    font: "inherit",
-    fontSize: "12px",
-    boxSizing: "border-box",
-    cursor: "pointer"
-  });
+  Object.assign(select.style, SELECT_STYLE);
   select.setAttribute("aria-label", "animation");
   const controls = document.createElement("div");
   Object.assign(controls.style, {
@@ -48864,11 +48912,13 @@ function createSpineSection() {
   const loopBtn = createIconButton("Loop animation", loopIcon());
   controls.append(playBtn, stopBtn, loopBtn);
   selectRow.append(label, select);
-  ui.body.append(selectRow, controls);
+  ui.body.append(skinRow, selectRow, controls);
   ui.root.style.display = "none";
   let boundNode = null;
   let optionNames = [];
+  let skinOptionNames = [];
   let selected = "";
+  let selectedSkin = "";
   let playing = false;
   let paused = false;
   let loop = false;
@@ -48897,27 +48947,49 @@ function createSpineSection() {
     paused = false;
     renderControls();
   }
-  function setOptions(names) {
-    if (!names.includes(selected)) {
-      selected = names[0] ?? "";
-    }
-    if (sameNames(names, optionNames)) {
-      if (select.value !== selected && document.activeElement !== select) {
-        select.value = selected;
+  function fillSelect(selectEl, names, current2, knownNames, assignKnown) {
+    if (sameNames(names, knownNames)) {
+      if (selectEl.value !== current2 && document.activeElement !== selectEl) {
+        selectEl.value = current2;
       }
       return;
     }
-    optionNames = names.slice();
-    select.replaceChildren();
+    assignKnown(names.slice());
+    selectEl.replaceChildren();
     for (const name of names) {
       const option = document.createElement("option");
       option.value = name;
       option.textContent = name;
-      select.appendChild(option);
+      selectEl.appendChild(option);
     }
-    if (document.activeElement !== select) {
-      select.value = selected;
+    if (document.activeElement !== selectEl) {
+      selectEl.value = current2;
     }
+  }
+  function setOptions(names) {
+    if (!names.includes(selected)) {
+      selected = names[0] ?? "";
+    }
+    fillSelect(select, names, selected, optionNames, (next) => {
+      optionNames = next;
+    });
+  }
+  function setSkinOptions(names) {
+    const onlyDefault = names.length === 1 && names[0] === "default";
+    if (names.length === 0 || onlyDefault) {
+      selectedSkin = "";
+      skinOptionNames = [];
+      skinSelect.replaceChildren();
+      skinRow.style.display = "none";
+      return;
+    }
+    skinRow.style.display = "flex";
+    if (!names.includes(selectedSkin)) {
+      selectedSkin = names[0] ?? "";
+    }
+    fillSelect(skinSelect, names, selectedSkin, skinOptionNames, (next) => {
+      skinOptionNames = next;
+    });
   }
   function hide() {
     if (boundNode) {
@@ -48929,7 +49001,10 @@ function createSpineSection() {
     loop = false;
     loopSynced = false;
     selected = "";
+    selectedSkin = "";
     optionNames = [];
+    skinOptionNames = [];
+    skinRow.style.display = "none";
     ui.root.style.display = "none";
     renderControls();
   }
@@ -48953,14 +49028,25 @@ function createSpineSection() {
       loop = false;
       loopSynced = false;
       selected = "";
+      selectedSkin = "";
     }
     const info = spinePlaybackInfo(node);
+    const skinNames = spineSkinNames(node);
     const editingAnimation = document.activeElement === select;
+    const editingSkin = document.activeElement === skinSelect;
     if (!editingAnimation) {
       if (info.animationName && names.includes(info.animationName)) {
         selected = info.animationName;
       } else if (!names.includes(selected)) {
         selected = names[0] ?? "";
+      }
+    }
+    if (!editingSkin) {
+      const currentSkin = spineCurrentSkinName(node);
+      if (currentSkin && skinNames.includes(currentSkin)) {
+        selectedSkin = currentSkin;
+      } else if (!skinNames.includes(selectedSkin)) {
+        selectedSkin = skinNames[0] ?? "";
       }
     }
     playing = info.playing;
@@ -48970,9 +49056,17 @@ function createSpineSection() {
       loopSynced = true;
     }
     ui.root.style.display = "block";
+    setSkinOptions(skinNames);
     setOptions(names);
     renderControls();
   }
+  skinSelect.addEventListener("change", () => {
+    selectedSkin = skinSelect.value;
+    if (boundNode) {
+      spineSetSkin(boundNode, selectedSkin);
+    }
+    skinSelect.blur();
+  });
   select.addEventListener("change", () => {
     selected = select.value;
     playSelected();
