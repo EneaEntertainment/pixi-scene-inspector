@@ -2,6 +2,8 @@
 
 [Live demo](https://eneaentertainment.github.io/pixi-scene-inspector/)
 
+[![Chrome Web Store](https://img.shields.io/chrome-web-store/v/ofhbddhfahkompjbgnodecgiikbnhdgi?logo=googlechrome&label=Chrome%20Web%20Store)](https://chromewebstore.google.com/detail/pixi-scene-inspector/ofhbddhfahkompjbgnodecgiikbnhdgi)
+
 Chrome extension (and optional in-page overlay) that detects a PixiJS app and visualizes its **scene tree**. Nodes are colored by display-object type; custom labels and invisible nodes are shown distinctly. The docked overlay also opens a **properties** inspector for the selected node.
 
 ## Setup
