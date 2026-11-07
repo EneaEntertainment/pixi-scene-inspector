@@ -180,7 +180,7 @@ export function isTreeChanged(prev: TreeNodeData, next: TreeNodeData): boolean
     return false;
 }
 
-const TREE_UID_CONTINUITY_THRESHOLD = 0.25;
+const TREE_UID_CONTINUITY_THRESHOLD = 0.1;
 
 export function isTreeRewrite(
     prev: TreeNodeData,
