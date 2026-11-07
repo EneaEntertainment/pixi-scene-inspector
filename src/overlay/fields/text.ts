@@ -1,3 +1,4 @@
+import { decodeTextFieldValue, encodeTextFieldValue } from '../text/field-value';
 import { createFieldLabel, createFieldRoot, FIELD_CONTROL_FLEX } from './chrome';
 
 import type { FieldStringKey } from '../properties/keys';
@@ -8,6 +9,7 @@ export function createTextField(spec: TextFieldSpec, onCommit: (key: FieldString
     const root = createFieldRoot();
     const label = createFieldLabel(spec.label);
     const input = document.createElement('input');
+    const escapeBreaks = spec.key === 'text';
 
     input.type = 'text';
     input.spellcheck = false;
@@ -34,6 +36,16 @@ export function createTextField(spec: TextFieldSpec, onCommit: (key: FieldString
     let current = '';
     let focused = false;
 
+    function toDisplay(value: string): string
+    {
+        return escapeBreaks ? encodeTextFieldValue(value) : value;
+    }
+
+    function fromDisplay(value: string): string
+    {
+        return escapeBreaks ? decodeTextFieldValue(value) : value;
+    }
+
     function syncChrome()
     {
         input.style.background = focused ? '#222' : '#545454';
@@ -44,7 +56,7 @@ export function createTextField(spec: TextFieldSpec, onCommit: (key: FieldString
         current = next;
         input.value = next;
 
-        onCommit(spec.key, next);
+        onCommit(spec.key, fromDisplay(next));
     }
 
     input.addEventListener('focus', () =>
@@ -93,7 +105,7 @@ export function createTextField(spec: TextFieldSpec, onCommit: (key: FieldString
                 return;
             }
 
-            const next = typeof value === 'string' ? value : '';
+            const next = toDisplay(typeof value === 'string' ? value : '');
 
             current = next;
             input.value = next;
