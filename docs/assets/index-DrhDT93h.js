@@ -1,4 +1,4 @@
-const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/browserAll-Cja1rqpP.js","assets/webworkerAll-NabDlz6i.js","assets/Filter-DRs4HzYX.js","assets/WebGPURenderer-Be1Hoefx.js","assets/getTexelRangeRects-GE4Z0FQ-.js","assets/RenderTargetSystem-BbRmsZ5N.js","assets/WebGLRenderer-C7aECCr3.js","assets/CanvasRenderer-CNRw6AJL.js"])))=>i.map(i=>d[i]);
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/browserAll-D0z-VTpS.js","assets/webworkerAll-0Yb4dpuc.js","assets/Filter-jTN0nOzj.js","assets/WebGPURenderer-OqK8K_Y0.js","assets/getTexelRangeRects-BAEjafbO.js","assets/RenderTargetSystem-B2mLpGNx.js","assets/WebGLRenderer-B-VzzCqo.js","assets/CanvasRenderer-CFPi8Gns.js"])))=>i.map(i=>d[i]);
 (function polyfill() {
   const relList = document.createElement("link").relList;
   if (relList && relList.supports && relList.supports("modulepreload")) return;
@@ -355,7 +355,7 @@ const browserExt = {
   },
   test: () => true,
   load: async () => {
-    await __vitePreload(() => import("./browserAll-Cja1rqpP.js"), true ? __vite__mapDeps([0,1,2]) : void 0);
+    await __vitePreload(() => import("./browserAll-D0z-VTpS.js"), true ? __vite__mapDeps([0,1,2]) : void 0);
   }
 };
 const webworkerExt = {
@@ -366,7 +366,7 @@ const webworkerExt = {
   },
   test: () => typeof self !== "undefined" && self.WorkerGlobalScope !== void 0,
   load: async () => {
-    await __vitePreload(() => import("./webworkerAll-NabDlz6i.js"), true ? __vite__mapDeps([1,2]) : void 0);
+    await __vitePreload(() => import("./webworkerAll-0Yb4dpuc.js"), true ? __vite__mapDeps([1,2]) : void 0);
   }
 };
 class ObservablePoint {
@@ -13297,7 +13297,7 @@ async function autoDetectRenderer(options) {
     const rendererType = preferredOrder[i2];
     if (rendererType === "webgpu" && await isWebGPUSupported()) {
       const { WebGPURenderer } = await __vitePreload(async () => {
-        const { WebGPURenderer: WebGPURenderer2 } = await import("./WebGPURenderer-Be1Hoefx.js");
+        const { WebGPURenderer: WebGPURenderer2 } = await import("./WebGPURenderer-OqK8K_Y0.js");
         return { WebGPURenderer: WebGPURenderer2 };
       }, true ? __vite__mapDeps([3,4,5,2]) : void 0);
       RendererClass = WebGPURenderer;
@@ -13307,7 +13307,7 @@ async function autoDetectRenderer(options) {
       options.failIfMajorPerformanceCaveat ?? AbstractRenderer.defaultOptions.failIfMajorPerformanceCaveat
     )) {
       const { WebGLRenderer } = await __vitePreload(async () => {
-        const { WebGLRenderer: WebGLRenderer2 } = await import("./WebGLRenderer-C7aECCr3.js");
+        const { WebGLRenderer: WebGLRenderer2 } = await import("./WebGLRenderer-B-VzzCqo.js");
         return { WebGLRenderer: WebGLRenderer2 };
       }, true ? __vite__mapDeps([6,4,5,2]) : void 0);
       RendererClass = WebGLRenderer;
@@ -13315,7 +13315,7 @@ async function autoDetectRenderer(options) {
       break;
     } else if (rendererType === "canvas") {
       const { CanvasRenderer } = await __vitePreload(async () => {
-        const { CanvasRenderer: CanvasRenderer2 } = await import("./CanvasRenderer-CNRw6AJL.js");
+        const { CanvasRenderer: CanvasRenderer2 } = await import("./CanvasRenderer-CFPi8Gns.js");
         return { CanvasRenderer: CanvasRenderer2 };
       }, true ? __vite__mapDeps([7,5,2]) : void 0);
       RendererClass = CanvasRenderer;
@@ -40636,7 +40636,7 @@ function isTreeChanged(prev, next) {
   }
   return false;
 }
-const TREE_UID_CONTINUITY_THRESHOLD = 0.25;
+const TREE_UID_CONTINUITY_THRESHOLD = 0.1;
 function isTreeRewrite(prev, next, threshold = TREE_UID_CONTINUITY_THRESHOLD) {
   const prevUids = collectTreeUids(prev);
   if (prevUids.size === 0) {
@@ -41779,7 +41779,9 @@ function collapseOneLevel(root2, nodeId, expandedIds) {
   }
   return true;
 }
-var root$5 = /* @__PURE__ */ from_html(`<div class="help svelte-3l8mbz"><div class="help-head svelte-3l8mbz"><h2 class="help-title svelte-3l8mbz">Keyboard shortcuts</h2> <button type="button" class="btn svelte-3l8mbz">Close</button></div> <dl class="help-list svelte-3l8mbz"><div class="help-row svelte-3l8mbz"><dt class="svelte-3l8mbz"><kbd class="svelte-3l8mbz">Click</kbd></dt> <dd class="svelte-3l8mbz">Select node</dd></div> <div class="help-row svelte-3l8mbz"><dt class="svelte-3l8mbz"><kbd class="svelte-3l8mbz">⇧/Shift</kbd> or <kbd class="svelte-3l8mbz">⌘/Ctrl</kbd>+click</dt> <dd class="svelte-3l8mbz">Multi-select</dd></div> <div class="help-row svelte-3l8mbz"><dt class="svelte-3l8mbz"><kbd class="svelte-3l8mbz">Click</kbd> again or <kbd class="svelte-3l8mbz">+</kbd> / <kbd class="svelte-3l8mbz">=</kbd></dt> <dd class="svelte-3l8mbz">Expand one level</dd></div> <div class="help-row svelte-3l8mbz"><dt class="svelte-3l8mbz"><kbd class="svelte-3l8mbz">⌥/Alt</kbd>+click or <kbd class="svelte-3l8mbz">-</kbd> / <kbd class="svelte-3l8mbz">_</kbd></dt> <dd class="svelte-3l8mbz">Collapse one level</dd></div> <div class="help-row svelte-3l8mbz"><dt class="svelte-3l8mbz"><kbd class="svelte-3l8mbz">←</kbd> <kbd class="svelte-3l8mbz">→</kbd></dt> <dd class="svelte-3l8mbz">Move among siblings (from primary; replaces a multi-selection)</dd></div> <div class="help-row svelte-3l8mbz"><dt class="svelte-3l8mbz"><kbd class="svelte-3l8mbz">↑</kbd> <kbd class="svelte-3l8mbz">↓</kbd></dt> <dd class="svelte-3l8mbz">Parent / first child (↓ expands; replaces a multi-selection)</dd></div> <div class="help-row svelte-3l8mbz"><dt class="svelte-3l8mbz"><kbd class="svelte-3l8mbz">⌥/Alt</kbd>+arrows</dt> <dd class="svelte-3l8mbz">First/last sibling · root / deepest first child</dd></div> <div class="help-row svelte-3l8mbz"><dt class="svelte-3l8mbz"><kbd class="svelte-3l8mbz">I</kbd></dt> <dd class="svelte-3l8mbz">Isolate selected subtree (enter needs one node; press again to
+var root$5 = /* @__PURE__ */ from_html(`<div class="help svelte-3l8mbz"><div class="help-head svelte-3l8mbz"><h2 class="help-title svelte-3l8mbz">Keyboard shortcuts</h2> <button type="button" class="btn svelte-3l8mbz">Close</button></div> <dl class="help-list svelte-3l8mbz"><div class="help-row svelte-3l8mbz"><dt class="svelte-3l8mbz"><kbd class="svelte-3l8mbz">Click</kbd></dt> <dd class="svelte-3l8mbz">Select node</dd></div> <div class="help-row svelte-3l8mbz"><dt class="svelte-3l8mbz"><kbd class="svelte-3l8mbz">⇧/Shift</kbd> or <kbd class="svelte-3l8mbz">⌘/Ctrl</kbd>+click</dt> <dd class="svelte-3l8mbz">Multi-select</dd></div> <div class="help-row svelte-3l8mbz"><dt class="svelte-3l8mbz"><kbd class="svelte-3l8mbz">Click</kbd> again or <kbd class="svelte-3l8mbz">+</kbd> / <kbd class="svelte-3l8mbz">=</kbd></dt> <dd class="svelte-3l8mbz">Expand one level</dd></div> <div class="help-row svelte-3l8mbz"><dt class="svelte-3l8mbz"><kbd class="svelte-3l8mbz">⌥/Alt</kbd>+click or <kbd class="svelte-3l8mbz">-</kbd> / <kbd class="svelte-3l8mbz">_</kbd></dt> <dd class="svelte-3l8mbz">Collapse one level</dd></div> <div class="help-row svelte-3l8mbz"><dt class="svelte-3l8mbz"><kbd class="svelte-3l8mbz">⌘</kbd>+<kbd class="svelte-3l8mbz">⌥</kbd> / <kbd class="svelte-3l8mbz">Ctrl</kbd>+<kbd class="svelte-3l8mbz">Alt</kbd>+click on
+        canvas</dt> <dd class="svelte-3l8mbz">Select node under cursor; click again without moving to cycle
+        overlapping nodes</dd></div> <div class="help-row svelte-3l8mbz"><dt class="svelte-3l8mbz"><kbd class="svelte-3l8mbz">←</kbd> <kbd class="svelte-3l8mbz">→</kbd></dt> <dd class="svelte-3l8mbz">Move among siblings (from primary; replaces a multi-selection)</dd></div> <div class="help-row svelte-3l8mbz"><dt class="svelte-3l8mbz"><kbd class="svelte-3l8mbz">↑</kbd> <kbd class="svelte-3l8mbz">↓</kbd></dt> <dd class="svelte-3l8mbz">Parent / first child (↓ expands; replaces a multi-selection)</dd></div> <div class="help-row svelte-3l8mbz"><dt class="svelte-3l8mbz"><kbd class="svelte-3l8mbz">⌥/Alt</kbd>+arrows</dt> <dd class="svelte-3l8mbz">First/last sibling · root / deepest first child</dd></div> <div class="help-row svelte-3l8mbz"><dt class="svelte-3l8mbz"><kbd class="svelte-3l8mbz">I</kbd></dt> <dd class="svelte-3l8mbz">Isolate selected subtree (enter needs one node; press again to
         exit)</dd></div> <div class="help-row svelte-3l8mbz"><dt class="svelte-3l8mbz"><kbd class="svelte-3l8mbz">H</kbd></dt> <dd class="svelte-3l8mbz">Toggle visible on every selected node (not Camera3D / Scene3D)</dd></div> <div class="help-row svelte-3l8mbz"><dt class="svelte-3l8mbz">Drag</dt> <dd class="svelte-3l8mbz">Reparent selected node(s)</dd></div> <div class="help-row svelte-3l8mbz"><dt class="svelte-3l8mbz"><kbd class="svelte-3l8mbz">⌥/Alt</kbd> + number scrub / arrows</dt> <dd class="svelte-3l8mbz">Snap value to nearest step</dd></div> <div class="help-row svelte-3l8mbz"><dt class="svelte-3l8mbz"><kbd class="svelte-3l8mbz">Esc</kbd></dt> <dd class="svelte-3l8mbz">Clear selection / cancel drag and restore value / cancel node drag /
         close this help</dd></div> <div class="help-row svelte-3l8mbz"><dt class="svelte-3l8mbz"><kbd class="svelte-3l8mbz">Shift</kbd>+<kbd class="svelte-3l8mbz">Esc</kbd></dt> <dd class="svelte-3l8mbz">Restore selection cleared by Esc (if nothing else selected or tree
         unchanged)</dd></div> <div class="help-row svelte-3l8mbz"><dt class="svelte-3l8mbz"><kbd class="svelte-3l8mbz">⌘/Ctrl</kbd>+<kbd class="svelte-3l8mbz">C</kbd> then <kbd class="svelte-3l8mbz">⌘/Ctrl</kbd>+<kbd class="svelte-3l8mbz">V</kbd></dt> <dd class="svelte-3l8mbz">Move selected node(s) under the current selection</dd></div> <div class="help-row svelte-3l8mbz"><dt class="svelte-3l8mbz"><kbd class="svelte-3l8mbz">?</kbd></dt> <dd class="svelte-3l8mbz">Toggle this help</dd></div></dl> <p class="help-note svelte-3l8mbz">Selected node is exposed as <code class="svelte-3l8mbz">$pixi</code> in the page console.</p></div>`);
@@ -43025,15 +43027,372 @@ function normalizeLiveRefreshInterval(raw) {
   );
   return Math.round(clamped / LIVE_REFRESH_INTERVAL_STEP) * LIVE_REFRESH_INTERVAL_STEP;
 }
-const channel$2 = createDocumentSettingChannel({
+const channel$3 = createDocumentSettingChannel({
   attr: LIVE_REFRESH_INTERVAL_ATTR,
   event: LIVE_REFRESH_INTERVAL_EVENT,
   serialize: (value) => String(value),
   parse: (raw) => normalizeLiveRefreshInterval(raw),
   normalize: normalizeLiveRefreshInterval
 });
-const readLiveRefreshIntervalAttr = channel$2.readAttr;
-const subscribeLiveRefreshInterval = channel$2.subscribe;
+const readLiveRefreshIntervalAttr = channel$3.readAttr;
+const subscribeLiveRefreshInterval = channel$3.subscribe;
+function asFiniteNumber$1(value) {
+  return typeof value === "number" && Number.isFinite(value) ? value : null;
+}
+function readLocalBounds(node) {
+  if (typeof node.getLocalBounds !== "function") {
+    return null;
+  }
+  try {
+    const bounds = node.getLocalBounds();
+    if (!bounds || typeof bounds !== "object") {
+      return null;
+    }
+    const minX = asFiniteNumber$1(bounds.minX) ?? asFiniteNumber$1(bounds.x);
+    const minY = asFiniteNumber$1(bounds.minY) ?? asFiniteNumber$1(bounds.y);
+    if (minX === null || minY === null) {
+      return null;
+    }
+    const maxX = asFiniteNumber$1(bounds.maxX);
+    const maxY = asFiniteNumber$1(bounds.maxY);
+    if (maxX !== null && maxY !== null) {
+      return { minX, minY, maxX, maxY };
+    }
+    const width = asFiniteNumber$1(bounds.width);
+    const height = asFiniteNumber$1(bounds.height);
+    if (width === null || height === null) {
+      return null;
+    }
+    return {
+      minX,
+      minY,
+      maxX: minX + width,
+      maxY: minY + height
+    };
+  } catch {
+    return null;
+  }
+}
+function readWorldTransform(node) {
+  const matrix = node.worldTransform;
+  if (!matrix) {
+    return null;
+  }
+  const a2 = asFiniteNumber$1(matrix.a);
+  const b2 = asFiniteNumber$1(matrix.b);
+  const c2 = asFiniteNumber$1(matrix.c);
+  const d2 = asFiniteNumber$1(matrix.d);
+  const tx = asFiniteNumber$1(matrix.tx);
+  const ty = asFiniteNumber$1(matrix.ty);
+  if (a2 === null || b2 === null || c2 === null || d2 === null || tx === null || ty === null) {
+    return null;
+  }
+  return { a: a2, b: b2, c: c2, d: d2, tx, ty };
+}
+function findPixiCanvas(win) {
+  const app = win.__PIXI_APP__;
+  const renderer = win.__PIXI_RENDERER__ || app?.renderer;
+  const candidates = [
+    app?.canvas,
+    app?.view,
+    renderer?.canvas,
+    renderer?.view
+  ];
+  for (const candidate of candidates) {
+    if (candidate instanceof HTMLCanvasElement) {
+      return candidate;
+    }
+  }
+  return null;
+}
+function readScreenSize(win, canvas) {
+  const app = win.__PIXI_APP__;
+  const screenW = asFiniteNumber$1(app?.screen?.width);
+  const screenH = asFiniteNumber$1(app?.screen?.height);
+  if (screenW !== null && screenH !== null && screenW > 0 && screenH > 0) {
+    return { width: screenW, height: screenH };
+  }
+  const renderer = win.__PIXI_RENDERER__ || app?.renderer;
+  const resolution = asFiniteNumber$1(renderer?.resolution) ?? 1;
+  const rendererW = asFiniteNumber$1(renderer?.width);
+  const rendererH = asFiniteNumber$1(renderer?.height);
+  if (rendererW !== null && rendererH !== null && resolution > 0 && rendererW > 0 && rendererH > 0) {
+    return {
+      width: rendererW / resolution,
+      height: rendererH / resolution
+    };
+  }
+  const cssW = canvas.clientWidth || canvas.getBoundingClientRect().width;
+  const cssH = canvas.clientHeight || canvas.getBoundingClientRect().height;
+  return {
+    width: cssW > 0 ? cssW : 1,
+    height: cssH > 0 ? cssH : 1
+  };
+}
+function hasAnchor(node) {
+  const anchor = node.anchor;
+  if (!anchor) {
+    return false;
+  }
+  return asFiniteNumber$1(anchor.x) !== null && asFiniteNumber$1(anchor.y) !== null;
+}
+function readPivot(node) {
+  const pivot = node.pivot;
+  if (!pivot) {
+    return null;
+  }
+  const x2 = asFiniteNumber$1(pivot.x);
+  const y2 = asFiniteNumber$1(pivot.y);
+  if (x2 === null || y2 === null) {
+    return null;
+  }
+  return { x: x2, y: y2 };
+}
+function worldCorners(bounds, matrix) {
+  const points = [
+    { x: bounds.minX, y: bounds.minY },
+    { x: bounds.maxX, y: bounds.minY },
+    { x: bounds.maxX, y: bounds.maxY },
+    { x: bounds.minX, y: bounds.maxY }
+  ];
+  return points.map((point) => ({
+    x: matrix.a * point.x + matrix.c * point.y + matrix.tx,
+    y: matrix.b * point.x + matrix.d * point.y + matrix.ty
+  }));
+}
+function pointInQuad(point, corners) {
+  if (corners.length < 4) {
+    return false;
+  }
+  let sign = 0;
+  for (let i2 = 0; i2 < 4; i2++) {
+    const a2 = corners[i2];
+    const b2 = corners[(i2 + 1) % 4];
+    if (!a2 || !b2) {
+      return false;
+    }
+    const cross = (b2.x - a2.x) * (point.y - a2.y) - (b2.y - a2.y) * (point.x - a2.x);
+    if (Math.abs(cross) < 1e-9) {
+      continue;
+    }
+    const next = cross > 0 ? 1 : -1;
+    if (sign === 0) {
+      sign = next;
+    } else if (sign !== next) {
+      return false;
+    }
+  }
+  return true;
+}
+function nodeContainsPoint(node, point) {
+  const contains = node.containsPoint;
+  if (typeof contains === "function") {
+    try {
+      if (contains.call(node, point)) {
+        return true;
+      }
+    } catch {
+    }
+  }
+  if (typeof node.getBounds === "function") {
+    try {
+      const bounds = node.getBounds();
+      if (bounds && typeof bounds === "object") {
+        if (typeof bounds.containsPoint === "function") {
+          return bounds.containsPoint(point.x, point.y) === true;
+        }
+        if (typeof bounds.contains === "function") {
+          return bounds.contains(point.x, point.y) === true;
+        }
+      }
+    } catch {
+    }
+  }
+  const matrix = readWorldTransform(node);
+  const local = readLocalBounds(node);
+  if (!matrix || !local) {
+    return false;
+  }
+  return pointInQuad(point, worldCorners(local, matrix));
+}
+function collectHits(point, node, includeHidden, out2) {
+  if (!includeHidden && node.visible === false) {
+    return;
+  }
+  const kids = childrenOf(node);
+  for (let i2 = kids.length - 1; i2 >= 0; i2 -= 1) {
+    const child2 = kids[i2];
+    if (child2) {
+      collectHits(point, child2, includeHidden, out2);
+    }
+  }
+  if (nodeContainsPoint(node, point)) {
+    out2.push(node);
+  }
+}
+function clientToWorld(clientX, clientY, win) {
+  const canvas = findPixiCanvas(win);
+  if (!canvas) {
+    return null;
+  }
+  const rect = canvas.getBoundingClientRect();
+  if (!(rect.width > 0) || !(rect.height > 0)) {
+    return null;
+  }
+  const screen = readScreenSize(win, canvas);
+  return {
+    x: (clientX - rect.left) * (screen.width / rect.width),
+    y: (clientY - rect.top) * (screen.height / rect.height)
+  };
+}
+function pickNodesAt(point, win, includeHidden, rootPathId) {
+  const root2 = rootPathId ? resolveByPath(rootPathId, win) : findRoot(win)?.root;
+  if (!root2) {
+    return [];
+  }
+  const hits = [];
+  collectHits(point, root2, includeHidden, hits);
+  if (hits.length > 1 && hits[hits.length - 1] === root2) {
+    hits.length -= 1;
+  }
+  return hits;
+}
+function cyclePick(hits, current2, moved) {
+  if (moved || hits.length === 1) {
+    return hits[0];
+  }
+  let index = current2 ? hits.indexOf(current2) : -1;
+  if (index === -1 || index === hits.length - 1) {
+    index = 0;
+  } else {
+    index += 1;
+  }
+  return hits[index];
+}
+function pickPathIdAt(clientX, clientY, currentPathId, moved, win = globalThis, options = {}) {
+  const point = clientToWorld(clientX, clientY, win);
+  if (!point) {
+    return null;
+  }
+  const hits = pickNodesAt(point, win, options.includeHidden === true, options.rootPathId);
+  if (hits.length === 0) {
+    return null;
+  }
+  const current2 = currentPathId ? resolveByPath(currentPathId, win) : win.$pixi;
+  return pathOf(cyclePick(hits, current2, moved), win);
+}
+const DEFAULT_PICK_INCLUDE_HIDDEN = false;
+const PICK_INCLUDE_HIDDEN_EVENT = "pixi-scene-inspector-pick-include-hidden";
+const PICK_INCLUDE_HIDDEN_ATTR = "data-psi-pick-include-hidden";
+const channel$2 = createDocumentSettingChannel({
+  attr: PICK_INCLUDE_HIDDEN_ATTR,
+  event: PICK_INCLUDE_HIDDEN_EVENT,
+  serialize: (value) => value ? "1" : "0",
+  parse: (raw) => raw === "1" || raw === "true",
+  normalize: normalizePickIncludeHidden
+});
+const readPickIncludeHiddenAttr = channel$2.readAttr;
+const subscribePickIncludeHidden = channel$2.subscribe;
+function normalizePickIncludeHidden(raw) {
+  return raw === true;
+}
+const TREE_ID$1 = "pixi-scene-inspector-tree";
+const PROPS_ID$1 = "pixi-scene-inspector-properties";
+function isApplePlatform() {
+  const nav = navigator;
+  const platform = nav.userAgentData?.platform ?? navigator.platform ?? "";
+  return /mac|iphone|ipad|ipod/i.test(platform) || /Mac OS X/.test(navigator.userAgent);
+}
+function isCanvasPickModifier(event2) {
+  if (!event2.altKey || event2.shiftKey) {
+    return false;
+  }
+  if (isApplePlatform()) {
+    return event2.metaKey && !event2.ctrlKey;
+  }
+  return event2.ctrlKey && !event2.metaKey;
+}
+function isInspectorChrome(target) {
+  if (!(target instanceof Element)) {
+    return false;
+  }
+  return !!(target.closest(`#${TREE_ID$1}`) || target.closest(`#${PROPS_ID$1}`));
+}
+function isOverCanvas(clientX, clientY, canvas) {
+  const rect = canvas.getBoundingClientRect();
+  return clientX >= rect.left && clientX <= rect.right && clientY >= rect.top && clientY <= rect.bottom;
+}
+function installClickToSelect(options) {
+  const win = globalThis;
+  let includeHidden = readPickIncludeHiddenAttr() ?? DEFAULT_PICK_INCLUDE_HIDDEN;
+  let moved = true;
+  const onPointerMove = () => {
+    moved = true;
+  };
+  const blockGameInput = (event2) => {
+    event2.preventDefault();
+    event2.stopPropagation();
+    event2.stopImmediatePropagation();
+  };
+  const onPointerDown = (event2) => {
+    if (!isCanvasPickModifier(event2)) {
+      return;
+    }
+    if (event2.button !== 0) {
+      return;
+    }
+    if (isInspectorChrome(event2.target)) {
+      return;
+    }
+    const canvas = findPixiCanvas(win);
+    if (!canvas || !isOverCanvas(event2.clientX, event2.clientY, canvas)) {
+      return;
+    }
+    blockGameInput(event2);
+    const currentPathId = options.getCurrentPathId?.() ?? null;
+    const rootPathId = options.getRootPathId?.() ?? null;
+    const pathId = pickPathIdAt(
+      event2.clientX,
+      event2.clientY,
+      currentPathId,
+      moved,
+      win,
+      { includeHidden, rootPathId }
+    );
+    moved = false;
+    if (!pathId) {
+      return;
+    }
+    options.onPick(pathId);
+  };
+  const onContextMenu = (event2) => {
+    if (isInspectorChrome(event2.target)) {
+      return;
+    }
+    if (!event2.altKey || !(event2.ctrlKey || event2.metaKey)) {
+      return;
+    }
+    const canvas = findPixiCanvas(win);
+    if (!canvas || !isOverCanvas(event2.clientX, event2.clientY, canvas)) {
+      return;
+    }
+    blockGameInput(event2);
+  };
+  window.addEventListener("pointerdown", onPointerDown, true);
+  window.addEventListener("pointermove", onPointerMove, true);
+  window.addEventListener("contextmenu", onContextMenu, true);
+  const unsubscribeIncludeHidden = subscribePickIncludeHidden((value) => {
+    includeHidden = value;
+  });
+  return {
+    destroy: () => {
+      unsubscribeIncludeHidden();
+      window.removeEventListener("pointerdown", onPointerDown, true);
+      window.removeEventListener("pointermove", onPointerMove, true);
+      window.removeEventListener("contextmenu", onContextMenu, true);
+    }
+  };
+}
 const EVENT_MODE_OPTIONS = [
   { value: "none", label: "None" },
   { value: "passive", label: "Passive" },
@@ -43547,7 +43906,7 @@ function asPositiveNumber(value) {
   const n2 = Number(value);
   return Number.isFinite(n2) && n2 > 0 ? n2 : void 0;
 }
-function asFiniteNumber$1(value) {
+function asFiniteNumber(value) {
   const n2 = Number(value);
   return Number.isFinite(n2) ? n2 : void 0;
 }
@@ -43562,8 +43921,8 @@ function normalizePosition(raw) {
     return void 0;
   }
   const record = raw;
-  const left = asFiniteNumber$1(record.left);
-  const top = asFiniteNumber$1(record.top);
+  const left = asFiniteNumber(record.left);
+  const top = asFiniteNumber(record.top);
   if (left === void 0 || top === void 0) {
     return void 0;
   }
@@ -44192,6 +44551,15 @@ function App($$anchor, $$props) {
         break;
     }
   }
+  async function applyCanvasPick(pathId) {
+    await applySelection([pathId]);
+    if (!get(tree)) {
+      return;
+    }
+    set(expandedIds, expandPathsToIds(get(expandedIds), [pathId]), true);
+    set(selectionReveal, get(selectionReveal) + 1);
+    relayoutFromTree(get(tree));
+  }
   onMount(() => {
     void refresh();
     let timerId = 0;
@@ -44223,11 +44591,19 @@ function App($$anchor, $$props) {
       }
       restartTimer();
     });
+    const clickToSelect = installClickToSelect({
+      getCurrentPathId: () => get(selectedIds).length > 0 ? get(selectedIds)[get(selectedIds).length - 1] : null,
+      getRootPathId: () => get(isolatedRootId),
+      onPick: (pathId) => {
+        void applyCanvasPick(pathId);
+      }
+    });
     window.addEventListener("keydown", onkeydown, true);
     return () => {
       if (timerId !== 0) {
         clearInterval(timerId);
       }
+      clickToSelect.destroy();
       unsubscribeLiveRefresh();
       window.removeEventListener("keydown", onkeydown, true);
     };
@@ -48742,10 +49118,25 @@ function createSelectField(spec, onCommit) {
     }
   };
 }
+function encodeTextFieldValue(value) {
+  return value.replace(/\\/g, "\\\\").replace(/\r/g, "\\r").replace(/\n/g, "\\n");
+}
+function decodeTextFieldValue(value) {
+  return value.replace(/\\([\\nr])/g, (_match, ch) => {
+    if (ch === "n") {
+      return "\n";
+    }
+    if (ch === "r") {
+      return "\r";
+    }
+    return "\\";
+  });
+}
 function createTextField(spec, onCommit) {
   const root2 = createFieldRoot();
   const label = createFieldLabel(spec.label);
   const input = document.createElement("input");
+  const escapeBreaks = spec.key === "text";
   input.type = "text";
   input.spellcheck = false;
   Object.assign(input.style, {
@@ -48767,13 +49158,19 @@ function createTextField(spec, onCommit) {
   root2.appendChild(input);
   let current2 = "";
   let focused = false;
+  function toDisplay(value) {
+    return escapeBreaks ? encodeTextFieldValue(value) : value;
+  }
+  function fromDisplay(value) {
+    return escapeBreaks ? decodeTextFieldValue(value) : value;
+  }
   function syncChrome() {
     input.style.background = focused ? "#222" : "#545454";
   }
   function commit(next) {
     current2 = next;
     input.value = next;
-    onCommit(spec.key, next);
+    onCommit(spec.key, fromDisplay(next));
   }
   input.addEventListener("focus", () => {
     focused = true;
@@ -48803,7 +49200,7 @@ function createTextField(spec, onCommit) {
       if (focused) {
         return;
       }
-      const next = typeof value === "string" ? value : "";
+      const next = toDisplay(typeof value === "string" ? value : "");
       current2 = next;
       input.value = next;
     },
@@ -50089,130 +50486,6 @@ const ROTATE_STALK = 18;
 const POSITION_STEP = 1;
 const ANGLE_STEP = 1;
 const SCALE_STEP = 0.01;
-function asFiniteNumber(value) {
-  return typeof value === "number" && Number.isFinite(value) ? value : null;
-}
-function readLocalBounds(node) {
-  if (typeof node.getLocalBounds !== "function") {
-    return null;
-  }
-  try {
-    const bounds = node.getLocalBounds();
-    if (!bounds || typeof bounds !== "object") {
-      return null;
-    }
-    const minX = asFiniteNumber(bounds.minX) ?? asFiniteNumber(bounds.x);
-    const minY = asFiniteNumber(bounds.minY) ?? asFiniteNumber(bounds.y);
-    if (minX === null || minY === null) {
-      return null;
-    }
-    const maxX = asFiniteNumber(bounds.maxX);
-    const maxY = asFiniteNumber(bounds.maxY);
-    if (maxX !== null && maxY !== null) {
-      return { minX, minY, maxX, maxY };
-    }
-    const width = asFiniteNumber(bounds.width);
-    const height = asFiniteNumber(bounds.height);
-    if (width === null || height === null) {
-      return null;
-    }
-    return {
-      minX,
-      minY,
-      maxX: minX + width,
-      maxY: minY + height
-    };
-  } catch {
-    return null;
-  }
-}
-function readWorldTransform(node) {
-  const matrix = node.worldTransform;
-  if (!matrix) {
-    return null;
-  }
-  const a2 = asFiniteNumber(matrix.a);
-  const b2 = asFiniteNumber(matrix.b);
-  const c2 = asFiniteNumber(matrix.c);
-  const d2 = asFiniteNumber(matrix.d);
-  const tx = asFiniteNumber(matrix.tx);
-  const ty = asFiniteNumber(matrix.ty);
-  if (a2 === null || b2 === null || c2 === null || d2 === null || tx === null || ty === null) {
-    return null;
-  }
-  return { a: a2, b: b2, c: c2, d: d2, tx, ty };
-}
-function findPixiCanvas(win) {
-  const app = win.__PIXI_APP__;
-  const renderer = win.__PIXI_RENDERER__ || app?.renderer;
-  const candidates = [
-    app?.canvas,
-    app?.view,
-    renderer?.canvas,
-    renderer?.view
-  ];
-  for (const candidate of candidates) {
-    if (candidate instanceof HTMLCanvasElement) {
-      return candidate;
-    }
-  }
-  return null;
-}
-function readScreenSize(win, canvas) {
-  const app = win.__PIXI_APP__;
-  const screenW = asFiniteNumber(app?.screen?.width);
-  const screenH = asFiniteNumber(app?.screen?.height);
-  if (screenW !== null && screenH !== null && screenW > 0 && screenH > 0) {
-    return { width: screenW, height: screenH };
-  }
-  const renderer = win.__PIXI_RENDERER__ || app?.renderer;
-  const resolution = asFiniteNumber(renderer?.resolution) ?? 1;
-  const rendererW = asFiniteNumber(renderer?.width);
-  const rendererH = asFiniteNumber(renderer?.height);
-  if (rendererW !== null && rendererH !== null && resolution > 0 && rendererW > 0 && rendererH > 0) {
-    return {
-      width: rendererW / resolution,
-      height: rendererH / resolution
-    };
-  }
-  const cssW = canvas.clientWidth || canvas.getBoundingClientRect().width;
-  const cssH = canvas.clientHeight || canvas.getBoundingClientRect().height;
-  return {
-    width: cssW > 0 ? cssW : 1,
-    height: cssH > 0 ? cssH : 1
-  };
-}
-function hasAnchor(node) {
-  const anchor = node.anchor;
-  if (!anchor) {
-    return false;
-  }
-  return asFiniteNumber(anchor.x) !== null && asFiniteNumber(anchor.y) !== null;
-}
-function readPivot(node) {
-  const pivot = node.pivot;
-  if (!pivot) {
-    return null;
-  }
-  const x2 = asFiniteNumber(pivot.x);
-  const y2 = asFiniteNumber(pivot.y);
-  if (x2 === null || y2 === null) {
-    return null;
-  }
-  return { x: x2, y: y2 };
-}
-function worldCorners(bounds, matrix) {
-  const points = [
-    { x: bounds.minX, y: bounds.minY },
-    { x: bounds.maxX, y: bounds.minY },
-    { x: bounds.maxX, y: bounds.maxY },
-    { x: bounds.minX, y: bounds.maxY }
-  ];
-  return points.map((point) => ({
-    x: matrix.a * point.x + matrix.c * point.y + matrix.tx,
-    y: matrix.b * point.x + matrix.d * point.y + matrix.ty
-  }));
-}
 function localToRoot(paint, lx, ly) {
   const { matrix } = paint;
   return {

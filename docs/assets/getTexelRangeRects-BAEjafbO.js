@@ -1,4 +1,4 @@
-import { w as warn, g as getAttributeInfoFromFormat, c as STENCIL_MODES, u as unsafeEvalSupported, B as Buffer, d as BufferUsage, E as EventEmitter, e as uid } from "./index-D-rVbNGO.js";
+import { w as warn, g as getAttributeInfoFromFormat, c as STENCIL_MODES, u as unsafeEvalSupported, B as Buffer, d as BufferUsage, E as EventEmitter, e as uid } from "./index-DrhDT93h.js";
 const textureBit = {
   name: "texture-bit",
   vertex: {
