@@ -59,6 +59,7 @@
     readLiveRefreshIntervalAttr,
     subscribeLiveRefreshInterval,
   } from "../live-refresh";
+  import { installClickToSelect } from "../overlay/click-to-select";
   import {
     readHighlightEnabled,
     writeHighlightEnabled,
@@ -646,6 +647,19 @@
     }
   }
 
+  async function applyCanvasPick(pathId: string) {
+    await applySelection([pathId]);
+
+    if (!tree) {
+      return;
+    }
+
+    expandedIds = expandPathsToIds(expandedIds, [pathId]);
+    selectionReveal += 1;
+
+    relayoutFromTree(tree);
+  }
+
   onMount(() => {
     void refresh();
 
@@ -684,6 +698,15 @@
       restartTimer();
     });
 
+    const clickToSelect = installClickToSelect({
+      getCurrentPathId: () =>
+        selectedIds.length > 0 ? selectedIds[selectedIds.length - 1] : null,
+      getRootPathId: () => isolatedRootId,
+      onPick: (pathId) => {
+        void applyCanvasPick(pathId);
+      },
+    });
+
     window.addEventListener("keydown", onkeydown, true);
 
     return () => {
@@ -691,6 +714,7 @@
         clearInterval(timerId);
       }
 
+      clickToSelect.destroy();
       unsubscribeLiveRefresh();
       window.removeEventListener("keydown", onkeydown, true);
     };

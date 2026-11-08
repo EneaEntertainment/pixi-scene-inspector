@@ -57,6 +57,9 @@ Plain `mountPixiSceneInspector` (no docked overlay) does not include the propert
 | Shift or ⌘/Ctrl+click | Toggle multi-select (see below) |
 | Second click / `+` / `=` | Expand one level |
 | Option/Alt+click / `-` / `_` | Collapse one level |
+| ⌘+⌥+click (macOS) / Ctrl+Alt+click (Windows) on the **game canvas** | Select the topmost node under the cursor without firing game input; click again without moving to cycle overlapping nodes |
+
+Canvas pick ignores `visible === false` nodes by default. Enable **Canvas pick can select invisible nodes** in the extension options to include them.
 
 ### Multi-select
 

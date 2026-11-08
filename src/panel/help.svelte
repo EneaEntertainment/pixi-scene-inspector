@@ -33,6 +33,16 @@
       <dd>Collapse one level</dd>
     </div>
     <div class="help-row">
+      <dt>
+        <kbd>⌘</kbd>+<kbd>⌥</kbd> / <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+click on
+        canvas
+      </dt>
+      <dd>
+        Select node under cursor; click again without moving to cycle
+        overlapping nodes
+      </dd>
+    </div>
+    <div class="help-row">
       <dt><kbd>←</kbd> <kbd>→</kbd></dt>
       <dd>Move among siblings (from primary; replaces a multi-selection)</dd>
     </div>
