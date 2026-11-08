@@ -1,5 +1,7 @@
 # Pixi Scene Inspector
 
+![Pixi Scene Inspector](pixi-scene-inspector.jpg)
+
 [Live demo](https://eneaentertainment.github.io/pixi-scene-inspector/)
 
 [![Chrome Web Store](https://img.shields.io/chrome-web-store/v/ofhbddhfahkompjbgnodecgiikbnhdgi?logo=googlechrome&label=Chrome%20Web%20Store)](https://chromewebstore.google.com/detail/pixi-scene-inspector/ofhbddhfahkompjbgnodecgiikbnhdgi)
