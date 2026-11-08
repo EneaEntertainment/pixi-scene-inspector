@@ -17,6 +17,11 @@ import {
     LIVE_REFRESH_INTERVAL_STORAGE_KEY,
     normalizeLiveRefreshInterval,
 } from './live-refresh';
+import {
+    DEFAULT_PICK_INCLUDE_HIDDEN,
+    normalizePickIncludeHidden,
+    PICK_INCLUDE_HIDDEN_STORAGE_KEY,
+} from './pick-settings';
 
 export const TOGGLE_HOTKEY_STORAGE_KEY = 'toggleHotkey';
 
@@ -25,6 +30,7 @@ export type ExtensionSettings = {
     highlightColors: HighlightColorSettings;
     highlightGuides: HighlightGuidesSettings;
     liveRefreshInterval: number;
+    pickIncludeHidden: boolean;
 };
 
 export function resolveToggleHotkey(raw: unknown): HotkeyChord
@@ -40,6 +46,16 @@ export function resolveLiveRefreshInterval(raw: unknown): number
     }
 
     return normalizeLiveRefreshInterval(raw);
+}
+
+export function resolvePickIncludeHidden(raw: unknown): boolean
+{
+    if (raw === undefined || raw === null)
+    {
+        return DEFAULT_PICK_INCLUDE_HIDDEN;
+    }
+
+    return normalizePickIncludeHidden(raw);
 }
 
 function resolveStoredHighlightColors(result: Record<string, unknown>): HighlightColorSettings
@@ -66,6 +82,7 @@ export async function readExtensionSettings(): Promise<ExtensionSettings>
         HIGHLIGHT_STROKE_STORAGE_KEY,
         HIGHLIGHT_GUIDES_STORAGE_KEY,
         LIVE_REFRESH_INTERVAL_STORAGE_KEY,
+        PICK_INCLUDE_HIDDEN_STORAGE_KEY,
     ]);
 
     return {
@@ -73,6 +90,7 @@ export async function readExtensionSettings(): Promise<ExtensionSettings>
         highlightColors     : resolveStoredHighlightColors(result),
         highlightGuides     : normalizeHighlightGuides(result[HIGHLIGHT_GUIDES_STORAGE_KEY]),
         liveRefreshInterval : resolveLiveRefreshInterval(result[LIVE_REFRESH_INTERVAL_STORAGE_KEY]),
+        pickIncludeHidden   : resolvePickIncludeHidden(result[PICK_INCLUDE_HIDDEN_STORAGE_KEY]),
     };
 }
 
@@ -118,6 +136,17 @@ export async function writeHighlightGuides(
 
     await chrome.storage.sync.set({
         [HIGHLIGHT_GUIDES_STORAGE_KEY]: next,
+    });
+
+    return next;
+}
+
+export async function writePickIncludeHidden(value: boolean): Promise<boolean>
+{
+    const next = normalizePickIncludeHidden(value);
+
+    await chrome.storage.sync.set({
+        [PICK_INCLUDE_HIDDEN_STORAGE_KEY]: next,
     });
 
     return next;

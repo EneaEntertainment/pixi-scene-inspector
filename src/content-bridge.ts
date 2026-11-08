@@ -1,6 +1,7 @@
 import {
     readExtensionSettings,
     resolveLiveRefreshInterval,
+    resolvePickIncludeHidden,
     resolveToggleHotkey,
     TOGGLE_HOTKEY_STORAGE_KEY,
 } from './extension-settings';
@@ -23,6 +24,11 @@ import {
     LIVE_REFRESH_INTERVAL_STORAGE_KEY,
     publishLiveRefreshInterval,
 } from './live-refresh';
+import {
+    DEFAULT_PICK_INCLUDE_HIDDEN,
+    PICK_INCLUDE_HIDDEN_STORAGE_KEY,
+    publishPickIncludeHidden,
+} from './pick-settings';
 
 async function syncFromStorage()
 {
@@ -34,6 +40,7 @@ async function syncFromStorage()
         publishHighlightColors(settings.highlightColors);
         publishHighlightGuides(settings.highlightGuides);
         publishLiveRefreshInterval(settings.liveRefreshInterval);
+        publishPickIncludeHidden(settings.pickIncludeHidden);
     }
     catch
     {
@@ -41,6 +48,7 @@ async function syncFromStorage()
         publishHighlightColors(DEFAULT_HIGHLIGHT_COLORS);
         publishHighlightGuides(DEFAULT_HIGHLIGHT_GUIDES);
         publishLiveRefreshInterval(DEFAULT_LIVE_REFRESH_INTERVAL_SEC);
+        publishPickIncludeHidden(DEFAULT_PICK_INCLUDE_HIDDEN);
     }
 }
 
@@ -89,5 +97,12 @@ chrome.storage.onChanged.addListener((changes, areaName) =>
     if (highlightGuidesChange)
     {
         publishHighlightGuides(normalizeHighlightGuides(highlightGuidesChange.newValue));
+    }
+
+    const pickIncludeHiddenChange = changes[PICK_INCLUDE_HIDDEN_STORAGE_KEY];
+
+    if (pickIncludeHiddenChange)
+    {
+        publishPickIncludeHidden(resolvePickIncludeHidden(pickIncludeHiddenChange.newValue));
     }
 });

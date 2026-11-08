@@ -4,6 +4,7 @@ import {
     writeHighlightColors,
     writeHighlightGuides,
     writeLiveRefreshInterval,
+    writePickIncludeHidden,
     writeToggleHotkey,
 } from './extension-settings';
 import { DEFAULT_HIGHLIGHT_COLORS, normalizeHighlightAlpha, normalizeHighlightColor } from './highlight-colors';
@@ -16,6 +17,7 @@ import {
     MIN_LIVE_REFRESH_INTERVAL_SEC,
     normalizeLiveRefreshInterval,
 } from './live-refresh';
+import { DEFAULT_PICK_INCLUDE_HIDDEN } from './pick-settings';
 
 import type { HighlightColorSettings } from './highlight-colors';
 import type { HighlightGuidesSettings } from './highlight-guides';
@@ -67,12 +69,14 @@ const highlightFillAlphaInput = requireInput('highlight-fill-alpha');
 const highlightFillDragAlphaInput = requireInput('highlight-fill-drag-alpha');
 const highlightGuidesIdleInput = requireInput('highlight-guides-idle');
 const highlightGuidesDragInput = requireInput('highlight-guides-drag');
+const pickIncludeHiddenInput = requireInput('pick-include-hidden');
 const resetColorsButton = requireButton('reset-colors');
 
 let current: HotkeyChord = DEFAULT_TOGGLE_HOTKEY;
 let currentColors: HighlightColorSettings = { ...DEFAULT_HIGHLIGHT_COLORS };
 let currentLiveRefresh = DEFAULT_LIVE_REFRESH_INTERVAL_SEC;
 let currentHighlightGuides: HighlightGuidesSettings = { ...DEFAULT_HIGHLIGHT_GUIDES };
+let currentPickIncludeHidden = DEFAULT_PICK_INCLUDE_HIDDEN;
 let recording = false;
 
 liveRefreshInput.min = String(MIN_LIVE_REFRESH_INTERVAL_SEC);
@@ -120,6 +124,12 @@ function renderHighlightGuides(settings: HighlightGuidesSettings)
     highlightGuidesDragInput.checked = settings.drag;
 }
 
+function renderPickIncludeHidden(value: boolean)
+{
+    currentPickIncludeHidden = value;
+    pickIncludeHiddenInput.checked = value;
+}
+
 function setRecording(next: boolean)
 {
     recording = next;
@@ -154,6 +164,13 @@ async function saveHighlightGuides(settings: HighlightGuidesSettings)
     const next = await writeHighlightGuides(settings);
 
     renderHighlightGuides(next);
+}
+
+async function savePickIncludeHidden(value: boolean)
+{
+    const next = await writePickIncludeHidden(value);
+
+    renderPickIncludeHidden(next);
 }
 
 function guidesFromInputs(): HighlightGuidesSettings
@@ -293,6 +310,14 @@ function onGuidesChange()
 highlightGuidesIdleInput.addEventListener('change', onGuidesChange);
 highlightGuidesDragInput.addEventListener('change', onGuidesChange);
 
+pickIncludeHiddenInput.addEventListener('change', () =>
+{
+    void savePickIncludeHidden(pickIncludeHiddenInput.checked).catch(() =>
+    {
+        renderPickIncludeHidden(currentPickIncludeHidden);
+    });
+});
+
 resetColorsButton.addEventListener('click', () =>
 {
     void resetHighlightColors()
@@ -310,6 +335,7 @@ void readExtensionSettings()
         renderColors(settings.highlightColors);
         renderHighlightGuides(settings.highlightGuides);
         renderLiveRefresh(settings.liveRefreshInterval);
+        renderPickIncludeHidden(settings.pickIncludeHidden);
     })
     .catch(() =>
     {
@@ -317,4 +343,5 @@ void readExtensionSettings()
         renderColors(DEFAULT_HIGHLIGHT_COLORS);
         renderHighlightGuides(DEFAULT_HIGHLIGHT_GUIDES);
         renderLiveRefresh(DEFAULT_LIVE_REFRESH_INTERVAL_SEC);
+        renderPickIncludeHidden(DEFAULT_PICK_INCLUDE_HIDDEN);
     });
