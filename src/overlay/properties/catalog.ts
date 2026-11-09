@@ -26,6 +26,7 @@ import type { TextFillPropertyKey } from './text';
 
 export type PropertyExportSectionId =
     | 'identity'
+    | 'texture'
     | 'transform'
     | 'visibility'
     | 'rendering'
@@ -39,6 +40,7 @@ export type PropertyExportSectionId =
 
 export const PROPERTY_SECTION_IDS: Array<PropertyExportSectionId> = [
     'identity',
+    'texture',
     'transform',
     'visibility',
     'rendering',
@@ -53,6 +55,7 @@ export const PROPERTY_SECTION_IDS: Array<PropertyExportSectionId> = [
 
 export const PROPERTY_SECTION_TITLES: Record<PropertyExportSectionId, string> = {
     identity       : 'Identity',
+    texture        : 'Texture',
     transform      : 'Transform',
     visibility     : 'Visibility',
     rendering      : 'Rendering',
@@ -536,13 +539,20 @@ function exportPropsFromCatalog(sections: Array<CatalogSectionSpec>): Record<
 export const OBJECT_FORM_SECTIONS: Array<SectionSpec> = formSectionsFromCatalog(OBJECT_CATALOG_SECTIONS);
 export const TEXT_FORM_SECTIONS: Array<SectionSpec> = formSectionsFromCatalog(TEXT_CATALOG_SECTIONS);
 
+const TEXTURE_EXPORT_PROPS: Array<ExportPropSpec> = [
+    { kind: 'string', id: 'texture', key: 'texture' },
+];
+
 const EXPORT_PROPS_BY_SECTION: Record<
     PropertyExportSectionId,
     Array<ExportPropSpec>
-> = exportPropsFromCatalog([
-    ...OBJECT_CATALOG_SECTIONS,
-    ...TEXT_CATALOG_SECTIONS,
-]);
+> = {
+    ...exportPropsFromCatalog([
+        ...OBJECT_CATALOG_SECTIONS,
+        ...TEXT_CATALOG_SECTIONS,
+    ]),
+    texture: TEXTURE_EXPORT_PROPS,
+};
 
 export function exportPropsForSection(sectionId: PropertyExportSectionId): Array<ExportPropSpec>
 {

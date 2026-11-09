@@ -1,5 +1,7 @@
 import { PROPERTY_SECTION_IDS, type PropertyExportSectionId } from '../properties/catalog';
 
+import type { TexturePickerViewMode } from '../properties/texture-picker/icons';
+
 export type { PropertyExportSectionId };
 
 export type PanelMode = 'docked' | 'floating';
@@ -24,20 +26,33 @@ type PropertyExportSettings = Partial<
 
 export type PropertyExportOutputMode = 'json' | 'clipboard';
 
-type SceneInspectorSettings = {
-    properties?: PanelSettings;
-    tree?: PanelSettings;
-    propertyExport?: PropertyExportSettings;
-    propertyExportOutput?: PropertyExportOutputMode;
-    highlight?: boolean;
-};
-
 export type FloatRectSettings = {
     left: number;
     top: number;
     width: number;
     height: number;
 };
+
+type TexturePickerSettings = Partial<FloatRectSettings> & {
+    viewMode?: TexturePickerViewMode;
+};
+
+type SceneInspectorSettings = {
+    properties?: PanelSettings;
+    tree?: PanelSettings;
+    texturePicker?: TexturePickerSettings;
+    propertyExport?: PropertyExportSettings;
+    propertyExportOutput?: PropertyExportOutputMode;
+    highlight?: boolean;
+};
+
+const TEXTURE_PICKER_VIEW_MODES: Array<TexturePickerViewMode> = [
+    'thumb-sm',
+    'thumb-md',
+    'thumb-lg',
+    'list',
+    'list-miller',
+];
 
 type PanelSettingsKey = 'properties' | 'tree';
 
@@ -195,6 +210,131 @@ function mergePropertyExport(
     return Object.keys(next).length > 0 ? next : undefined;
 }
 
+function normalizeFloatRectSettings(raw: unknown): FloatRectSettings | undefined
+{
+    if (!raw || typeof raw !== 'object')
+    {
+        return undefined;
+    }
+
+    const record = raw as Record<string, unknown>;
+    const left = asFiniteNumber(record.left);
+    const top = asFiniteNumber(record.top);
+    const width = asPositiveNumber(record.width);
+    const height = asPositiveNumber(record.height);
+
+    if (
+        left === undefined
+        || top === undefined
+        || width === undefined
+        || height === undefined
+    )
+    {
+        return undefined;
+    }
+
+    return { left, top, width, height };
+}
+
+function normalizeTexturePickerViewMode(value: unknown): TexturePickerViewMode | undefined
+{
+    return typeof value === 'string'
+        && TEXTURE_PICKER_VIEW_MODES.includes(value as TexturePickerViewMode)
+        ? value as TexturePickerViewMode
+        : undefined;
+}
+
+function normalizeTexturePickerSettings(raw: unknown): TexturePickerSettings | undefined
+{
+    if (!raw || typeof raw !== 'object')
+    {
+        return undefined;
+    }
+
+    const record = raw as Record<string, unknown>;
+    const settings: TexturePickerSettings = {};
+    const left = asFiniteNumber(record.left);
+    const top = asFiniteNumber(record.top);
+    const width = asPositiveNumber(record.width);
+    const height = asPositiveNumber(record.height);
+    const viewMode = normalizeTexturePickerViewMode(record.viewMode);
+
+    if (left !== undefined)
+    {
+        settings.left = left;
+    }
+
+    if (top !== undefined)
+    {
+        settings.top = top;
+    }
+
+    if (width !== undefined)
+    {
+        settings.width = width;
+    }
+
+    if (height !== undefined)
+    {
+        settings.height = height;
+    }
+
+    if (viewMode !== undefined)
+    {
+        settings.viewMode = viewMode;
+    }
+
+    return Object.keys(settings).length > 0 ? settings : undefined;
+}
+
+function roundTexturePickerSettings(settings: TexturePickerSettings): TexturePickerSettings
+{
+    const rounded: TexturePickerSettings = {};
+
+    if (typeof settings.left === 'number' && Number.isFinite(settings.left))
+    {
+        rounded.left = Math.round(settings.left);
+    }
+
+    if (typeof settings.top === 'number' && Number.isFinite(settings.top))
+    {
+        rounded.top = Math.round(settings.top);
+    }
+
+    if (typeof settings.width === 'number' && Number.isFinite(settings.width))
+    {
+        rounded.width = Math.round(settings.width);
+    }
+
+    if (typeof settings.height === 'number' && Number.isFinite(settings.height))
+    {
+        rounded.height = Math.round(settings.height);
+    }
+
+    if (settings.viewMode !== undefined)
+    {
+        rounded.viewMode = settings.viewMode;
+    }
+
+    return rounded;
+}
+
+function mergeTexturePickerSettings(
+    current: TexturePickerSettings | undefined,
+    patch: TexturePickerSettings | undefined,
+): TexturePickerSettings | undefined
+{
+    if (!current && !patch)
+    {
+        return undefined;
+    }
+
+    return roundTexturePickerSettings({
+        ...current,
+        ...patch,
+    });
+}
+
 function normalizeSettings(raw: Record<string, unknown>): SceneInspectorSettings
 {
     const settings: SceneInspectorSettings = {
@@ -202,10 +342,16 @@ function normalizeSettings(raw: Record<string, unknown>): SceneInspectorSettings
         tree       : normalizePanelSettings(raw.tree),
     };
 
+    const texturePicker = normalizeTexturePickerSettings(raw.texturePicker);
     const propertyExport = normalizePropertyExport(raw.propertyExport);
     const propertyExportOutput = normalizePropertyExportOutput(
         raw.propertyExportOutput,
     );
+
+    if (texturePicker)
+    {
+        settings.texturePicker = texturePicker;
+    }
 
     if (propertyExport)
     {
@@ -294,6 +440,11 @@ function writeSettings(patch: SceneInspectorSettings)
 
     const highlight = patch.highlight ?? current.highlight;
 
+    const texturePicker = mergeTexturePickerSettings(
+        current.texturePicker,
+        patch.texturePicker,
+    );
+
     const next: SceneInspectorSettings = {
         properties: roundPanelSettings({
             ...current.properties,
@@ -321,6 +472,11 @@ function writeSettings(patch: SceneInspectorSettings)
                 : {}),
         }),
     };
+
+    if (texturePicker)
+    {
+        next.texturePicker = texturePicker;
+    }
 
     if (propertyExport)
     {
@@ -418,4 +574,24 @@ export function writeFloatPanelSettings(key: PanelSettingsKey, rect: FloatRectSe
         width    : rect.width,
         height   : rect.height,
     });
+}
+
+export function readTexturePickerRect(): FloatRectSettings | null
+{
+    return normalizeFloatRectSettings(readSettings().texturePicker) ?? null;
+}
+
+export function writeTexturePickerRect(rect: FloatRectSettings)
+{
+    writeSettings({ texturePicker: rect });
+}
+
+export function readTexturePickerViewMode(): TexturePickerViewMode | null
+{
+    return readSettings().texturePicker?.viewMode ?? null;
+}
+
+export function writeTexturePickerViewMode(viewMode: TexturePickerViewMode)
+{
+    writeSettings({ texturePicker: { viewMode } });
 }

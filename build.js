@@ -12,6 +12,10 @@ const srcDir = path.resolve(cwd, 'src');
 
 const WATCH = process.argv.includes('--watch');
 
+const PSI_VERSION = JSON.parse(
+    fs.readFileSync(path.join(cwd, 'package.json'), 'utf8'),
+).version;
+
 fs.rmSync(outdir, { recursive: true, force: true });
 fs.mkdirSync(outdir, { recursive: true });
 
@@ -35,6 +39,7 @@ const sharedPlugins = [
 const ctx = await esbuild.context({
     define: {
         WATCH: JSON.stringify(WATCH),
+        PSI_VERSION: JSON.stringify(PSI_VERSION),
         'process.env.NODE_ENV': JSON.stringify(WATCH ? 'development' : 'production'),
     },
     entryPoints: [
@@ -56,6 +61,7 @@ const ctx = await esbuild.context({
 const overlayCtx = await esbuild.context({
     define: {
         WATCH: JSON.stringify(false),
+        PSI_VERSION: JSON.stringify(PSI_VERSION),
         'process.env.NODE_ENV': JSON.stringify(WATCH ? 'development' : 'production'),
     },
     entryPoints: [path.join(srcDir, 'overlay.ts')],

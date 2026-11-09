@@ -1,4 +1,4 @@
-import { Graphics, Texture } from 'pixi.js';
+import { Cache, Graphics, Texture } from 'pixi.js';
 
 import type { Application, CanvasSource } from 'pixi.js';
 
@@ -36,11 +36,19 @@ function canvasTexture(color: string, width = 32, height = 32): Texture<CanvasSo
     return Texture.from(canvasFill(color, width, height)) as Texture<CanvasSource>;
 }
 
+function registerDemoTexture(name: string, texture: Texture)
+{
+    texture.label = name;
+
+    Cache.set(name, texture);
+}
+
 export function createDemoTextures(app: Application): DemoTextures
 {
     const solidGfx = new Graphics().rect(0, 0, 48, 48).fill(0xffffff);
     const solid = app.renderer.generateTexture(solidGfx);
 
+    registerDemoTexture('demo/solid', solid);
     solidGfx.destroy();
 
     const checkerGfx = new Graphics();
@@ -57,6 +65,7 @@ export function createDemoTextures(app: Application): DemoTextures
 
     const checker = app.renderer.generateTexture(checkerGfx);
 
+    registerDemoTexture('demo/checker', checker);
     checkerGfx.destroy();
 
     const nineGfx = new Graphics()
@@ -75,16 +84,18 @@ export function createDemoTextures(app: Application): DemoTextures
 
     const nineSlice = app.renderer.generateTexture(nineGfx);
 
+    registerDemoTexture('demo/nine-slice', nineSlice);
     nineGfx.destroy();
 
     const animFrames: Array<Texture> = [];
     const colors = [0xef4444, 0xf59e0b, 0x22c55e, 0x3b82f6];
 
-    for (const color of colors)
+    for (let i = 0; i < colors.length; i++)
     {
-        const frameGfx = new Graphics().circle(16, 16, 14).fill(color);
+        const frameGfx = new Graphics().circle(16, 16, 14).fill(colors[i]);
         const frame = app.renderer.generateTexture(frameGfx);
 
+        registerDemoTexture(`demo/anim-${i}`, frame);
         frameGfx.destroy();
         animFrames.push(frame);
     }
@@ -97,6 +108,7 @@ export function createDemoTextures(app: Application): DemoTextures
 
     const mesh = app.renderer.generateTexture(meshGfx);
 
+    registerDemoTexture('demo/mesh', mesh);
     meshGfx.destroy();
 
     const gifSourceFrames = [
@@ -104,6 +116,11 @@ export function createDemoTextures(app: Application): DemoTextures
         { texture: canvasTexture('#22c55e', 40, 40), start: 180, end: 360 },
         { texture: canvasTexture('#3b82f6', 40, 40), start: 360, end: 540 },
     ];
+
+    for (let i = 0; i < gifSourceFrames.length; i++)
+    {
+        registerDemoTexture(`demo/gif-${i}`, gifSourceFrames[i].texture);
+    }
 
     return { solid, checker, nineSlice, animFrames, gifSourceFrames, mesh };
 }

@@ -5,7 +5,6 @@
   };
 
   const { message, lastError }: Props = $props();
-
 </script>
 
 <div class="empty">
@@ -13,10 +12,13 @@
   {#if lastError}
     <pre class="err">{lastError}</pre>
   {/if}
-  <pre class="hint">globalThis.__PIXI_APP__ = app;</pre>
+  <pre class="hint">globalThis.__PIXI_APP__ = app;
+globalThis.__PIXI_CACHE__ = Cache;</pre>
   <p class="hint-note">
     Or set <code>__PIXI_STAGE__</code> / <code>__PIXI_RENDERER__</code>.
-    Selected node is exposed as <code>$pixi</code> in the page console.
+    <code>__PIXI_CACHE__</code> enables the texture browse picker (optional;
+    Assets.cache / PIXI.utils.TextureCache also work). Selected node is exposed
+    as <code>$pixi</code> in the page console.
   </p>
 </div>
 

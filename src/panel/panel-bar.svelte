@@ -1,5 +1,9 @@
+<script module lang="ts">
+  declare const PSI_VERSION: string;
+</script>
+
 <script lang="ts">
-  import { onMount } from 'svelte';
+  import { onMount } from "svelte";
 
   type Props = {
     message: string;
@@ -19,45 +23,45 @@
   };
 
   const {
-      message,
-      source,
-      showHelp,
-      isolateLabel,
-      highlightEnabled,
-      onhighlightEnabledChange,
-      autoRefresh,
-      liveRefreshAvailable,
-      onautoRefreshChange,
-      nameFilter,
-      onnameFilterChange,
-      ontoggleHelp,
-      onrefresh,
-      onBarReady,
+    message,
+    source,
+    showHelp,
+    isolateLabel,
+    highlightEnabled,
+    onhighlightEnabledChange,
+    autoRefresh,
+    liveRefreshAvailable,
+    onautoRefreshChange,
+    nameFilter,
+    onnameFilterChange,
+    ontoggleHelp,
+    onrefresh,
+    onBarReady,
   }: Props = $props();
 
   let barEl: HTMLElement | undefined = $state();
 
-  onMount(() =>
-  {
-      if (barEl)
-      {
-          onBarReady?.(barEl);
-      }
+  onMount(() => {
+    if (barEl) {
+      onBarReady?.(barEl);
+    }
   });
 </script>
 
 <header class="bar" bind:this={barEl}>
-  <div class="title">Pixi Scene Inspector</div>
+  <div class="title">
+    Pixi Scene Inspector
+    <span class="version">{PSI_VERSION}</span>
+  </div>
   <div class="meta" title={source}>{message}</div>
   <button
     type="button"
     class="help-btn"
-    aria-label={showHelp ? 'Close help' : 'Keyboard shortcuts'}
+    aria-label={showHelp ? "Close help" : "Keyboard shortcuts"}
     aria-pressed={showHelp}
-    onclick={(e) =>
-    {
-        ontoggleHelp();
-        e.currentTarget.blur();
+    onclick={(e) => {
+      ontoggleHelp();
+      e.currentTarget.blur();
     }}
   >
     ?
@@ -83,7 +87,7 @@
         type="button"
         class="filter-clear"
         aria-label="Clear filter"
-        onclick={() => onnameFilterChange('')}
+        onclick={() => onnameFilterChange("")}
       >
         ×
       </button>
@@ -97,7 +101,13 @@
     />
     highlight
   </label>
-  <label class="toggle" class:disabled={!liveRefreshAvailable} title={liveRefreshAvailable ? undefined : 'Set interval in extension settings'}>
+  <label
+    class="toggle"
+    class:disabled={!liveRefreshAvailable}
+    title={liveRefreshAvailable
+      ? undefined
+      : "Set interval in extension settings"}
+  >
     <input
       type="checkbox"
       checked={autoRefresh && liveRefreshAvailable}
@@ -121,9 +131,19 @@
   }
 
   .title {
+    display: flex;
+    flex-shrink: 0;
+    gap: 6px;
+    align-items: baseline;
     font-size: 13px;
     font-weight: 700;
     letter-spacing: 0.02em;
+  }
+
+  .version {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0;
   }
 
   .meta {
@@ -185,15 +205,15 @@
   }
 
   .filter {
+    position: relative;
     display: flex;
     flex-shrink: 0;
-    gap: 4px;
     align-items: center;
   }
 
   .filter-input {
     width: 120px;
-    padding: 3px 6px;
+    padding: 3px 20px 3px 6px;
     font-family: inherit;
     font-size: 11px;
     color: #f0f0f0;
@@ -211,28 +231,30 @@
   }
 
   .filter-clear {
+    position: absolute;
+    top: 50%;
+    right: 2px;
     display: flex;
     flex-shrink: 0;
     align-items: center;
     justify-content: center;
-    width: 18px;
-    height: 18px;
+    width: 16px;
+    height: 16px;
     padding: 0;
     font-family: inherit;
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 700;
     line-height: 1;
-    color: #bdbdbd;
+    color: #ffe066;
     cursor: pointer;
     background: transparent;
-    border: 1.5px solid #bdbdbd;
-    border-radius: 50%;
+    border: 0;
+    border-radius: 3px;
+    transform: translateY(-50%);
   }
 
   .filter-clear:hover {
-    color: #111;
-    background: #fff;
-    border-color: #111;
+    color: #fff3a8;
   }
 
   .btn {

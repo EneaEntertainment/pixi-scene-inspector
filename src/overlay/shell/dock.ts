@@ -20,7 +20,7 @@ import type { MountedPixiSceneInspector, MountPixiSceneInspectorOptions } from '
 const SHELL_ID = 'pixi-scene-inspector-shell';
 const TREE_ID = 'pixi-scene-inspector-tree';
 const PROPS_ID = 'pixi-scene-inspector-properties';
-const DEFAULT_TREE_HEIGHT = '40%';
+const DEFAULT_TREE_HEIGHT = 280;
 const DEFAULT_PROPS_WIDTH = 300;
 const TREE_MIN_PX = 60;
 const TREE_MIN_GAME_PX = 60;

@@ -1,5 +1,6 @@
 import { isNodeAlive, type PageGlobals, type PixiNode, type PixiPoint } from '../../page-ops/pixi-node';
 import { isParticleNode } from '../../page-ops/root';
+import { nodeHasTexture, nodeTextureName, setNodeTextureByName } from '../../page-ops/texture';
 import { isPixi8 } from '../../page-ops/types';
 import { colorToString, parseColorString } from '../text/colors';
 
@@ -31,6 +32,7 @@ type PropertyKey =
     | 'interactiveChildren'
     | 'label'
     | 'name'
+    | 'texture'
     | 'tint';
 
 export type BooleanPropertyKey =
@@ -47,6 +49,7 @@ export type StringPropertyKey =
     | 'blendMode'
     | 'label'
     | 'name'
+    | 'texture'
     | 'tint';
 
 export type NumberPropertyKey = Exclude<
@@ -359,6 +362,20 @@ export function mapsForNode(node: PixiNode | null | undefined): NodePropertyMaps
     const strings: Array<PropertyMapping<string>> = [];
 
     strings.push(...identityStringMaps(node));
+
+    if (nodeHasTexture(node))
+    {
+        strings.push({
+            key: 'texture',
+
+            get: () => nodeTextureName(node),
+
+            set: (value) =>
+            {
+                setNodeTextureByName(node, value);
+            },
+        });
+    }
 
     numbers.push(
         ...pointAxis(

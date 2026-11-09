@@ -18,6 +18,7 @@ import { mapsForNode } from './node';
 import { createSpineSection } from './spine-section';
 import { createPropertiesTabs } from './tabs';
 import { textMapsForNode } from './text';
+import { createTextureSection } from './texture-section';
 import { applyTransformNumber, MULTI_TRANSFORM_KEYS } from './transform-apply';
 
 import type { PageGlobals, PixiNode } from '../../page-ops/pixi-node';
@@ -419,6 +420,11 @@ export function createPropertiesForm(selection: SelectionChannel): PropertiesFor
 
     const spineSection = createSpineSection();
 
+    const textureSection = createTextureSection(() =>
+    {
+        openSectionExport('texture', 'Texture');
+    });
+
     for (const section of OBJECT_FORM_SECTIONS)
     {
         buildSection(section, objectPane, builtObject);
@@ -426,6 +432,7 @@ export function createPropertiesForm(selection: SelectionChannel): PropertiesFor
         if (section.id === 'identity')
         {
             objectPane.appendChild(spineSection.root);
+            objectPane.appendChild(textureSection.root);
         }
     }
 
@@ -559,6 +566,7 @@ export function createPropertiesForm(selection: SelectionChannel): PropertiesFor
                 }
 
                 spineSection.sync(null);
+                textureSection.sync(null, true);
 
                 return;
             }
@@ -611,6 +619,7 @@ export function createPropertiesForm(selection: SelectionChannel): PropertiesFor
             }
 
             spineSection.sync(node);
+            textureSection.sync(node);
         }
         catch
         {
@@ -623,6 +632,7 @@ export function createPropertiesForm(selection: SelectionChannel): PropertiesFor
 
             tabs.setTextAvailable(false);
             spineSection.sync(null);
+            textureSection.sync(null);
         }
     }
 
@@ -664,6 +674,7 @@ export function createPropertiesForm(selection: SelectionChannel): PropertiesFor
             unsubscribeSelection();
             tabs.destroy();
             spineSection.destroy();
+            textureSection.destroy();
 
             for (const section of [...builtObject, ...builtText])
             {

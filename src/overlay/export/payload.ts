@@ -497,29 +497,14 @@ export function buildSectionExportPayload(
     return payload;
 }
 
-function exportPropsForNode(): Array<ExportPropSpec>
+export function exportSelectionKey(sectionId: PropertyExportSectionId, propId: ExportPropId): string
 {
-    const specs: Array<ExportPropSpec> = [];
-
-    for (const sectionId of PROPERTY_SECTION_IDS)
-    {
-        for (const spec of exportPropsForSection(sectionId))
-        {
-            specs.push(spec);
-        }
-    }
-
-    return specs;
-}
-
-export function availableExportPropsForNode(maps: ExportPropertyMaps): Array<ExportPropSpec>
-{
-    return exportPropsForNode().filter((spec) => isExportPropAvailable(maps, spec));
+    return `${sectionId}\0${propId}`;
 }
 
 export function buildNodeExportPayload(
     maps: ExportPropertyMaps,
-    selectedIds: ReadonlySet<ExportPropId> | 'all',
+    selectedIds: ReadonlySet<string> | 'all',
 ): Record<string, unknown>
 {
     const payload: Record<string, unknown> = {};
@@ -530,7 +515,7 @@ export function buildNodeExportPayload(
     {
         for (const spec of availableExportPropsForSection(sectionId, maps))
         {
-            if (selectedIds !== 'all' && !selectedIds.has(spec.id))
+            if (selectedIds !== 'all' && !selectedIds.has(exportSelectionKey(sectionId, spec.id)))
             {
                 continue;
             }

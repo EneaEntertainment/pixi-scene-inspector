@@ -1,7 +1,7 @@
 import { isolateEditableKeyEvents } from '../../editable-keys';
 import { exportDialogGesture } from '../../gesture-active';
 import { exportPropsForSection, PROPERTY_SECTION_IDS, PROPERTY_SECTION_TITLES } from '../properties/catalog';
-import { closeIconSvg } from '../shell/panel-icons';
+import { createDialogCloseButton } from '../shell/dialog-close-button';
 import {
     readPropertyExportOutput,
     readPropertyExportSelection,
@@ -9,19 +9,17 @@ import {
     writePropertyExportSelection,
 } from '../shell/settings';
 import {
-    availableExportPropsForNode,
     availableExportPropsForSection,
     buildNodeExportPayload,
     buildSectionExportPayload,
     copyExportPayload,
     downloadExportPayload,
+    exportSelectionKey,
 } from './payload';
 
 import type { ExportPropSpec } from '../properties/catalog';
 import type { PropertyExportOutputMode, PropertyExportSectionId, PropertyExportSelection } from '../shell/settings';
 import type { ExportPropertyMaps } from './payload';
-
-type ExportPropId = string;
 
 function defaultSelection(sectionId: PropertyExportSectionId, specs: Array<ExportPropSpec>): PropertyExportSelection
 {
@@ -159,48 +157,8 @@ export function openExportDialog(options: ExportDialogOptions): ExportDialog
         whiteSpace    : 'nowrap',
     });
 
-    const closeBtn = document.createElement('button');
-
-    closeBtn.title = 'Close';
-    closeBtn.type = 'button';
-    closeBtn.innerHTML = closeIconSvg();
-
-    closeBtn.setAttribute('aria-label', 'Close');
-
-    Object.assign(closeBtn.style, {
-        flexShrink     : '0',
-        display        : 'flex',
-        alignItems     : 'center',
-        justifyContent : 'center',
-        width          : '20px',
-        height         : '20px',
-        margin         : '0',
-        padding        : '0',
-        border         : '0',
-        borderRadius   : '3px',
-        appearance     : 'none',
-        background     : 'transparent',
-        color          : '#bdbdbd',
-        cursor         : 'pointer',
-        boxSizing      : 'border-box',
-    });
-
-    closeBtn.addEventListener('pointerenter', () =>
+    const closeBtn = createDialogCloseButton(() =>
     {
-        closeBtn.style.color = '#fff';
-        closeBtn.style.background = '#545454';
-    });
-
-    closeBtn.addEventListener('pointerleave', () =>
-    {
-        closeBtn.style.color = '#bdbdbd';
-        closeBtn.style.background = 'transparent';
-    });
-
-    closeBtn.addEventListener('click', (event) =>
-    {
-        event.preventDefault();
-        event.stopPropagation();
         close();
     });
 
@@ -220,7 +178,7 @@ export function openExportDialog(options: ExportDialogOptions): ExportDialog
         flex          : '1',
     });
 
-    const checkboxes = new Map<ExportPropId, HTMLInputElement>();
+    const checkboxes = new Map<string, HTMLInputElement>();
 
     function appendPropRow(parent: HTMLElement, sectionId: PropertyExportSectionId, spec: ExportPropSpec)
     {
@@ -270,7 +228,7 @@ export function openExportDialog(options: ExportDialogOptions): ExportDialog
             writePropertyExportSelection(sectionId, { ...selection });
         });
 
-        checkboxes.set(spec.id, checkbox);
+        checkboxes.set(exportSelectionKey(sectionId, spec.id), checkbox);
         row.appendChild(checkbox);
         row.appendChild(label);
         parent.appendChild(row);
@@ -462,16 +420,15 @@ export function openExportDialog(options: ExportDialogOptions): ExportDialog
     {
         const currentMaps = options.getMaps();
 
-        const available = options.kind === 'section'
-            ? availableExportPropsForSection(options.sectionId, currentMaps)
-            : availableExportPropsForNode(currentMaps);
-
-        const ids: ReadonlySet<ExportPropId> | 'all' = mode === 'all'
+        const ids: ReadonlySet<string> | 'all' = mode === 'all'
             ? 'all'
             : new Set(
-                available
-                    .filter((spec) => checkboxes.get(spec.id)?.checked)
-                    .map((spec) => spec.id),
+                availableSections.flatMap((section) =>
+                    availableExportPropsForSection(section.id, currentMaps)
+                        .filter((spec) => checkboxes.get(exportSelectionKey(section.id, spec.id))?.checked)
+                        .map((spec) => (options.kind === 'section'
+                            ? spec.id
+                            : exportSelectionKey(section.id, spec.id)))),
             );
 
         const payload = options.kind === 'section'
