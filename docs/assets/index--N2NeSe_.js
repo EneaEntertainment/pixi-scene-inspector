@@ -1,4 +1,4 @@
-const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/browserAll-D0z-VTpS.js","assets/webworkerAll-0Yb4dpuc.js","assets/Filter-jTN0nOzj.js","assets/WebGPURenderer-OqK8K_Y0.js","assets/getTexelRangeRects-BAEjafbO.js","assets/RenderTargetSystem-B2mLpGNx.js","assets/WebGLRenderer-B-VzzCqo.js","assets/CanvasRenderer-CFPi8Gns.js"])))=>i.map(i=>d[i]);
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/browserAll-CJGBepZQ.js","assets/webworkerAll-BgNrMzlz.js","assets/Filter-BH24HVWH.js","assets/WebGPURenderer-DVFmvgjL.js","assets/getTexelRangeRects-BTk_1JrT.js","assets/RenderTargetSystem-jftNEtXG.js","assets/WebGLRenderer-B4i-p0OC.js","assets/CanvasRenderer-CETR1UZP.js"])))=>i.map(i=>d[i]);
 (function polyfill() {
   const relList = document.createElement("link").relList;
   if (relList && relList.supports && relList.supports("modulepreload")) return;
@@ -355,7 +355,7 @@ const browserExt = {
   },
   test: () => true,
   load: async () => {
-    await __vitePreload(() => import("./browserAll-D0z-VTpS.js"), true ? __vite__mapDeps([0,1,2]) : void 0);
+    await __vitePreload(() => import("./browserAll-CJGBepZQ.js"), true ? __vite__mapDeps([0,1,2]) : void 0);
   }
 };
 const webworkerExt = {
@@ -366,7 +366,7 @@ const webworkerExt = {
   },
   test: () => typeof self !== "undefined" && self.WorkerGlobalScope !== void 0,
   load: async () => {
-    await __vitePreload(() => import("./webworkerAll-0Yb4dpuc.js"), true ? __vite__mapDeps([1,2]) : void 0);
+    await __vitePreload(() => import("./webworkerAll-BgNrMzlz.js"), true ? __vite__mapDeps([1,2]) : void 0);
   }
 };
 class ObservablePoint {
@@ -10804,12 +10804,12 @@ const _Spritesheet = class _Spritesheet2 {
       if (rect) {
         let frame = null;
         let trim = null;
-        const sourceSize = data.trimmed !== false && data.sourceSize ? data.sourceSize : data.frame;
+        const sourceSize2 = data.trimmed !== false && data.sourceSize ? data.sourceSize : data.frame;
         const orig = new Rectangle(
           0,
           0,
-          Math.floor(sourceSize.w) / this.resolution,
-          Math.floor(sourceSize.h) / this.resolution
+          Math.floor(sourceSize2.w) / this.resolution,
+          Math.floor(sourceSize2.h) / this.resolution
         );
         if (data.rotated) {
           frame = new Rectangle(
@@ -13297,7 +13297,7 @@ async function autoDetectRenderer(options) {
     const rendererType = preferredOrder[i2];
     if (rendererType === "webgpu" && await isWebGPUSupported()) {
       const { WebGPURenderer } = await __vitePreload(async () => {
-        const { WebGPURenderer: WebGPURenderer2 } = await import("./WebGPURenderer-OqK8K_Y0.js");
+        const { WebGPURenderer: WebGPURenderer2 } = await import("./WebGPURenderer-DVFmvgjL.js");
         return { WebGPURenderer: WebGPURenderer2 };
       }, true ? __vite__mapDeps([3,4,5,2]) : void 0);
       RendererClass = WebGPURenderer;
@@ -13307,7 +13307,7 @@ async function autoDetectRenderer(options) {
       options.failIfMajorPerformanceCaveat ?? AbstractRenderer.defaultOptions.failIfMajorPerformanceCaveat
     )) {
       const { WebGLRenderer } = await __vitePreload(async () => {
-        const { WebGLRenderer: WebGLRenderer2 } = await import("./WebGLRenderer-B-VzzCqo.js");
+        const { WebGLRenderer: WebGLRenderer2 } = await import("./WebGLRenderer-B4i-p0OC.js");
         return { WebGLRenderer: WebGLRenderer2 };
       }, true ? __vite__mapDeps([6,4,5,2]) : void 0);
       RendererClass = WebGLRenderer;
@@ -13315,7 +13315,7 @@ async function autoDetectRenderer(options) {
       break;
     } else if (rendererType === "canvas") {
       const { CanvasRenderer } = await __vitePreload(async () => {
-        const { CanvasRenderer: CanvasRenderer2 } = await import("./CanvasRenderer-CFPi8Gns.js");
+        const { CanvasRenderer: CanvasRenderer2 } = await import("./CanvasRenderer-CETR1UZP.js");
         return { CanvasRenderer: CanvasRenderer2 };
       }, true ? __vite__mapDeps([7,5,2]) : void 0);
       RendererClass = CanvasRenderer;
@@ -30351,14 +30351,14 @@ const _DynamicBitmapFont = class _DynamicBitmapFont2 extends AbstractBitmapFont 
   }
   _nextPage() {
     this._currentPageIndex++;
-    const textureResolution = this.resolution;
+    const textureResolution2 = this.resolution;
     const canvasAndContext = CanvasPool.getOptimalCanvasAndContext(
       this._textureSize,
       this._textureSize,
-      textureResolution
+      textureResolution2
     );
-    this._setupContext(canvasAndContext.context, this._style, textureResolution);
-    const resolution = textureResolution * (this.baseRenderedFontSize / this.baseMeasurementFontSize);
+    this._setupContext(canvasAndContext.context, this._style, textureResolution2);
+    const resolution = textureResolution2 * (this.baseRenderedFontSize / this.baseMeasurementFontSize);
     const texture = new Texture$1({
       source: new ImageSource({
         resource: canvasAndContext.canvas,
@@ -35061,19 +35061,19 @@ class BitmapFont extends AbstractBitmapFont {
       const {
         frame: textureFrame,
         source: textureSource,
-        rotate: textureRotate
+        rotate: textureRotate2
       } = textures[charData.page];
       const frame = groupD8.transformRectCoords(
         charData,
         textureFrame,
-        textureRotate,
+        textureRotate2,
         new Rectangle()
       );
       const texture = new Texture$1({
         frame,
         orig: new Rectangle(0, 0, charData.width, charData.height),
         source: textureSource,
-        rotate: textureRotate
+        rotate: textureRotate2
       });
       this.chars[key] = {
         id: key.codePointAt(0),
@@ -41804,8 +41804,10 @@ function Help($$anchor, $$props) {
 }
 delegate(["click"]);
 var root$4 = /* @__PURE__ */ from_html(`<pre class="err svelte-1pr5ypn"> </pre>`);
-var root_1$4 = /* @__PURE__ */ from_html(`<div class="empty svelte-1pr5ypn"><p class="svelte-1pr5ypn"> </p> <!> <pre class="hint svelte-1pr5ypn">globalThis.__PIXI_APP__ = app;</pre> <p class="hint-note svelte-1pr5ypn">Or set <code class="svelte-1pr5ypn">__PIXI_STAGE__</code> / <code class="svelte-1pr5ypn">__PIXI_RENDERER__</code>.
-    Selected node is exposed as <code class="svelte-1pr5ypn">$pixi</code> in the page console.</p></div>`);
+var root_1$4 = /* @__PURE__ */ from_html(`<div class="empty svelte-1pr5ypn"><p class="svelte-1pr5ypn"> </p> <!> <pre class="hint svelte-1pr5ypn">globalThis.__PIXI_APP__ = app;
+globalThis.__PIXI_CACHE__ = Cache;</pre> <p class="hint-note svelte-1pr5ypn">Or set <code class="svelte-1pr5ypn">__PIXI_STAGE__</code> / <code class="svelte-1pr5ypn">__PIXI_RENDERER__</code>. <code class="svelte-1pr5ypn">__PIXI_CACHE__</code> enables the texture browse picker (optional;
+    Assets.cache / PIXI.utils.TextureCache also work). Selected node is exposed
+    as <code class="svelte-1pr5ypn">$pixi</code> in the page console.</p></div>`);
 const $$css$5 = {
   hash: "svelte-1pr5ypn",
   code: ".empty.svelte-1pr5ypn {display:flex;flex:1;flex-direction:column;gap:12px;align-items:flex-start;justify-content:center;padding:32px;max-width:560px;}.empty.svelte-1pr5ypn p:where(.svelte-1pr5ypn) {margin:0;line-height:1.4;}.hint.svelte-1pr5ypn {margin:0;padding:10px 12px;font-size:12px;color:#1a7a1a;background:#fff;border:1.5px solid #111;box-shadow:3px 3px 0 #111;}.hint-note.svelte-1pr5ypn {font-size:11px;color:#cfcfcf;}.hint-note.svelte-1pr5ypn code:where(.svelte-1pr5ypn) {color:#ffe066;}.err.svelte-1pr5ypn {margin:0;padding:8px;font-size:11px;color:#ffb4b4;word-break:break-word;white-space:pre-wrap;background:#2a2a2a;}"
@@ -41832,10 +41834,10 @@ function Missing_pixi($$anchor, $$props) {
 }
 var root$3 = /* @__PURE__ */ from_html(`<div class="iso svelte-evo3fa"> </div>`);
 var root_1$3 = /* @__PURE__ */ from_html(`<button type="button" class="filter-clear svelte-evo3fa" aria-label="Clear filter">×</button>`);
-var root_2$3 = /* @__PURE__ */ from_html(`<header class="bar svelte-evo3fa"><div class="title svelte-evo3fa">Pixi Scene Inspector</div> <div class="meta svelte-evo3fa"> </div> <button type="button" class="help-btn svelte-evo3fa">?</button> <!> <div class="filter svelte-evo3fa"><input type="text" class="filter-input svelte-evo3fa" placeholder="filter…" spellcheck="false" autocomplete="off" aria-label="Filter nodes by name"/> <!></div> <label class="toggle svelte-evo3fa"><input type="checkbox"/> highlight</label> <label><input type="checkbox"/> live</label> <button type="button" class="btn svelte-evo3fa">Refresh</button></header>`);
+var root_2$3 = /* @__PURE__ */ from_html(`<header class="bar svelte-evo3fa"><div class="title svelte-evo3fa">Pixi Scene Inspector <span class="version svelte-evo3fa"></span></div> <div class="meta svelte-evo3fa"> </div> <button type="button" class="help-btn svelte-evo3fa">?</button> <!> <div class="filter svelte-evo3fa"><input type="text" class="filter-input svelte-evo3fa" placeholder="filter…" spellcheck="false" autocomplete="off" aria-label="Filter nodes by name"/> <!></div> <label class="toggle svelte-evo3fa"><input type="checkbox"/> highlight</label> <label><input type="checkbox"/> live</label> <button type="button" class="btn svelte-evo3fa">Refresh</button></header>`);
 const $$css$4 = {
   hash: "svelte-evo3fa",
-  code: '.bar.svelte-evo3fa {display:flex;flex-shrink:0;gap:12px;align-items:center;padding:8px 12px;border-bottom:2px solid #2e2e2e;background:#3a3a3a;}.title.svelte-evo3fa {font-size:13px;font-weight:700;letter-spacing:0.02em;}.meta.svelte-evo3fa {overflow:hidden;font-size:11px;color:#bdbdbd;text-overflow:ellipsis;white-space:nowrap;}.help-btn.svelte-evo3fa {display:flex;flex-shrink:0;align-items:center;justify-content:center;width:18px;height:18px;margin-right:auto;padding:0;font-family:inherit;font-size:12px;font-weight:700;line-height:1;color:#bdbdbd;cursor:pointer;background:transparent;border:1.5px solid #bdbdbd;border-radius:50%;}.help-btn.svelte-evo3fa:hover,\n  .help-btn[aria-pressed="true"].svelte-evo3fa {color:#111;background:#fff;border-color:#111;}.iso.svelte-evo3fa {flex-shrink:0;max-width:420px;overflow:hidden;font-size:11px;color:#ffe066;text-overflow:ellipsis;white-space:nowrap;}.toggle.svelte-evo3fa {display:flex;gap:6px;align-items:center;font-size:11px;color:#cfcfcf;user-select:none;}.toggle.disabled.svelte-evo3fa {opacity:0.45;}.filter.svelte-evo3fa {display:flex;flex-shrink:0;gap:4px;align-items:center;}.filter-input.svelte-evo3fa {width:120px;padding:3px 6px;font-family:inherit;font-size:11px;color:#f0f0f0;background:#2e2e2e;border:1.5px solid #111;outline:none;}.filter-input.svelte-evo3fa::placeholder {color:#888;}.filter-input.svelte-evo3fa:focus {border-color:#ffe066;}.filter-clear.svelte-evo3fa {display:flex;flex-shrink:0;align-items:center;justify-content:center;width:18px;height:18px;padding:0;font-family:inherit;font-size:12px;font-weight:700;line-height:1;color:#bdbdbd;cursor:pointer;background:transparent;border:1.5px solid #bdbdbd;border-radius:50%;}.filter-clear.svelte-evo3fa:hover {color:#111;background:#fff;border-color:#111;}.btn.svelte-evo3fa {padding:4px 10px;font-family:inherit;font-size:11px;font-weight:700;color:#111;cursor:pointer;background:#fff;border:1.5px solid #111;box-shadow:2px 2px 0 #111;}.btn.svelte-evo3fa:active {transform:translate(1px, 1px);box-shadow:1px 1px 0 #111;}'
+  code: '.bar.svelte-evo3fa {display:flex;flex-shrink:0;gap:12px;align-items:center;padding:8px 12px;border-bottom:2px solid #2e2e2e;background:#3a3a3a;}.title.svelte-evo3fa {display:flex;flex-shrink:0;gap:6px;align-items:baseline;font-size:13px;font-weight:700;letter-spacing:0.02em;}.version.svelte-evo3fa {font-size:11px;font-weight:700;letter-spacing:0;}.meta.svelte-evo3fa {overflow:hidden;font-size:11px;color:#bdbdbd;text-overflow:ellipsis;white-space:nowrap;}.help-btn.svelte-evo3fa {display:flex;flex-shrink:0;align-items:center;justify-content:center;width:18px;height:18px;margin-right:auto;padding:0;font-family:inherit;font-size:12px;font-weight:700;line-height:1;color:#bdbdbd;cursor:pointer;background:transparent;border:1.5px solid #bdbdbd;border-radius:50%;}.help-btn.svelte-evo3fa:hover,\n  .help-btn[aria-pressed="true"].svelte-evo3fa {color:#111;background:#fff;border-color:#111;}.iso.svelte-evo3fa {flex-shrink:0;max-width:420px;overflow:hidden;font-size:11px;color:#ffe066;text-overflow:ellipsis;white-space:nowrap;}.toggle.svelte-evo3fa {display:flex;gap:6px;align-items:center;font-size:11px;color:#cfcfcf;user-select:none;}.toggle.disabled.svelte-evo3fa {opacity:0.45;}.filter.svelte-evo3fa {position:relative;display:flex;flex-shrink:0;align-items:center;}.filter-input.svelte-evo3fa {width:120px;padding:3px 20px 3px 6px;font-family:inherit;font-size:11px;color:#f0f0f0;background:#2e2e2e;border:1.5px solid #111;outline:none;}.filter-input.svelte-evo3fa::placeholder {color:#888;}.filter-input.svelte-evo3fa:focus {border-color:#ffe066;}.filter-clear.svelte-evo3fa {position:absolute;top:50%;right:2px;display:flex;flex-shrink:0;align-items:center;justify-content:center;width:16px;height:16px;padding:0;font-family:inherit;font-size:13px;font-weight:700;line-height:1;color:#ffe066;cursor:pointer;background:transparent;border:0;border-radius:3px;transform:translateY(-50%);}.filter-clear.svelte-evo3fa:hover {color:#fff3a8;}.btn.svelte-evo3fa {padding:4px 10px;font-family:inherit;font-size:11px;font-weight:700;color:#111;cursor:pointer;background:#fff;border:1.5px solid #111;box-shadow:2px 2px 0 #111;}.btn.svelte-evo3fa:active {transform:translate(1px, 1px);box-shadow:1px 1px 0 #111;}'
 };
 function Panel_bar($$anchor, $$props) {
   push($$props, true);
@@ -41847,23 +41849,26 @@ function Panel_bar($$anchor, $$props) {
     }
   });
   var header = root_2$3();
-  var div = sibling(child(header), 2);
-  var text = only_child(div, true);
-  var button = sibling(div, 2);
+  var div = child(header);
+  var span = sibling(child(div));
+  span.textContent = "1.1.0";
+  var div_1 = sibling(div, 2);
+  var text = only_child(div_1, true);
+  var button = sibling(div_1, 2);
   var node = sibling(button, 2);
   {
     var consequent = ($$anchor2) => {
-      var div_1 = root$3();
-      var text_1 = only_child(div_1, true);
+      var div_2 = root$3();
+      var text_1 = only_child(div_2, true);
       template_effect(() => set_text(text_1, $$props.isolateLabel));
-      append($$anchor2, div_1);
+      append($$anchor2, div_2);
     };
     if_block(node, ($$render) => {
       if ($$props.isolateLabel !== null) $$render(consequent);
     });
   }
-  var div_2 = sibling(node, 2);
-  var input = child(div_2);
+  var div_3 = sibling(node, 2);
+  var input = child(div_3);
   var node_1 = sibling(input, 2);
   {
     var consequent_1 = ($$anchor2) => {
@@ -41875,7 +41880,7 @@ function Panel_bar($$anchor, $$props) {
       if ($$props.nameFilter.length > 0) $$render(consequent_1);
     });
   }
-  var label = sibling(div_2, 2);
+  var label = sibling(div_3, 2);
   var input_1 = child(label);
   var label_1 = sibling(label, 2);
   let classes;
@@ -41883,7 +41888,7 @@ function Panel_bar($$anchor, $$props) {
   var button_2 = sibling(label_1, 2);
   bind_this(header, ($$value) => set(barEl, $$value), () => get(barEl));
   template_effect(() => {
-    set_attribute(div, "title", $$props.source);
+    set_attribute(div_1, "title", $$props.source);
     set_text(text, $$props.message);
     set_attribute(button, "aria-label", $$props.showHelp ? "Close help" : "Keyboard shortcuts");
     set_attribute(button, "aria-pressed", $$props.showHelp);
@@ -41926,8 +41931,9 @@ const numberDragGesture = createGestureGate();
 const treeDragGesture = createGestureGate();
 const highlightTransformGesture = createGestureGate();
 const exportDialogGesture = createGestureGate();
+const texturePickerGesture = createGestureGate();
 function isBlockingGestureActive() {
-  return numberDragGesture.isActive() || treeDragGesture.isActive() || highlightTransformGesture.isActive() || exportDialogGesture.isActive();
+  return numberDragGesture.isActive() || treeDragGesture.isActive() || highlightTransformGesture.isActive() || exportDialogGesture.isActive() || texturePickerGesture.isActive();
 }
 function resolvePanelKey(e2, ctx) {
   if (e2.defaultPrevented) {
@@ -43513,6 +43519,7 @@ const STROKE_JOIN_OPTIONS = [
 ];
 const PROPERTY_SECTION_IDS = [
   "identity",
+  "texture",
   "transform",
   "visibility",
   "rendering",
@@ -43526,6 +43533,7 @@ const PROPERTY_SECTION_IDS = [
 ];
 const PROPERTY_SECTION_TITLES = {
   identity: "Identity",
+  texture: "Texture",
   transform: "Transform",
   visibility: "Visibility",
   rendering: "Rendering",
@@ -43894,13 +43902,26 @@ function exportPropsFromCatalog(sections) {
 }
 const OBJECT_FORM_SECTIONS = formSectionsFromCatalog(OBJECT_CATALOG_SECTIONS);
 const TEXT_FORM_SECTIONS = formSectionsFromCatalog(TEXT_CATALOG_SECTIONS);
-const EXPORT_PROPS_BY_SECTION = exportPropsFromCatalog([
-  ...OBJECT_CATALOG_SECTIONS,
-  ...TEXT_CATALOG_SECTIONS
-]);
+const TEXTURE_EXPORT_PROPS = [
+  { kind: "string", id: "texture", key: "texture" }
+];
+const EXPORT_PROPS_BY_SECTION = {
+  ...exportPropsFromCatalog([
+    ...OBJECT_CATALOG_SECTIONS,
+    ...TEXT_CATALOG_SECTIONS
+  ]),
+  texture: TEXTURE_EXPORT_PROPS
+};
 function exportPropsForSection(sectionId) {
   return EXPORT_PROPS_BY_SECTION[sectionId];
 }
+const TEXTURE_PICKER_VIEW_MODES = [
+  "thumb-sm",
+  "thumb-md",
+  "thumb-lg",
+  "list",
+  "list-miller"
+];
 const SETTINGS_KEY = "pixi-scene-inspector-settings";
 function asPositiveNumber(value) {
   const n2 = Number(value);
@@ -43995,15 +44016,92 @@ function mergePropertyExport(current2, patch) {
   }
   return Object.keys(next).length > 0 ? next : void 0;
 }
+function normalizeFloatRectSettings(raw) {
+  if (!raw || typeof raw !== "object") {
+    return void 0;
+  }
+  const record = raw;
+  const left = asFiniteNumber(record.left);
+  const top = asFiniteNumber(record.top);
+  const width = asPositiveNumber(record.width);
+  const height = asPositiveNumber(record.height);
+  if (left === void 0 || top === void 0 || width === void 0 || height === void 0) {
+    return void 0;
+  }
+  return { left, top, width, height };
+}
+function normalizeTexturePickerViewMode(value) {
+  return typeof value === "string" && TEXTURE_PICKER_VIEW_MODES.includes(value) ? value : void 0;
+}
+function normalizeTexturePickerSettings(raw) {
+  if (!raw || typeof raw !== "object") {
+    return void 0;
+  }
+  const record = raw;
+  const settings = {};
+  const left = asFiniteNumber(record.left);
+  const top = asFiniteNumber(record.top);
+  const width = asPositiveNumber(record.width);
+  const height = asPositiveNumber(record.height);
+  const viewMode = normalizeTexturePickerViewMode(record.viewMode);
+  if (left !== void 0) {
+    settings.left = left;
+  }
+  if (top !== void 0) {
+    settings.top = top;
+  }
+  if (width !== void 0) {
+    settings.width = width;
+  }
+  if (height !== void 0) {
+    settings.height = height;
+  }
+  if (viewMode !== void 0) {
+    settings.viewMode = viewMode;
+  }
+  return Object.keys(settings).length > 0 ? settings : void 0;
+}
+function roundTexturePickerSettings(settings) {
+  const rounded = {};
+  if (typeof settings.left === "number" && Number.isFinite(settings.left)) {
+    rounded.left = Math.round(settings.left);
+  }
+  if (typeof settings.top === "number" && Number.isFinite(settings.top)) {
+    rounded.top = Math.round(settings.top);
+  }
+  if (typeof settings.width === "number" && Number.isFinite(settings.width)) {
+    rounded.width = Math.round(settings.width);
+  }
+  if (typeof settings.height === "number" && Number.isFinite(settings.height)) {
+    rounded.height = Math.round(settings.height);
+  }
+  if (settings.viewMode !== void 0) {
+    rounded.viewMode = settings.viewMode;
+  }
+  return rounded;
+}
+function mergeTexturePickerSettings(current2, patch) {
+  if (!current2 && !patch) {
+    return void 0;
+  }
+  return roundTexturePickerSettings({
+    ...current2,
+    ...patch
+  });
+}
 function normalizeSettings(raw) {
   const settings = {
     properties: normalizePanelSettings(raw.properties),
     tree: normalizePanelSettings(raw.tree)
   };
+  const texturePicker = normalizeTexturePickerSettings(raw.texturePicker);
   const propertyExport = normalizePropertyExport(raw.propertyExport);
   const propertyExportOutput = normalizePropertyExportOutput(
     raw.propertyExportOutput
   );
+  if (texturePicker) {
+    settings.texturePicker = texturePicker;
+  }
   if (propertyExport) {
     settings.propertyExport = propertyExport;
   }
@@ -44057,6 +44155,10 @@ function writeSettings(patch) {
   );
   const propertyExportOutput = patch.propertyExportOutput ?? current2.propertyExportOutput;
   const highlight = patch.highlight ?? current2.highlight;
+  const texturePicker = mergeTexturePickerSettings(
+    current2.texturePicker,
+    patch.texturePicker
+  );
   const next = {
     properties: roundPanelSettings({
       ...current2.properties,
@@ -44079,6 +44181,9 @@ function writeSettings(patch) {
       } : {}
     })
   };
+  if (texturePicker) {
+    next.texturePicker = texturePicker;
+  }
   if (propertyExport) {
     next.propertyExport = propertyExport;
   }
@@ -44137,6 +44242,18 @@ function writeFloatPanelSettings(key, rect) {
     width: rect.width,
     height: rect.height
   });
+}
+function readTexturePickerRect() {
+  return normalizeFloatRectSettings(readSettings().texturePicker) ?? null;
+}
+function writeTexturePickerRect(rect) {
+  writeSettings({ texturePicker: rect });
+}
+function readTexturePickerViewMode() {
+  return readSettings().texturePicker?.viewMode ?? null;
+}
+function writeTexturePickerViewMode(viewMode) {
+  writeSettings({ texturePicker: { viewMode } });
 }
 if (typeof WATCH !== "undefined" && WATCH) {
   new EventSource("http://localhost:10809/esbuild").addEventListener("change", () => {
@@ -45226,6 +45343,753 @@ function resolveLiveSelectionNodes(win = globalThis) {
   }
   return [];
 }
+function createDialogCloseButton(onClose) {
+  const closeBtn = document.createElement("button");
+  closeBtn.type = "button";
+  closeBtn.title = "Close";
+  closeBtn.innerHTML = closeIconSvg();
+  closeBtn.setAttribute("aria-label", "Close");
+  Object.assign(closeBtn.style, {
+    flexShrink: "0",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    width: "20px",
+    height: "20px",
+    margin: "0",
+    padding: "0",
+    border: "0",
+    borderRadius: "3px",
+    appearance: "none",
+    background: "transparent",
+    color: "#bdbdbd",
+    cursor: "pointer",
+    boxSizing: "border-box"
+  });
+  closeBtn.addEventListener("pointerenter", () => {
+    closeBtn.style.color = "#fff";
+    closeBtn.style.background = "#545454";
+  });
+  closeBtn.addEventListener("pointerleave", () => {
+    closeBtn.style.color = "#bdbdbd";
+    closeBtn.style.background = "transparent";
+  });
+  closeBtn.addEventListener("click", (event2) => {
+    event2.preventDefault();
+    event2.stopPropagation();
+    onClose();
+  });
+  return closeBtn;
+}
+function isPixiTexture(value) {
+  if (!value || typeof value !== "object") {
+    return false;
+  }
+  const texture = value;
+  if (texture.isTexture === true) {
+    return true;
+  }
+  if (texture.source && typeof texture.source === "object") {
+    return true;
+  }
+  return !!(texture.baseTexture && typeof texture.baseTexture === "object");
+}
+function nodeTexture(node) {
+  const texture = node?.texture;
+  if (!isPixiTexture(texture)) {
+    return void 0;
+  }
+  return texture;
+}
+function nodeHasTexture(node) {
+  return !!nodeTexture(node);
+}
+function firstCacheId(ids) {
+  if (!ids) {
+    return void 0;
+  }
+  for (const id of ids) {
+    if (id !== "") {
+      return id;
+    }
+  }
+  return void 0;
+}
+function nonEmptyString(value) {
+  if (typeof value !== "string") {
+    return void 0;
+  }
+  const trimmed = value.trim();
+  return trimmed === "" ? void 0 : trimmed;
+}
+function basename(path2) {
+  const normalized = path2.replace(/\\/g, "/");
+  const slash = normalized.lastIndexOf("/");
+  return slash >= 0 ? normalized.slice(slash + 1) : normalized;
+}
+function textureLabelCandidates(texture) {
+  const values = [
+    nonEmptyString(texture.label),
+    nonEmptyString(texture.source?.label),
+    nonEmptyString(texture.source?._sourceOrigin),
+    nonEmptyString(texture.baseTexture?.label)
+  ];
+  const out2 = [];
+  for (const value of values) {
+    if (value && !out2.includes(value)) {
+      out2.push(value);
+    }
+  }
+  return out2;
+}
+function localTextureName(texture) {
+  const cached = firstCacheId(texture.textureCacheIds) ?? firstCacheId(texture.baseTexture?.textureCacheIds);
+  if (cached) {
+    return cached;
+  }
+  const labeled = textureLabelCandidates(texture)[0];
+  if (labeled) {
+    return labeled;
+  }
+  return nonEmptyString(texture.baseTexture?.resource?.url) ?? nonEmptyString(texture.baseTexture?.resource?.src) ?? "";
+}
+function isAssetCache(value) {
+  if (!value || typeof value !== "object") {
+    return false;
+  }
+  const cache = value;
+  if (cache._cache && typeof cache._cache.entries === "function") {
+    return true;
+  }
+  return typeof cache.has === "function" && typeof cache.get === "function";
+}
+function isPlainRecordCache(value) {
+  return !!value && typeof value === "object" && !Array.isArray(value) && !isAssetCache(value);
+}
+function hasExposedTextureCache(win = globalThis) {
+  const exposed = win.__PIXI_CACHE__;
+  return isAssetCache(exposed) || isPlainRecordCache(exposed);
+}
+function v7TextureCache(win) {
+  const utils = win.PIXI?.utils;
+  if (!utils || typeof utils !== "object") {
+    return void 0;
+  }
+  const textureCache = utils.TextureCache;
+  return textureCache && typeof textureCache === "object" ? textureCache : void 0;
+}
+function v8AssetCache(win) {
+  const candidates = [
+    win.PIXI?.Cache,
+    win.PIXI?.Assets?.cache,
+    win.Assets?.cache,
+    win.Cache
+  ];
+  for (const candidate of candidates) {
+    if (isAssetCache(candidate)) {
+      return candidate;
+    }
+  }
+  return void 0;
+}
+function resolveTextureCaches(win) {
+  const exposed = win.__PIXI_CACHE__;
+  if (isAssetCache(exposed)) {
+    return { asset: exposed };
+  }
+  if (isPlainRecordCache(exposed)) {
+    return { record: exposed };
+  }
+  return {
+    record: v7TextureCache(win),
+    asset: v8AssetCache(win)
+  };
+}
+function isUsefulCacheKey(key) {
+  if (typeof key !== "string") {
+    return false;
+  }
+  const trimmed = key.trim();
+  if (trimmed === "" || trimmed.startsWith("[object ")) {
+    return false;
+  }
+  return true;
+}
+function addNamedTexture(out2, name, texture) {
+  const key = typeof name === "string" ? name.trim() : "";
+  if (key === "" || out2.has(key)) {
+    return;
+  }
+  out2.set(key, texture);
+}
+function collectTextureNames(texture, displayName, out2) {
+  addNamedTexture(out2, displayName, texture);
+  for (const id of texture.textureCacheIds ?? []) {
+    addNamedTexture(out2, id, texture);
+  }
+  for (const id of texture.baseTexture?.textureCacheIds ?? []) {
+    addNamedTexture(out2, id, texture);
+  }
+}
+function collectCacheEntry(key, value, displayNameOf, out2) {
+  if (!isPixiTexture(value)) {
+    return;
+  }
+  if (isUsefulCacheKey(key)) {
+    out2.set(key, value);
+  } else {
+    collectTextureNames(value, displayNameOf(value), out2);
+  }
+}
+function collectRecordCache(cache, displayNameOf, out2) {
+  for (const key of Object.keys(cache)) {
+    collectCacheEntry(key, cache[key], displayNameOf, out2);
+  }
+}
+function collectMapCache(map, displayNameOf, out2) {
+  for (const [key, value] of map.entries()) {
+    collectCacheEntry(key, value, displayNameOf, out2);
+  }
+}
+function collectResolvedCaches(caches, displayNameOf, out2) {
+  if (caches.record) {
+    collectRecordCache(caches.record, displayNameOf, out2);
+  }
+  const map = caches.asset?._cache;
+  if (map && typeof map.entries === "function") {
+    collectMapCache(map, displayNameOf, out2);
+  }
+}
+function cacheNameForTexture(texture, caches) {
+  if (caches.record) {
+    for (const key of Object.keys(caches.record)) {
+      if (caches.record[key] === texture && key !== "") {
+        return key;
+      }
+    }
+  }
+  const map = caches.asset?._cache;
+  if (map && typeof map.entries === "function") {
+    for (const [key, value] of map.entries()) {
+      if (value === texture && typeof key === "string" && key !== "") {
+        return key;
+      }
+    }
+  }
+  return void 0;
+}
+function textureNameOfResolved(texture, caches) {
+  return cacheNameForTexture(texture, caches) || localTextureName(texture);
+}
+function textureMatchesName(texture, name, caches) {
+  const display = textureNameOfResolved(texture, caches);
+  if (display === name) {
+    return true;
+  }
+  if (display !== "" && basename(display) === basename(name)) {
+    return true;
+  }
+  for (const labeled of textureLabelCandidates(texture)) {
+    if (labeled === name || basename(labeled) === basename(name)) {
+      return true;
+    }
+  }
+  return false;
+}
+function findInCacheEntries(entries, name, caches, exact) {
+  if (exact) {
+    return exact;
+  }
+  let basenameHit;
+  const wantedBase = basename(name);
+  for (const [key, value] of entries) {
+    if (!isPixiTexture(value)) {
+      continue;
+    }
+    if (typeof key === "string" && basename(key) === wantedBase && !basenameHit) {
+      basenameHit = value;
+    }
+    if (textureMatchesName(value, name, caches)) {
+      if (textureNameOfResolved(value, caches) === name) {
+        return value;
+      }
+      if (!basenameHit) {
+        basenameHit = value;
+      }
+    }
+  }
+  return basenameHit;
+}
+function findInRecordCache(cache, name, caches) {
+  const exactValue = cache[name];
+  const exact = isPixiTexture(exactValue) ? exactValue : void 0;
+  return findInCacheEntries(Object.entries(cache), name, caches, exact);
+}
+function findInMapCache(map, name, caches) {
+  const exactValue = map.has(name) ? map.get(name) : void 0;
+  const exact = isPixiTexture(exactValue) ? exactValue : void 0;
+  return findInCacheEntries(map.entries(), name, caches, exact);
+}
+function findInResolvedCaches(name, caches) {
+  if (caches.record) {
+    const fromRecord = findInRecordCache(caches.record, name, caches);
+    if (fromRecord) {
+      return fromRecord;
+    }
+  }
+  const asset = caches.asset;
+  const map = asset?._cache;
+  if (map && typeof map.entries === "function") {
+    const fromMap = findInMapCache(map, name, caches);
+    if (fromMap) {
+      return fromMap;
+    }
+  } else if (asset?.has?.(name)) {
+    const fromCache = asset.get?.(name);
+    if (isPixiTexture(fromCache)) {
+      return fromCache;
+    }
+  }
+  return void 0;
+}
+function textureSourceRef(texture) {
+  if (texture.source && typeof texture.source === "object") {
+    return texture.source;
+  }
+  if (texture.baseTexture && typeof texture.baseTexture === "object") {
+    return texture.baseTexture;
+  }
+  return void 0;
+}
+function positiveSize(width, height) {
+  if (typeof width !== "number" || typeof height !== "number" || !Number.isFinite(width) || !Number.isFinite(height) || width <= 0 || height <= 0) {
+    return void 0;
+  }
+  return { width, height };
+}
+function sourceSize(texture) {
+  return positiveSize(texture.source?.width, texture.source?.height) ?? positiveSize(texture.baseTexture?.width, texture.baseTexture?.height);
+}
+function approxEqual(left, right) {
+  return Math.abs(left - right) < 0.5;
+}
+function isFullSourceFrame(texture) {
+  const frame = texture.frame;
+  const size = sourceSize(texture);
+  if (!frame || !size) {
+    return false;
+  }
+  if (!Number.isFinite(frame.x) || !Number.isFinite(frame.y) || !Number.isFinite(frame.width) || !Number.isFinite(frame.height) || frame.width <= 0 || frame.height <= 0) {
+    return false;
+  }
+  return approxEqual(frame.x, 0) && approxEqual(frame.y, 0) && approxEqual(frame.width, size.width) && approxEqual(frame.height, size.height);
+}
+function atlasSheetTexturesToOmit(textures) {
+  const bySource = /* @__PURE__ */ new Map();
+  const seen2 = /* @__PURE__ */ new Set();
+  for (const texture of textures) {
+    if (seen2.has(texture)) {
+      continue;
+    }
+    seen2.add(texture);
+    const source2 = textureSourceRef(texture);
+    if (!source2) {
+      continue;
+    }
+    const group = bySource.get(source2);
+    if (group) {
+      group.push(texture);
+    } else {
+      bySource.set(source2, [texture]);
+    }
+  }
+  const omit = /* @__PURE__ */ new Set();
+  for (const group of bySource.values()) {
+    if (group.length < 2) {
+      continue;
+    }
+    let hasSubFrame = false;
+    for (const texture of group) {
+      if (!isFullSourceFrame(texture)) {
+        hasSubFrame = true;
+        break;
+      }
+    }
+    if (!hasSubFrame) {
+      continue;
+    }
+    for (const texture of group) {
+      if (isFullSourceFrame(texture)) {
+        omit.add(texture);
+      }
+    }
+  }
+  return omit;
+}
+function walkSceneNodes(win, visit) {
+  const found = findRoot(win);
+  if (!found) {
+    return;
+  }
+  const stack = [found.root];
+  while (stack.length > 0) {
+    const node = stack.pop();
+    if (!node) {
+      continue;
+    }
+    if (visit(node) === true) {
+      return;
+    }
+    const kids = childrenOf(node);
+    for (let i2 = kids.length - 1; i2 >= 0; i2--) {
+      stack.push(kids[i2]);
+    }
+  }
+}
+function collectSceneTextures(win, displayNameOf, out2) {
+  const seen2 = /* @__PURE__ */ new Set();
+  walkSceneNodes(win, (node) => {
+    const texture = nodeTexture(node);
+    if (texture && !seen2.has(texture)) {
+      seen2.add(texture);
+      collectTextureNames(texture, displayNameOf(texture), out2);
+    }
+  });
+}
+function findTextureInScene(name, win, displayNameOf) {
+  let basenameHit;
+  let exact;
+  const wantedBase = basename(name);
+  walkSceneNodes(win, (node) => {
+    const texture = nodeTexture(node);
+    if (!texture) {
+      return false;
+    }
+    const display = displayNameOf(texture);
+    if (display === name) {
+      exact = texture;
+      return true;
+    }
+    if (!basenameHit && display !== "" && basename(display) === wantedBase) {
+      basenameHit = texture;
+    } else if (!basenameHit) {
+      const local = localTextureName(texture);
+      if (local !== "" && (local === name || basename(local) === wantedBase)) {
+        basenameHit = texture;
+      }
+    }
+    return false;
+  });
+  return exact ?? basenameHit;
+}
+const extractedPreviewCache = /* @__PURE__ */ new WeakMap();
+function isCanvasImageSource(value) {
+  if (!value || typeof value !== "object") {
+    return false;
+  }
+  if (value instanceof HTMLImageElement) {
+    return value.complete && value.naturalWidth > 0;
+  }
+  if (value instanceof HTMLCanvasElement) {
+    return value.width > 0 && value.height > 0;
+  }
+  if (typeof ImageBitmap !== "undefined" && value instanceof ImageBitmap) {
+    return value.width > 0 && value.height > 0;
+  }
+  if (value instanceof HTMLVideoElement) {
+    return value.videoWidth > 0 && value.videoHeight > 0;
+  }
+  if (typeof OffscreenCanvas !== "undefined" && value instanceof OffscreenCanvas) {
+    return value.width > 0 && value.height > 0;
+  }
+  return false;
+}
+function textureResourceCandidate(texture) {
+  if (texture.source && "resource" in texture.source) {
+    return texture.source.resource;
+  }
+  const resource = texture.baseTexture?.resource;
+  if (!resource) {
+    return void 0;
+  }
+  if (isCanvasImageSource(resource)) {
+    return resource;
+  }
+  if (resource.source !== void 0) {
+    return resource.source;
+  }
+  return void 0;
+}
+function textureResolution(texture) {
+  const candidates = [
+    texture.source?.resolution,
+    texture.source?._resolution,
+    texture.baseTexture?.resolution
+  ];
+  for (const value of candidates) {
+    if (typeof value === "number" && Number.isFinite(value) && value > 0) {
+      return value;
+    }
+  }
+  return 1;
+}
+function imagePixelSize(image) {
+  if (image instanceof HTMLImageElement) {
+    return { width: image.naturalWidth, height: image.naturalHeight };
+  }
+  if (image instanceof HTMLVideoElement) {
+    return { width: image.videoWidth, height: image.videoHeight };
+  }
+  if ("width" in image && "height" in image) {
+    return {
+      width: Number(image.width) || 0,
+      height: Number(image.height) || 0
+    };
+  }
+  return { width: 0, height: 0 };
+}
+function resolvePixiRenderer(win = globalThis) {
+  return win.__PIXI_RENDERER__ || win.__PIXI_APP__?.renderer;
+}
+function cloneToHtmlCanvas(source2) {
+  const { width, height } = imagePixelSize(source2);
+  if (width <= 0 || height <= 0) {
+    return null;
+  }
+  const canvas = document.createElement("canvas");
+  canvas.width = width;
+  canvas.height = height;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) {
+    return null;
+  }
+  try {
+    ctx.drawImage(source2, 0, 0);
+    return canvas;
+  } catch {
+    return null;
+  }
+}
+function extractTextureCanvas(texture, win = globalThis) {
+  if (typeof texture !== "object" || texture === null) {
+    return null;
+  }
+  if (extractedPreviewCache.has(texture)) {
+    return extractedPreviewCache.get(texture) ?? null;
+  }
+  const extract = resolvePixiRenderer(win)?.extract;
+  const extractCanvas = extract?.canvas;
+  if (typeof extractCanvas !== "function") {
+    extractedPreviewCache.set(texture, null);
+    return null;
+  }
+  let extracted;
+  try {
+    extracted = extractCanvas.call(extract, texture);
+  } catch {
+    extractedPreviewCache.set(texture, null);
+    return null;
+  }
+  let canvas = null;
+  if (extracted instanceof HTMLCanvasElement && extracted.width > 0 && extracted.height > 0) {
+    canvas = extracted;
+  } else if (isCanvasImageSource(extracted)) {
+    canvas = cloneToHtmlCanvas(extracted);
+  }
+  extractedPreviewCache.set(texture, canvas);
+  return canvas;
+}
+function texturePreviewSource(texture, win = globalThis) {
+  const image = textureResourceCandidate(texture);
+  if (isCanvasImageSource(image)) {
+    const frame = texture.frame;
+    if (frame && Number.isFinite(frame.x) && Number.isFinite(frame.y) && Number.isFinite(frame.width) && Number.isFinite(frame.height) && frame.width > 0 && frame.height > 0) {
+      const resolution = textureResolution(texture);
+      return {
+        image,
+        sx: frame.x * resolution,
+        sy: frame.y * resolution,
+        sw: frame.width * resolution,
+        sh: frame.height * resolution
+      };
+    }
+    const { width, height } = imagePixelSize(image);
+    if (width > 0 && height > 0) {
+      return {
+        image,
+        sx: 0,
+        sy: 0,
+        sw: width,
+        sh: height
+      };
+    }
+  }
+  const extracted = extractTextureCanvas(texture, win);
+  if (!extracted) {
+    return null;
+  }
+  return {
+    image: extracted,
+    sx: 0,
+    sy: 0,
+    sw: extracted.width,
+    sh: extracted.height
+  };
+}
+const GROUP_D8_UX = [1, 1, 0, -1, -1, -1, 0, 1, 1, 1, 0, -1, -1, -1, 0, 1];
+const GROUP_D8_UY = [0, 1, 1, 1, 0, -1, -1, -1, 0, 1, 1, 1, 0, -1, -1, -1];
+const GROUP_D8_VX = [0, -1, -1, -1, 0, 1, 1, 1, 0, 1, 1, 1, 0, -1, -1, -1];
+const GROUP_D8_VY = [1, 1, 0, -1, -1, -1, 0, 1, -1, -1, 0, 1, 1, 1, 0, -1];
+function textureRotate(texture) {
+  const value = texture.rotate;
+  if (typeof value !== "number" || !Number.isFinite(value) || value === 0) {
+    return 0;
+  }
+  return value & 15;
+}
+function isVerticalTextureRotate(rotate) {
+  return (rotate & 3) === 2;
+}
+function inverseTextureRotate(rotate) {
+  if (rotate & 8) {
+    return rotate & 15;
+  }
+  return -rotate & 7;
+}
+function applyInverseTextureRotation(ctx, rotate, srcWidth, srcHeight) {
+  const inv = inverseTextureRotate(rotate);
+  const a2 = GROUP_D8_UX[inv] ?? 1;
+  const b2 = GROUP_D8_UY[inv] ?? 0;
+  const c2 = GROUP_D8_VX[inv] ?? 0;
+  const d2 = GROUP_D8_VY[inv] ?? 1;
+  const tx = -Math.min(0, a2 * srcWidth, c2 * srcHeight, a2 * srcWidth + c2 * srcHeight);
+  const ty = -Math.min(0, b2 * srcWidth, d2 * srcHeight, b2 * srcWidth + d2 * srcHeight);
+  ctx.transform(a2, b2, c2, d2, tx, ty);
+}
+function paintTexturePreview(canvas, texture, size, win = globalThis) {
+  const preview = texturePreviewSource(texture, win);
+  const ctx = canvas.getContext("2d");
+  canvas.width = size;
+  canvas.height = size;
+  if (!ctx) {
+    return false;
+  }
+  ctx.fillStyle = "#1a1a1a";
+  ctx.clearRect(0, 0, size, size);
+  ctx.fillRect(0, 0, size, size);
+  const cell = Math.max(4, Math.floor(size / 8));
+  for (let y2 = 0; y2 < size; y2 += cell) {
+    for (let x2 = 0; x2 < size; x2 += cell) {
+      if ((x2 / cell + y2 / cell) % 2 === 0) {
+        ctx.fillStyle = "#2a2a2a";
+        ctx.fillRect(x2, y2, cell, cell);
+      }
+    }
+  }
+  if (!preview) {
+    return false;
+  }
+  const rotate = textureRotate(texture);
+  const contentW = isVerticalTextureRotate(rotate) ? preview.sh : preview.sw;
+  const contentH = isVerticalTextureRotate(rotate) ? preview.sw : preview.sh;
+  const scale = Math.min(size / contentW, size / contentH);
+  const drawW = Math.max(1, contentW * scale);
+  const drawH = Math.max(1, contentH * scale);
+  const dx = (size - drawW) / 2;
+  const dy = (size - drawH) / 2;
+  try {
+    ctx.imageSmoothingEnabled = scale < 1;
+    if (rotate === 0) {
+      ctx.drawImage(
+        preview.image,
+        preview.sx,
+        preview.sy,
+        preview.sw,
+        preview.sh,
+        dx,
+        dy,
+        drawW,
+        drawH
+      );
+    } else {
+      ctx.save();
+      ctx.translate(dx, dy);
+      ctx.scale(drawW / contentW, drawH / contentH);
+      applyInverseTextureRotation(ctx, rotate, preview.sw, preview.sh);
+      ctx.drawImage(
+        preview.image,
+        preview.sx,
+        preview.sy,
+        preview.sw,
+        preview.sh,
+        0,
+        0,
+        preview.sw,
+        preview.sh
+      );
+      ctx.restore();
+    }
+    return true;
+  } catch {
+    return false;
+  }
+}
+function textureNameOf(texture, win = globalThis) {
+  if (!texture) {
+    return "";
+  }
+  const caches = resolveTextureCaches(win);
+  return cacheNameForTexture(texture, caches) || localTextureName(texture);
+}
+function nodeTextureName(node, win = globalThis) {
+  return textureNameOf(nodeTexture(node), win);
+}
+function listCachedTextures(win = globalThis) {
+  const byName2 = /* @__PURE__ */ new Map();
+  const caches = resolveTextureCaches(win);
+  const displayNameOf = (texture) => textureNameOf(texture, win);
+  collectResolvedCaches(caches, displayNameOf, byName2);
+  collectSceneTextures(win, displayNameOf, byName2);
+  const omitSheets = atlasSheetTexturesToOmit(byName2.values());
+  const entries = [];
+  for (const [name, texture] of byName2.entries()) {
+    if (omitSheets.has(texture)) {
+      continue;
+    }
+    entries.push({ name, texture });
+  }
+  entries.sort((left, right) => left.name.localeCompare(right.name, void 0, {
+    sensitivity: "base",
+    numeric: true
+  }));
+  return entries;
+}
+function resolveTextureByName(name, win = globalThis) {
+  const key = name.trim();
+  if (key === "") {
+    return void 0;
+  }
+  const caches = resolveTextureCaches(win);
+  const fromCache = findInResolvedCaches(key, caches);
+  if (fromCache) {
+    return fromCache;
+  }
+  return findTextureInScene(key, win, (texture) => textureNameOf(texture, win));
+}
+function setNodeTextureByName(node, name, win = globalThis) {
+  if (!nodeHasTexture(node)) {
+    return false;
+  }
+  const next = resolveTextureByName(name, win);
+  if (!next) {
+    return false;
+  }
+  if (node.texture === next) {
+    return true;
+  }
+  node.texture = next;
+  return true;
+}
 function isRgbColorArray(value) {
   if (Array.isArray(value)) {
     if (value.length < 3 || value.length > 4) {
@@ -45631,6 +46495,15 @@ function mapsForNode(node) {
   const booleans = [];
   const strings = [];
   strings.push(...identityStringMaps(node));
+  if (nodeHasTexture(node)) {
+    strings.push({
+      key: "texture",
+      get: () => nodeTextureName(node),
+      set: (value) => {
+        setNodeTextureByName(node, value);
+      }
+    });
+  }
   numbers.push(
     ...pointAxis(
       node,
@@ -47399,17 +48272,8 @@ function buildSectionExportPayload(maps, sectionId, selectedIds) {
   }
   return payload;
 }
-function exportPropsForNode() {
-  const specs = [];
-  for (const sectionId of PROPERTY_SECTION_IDS) {
-    for (const spec of exportPropsForSection(sectionId)) {
-      specs.push(spec);
-    }
-  }
-  return specs;
-}
-function availableExportPropsForNode(maps) {
-  return exportPropsForNode().filter((spec) => isExportPropAvailable(maps, spec));
+function exportSelectionKey(sectionId, propId) {
+  return `${sectionId}\0${propId}`;
 }
 function buildNodeExportPayload(maps, selectedIds) {
   const payload = {};
@@ -47417,7 +48281,7 @@ function buildNodeExportPayload(maps, selectedIds) {
   let hasStyle = false;
   for (const sectionId of PROPERTY_SECTION_IDS) {
     for (const spec of availableExportPropsForSection(sectionId, maps)) {
-      if (selectedIds !== "all" && !selectedIds.has(spec.id)) {
+      if (selectedIds !== "all" && !selectedIds.has(exportSelectionKey(sectionId, spec.id))) {
         continue;
       }
       const value = collectPropValue(maps, spec);
@@ -47571,39 +48435,7 @@ function openExportDialog(options) {
     textOverflow: "ellipsis",
     whiteSpace: "nowrap"
   });
-  const closeBtn = document.createElement("button");
-  closeBtn.title = "Close";
-  closeBtn.type = "button";
-  closeBtn.innerHTML = closeIconSvg();
-  closeBtn.setAttribute("aria-label", "Close");
-  Object.assign(closeBtn.style, {
-    flexShrink: "0",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    width: "20px",
-    height: "20px",
-    margin: "0",
-    padding: "0",
-    border: "0",
-    borderRadius: "3px",
-    appearance: "none",
-    background: "transparent",
-    color: "#bdbdbd",
-    cursor: "pointer",
-    boxSizing: "border-box"
-  });
-  closeBtn.addEventListener("pointerenter", () => {
-    closeBtn.style.color = "#fff";
-    closeBtn.style.background = "#545454";
-  });
-  closeBtn.addEventListener("pointerleave", () => {
-    closeBtn.style.color = "#bdbdbd";
-    closeBtn.style.background = "transparent";
-  });
-  closeBtn.addEventListener("click", (event2) => {
-    event2.preventDefault();
-    event2.stopPropagation();
+  const closeBtn = createDialogCloseButton(() => {
     close();
   });
   header.appendChild(heading);
@@ -47657,7 +48489,7 @@ function openExportDialog(options) {
       selections[sectionId] = selection;
       writePropertyExportSelection(sectionId, { ...selection });
     });
-    checkboxes.set(spec.id, checkbox);
+    checkboxes.set(exportSelectionKey(sectionId, spec.id), checkbox);
     row.appendChild(checkbox);
     row.appendChild(label);
     parent.appendChild(row);
@@ -47798,9 +48630,8 @@ function openExportDialog(options) {
   syncModeToggle();
   async function runExport(mode) {
     const currentMaps = options.getMaps();
-    const available = options.kind === "section" ? availableExportPropsForSection(options.sectionId, currentMaps) : availableExportPropsForNode(currentMaps);
     const ids = mode === "all" ? "all" : new Set(
-      available.filter((spec) => checkboxes.get(spec.id)?.checked).map((spec) => spec.id)
+      availableSections.flatMap((section) => availableExportPropsForSection(section.id, currentMaps).filter((spec) => checkboxes.get(exportSelectionKey(section.id, spec.id))?.checked).map((spec) => options.kind === "section" ? spec.id : exportSelectionKey(section.id, spec.id)))
     );
     const payload = options.kind === "section" ? buildSectionExportPayload(currentMaps, options.sectionId, ids) : buildNodeExportPayload(currentMaps, ids);
     if (outputMode === "json") {
@@ -49667,6 +50498,1339 @@ function createPropertiesTabs(initial, onChange) {
     }
   };
 }
+const CLEAR_COLOR = "#ffe066";
+function createFilterField(options) {
+  const root2 = document.createElement("div");
+  const input = document.createElement("input");
+  const clearBtn = document.createElement("button");
+  Object.assign(root2.style, {
+    position: "relative",
+    display: "flex",
+    alignItems: "center",
+    minWidth: "0",
+    flex: options.flex ?? "1",
+    width: options.width,
+    boxSizing: "border-box"
+  });
+  input.type = "text";
+  input.spellcheck = false;
+  input.autocomplete = "off";
+  input.placeholder = options.placeholder;
+  input.setAttribute("aria-label", options.ariaLabel);
+  Object.assign(input.style, {
+    flex: "1",
+    minWidth: "0",
+    width: "100%",
+    height: options.height ?? "26px",
+    margin: "0",
+    padding: "2px 24px 2px 8px",
+    border: "1px solid #555",
+    borderRadius: "4px",
+    outline: "none",
+    background: "#222",
+    color: "#e5e5e5",
+    font: "inherit",
+    fontSize: options.fontSize ?? "12px",
+    boxSizing: "border-box"
+  });
+  clearBtn.type = "button";
+  clearBtn.textContent = "×";
+  clearBtn.title = "Clear filter";
+  clearBtn.setAttribute("aria-label", "Clear filter");
+  Object.assign(clearBtn.style, {
+    position: "absolute",
+    right: "4px",
+    top: "50%",
+    transform: "translateY(-50%)",
+    display: "none",
+    alignItems: "center",
+    justifyContent: "center",
+    width: "18px",
+    height: "18px",
+    margin: "0",
+    padding: "0",
+    border: "0",
+    borderRadius: "3px",
+    appearance: "none",
+    background: "transparent",
+    color: CLEAR_COLOR,
+    font: "inherit",
+    fontSize: "14px",
+    fontWeight: "700",
+    lineHeight: "1",
+    cursor: "pointer",
+    boxSizing: "border-box"
+  });
+  function syncClear() {
+    const empty = input.value.length === 0;
+    clearBtn.style.display = empty ? "none" : "flex";
+    clearBtn.hidden = empty;
+  }
+  function setValue(value) {
+    input.value = value;
+    syncClear();
+  }
+  input.addEventListener("input", () => {
+    syncClear();
+    options.onChange(input.value);
+  });
+  clearBtn.addEventListener("click", (event2) => {
+    event2.preventDefault();
+    event2.stopPropagation();
+    setValue("");
+    options.onChange("");
+    input.focus();
+  });
+  root2.append(input, clearBtn);
+  return {
+    root: root2,
+    input,
+    setValue,
+    destroy: () => {
+      root2.remove();
+    }
+  };
+}
+function attachFloatRectMove(handle, options) {
+  let startX = 0;
+  let startY = 0;
+  let startLeft = 0;
+  let startTop = 0;
+  return attachPointerDrag(handle, {
+    shouldStart: options.shouldStart,
+    onStart: (event2) => {
+      const rect = options.getRect();
+      startX = event2.clientX;
+      startY = event2.clientY;
+      startLeft = rect.left;
+      startTop = rect.top;
+    },
+    onMove: (event2) => {
+      const rect = options.getRect();
+      options.setRect(options.clamp({
+        left: startLeft + (event2.clientX - startX),
+        top: startTop + (event2.clientY - startY),
+        width: rect.width,
+        height: rect.height
+      }));
+    },
+    onEnd: () => {
+      options.onPersist?.();
+    }
+  });
+}
+function attachFloatRectResize(corner, options) {
+  let startX = 0;
+  let startY = 0;
+  let startW = 0;
+  let startH = 0;
+  return attachPointerDrag(corner, {
+    stopPropagation: true,
+    shouldStart: options.shouldStart,
+    onStart: (event2) => {
+      const rect = options.getRect();
+      startX = event2.clientX;
+      startY = event2.clientY;
+      startW = rect.width;
+      startH = rect.height;
+    },
+    onMove: (event2) => {
+      const rect = options.getRect();
+      options.setRect(options.clamp({
+        left: rect.left,
+        top: rect.top,
+        width: startW + (event2.clientX - startX),
+        height: startH + (event2.clientY - startY)
+      }));
+    },
+    onEnd: () => {
+      options.onPersist?.();
+    }
+  });
+}
+const THUMB_SIZES = {
+  "thumb-sm": 40,
+  "thumb-md": 64,
+  "thumb-lg": 96
+};
+function viewIconSvg(kind) {
+  if (kind === "list") {
+    return '<svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" d="M3 3.5h8M3 7h8M3 10.5h8"/></svg>';
+  }
+  if (kind === "list-miller") {
+    return '<svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><rect x="1.5" y="1.5" width="3.5" height="11" fill="none" stroke="currentColor" stroke-width="1.2"/><rect x="5.25" y="1.5" width="3.5" height="11" fill="none" stroke="currentColor" stroke-width="1.2"/><rect x="9" y="1.5" width="3.5" height="11" fill="none" stroke="currentColor" stroke-width="1.2"/></svg>';
+  }
+  let cells = 1;
+  if (kind === "thumb-sm") {
+    cells = 3;
+  } else if (kind === "thumb-md") {
+    cells = 2;
+  }
+  const gap = 1.2;
+  const pad = 2;
+  const area2 = 14 - pad * 2;
+  const cell = (area2 - gap * (cells - 1)) / cells;
+  let body = "";
+  for (let y2 = 0; y2 < cells; y2++) {
+    for (let x2 = 0; x2 < cells; x2++) {
+      const left = pad + x2 * (cell + gap);
+      const top = pad + y2 * (cell + gap);
+      body += `<rect x="${left}" y="${top}" width="${cell}" height="${cell}" fill="none" stroke="currentColor" stroke-width="1.2"/>`;
+    }
+  }
+  return `<svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true">${body}</svg>`;
+}
+function createTexturePickerThumb(entry, size, lazyThumbs) {
+  const canvas = document.createElement("canvas");
+  Object.assign(canvas.style, {
+    position: "relative",
+    width: `${size}px`,
+    height: `${size}px`,
+    maxWidth: `${size}px`,
+    maxHeight: `${size}px`,
+    borderRadius: "3px",
+    background: "#1a1a1a",
+    flexShrink: "0",
+    display: "block",
+    boxSizing: "border-box",
+    pointerEvents: "none"
+  });
+  lazyThumbs.observe(canvas, entry, size);
+  return canvas;
+}
+function createTexturePickerItem(entry, viewMode, currentName, onSelect, lazyThumbs) {
+  const item = document.createElement("button");
+  const selected = entry.name === currentName;
+  item.type = "button";
+  item.title = entry.name;
+  item.setAttribute("aria-label", entry.name);
+  if (viewMode === "list") {
+    Object.assign(item.style, {
+      display: "flex",
+      alignItems: "center",
+      alignSelf: "start",
+      gap: "8px",
+      width: "100%",
+      minWidth: "0",
+      minHeight: "max-content",
+      margin: "0",
+      padding: "4px 6px",
+      border: selected ? "1px solid #4772b3" : "1px solid transparent",
+      borderRadius: "4px",
+      appearance: "none",
+      background: selected ? "#3a4a63" : "#3a3a3a",
+      color: "#e5e5e5",
+      cursor: "pointer",
+      boxSizing: "border-box",
+      textAlign: "left",
+      font: "inherit",
+      fontSize: "12px"
+    });
+    const label = document.createElement("span");
+    label.textContent = entry.name;
+    Object.assign(label.style, {
+      flex: "1",
+      minWidth: "0",
+      overflow: "hidden",
+      textOverflow: "ellipsis",
+      whiteSpace: "nowrap",
+      pointerEvents: "none"
+    });
+    item.append(createTexturePickerThumb(entry, 28, lazyThumbs), label);
+  } else {
+    const size = THUMB_SIZES[viewMode];
+    Object.assign(item.style, {
+      display: "block",
+      alignSelf: "start",
+      margin: "0",
+      padding: "6px",
+      border: selected ? "1px solid #4772b3" : "1px solid #555",
+      borderRadius: "4px",
+      appearance: "none",
+      background: selected ? "#3a4a63" : "#3a3a3a",
+      color: "#e5e5e5",
+      cursor: "pointer",
+      boxSizing: "border-box",
+      font: "inherit",
+      fontSize: "11px",
+      minWidth: "0",
+      minHeight: "max-content"
+    });
+    const stack = document.createElement("div");
+    Object.assign(stack.style, {
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "stretch",
+      gap: "4px",
+      minWidth: "0",
+      width: "100%"
+    });
+    const label = document.createElement("div");
+    label.textContent = entry.name;
+    Object.assign(label.style, {
+      overflow: "hidden",
+      textOverflow: "ellipsis",
+      whiteSpace: "nowrap",
+      textAlign: "center",
+      color: "#cfcfcf",
+      lineHeight: "1.2",
+      flexShrink: "0",
+      pointerEvents: "none"
+    });
+    const thumbWrap = document.createElement("div");
+    Object.assign(thumbWrap.style, {
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      width: "100%",
+      height: `${size}px`,
+      flexShrink: "0",
+      pointerEvents: "none"
+    });
+    thumbWrap.appendChild(createTexturePickerThumb(entry, size, lazyThumbs));
+    stack.append(thumbWrap, label);
+    item.appendChild(stack);
+  }
+  item.addEventListener("pointerenter", () => {
+    if (entry.name === currentName) {
+      return;
+    }
+    item.style.background = "#484848";
+  });
+  item.addEventListener("pointerleave", () => {
+    item.style.background = entry.name === currentName ? "#3a4a63" : "#3a3a3a";
+  });
+  item.addEventListener("click", (event2) => {
+    event2.preventDefault();
+    event2.stopPropagation();
+    onSelect(entry.name);
+  });
+  return item;
+}
+function applyTexturePickerGridLayout(grid, viewMode) {
+  Object.assign(grid.style, {
+    display: "grid",
+    flexDirection: "row",
+    overflowX: "hidden",
+    overflowY: "auto",
+    overscrollBehavior: "contain",
+    touchAction: "pan-y"
+  });
+  if (viewMode === "list") {
+    Object.assign(grid.style, {
+      gridTemplateColumns: "1fr",
+      gridAutoRows: "max-content",
+      gap: "4px"
+    });
+    return;
+  }
+  const size = THUMB_SIZES[viewMode];
+  const minCol = size + 24;
+  Object.assign(grid.style, {
+    gridTemplateColumns: `repeat(auto-fill, minmax(${minCol}px, 1fr))`,
+    gridAutoRows: "max-content",
+    gap: "8px"
+  });
+}
+function emptyNode() {
+  return {
+    folders: /* @__PURE__ */ new Map(),
+    files: []
+  };
+}
+function pathSegments(name) {
+  return name.replace(/\\/g, "/").split("/").filter((segment2) => segment2 !== "");
+}
+function buildPathTree(entries) {
+  const root2 = emptyNode();
+  for (const entry of entries) {
+    const segments = pathSegments(entry.name);
+    if (segments.length === 0) {
+      root2.files.push(entry);
+      continue;
+    }
+    let node = root2;
+    for (let index = 0; index < segments.length - 1; index++) {
+      const segment2 = segments[index] ?? "";
+      let child2 = node.folders.get(segment2);
+      if (!child2) {
+        child2 = emptyNode();
+        node.folders.set(segment2, child2);
+      }
+      node = child2;
+    }
+    node.files.push(entry);
+  }
+  return root2;
+}
+function nodeAtPath(root2, path2) {
+  let node = root2;
+  for (const segment2 of path2) {
+    const child2 = node.folders.get(segment2);
+    if (!child2) {
+      return void 0;
+    }
+    node = child2;
+  }
+  return node;
+}
+function folderNames(node) {
+  return Array.from(node.folders.keys()).sort((left, right) => left.localeCompare(right, void 0, {
+    sensitivity: "base",
+    numeric: true
+  }));
+}
+function pathToEntry(name) {
+  const segments = pathSegments(name);
+  if (segments.length <= 1) {
+    return [];
+  }
+  return segments.slice(0, -1);
+}
+function createEmptyPathTree() {
+  return emptyNode();
+}
+const LIST_COLUMN_MIN = 220;
+function styleRow(selected) {
+  return {
+    display: "flex",
+    alignItems: "center",
+    gap: "6px",
+    width: "100%",
+    minWidth: "0",
+    minHeight: "max-content",
+    margin: "0",
+    padding: "4px 6px",
+    border: selected ? "1px solid #4772b3" : "1px solid transparent",
+    borderRadius: "4px",
+    appearance: "none",
+    background: selected ? "#3a4a63" : "transparent",
+    color: "#e5e5e5",
+    cursor: "pointer",
+    boxSizing: "border-box",
+    textAlign: "left",
+    font: "inherit",
+    fontSize: "12px"
+  };
+}
+function bindHover(button, selected) {
+  button.addEventListener("pointerenter", () => {
+    if (selected) {
+      return;
+    }
+    button.style.background = "#484848";
+  });
+  button.addEventListener("pointerleave", () => {
+    button.style.background = selected ? "#3a4a63" : "transparent";
+  });
+}
+function createTexturePickerColumns(host, lazyThumbs, onSelect) {
+  let tree = createEmptyPathTree();
+  let currentName;
+  let selectedPath = [];
+  let disposed = false;
+  function syncPathToCurrent() {
+    if (!currentName) {
+      selectedPath = [];
+      return;
+    }
+    const nextPath = pathToEntry(currentName);
+    let node = tree;
+    selectedPath = [];
+    for (const segment2 of nextPath) {
+      if (!node.folders.has(segment2)) {
+        break;
+      }
+      selectedPath.push(segment2);
+      node = node.folders.get(segment2) ?? node;
+    }
+  }
+  function openFolder(path2) {
+    selectedPath = path2;
+    render();
+  }
+  function render() {
+    if (disposed) {
+      return;
+    }
+    lazyThumbs.clear();
+    host.replaceChildren();
+    Object.assign(host.style, {
+      display: "flex",
+      flexDirection: "row",
+      alignItems: "stretch",
+      gridTemplateColumns: "none",
+      gridAutoRows: "auto",
+      gap: "0",
+      overflowX: "auto",
+      overflowY: "hidden",
+      overscrollBehavior: "contain",
+      touchAction: "pan-x pan-y"
+    });
+    const columnCount = selectedPath.length + 1;
+    for (let columnIndex = 0; columnIndex < columnCount; columnIndex++) {
+      if (columnIndex > 0) {
+        const divider = document.createElement("div");
+        Object.assign(divider.style, {
+          flexShrink: "0",
+          width: "1px",
+          alignSelf: "stretch",
+          background: "#555"
+        });
+        host.appendChild(divider);
+      }
+      const pathPrefix = selectedPath.slice(0, columnIndex);
+      const node = nodeAtPath(tree, pathPrefix);
+      const column = document.createElement("div");
+      column.dataset.texturePickerColumn = "1";
+      Object.assign(column.style, {
+        flex: `1 1 ${LIST_COLUMN_MIN}px`,
+        minWidth: `${LIST_COLUMN_MIN}px`,
+        display: "flex",
+        flexDirection: "column",
+        gap: "2px",
+        minHeight: "0",
+        height: "100%",
+        overflowX: "hidden",
+        overflowY: "auto",
+        overscrollBehavior: "contain",
+        padding: "2px",
+        boxSizing: "border-box"
+      });
+      if (!node) {
+        host.appendChild(column);
+        continue;
+      }
+      const selectedFolder = selectedPath[columnIndex];
+      for (const folder of folderNames(node)) {
+        const selected = folder === selectedFolder;
+        const button = document.createElement("button");
+        button.type = "button";
+        button.title = [...pathPrefix, folder].join("/");
+        button.setAttribute("aria-label", `Folder ${folder}`);
+        Object.assign(button.style, styleRow(selected));
+        const label = document.createElement("span");
+        label.textContent = folder;
+        Object.assign(label.style, {
+          flex: "1",
+          minWidth: "0",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+          whiteSpace: "nowrap",
+          pointerEvents: "none",
+          fontWeight: selected ? "600" : "400"
+        });
+        const chevron = document.createElement("span");
+        chevron.textContent = "›";
+        Object.assign(chevron.style, {
+          flexShrink: "0",
+          color: "#8a8a8a",
+          pointerEvents: "none"
+        });
+        bindHover(button, selected);
+        button.append(label, chevron);
+        const nextPath = [...pathPrefix, folder];
+        button.addEventListener("click", (event2) => {
+          event2.preventDefault();
+          event2.stopPropagation();
+          openFolder(nextPath);
+        });
+        column.appendChild(button);
+      }
+      for (const entry of node.files) {
+        const selected = entry.name === currentName;
+        const button = document.createElement("button");
+        const segments = pathSegments(entry.name);
+        const labelText = segments[segments.length - 1] ?? entry.name;
+        button.type = "button";
+        button.title = entry.name;
+        button.setAttribute("aria-label", entry.name);
+        Object.assign(button.style, styleRow(selected));
+        const label = document.createElement("span");
+        label.textContent = labelText;
+        Object.assign(label.style, {
+          flex: "1",
+          minWidth: "0",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+          whiteSpace: "nowrap",
+          pointerEvents: "none"
+        });
+        bindHover(button, selected);
+        button.append(createTexturePickerThumb(entry, 28, lazyThumbs), label);
+        button.addEventListener("click", (event2) => {
+          event2.preventDefault();
+          event2.stopPropagation();
+          onSelect(entry.name);
+        });
+        column.appendChild(button);
+      }
+      host.appendChild(column);
+    }
+    const lastColumn = host.lastElementChild;
+    if (lastColumn instanceof HTMLElement) {
+      lastColumn.scrollIntoView({ inline: "nearest", block: "nearest" });
+    }
+  }
+  return {
+    setEntries(entries) {
+      tree = buildPathTree(entries);
+      syncPathToCurrent();
+    },
+    setCurrentName(name) {
+      currentName = name;
+      syncPathToCurrent();
+    },
+    render,
+    clear() {
+      host.replaceChildren();
+    },
+    dispose() {
+      disposed = true;
+      host.replaceChildren();
+    }
+  };
+}
+const ROOT_MARGIN = "120px 0px";
+const PAINTS_PER_FRAME = 12;
+function releaseThumbCanvas(canvas) {
+  canvas.width = 0;
+  canvas.height = 0;
+}
+function createTexturePickerLazyThumbs(root2) {
+  const states = /* @__PURE__ */ new Map();
+  const paintQueue = [];
+  const queued = /* @__PURE__ */ new Set();
+  let rafId = 0;
+  let disposed = false;
+  function cancelPaintLoop() {
+    if (rafId !== 0) {
+      cancelAnimationFrame(rafId);
+      rafId = 0;
+    }
+    paintQueue.length = 0;
+    queued.clear();
+  }
+  function paintFrame() {
+    rafId = 0;
+    if (disposed) {
+      return;
+    }
+    let painted = 0;
+    while (painted < PAINTS_PER_FRAME && paintQueue.length > 0) {
+      const state2 = paintQueue.shift();
+      if (!state2) {
+        break;
+      }
+      queued.delete(state2.canvas);
+      if (!states.has(state2.canvas) || !state2.visible || state2.painted) {
+        continue;
+      }
+      paintTexturePreview(state2.canvas, state2.entry.texture, state2.size);
+      state2.painted = true;
+      painted += 1;
+    }
+    if (paintQueue.length > 0) {
+      rafId = requestAnimationFrame(paintFrame);
+    }
+  }
+  function schedulePaint(state2) {
+    if (!state2.visible || state2.painted || queued.has(state2.canvas)) {
+      return;
+    }
+    queued.add(state2.canvas);
+    paintQueue.push(state2);
+    if (rafId === 0) {
+      rafId = requestAnimationFrame(paintFrame);
+    }
+  }
+  function releaseState(state2) {
+    if (!state2.painted) {
+      return;
+    }
+    releaseThumbCanvas(state2.canvas);
+    state2.painted = false;
+  }
+  const observer = new IntersectionObserver((entries) => {
+    if (disposed) {
+      return;
+    }
+    for (const entry of entries) {
+      const target = entry.target;
+      if (!(target instanceof HTMLCanvasElement)) {
+        continue;
+      }
+      const state2 = states.get(target);
+      if (!state2) {
+        continue;
+      }
+      state2.visible = entry.isIntersecting;
+      if (state2.visible) {
+        schedulePaint(state2);
+      } else {
+        releaseState(state2);
+      }
+    }
+  }, {
+    root: root2,
+    rootMargin: ROOT_MARGIN,
+    threshold: 0
+  });
+  return {
+    observe(canvas, entry, size) {
+      if (disposed) {
+        return;
+      }
+      const state2 = {
+        canvas,
+        entry,
+        size,
+        visible: false,
+        painted: false
+      };
+      states.set(canvas, state2);
+      observer.observe(canvas);
+    },
+    clear() {
+      cancelPaintLoop();
+      for (const state2 of states.values()) {
+        observer.unobserve(state2.canvas);
+        releaseState(state2);
+      }
+      states.clear();
+    },
+    dispose() {
+      if (disposed) {
+        return;
+      }
+      disposed = true;
+      cancelPaintLoop();
+      observer.disconnect();
+      for (const state2 of states.values()) {
+        releaseState(state2);
+      }
+      states.clear();
+    }
+  };
+}
+function attachTexturePickerWheel(grid, isColumnMode) {
+  const onGridWheel = (event2) => {
+    let delta = event2.deltaY;
+    if (event2.deltaMode === 1) {
+      delta *= 16;
+    } else if (event2.deltaMode === 2) {
+      delta *= isColumnMode() ? grid.clientWidth : grid.clientHeight;
+    }
+    if (isColumnMode()) {
+      const target = event2.target;
+      if (target instanceof Element) {
+        const column = target.closest("[data-texture-picker-column]");
+        if (column instanceof HTMLElement && grid.contains(column) && column.scrollHeight > column.clientHeight) {
+          const maxY = column.scrollHeight - column.clientHeight;
+          const prevY = column.scrollTop;
+          const nextY = Math.min(maxY, Math.max(0, prevY + delta));
+          if (nextY !== prevY) {
+            column.scrollTop = nextY;
+            event2.preventDefault();
+            return;
+          }
+        }
+      }
+      const maxX = grid.scrollWidth - grid.clientWidth;
+      if (maxX <= 0) {
+        return;
+      }
+      const prevX = grid.scrollLeft;
+      const nextX = Math.min(maxX, Math.max(0, prevX + delta));
+      if (nextX === prevX) {
+        return;
+      }
+      grid.scrollLeft = nextX;
+      event2.preventDefault();
+      return;
+    }
+    const maxScroll = grid.scrollHeight - grid.clientHeight;
+    if (maxScroll <= 0) {
+      return;
+    }
+    const prev = grid.scrollTop;
+    const next = Math.min(maxScroll, Math.max(0, prev + delta));
+    if (next === prev) {
+      return;
+    }
+    grid.scrollTop = next;
+    event2.preventDefault();
+  };
+  grid.addEventListener("wheel", onGridWheel, { passive: false });
+  return () => {
+    grid.removeEventListener("wheel", onGridWheel);
+  };
+}
+const DEFAULT_WIDTH = 1176;
+const DEFAULT_HEIGHT = 528;
+const MIN_WIDTH = 320;
+const MIN_HEIGHT = 240;
+function matchesFilter(name, filter) {
+  if (filter === "") {
+    return true;
+  }
+  return name.toLowerCase().includes(filter);
+}
+function viewportSize() {
+  return {
+    width: window.innerWidth,
+    height: window.innerHeight
+  };
+}
+function defaultRect() {
+  const { width: viewportW, height: viewportH } = viewportSize();
+  const width = Math.min(DEFAULT_WIDTH, Math.max(MIN_WIDTH, viewportW - 24));
+  const height = Math.min(DEFAULT_HEIGHT, Math.max(MIN_HEIGHT, viewportH - 24));
+  return {
+    left: Math.round((viewportW - width) / 2),
+    top: Math.round((viewportH - height) / 2),
+    width,
+    height
+  };
+}
+function clampPickerRect(rect) {
+  const { width: viewportW, height: viewportH } = viewportSize();
+  return clampFloatRect(rect, {
+    viewportW,
+    viewportH,
+    minWidth: MIN_WIDTH,
+    minHeight: MIN_HEIGHT,
+    clampWidth: (width, maxW) => Math.min(Math.max(width, MIN_WIDTH), Math.max(MIN_WIDTH, maxW))
+  });
+}
+function openTexturePickerDialog(options) {
+  const win = globalThis;
+  const entries = listCachedTextures(win);
+  let viewMode = readTexturePickerViewMode() ?? "thumb-md";
+  let filter = "";
+  let closed = false;
+  let stopEditableKeys = null;
+  let stopWheel = null;
+  let lazyThumbs = null;
+  let listColumns = null;
+  let usingListColumns = false;
+  const dragCleanups = [];
+  let floatRect = clampPickerRect(readTexturePickerRect() ?? defaultRect());
+  const overlay = document.createElement("div");
+  Object.assign(overlay.style, {
+    position: "fixed",
+    inset: "0",
+    zIndex: "2147483647",
+    background: "rgba(0, 0, 0, 0.45)",
+    fontFamily: "ui-sans-serif, system-ui, sans-serif"
+  });
+  const dialog = document.createElement("div");
+  Object.assign(dialog.style, {
+    position: "fixed",
+    left: `${floatRect.left}px`,
+    top: `${floatRect.top}px`,
+    width: `${floatRect.width}px`,
+    height: `${floatRect.height}px`,
+    display: "flex",
+    flexDirection: "column",
+    gap: "10px",
+    padding: "12px",
+    borderRadius: "6px",
+    background: "#2f2f2f",
+    border: "1px solid #555",
+    boxShadow: "0 8px 24px rgba(0, 0, 0, 0.45)",
+    color: "#e5e5e5",
+    fontSize: "12px",
+    boxSizing: "border-box",
+    overflow: "hidden"
+  });
+  function applyRect() {
+    dialog.style.left = `${floatRect.left}px`;
+    dialog.style.top = `${floatRect.top}px`;
+    dialog.style.width = `${floatRect.width}px`;
+    dialog.style.height = `${floatRect.height}px`;
+  }
+  function persistRect() {
+    writeTexturePickerRect(floatRect);
+  }
+  const header = document.createElement("div");
+  Object.assign(header.style, {
+    display: "flex",
+    alignItems: "center",
+    gap: "8px",
+    minWidth: "0",
+    cursor: "move",
+    userSelect: "none",
+    touchAction: "none"
+  });
+  const heading = document.createElement("div");
+  Object.assign(heading.style, {
+    flex: "1",
+    minWidth: "0",
+    fontSize: "12px",
+    letterSpacing: "0.02em",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    whiteSpace: "nowrap"
+  });
+  const currentLabel = options.currentName?.trim();
+  if (currentLabel) {
+    const nameEl = document.createElement("span");
+    nameEl.textContent = currentLabel;
+    nameEl.style.fontWeight = "700";
+    const hintEl = document.createElement("span");
+    hintEl.textContent = " (select a replacement texture)";
+    hintEl.style.fontWeight = "400";
+    heading.append(nameEl, hintEl);
+  } else {
+    heading.textContent = "Select texture";
+    heading.style.fontWeight = "700";
+  }
+  const closeBtn = createDialogCloseButton(() => {
+    close();
+  });
+  header.append(heading, closeBtn);
+  const toolbar = document.createElement("div");
+  Object.assign(toolbar.style, {
+    display: "flex",
+    alignItems: "center",
+    gap: "8px",
+    minWidth: "0"
+  });
+  let filterField = createFilterField({
+    placeholder: "filter…",
+    ariaLabel: "Filter textures",
+    onChange: (value) => {
+      filter = value;
+      renderItems();
+    }
+  });
+  const viewToggle = document.createElement("div");
+  Object.assign(viewToggle.style, {
+    display: "flex",
+    flexShrink: "0",
+    border: "1px solid #555",
+    borderRadius: "4px",
+    overflow: "hidden",
+    boxSizing: "border-box"
+  });
+  const viewButtons = /* @__PURE__ */ new Map();
+  function makeViewButton(mode, title) {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.title = title;
+    button.innerHTML = viewIconSvg(mode);
+    button.setAttribute("aria-label", title);
+    Object.assign(button.style, {
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      width: "28px",
+      height: "26px",
+      margin: "0",
+      padding: "0",
+      border: "0",
+      borderRadius: "0",
+      appearance: "none",
+      background: "#3a3a3a",
+      color: "#bdbdbd",
+      cursor: "pointer",
+      boxSizing: "border-box"
+    });
+    button.addEventListener("click", (event2) => {
+      event2.preventDefault();
+      event2.stopPropagation();
+      setViewMode(mode);
+    });
+    viewButtons.set(mode, button);
+    viewToggle.appendChild(button);
+    return button;
+  }
+  makeViewButton("thumb-sm", "Small thumbnails");
+  makeViewButton("thumb-md", "Medium thumbnails");
+  makeViewButton("thumb-lg", "Large thumbnails");
+  makeViewButton("list", "List");
+  makeViewButton("list-miller", "Columns");
+  toolbar.append(filterField.root, viewToggle);
+  const status = document.createElement("div");
+  Object.assign(status.style, {
+    color: "#9a9a9a",
+    fontSize: "11px",
+    minHeight: "14px"
+  });
+  const grid = document.createElement("div");
+  Object.assign(grid.style, {
+    flex: "1",
+    minHeight: "0",
+    overflowX: "hidden",
+    overflowY: "auto",
+    overscrollBehavior: "contain",
+    touchAction: "pan-y",
+    display: "grid",
+    alignContent: "start",
+    gap: "8px",
+    padding: "2px",
+    boxSizing: "border-box"
+  });
+  const corner = document.createElement("div");
+  Object.assign(corner.style, {
+    position: "absolute",
+    right: "0",
+    bottom: "0",
+    width: `${FLOAT_CORNER_SIZE}px`,
+    height: `${FLOAT_CORNER_SIZE}px`,
+    cursor: "nwse-resize",
+    background: "linear-gradient(135deg, transparent 50%, #2a2a2a 50%)",
+    touchAction: "none",
+    zIndex: "2"
+  });
+  function close() {
+    if (closed) {
+      return;
+    }
+    closed = true;
+    if (document.activeElement instanceof HTMLElement && overlay.contains(document.activeElement)) {
+      document.activeElement.blur();
+    }
+    window.getSelection()?.removeAllRanges();
+    texturePickerGesture.end();
+    stopEditableKeys?.();
+    stopEditableKeys = null;
+    stopWheel?.();
+    stopWheel = null;
+    for (const cleanup of dragCleanups) {
+      cleanup();
+    }
+    dragCleanups.length = 0;
+    overlay.removeEventListener("pointerdown", onOverlayPointerDown);
+    window.removeEventListener("keydown", onKeyDown, true);
+    window.removeEventListener("resize", onWindowResize);
+    listColumns?.dispose();
+    listColumns = null;
+    lazyThumbs?.dispose();
+    lazyThumbs = null;
+    filterField?.destroy();
+    filterField = null;
+    grid.replaceChildren();
+    overlay.remove();
+    options.onClose?.();
+  }
+  function selectName(name) {
+    options.onSelect(name);
+    close();
+  }
+  function setViewMode(mode) {
+    viewMode = mode;
+    writeTexturePickerViewMode(mode);
+    syncViewButtons();
+    renderItems();
+  }
+  function syncViewButtons() {
+    for (const [mode, button] of viewButtons.entries()) {
+      const active = mode === viewMode;
+      button.style.background = active ? "#4772b3" : "#3a3a3a";
+      button.style.color = active ? "#fff" : "#bdbdbd";
+    }
+  }
+  function ensureLazyThumbs() {
+    if (!lazyThumbs) {
+      lazyThumbs = createTexturePickerLazyThumbs(grid);
+    }
+    return lazyThumbs;
+  }
+  function ensureListColumns() {
+    const thumbs = ensureLazyThumbs();
+    if (!listColumns) {
+      listColumns = createTexturePickerColumns(grid, thumbs, selectName);
+      listColumns.setCurrentName(options.currentName);
+    }
+    return listColumns;
+  }
+  function renderFlatItems(visible, flatMode) {
+    usingListColumns = false;
+    listColumns?.clear();
+    lazyThumbs?.clear();
+    grid.replaceChildren();
+    applyTexturePickerGridLayout(grid, flatMode);
+    const thumbs = ensureLazyThumbs();
+    const fragment2 = document.createDocumentFragment();
+    for (const entry of visible) {
+      fragment2.appendChild(createTexturePickerItem(
+        entry,
+        flatMode,
+        options.currentName,
+        selectName,
+        thumbs
+      ));
+    }
+    grid.appendChild(fragment2);
+  }
+  function renderColumnItems(visible) {
+    usingListColumns = true;
+    const columns = ensureListColumns();
+    columns.setCurrentName(options.currentName);
+    columns.setEntries(visible);
+    columns.render();
+  }
+  function renderItems() {
+    const normalizedFilter = filter.trim().toLowerCase();
+    const visible = entries.filter((entry) => matchesFilter(entry.name, normalizedFilter));
+    if (viewMode === "list-miller") {
+      renderColumnItems(visible);
+    } else {
+      renderFlatItems(visible, viewMode);
+    }
+    if (entries.length === 0) {
+      status.textContent = "Texture cache is empty";
+    } else if (visible.length === 0) {
+      status.textContent = `No matches · ${entries.length} cached`;
+    } else {
+      status.textContent = `${visible.length} of ${entries.length}`;
+    }
+  }
+  const floatDragOptions = {
+    getRect: () => floatRect,
+    setRect: (rect) => {
+      floatRect = rect;
+      applyRect();
+    },
+    clamp: clampPickerRect,
+    onPersist: persistRect
+  };
+  dragCleanups.push(attachFloatRectMove(header, {
+    ...floatDragOptions,
+    shouldStart: (event2) => {
+      const target = event2.target;
+      if (!(target instanceof Node)) {
+        return true;
+      }
+      return !(closeBtn === target || closeBtn.contains(target));
+    }
+  }));
+  dragCleanups.push(attachFloatRectResize(corner, floatDragOptions));
+  const onOverlayPointerDown = (event2) => {
+    if (event2.target !== overlay) {
+      return;
+    }
+    event2.preventDefault();
+    close();
+  };
+  const onKeyDown = (event2) => {
+    if (event2.key !== "Escape") {
+      return;
+    }
+    event2.preventDefault();
+    event2.stopImmediatePropagation();
+    close();
+  };
+  const onWindowResize = () => {
+    floatRect = clampPickerRect(floatRect);
+    applyRect();
+    persistRect();
+  };
+  dialog.style.position = "fixed";
+  dialog.append(header, toolbar, status, grid, corner);
+  overlay.appendChild(dialog);
+  texturePickerGesture.begin();
+  overlay.addEventListener("pointerdown", onOverlayPointerDown);
+  stopWheel = attachTexturePickerWheel(grid, () => usingListColumns);
+  window.addEventListener("keydown", onKeyDown, true);
+  window.addEventListener("resize", onWindowResize);
+  document.body.appendChild(overlay);
+  stopEditableKeys = isolateEditableKeyEvents(overlay);
+  syncViewButtons();
+  renderItems();
+  filterField.input.focus();
+  return { close };
+}
+function createTextureSection(onExportClick) {
+  const ui = createSection("Texture", true, onExportClick);
+  const textureRow = createFieldRoot();
+  const textureLabel = createFieldLabel("texture");
+  const controlWrap = document.createElement("div");
+  const textureInput = document.createElement("input");
+  const browseBtn = document.createElement("button");
+  textureInput.type = "text";
+  textureInput.spellcheck = false;
+  textureInput.setAttribute("aria-label", "texture");
+  Object.assign(controlWrap.style, {
+    flex: FIELD_CONTROL_FLEX,
+    minWidth: "0",
+    display: "flex",
+    alignItems: "center",
+    gap: "4px"
+  });
+  Object.assign(textureInput.style, {
+    flex: "1",
+    minWidth: "0",
+    height: "22px",
+    margin: "0",
+    padding: "2px 6px",
+    border: "0",
+    borderRadius: "3px",
+    outline: "none",
+    background: "#545454",
+    color: "#e5e5e5",
+    font: "inherit",
+    fontSize: "12px",
+    boxSizing: "border-box"
+  });
+  browseBtn.type = "button";
+  browseBtn.textContent = "…";
+  browseBtn.title = "Browse texture cache";
+  browseBtn.setAttribute("aria-label", "Browse texture cache");
+  Object.assign(browseBtn.style, {
+    flexShrink: "0",
+    display: "none",
+    alignItems: "center",
+    justifyContent: "center",
+    width: "22px",
+    height: "22px",
+    margin: "0",
+    padding: "0",
+    border: "0",
+    borderRadius: "3px",
+    appearance: "none",
+    background: BUTTON_BG,
+    color: "#ffffff",
+    font: "inherit",
+    fontSize: "12px",
+    fontWeight: "700",
+    lineHeight: "1",
+    cursor: "pointer",
+    boxSizing: "border-box"
+  });
+  controlWrap.append(textureInput, browseBtn);
+  textureRow.append(textureLabel, controlWrap);
+  ui.body.appendChild(textureRow);
+  ui.root.style.display = "none";
+  let boundNode = null;
+  let current2 = "";
+  let focused = false;
+  let activePicker = null;
+  function syncChrome() {
+    textureInput.style.background = focused ? "#222" : "#545454";
+  }
+  function syncBrowseVisibility() {
+    const showBrowse = hasExposedTextureCache();
+    browseBtn.style.display = showBrowse ? "flex" : "none";
+    if (!showBrowse) {
+      activePicker?.close();
+      activePicker = null;
+    }
+  }
+  function hide() {
+    boundNode = null;
+    current2 = "";
+    textureInput.value = "";
+    focused = false;
+    syncChrome();
+    browseBtn.style.display = "none";
+    ui.root.style.display = "none";
+  }
+  function commit(next) {
+    const trimmed = next.trim();
+    if (!isNodeAlive(boundNode)) {
+      hide();
+      return;
+    }
+    if (trimmed === current2) {
+      textureInput.value = current2;
+      return;
+    }
+    const ok = setNodeTextureByName(boundNode, trimmed);
+    if (!ok) {
+      textureInput.value = current2;
+      return;
+    }
+    current2 = nodeTextureName(boundNode);
+    textureInput.value = current2;
+  }
+  function syncNode(node, multi = false) {
+    if (multi || !nodeHasTexture(node)) {
+      hide();
+      return;
+    }
+    boundNode = node;
+    syncBrowseVisibility();
+    if (focused) {
+      ui.root.style.display = "block";
+      ui.setExportEnabled(true);
+      return;
+    }
+    current2 = nodeTextureName(node);
+    textureInput.value = current2;
+    ui.root.style.display = "block";
+    ui.setExportEnabled(true);
+  }
+  function openPicker() {
+    if (!isNodeAlive(boundNode) || !hasExposedTextureCache()) {
+      return;
+    }
+    activePicker?.close();
+    activePicker = openTexturePickerDialog({
+      currentName: current2,
+      onSelect: (name) => {
+        if (!isNodeAlive(boundNode)) {
+          hide();
+          return;
+        }
+        const ok = setNodeTextureByName(boundNode, name);
+        if (!ok) {
+          return;
+        }
+        current2 = nodeTextureName(boundNode);
+        textureInput.value = current2;
+      },
+      onClose: () => {
+        activePicker = null;
+      }
+    });
+  }
+  textureInput.addEventListener("focus", () => {
+    focused = true;
+    syncChrome();
+    textureInput.select();
+  });
+  textureInput.addEventListener("blur", () => {
+    focused = false;
+    syncChrome();
+    commit(textureInput.value);
+  });
+  textureInput.addEventListener("keydown", (event2) => {
+    if (event2.key === "Enter") {
+      event2.preventDefault();
+      textureInput.blur();
+    } else if (event2.key === "Escape") {
+      event2.preventDefault();
+      textureInput.value = current2;
+      textureInput.blur();
+    }
+  });
+  browseBtn.addEventListener("click", (event2) => {
+    event2.preventDefault();
+    event2.stopPropagation();
+    browseBtn.blur();
+    openPicker();
+  });
+  syncChrome();
+  return {
+    root: ui.root,
+    sync: (node, multi) => {
+      try {
+        syncNode(node, multi);
+      } catch {
+        hide();
+      }
+    },
+    destroy: () => {
+      activePicker?.close();
+      activePicker = null;
+      hide();
+      ui.root.remove();
+    }
+  };
+}
 const MULTI_TRANSFORM_KEYS = /* @__PURE__ */ new Set([
   "position.x",
   "position.y",
@@ -49937,10 +52101,14 @@ function createPropertiesForm(selection) {
     pane.appendChild(ui.root);
   }
   const spineSection = createSpineSection();
+  const textureSection = createTextureSection(() => {
+    openSectionExport("texture", "Texture");
+  });
   for (const section of OBJECT_FORM_SECTIONS) {
     buildSection(section, objectPane, builtObject);
     if (section.id === "identity") {
       objectPane.appendChild(spineSection.root);
+      objectPane.appendChild(textureSection.root);
     }
   }
   for (const section of TEXT_FORM_SECTIONS) {
@@ -50026,6 +52194,7 @@ function createPropertiesForm(selection) {
           section.root.style.display = "none";
         }
         spineSection.sync(null);
+        textureSection.sync(null, true);
         return;
       }
       const node = selectedNode();
@@ -50053,6 +52222,7 @@ function createPropertiesForm(selection) {
         }
       }
       spineSection.sync(node);
+      textureSection.sync(node);
     } catch {
       objectMaps = { numbers: [], booleans: [], strings: [] };
       textMaps = emptyTextMaps();
@@ -50060,6 +52230,7 @@ function createPropertiesForm(selection) {
       textPane.style.visibility = "hidden";
       tabs.setTextAvailable(false);
       spineSection.sync(null);
+      textureSection.sync(null);
     }
   }
   syncFromNode();
@@ -50087,6 +52258,7 @@ function createPropertiesForm(selection) {
       unsubscribeSelection();
       tabs.destroy();
       spineSection.destroy();
+      textureSection.destroy();
       for (const section of [...builtObject, ...builtText]) {
         for (const field of section.fields) {
           field.destroy();
@@ -51717,7 +53889,7 @@ function triggerResize() {
 const SHELL_ID = "pixi-scene-inspector-shell";
 const TREE_ID = "pixi-scene-inspector-tree";
 const PROPS_ID = "pixi-scene-inspector-properties";
-const DEFAULT_TREE_HEIGHT = "40%";
+const DEFAULT_TREE_HEIGHT = 280;
 const DEFAULT_PROPS_WIDTH = 300;
 const TREE_MIN_PX = 60;
 const TREE_MIN_GAME_PX = 60;
@@ -51740,22 +53912,9 @@ function clampTreeHeightPx(height, viewportH) {
   return Math.max(TREE_MIN_PX, Math.min(max, height));
 }
 function parseTreeHeightPx(height, viewportH) {
-  if (typeof height === "number") {
+  {
     return clampTreeHeightPx(height, viewportH);
   }
-  const trimmed = height.trim();
-  if (trimmed.endsWith("%")) {
-    const pct = Number.parseFloat(trimmed);
-    if (!Number.isFinite(pct)) {
-      return clampTreeHeightPx(viewportH * 0.4, viewportH);
-    }
-    return clampTreeHeightPx(viewportH * pct / 100, viewportH);
-  }
-  const px = Number.parseFloat(trimmed);
-  if (!Number.isFinite(px)) {
-    return clampTreeHeightPx(viewportH * 0.4, viewportH);
-  }
-  return clampTreeHeightPx(px, viewportH);
 }
 function clampPropsWidthPx(width, viewportW) {
   const max = Math.max(PROPS_MIN_PX, viewportW - PROPS_MIN_GAME_PX);
@@ -51780,7 +53939,7 @@ function dockPixiSceneInspector(options) {
   let nativeH = Math.max(1, Math.round(readNativeHeight()));
   const treeSettings = readPanelSettings("tree");
   const defaultTreeH = parseTreeHeightPx(
-    options?.height ?? DEFAULT_TREE_HEIGHT,
+    DEFAULT_TREE_HEIGHT,
     nativeH
   );
   const initialTreeH = clampTreeHeightPx(
@@ -67942,9 +70101,14 @@ function canvasFill(color, width, height) {
 function canvasTexture(color, width = 32, height = 32) {
   return Texture$1.from(canvasFill(color, width, height));
 }
+function registerDemoTexture(name, texture) {
+  texture.label = name;
+  Cache.set(name, texture);
+}
 function createDemoTextures(app) {
   const solidGfx = new Graphics().rect(0, 0, 48, 48).fill(16777215);
   const solid = app.renderer.generateTexture(solidGfx);
+  registerDemoTexture("demo/solid", solid);
   solidGfx.destroy();
   const checkerGfx = new Graphics();
   for (let y2 = 0; y2 < 4; y2++) {
@@ -67954,26 +70118,33 @@ function createDemoTextures(app) {
     }
   }
   const checker = app.renderer.generateTexture(checkerGfx);
+  registerDemoTexture("demo/checker", checker);
   checkerGfx.destroy();
   const nineGfx = new Graphics().rect(0, 0, 64, 64).fill(3359061).rect(0, 0, 64, 12).fill(16347926).rect(0, 52, 64, 12).fill(16347926).rect(0, 0, 12, 64).fill(15357964).rect(52, 0, 12, 64).fill(15357964).rect(12, 12, 40, 40).fill(16708551);
   const nineSlice = app.renderer.generateTexture(nineGfx);
+  registerDemoTexture("demo/nine-slice", nineSlice);
   nineGfx.destroy();
   const animFrames = [];
   const colors = [15680580, 16096779, 2278750, 3900150];
-  for (const color of colors) {
-    const frameGfx = new Graphics().circle(16, 16, 14).fill(color);
+  for (let i2 = 0; i2 < colors.length; i2++) {
+    const frameGfx = new Graphics().circle(16, 16, 14).fill(colors[i2]);
     const frame = app.renderer.generateTexture(frameGfx);
+    registerDemoTexture(`demo/anim-${i2}`, frame);
     frameGfx.destroy();
     animFrames.push(frame);
   }
   const meshGfx = new Graphics().rect(0, 0, 64, 64).fill(12592851).poly([0, 0, 64, 0, 32, 64]).fill({ color: 15772668, alpha: 0.55 });
   const mesh = app.renderer.generateTexture(meshGfx);
+  registerDemoTexture("demo/mesh", mesh);
   meshGfx.destroy();
   const gifSourceFrames = [
     { texture: canvasTexture("#ef4444", 40, 40), start: 0, end: 180 },
     { texture: canvasTexture("#22c55e", 40, 40), start: 180, end: 360 },
     { texture: canvasTexture("#3b82f6", 40, 40), start: 360, end: 540 }
   ];
+  for (let i2 = 0; i2 < gifSourceFrames.length; i2++) {
+    registerDemoTexture(`demo/gif-${i2}`, gifSourceFrames[i2].texture);
+  }
   return { solid, checker, nineSlice, animFrames, gifSourceFrames, mesh };
 }
 function stretchCanvas(canvas) {
@@ -68004,12 +70175,14 @@ async function main() {
   gameRoot.appendChild(app.canvas);
   stretchCanvas(app.canvas);
   window.addEventListener("resize", () => stretchCanvas(app.canvas));
-  globalThis.__PIXI_APP__ = app;
+  const globals = globalThis;
+  globals.__PIXI_APP__ = app;
+  globals.__PIXI_CACHE__ = Cache;
   const textures = createDemoTextures(app);
   const scene = await buildDemoScene(textures);
   app.stage.label = "stage";
   app.stage.addChild(scene);
-  const installedByDemo = installPixiSceneInspectorHotkey({ height: "40%" });
+  const installedByDemo = installPixiSceneInspectorHotkey();
   if (installedByDemo) {
     console.info(
       "[pixi-scene-inspector] no extension hotkey detected — installed Shift+` in-page"

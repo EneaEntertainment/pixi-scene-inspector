@@ -41,17 +41,23 @@
       #hint code {
         font-size: 11px;
       }
+      #hint .ok {
+        color: #3dd68c;
+        font-weight: 700;
+      }
     </style>
   </head>
   <body>
     <div id="game">
       <div id="hint">
-        Feature demo — press <b>Shift+`</b> to toggle the inspector<br />
-        Try filter, <code>h</code> hide, <code>i</code> isolate, drag-reparent, Text props<br />
+        Feature demo — press <b>Shift+`</b> to toggle the inspector<br /><br />
+        Try filter, <code>h</code> hide, <code>i</code> isolate, drag-reparent, text props,
+        texture picker<br /><br />
         Types: Container, Sprite, AnimatedSprite, TilingSprite, NineSlice*, GifSprite,
         Text, BitmapText, HTMLText, SplitText, SplitBitmapText, Graphics,
-        Mesh*, ParticleContainer, RenderContainer, DOMContainer, RenderLayer, Spine<br />
-        <code>globalThis.__PIXI_APP__</code> is set
+        Mesh*, ParticleContainer, RenderContainer, DOMContainer, RenderLayer, Spine<br /><br />
+        <span class="ok">✓</span> <code>globalThis.__PIXI_APP__</code><br />
+        <span class="ok">✓</span> <code>globalThis.__PIXI_CACHE__</code>
       </div>
     </div>
     <script type="module" src="./main.ts"></script>

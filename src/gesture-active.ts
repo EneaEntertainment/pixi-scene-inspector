@@ -30,11 +30,13 @@ export const numberDragGesture = createGestureGate();
 export const treeDragGesture = createGestureGate();
 export const highlightTransformGesture = createGestureGate();
 export const exportDialogGesture = createGestureGate();
+export const texturePickerGesture = createGestureGate();
 
 export function isBlockingGestureActive(): boolean
 {
     return numberDragGesture.isActive()
         || treeDragGesture.isActive()
         || highlightTransformGesture.isActive()
-        || exportDialogGesture.isActive();
+        || exportDialogGesture.isActive()
+        || texturePickerGesture.isActive();
 }

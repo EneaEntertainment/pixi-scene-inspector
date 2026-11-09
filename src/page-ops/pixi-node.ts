@@ -3,6 +3,44 @@ export type PixiPoint = {
     y: number;
 };
 
+export type PixiTextureFrame = {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+};
+
+export type PixiTexture = {
+    label?: string;
+    isTexture?: boolean;
+    width?: number;
+    height?: number;
+    frame?: PixiTextureFrame;
+    rotate?: number;
+    textureCacheIds?: Array<string>;
+    baseTexture?: {
+        label?: string;
+        width?: number;
+        height?: number;
+        resolution?: number;
+        textureCacheIds?: Array<string>;
+        resource?: {
+            url?: string;
+            src?: string;
+            source?: unknown;
+        };
+    };
+    source?: {
+        label?: string;
+        _sourceOrigin?: string;
+        resource?: unknown;
+        width?: number;
+        height?: number;
+        resolution?: number;
+        _resolution?: number;
+    };
+};
+
 export type PixiNode = {
     children?: Array<PixiNode> | { list?: Array<PixiNode> };
     list?: Array<PixiNode>;
@@ -36,6 +74,7 @@ export type PixiNode = {
     skew?: PixiPoint;
     label?: unknown;
     name?: unknown;
+    texture?: PixiTexture;
     text?: string | number;
     style?: Record<string, unknown>;
     fontName?: string;
@@ -71,11 +110,37 @@ export function isNodeAlive(node: PixiNode | null | undefined): node is PixiNode
     return !!node && (!('destroyed' in node) || !node.destroyed);
 }
 
+export type PixiRendererHandle = {
+    lastObjectRendered?: PixiNode;
+    _lastObjectRendered?: PixiNode;
+    canvas?: HTMLCanvasElement;
+    view?: HTMLCanvasElement;
+    width?: number;
+    height?: number;
+    resolution?: number;
+
+    extract?: {
+        canvas?: (target: unknown) => unknown;
+    };
+};
+
 export type PageGlobals = typeof globalThis & {
     PIXI?: {
         VERSION?: string;
+        Cache?: unknown;
+        Assets?: {
+            cache?: unknown;
+        };
         [name: string]: unknown;
     };
+
+    Cache?: unknown;
+
+    Assets?: {
+        cache?: unknown;
+    };
+
+    __PIXI_CACHE__?: unknown;
 
     __PIXI_APP__?: {
         stage?: PixiNode;
@@ -85,28 +150,12 @@ export type PageGlobals = typeof globalThis & {
             width?: number;
             height?: number;
         };
-        renderer?: {
-            lastObjectRendered?: PixiNode;
-            _lastObjectRendered?: PixiNode;
-            canvas?: HTMLCanvasElement;
-            view?: HTMLCanvasElement;
-            width?: number;
-            height?: number;
-            resolution?: number;
-        };
+        renderer?: PixiRendererHandle;
     };
 
     __PIXI_STAGE__?: PixiNode;
 
-    __PIXI_RENDERER__?: {
-        lastObjectRendered?: PixiNode;
-        _lastObjectRendered?: PixiNode;
-        canvas?: HTMLCanvasElement;
-        view?: HTMLCanvasElement;
-        width?: number;
-        height?: number;
-        resolution?: number;
-    };
+    __PIXI_RENDERER__?: PixiRendererHandle;
 
     $pixi?: PixiNode;
 };

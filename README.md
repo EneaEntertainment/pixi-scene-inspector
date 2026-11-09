@@ -31,6 +31,28 @@ globalThis.__PIXI_APP__ = app;
 
 Lookup order: `__PIXI_STAGE__` → `__PIXI_APP__.stage` → `renderer.lastObjectRendered` / `_lastObjectRendered` (from `__PIXI_RENDERER__` or `__PIXI_APP__.renderer`).
 
+To enable the **texture browse picker** in Properties, also expose the texture / Assets cache:
+
+PixiJS v8:
+
+```js
+import { Cache } from 'pixi.js';
+
+globalThis.__PIXI_APP__ = app;
+globalThis.__PIXI_CACHE__ = Cache;
+```
+
+PixiJS v7:
+
+```js
+import { utils } from 'pixi.js';
+
+globalThis.__PIXI_APP__ = app;
+globalThis.__PIXI_CACHE__ = utils.TextureCache;
+```
+
+Without `__PIXI_CACHE__`, the texture property field still accepts a typed name (silent revert if unresolved). The browse (`…`) picker stays hidden.
+
 With the extension loaded, press **Shift+`` ` ``** on the game page to toggle the **docked** in-page panel (same behavior as `togglePixiSceneInspector` — no game import needed). Press again to close.
 
 The header shows node count and which global was used. **live** refresh (~1s) is on by default; uncheck it or click **Refresh**. The interval is set in the extension options (0–10s; **0** turns live refresh off). Use the **filter…** field to keep only matching nodes (and their ancestors); matches are highlighted. Press **?** for the shortcuts panel (Esc closes it).
@@ -123,7 +145,7 @@ For a bottom **tree** panel that shrinks the game viewport (and mounts the prope
 ```ts
 import { dockPixiSceneInspector } from "pixi-scene-inspector/overlay";
 
-const docked = dockPixiSceneInspector({ height: "40%", resizable: true });
+const docked = dockPixiSceneInspector({ height: 280, resizable: true });
 
 docked.refresh();
 docked.unmount();
@@ -138,7 +160,7 @@ Without the extension, install the same **Shift+`` ` ``** toggle from the page:
 ```ts
 import { installPixiSceneInspectorHotkey } from "pixi-scene-inspector/overlay";
 
-installPixiSceneInspectorHotkey({ height: "40%" });
+installPixiSceneInspectorHotkey();
 ```
 
 `installPixiSceneInspectorHotkey` is idempotent (`globalThis` guard) and returns `true` when it installed the listener, or `false` when one was already present. The extension already calls it from a MAIN-world content script (`content-dock.js`), so games that only expose `__PIXI_APP__` need no import.

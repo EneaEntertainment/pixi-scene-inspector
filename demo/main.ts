@@ -1,4 +1,4 @@
-import { Application } from 'pixi.js';
+import { Application, Cache } from 'pixi.js';
 import { isEditableKeyTarget } from '../src/editable-keys';
 import { DEFAULT_TOGGLE_HOTKEY, matchesHotkey } from '../src/hotkey';
 import { installPixiSceneInspectorHotkey } from '../src/overlay';
@@ -49,7 +49,13 @@ async function main()
     stretchCanvas(app.canvas);
     window.addEventListener('resize', () => stretchCanvas(app.canvas));
 
-    (globalThis as { __PIXI_APP__?: Application }).__PIXI_APP__ = app;
+    const globals = globalThis as typeof globalThis & {
+        __PIXI_APP__?: Application;
+        __PIXI_CACHE__?: typeof Cache;
+    };
+
+    globals.__PIXI_APP__ = app;
+    globals.__PIXI_CACHE__ = Cache;
 
     const textures = createDemoTextures(app);
     const scene = await buildDemoScene(textures);
@@ -57,7 +63,7 @@ async function main()
     app.stage.label = 'stage';
     app.stage.addChild(scene);
 
-    const installedByDemo = installPixiSceneInspectorHotkey({ height: '40%' });
+    const installedByDemo = installPixiSceneInspectorHotkey();
 
     if (installedByDemo)
     {
