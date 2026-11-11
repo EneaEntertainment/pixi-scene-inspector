@@ -35,6 +35,7 @@ const NODE_TYPE_STYLES: Array<NodeTypeStyle> = [
     { name: 'SplitText', short: 'SPLIT_TXT', color: '#1a5bb8' },
     { name: 'SplitBitmapText', short: 'SPLIT_BMP', color: '#1a5bb8' },
 
+    { name: 'SmoothGraphics', short: 'SMOOTH_GFX', color: '#f07006' },
     { name: 'Graphics', short: 'GRAPHICS', color: '#f07006' },
 
     { name: 'Mesh', short: 'MESH', color: '#970e83' },
@@ -80,6 +81,7 @@ export const NODE_TYPE_INSTANCEOF_ORDER: Array<string> = [
     'HTMLText',
     'SplitText',
     'SplitBitmapText',
+    'SmoothGraphics',
     'Graphics',
     'SlotMesh',
     'DarkSlotMesh',

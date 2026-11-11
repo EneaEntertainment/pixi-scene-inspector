@@ -1,7 +1,7 @@
-import { a as State, j as ExtensionType, z as GCManagedHash, d as BufferUsage, w as warn, D as DOMAdapter, g as getAttributeInfoFromFormat, b as GlProgram, S as Shader, T as Texture, an as Geometry, L as TextureSource, ao as checkMaxIfStatementsInShader, c as STENCIL_MODES, O as Rectangle, q as CanvasSource, N as CLEAR, E as EventEmitter, e as uid, Q as UniformGroup, ap as STATE_BITS, aq as isSafari, ar as isIntegerFormat, r as extensions, M as Matrix, as as compileHighShaderGlProgram, at as colorBitGl, au as localUniformBitGl, av as roundPixelsBitGl, aw as generateTextureBatchBitGl, ax as getBatchSamplersUniformGroup, A as AbstractRenderer, R as RendererType } from "./index--N2NeSe_.js";
-import { e as ensureAttributes, G as GpuStencilModesToPixi, c as compileBufferSync, a as uboSyncFunctionsSTD40, U as UboSystem, B as BufferResource, b as uniformParsers, g as getTexelRangeRects, d as textureBitGl } from "./getTexelRangeRects-BTk_1JrT.js";
-import { R as RenderTargetSystem, S as SharedSystems, d as SharedRenderPipes } from "./RenderTargetSystem-jftNEtXG.js";
-import "./Filter-BH24HVWH.js";
+import { a as State, j as ExtensionType, ae as GCManagedHash, d as BufferUsage, w as warn, D as DOMAdapter, g as getAttributeInfoFromFormat, b as GlProgram, S as Shader, T as Texture, ap as Geometry, a0 as TextureSource, aq as checkMaxIfStatementsInShader, c as STENCIL_MODES, a1 as Rectangle, q as CanvasSource, Q as CLEAR, $ as isIntegerFormat, E as EventEmitter, e as uid, z as UniformGroup, ar as STATE_BITS, as as isSafari, r as extensions, at as AbstractGlGraphicsAdaptor, M as Matrix, au as compileHighShaderGlProgram, av as colorBitGl, aw as localUniformBitGl, ax as roundPixelsBitGl, ay as generateTextureBatchBitGl, az as getBatchSamplersUniformGroup, A as AbstractRenderer, R as RendererType } from "./index-SPjj9M5Z.js";
+import { e as ensureAttributes, G as GpuStencilModesToPixi, c as compileBufferSync, a as uboSyncFunctionsSTD40, U as UboSystem, B as BufferResource, b as uniformParsers, g as getTexelRangeRects, d as textureBitGl } from "./getTexelRangeRects-95pujm4c.js";
+import { R as RenderTargetSystem, S as SharedSystems, d as SharedRenderPipes } from "./RenderTargetSystem-JPZWF-LX.js";
+import "./Filter-bbWdas5q.js";
 class GlBatchAdaptor {
   constructor() {
     this._tempState = State.for2d();
@@ -49,8 +49,6 @@ var BUFFER_TYPE = /* @__PURE__ */ ((BUFFER_TYPE2) => {
 })(BUFFER_TYPE || {});
 class GlBuffer {
   constructor(buffer, type) {
-    this._lastBindBaseLocation = -1;
-    this._lastBindCallId = -1;
     this.buffer = buffer || null;
     this.updateID = -1;
     this.byteLength = -1;
@@ -61,8 +59,6 @@ class GlBuffer {
     this.updateID = -1;
     this.byteLength = -1;
     this.type = -1;
-    this._lastBindBaseLocation = -1;
-    this._lastBindCallId = -1;
   }
 }
 class GlBufferSystem {
@@ -70,10 +66,9 @@ class GlBufferSystem {
    * @param {Renderer} renderer - The renderer this System works for.
    */
   constructor(renderer) {
-    this._boundBufferBases = /* @__PURE__ */ Object.create(null);
-    this._minBaseLocation = 0;
-    this._nextBindBaseIndex = this._minBaseLocation;
-    this._bindCallId = 0;
+    this._boundBuffers = [];
+    this._boundOffsets = [];
+    this._boundSizes = [];
     this._renderer = renderer;
     this._managedBuffers = new GCManagedHash({
       renderer,
@@ -87,13 +82,13 @@ class GlBufferSystem {
     this._managedBuffers.destroy();
     this._renderer = null;
     this._gl = null;
-    this._boundBufferBases = {};
+    this._boundBuffers.length = 0;
   }
   /** Sets up the renderer context and necessary buffers. */
   contextChange() {
     this._gl = this._renderer.gl;
     this.destroyAll(true);
-    this._maxBindings = this._renderer.limits.maxUniformBindings;
+    this._boundBuffers.length = 0;
   }
   getGlBuffer(buffer) {
     buffer._gcLastUsed = this._renderer.gc.now;
@@ -109,114 +104,83 @@ class GlBufferSystem {
     gl.bindBuffer(glBuffer.type, glBuffer.buffer);
   }
   /**
-   * Binds an uniform buffer to at the given index.
+   * Binds a whole uniform buffer to a binding slot.
    *
    * A cache is used so a buffer will not be bound again if already bound.
    * @param glBuffer - the buffer to bind
-   * @param index - the base index to bind it to.
+   * @param index - the binding slot to bind it to.
    */
   bindBufferBase(glBuffer, index) {
-    const { _gl: gl } = this;
-    if (this._boundBufferBases[index] !== glBuffer) {
-      this._boundBufferBases[index] = glBuffer;
-      glBuffer._lastBindBaseLocation = index;
-      gl.bindBufferBase(gl.UNIFORM_BUFFER, index, glBuffer.buffer);
-    }
-  }
-  nextBindBase(hasTransformFeedback) {
-    this._bindCallId++;
-    this._minBaseLocation = 0;
-    if (hasTransformFeedback) {
-      this._boundBufferBases[0] = null;
-      this._minBaseLocation = 1;
-      if (this._nextBindBaseIndex < 1) {
-        this._nextBindBaseIndex = 1;
-      }
-    }
-  }
-  freeLocationForBufferBase(glBuffer) {
-    let freeIndex = this.getLastBindBaseLocation(glBuffer);
-    if (freeIndex >= this._minBaseLocation) {
-      glBuffer._lastBindCallId = this._bindCallId;
-      return freeIndex;
-    }
-    let loop = 0;
-    let nextIndex = this._nextBindBaseIndex;
-    while (loop < 2) {
-      if (nextIndex >= this._maxBindings) {
-        nextIndex = this._minBaseLocation;
-        loop++;
-      }
-      const curBuf = this._boundBufferBases[nextIndex];
-      if (curBuf && curBuf._lastBindCallId === this._bindCallId) {
-        nextIndex++;
-        continue;
-      }
-      break;
-    }
-    freeIndex = nextIndex;
-    this._nextBindBaseIndex = nextIndex + 1;
-    if (loop >= 2) {
-      return -1;
-    }
-    glBuffer._lastBindCallId = this._bindCallId;
-    this._boundBufferBases[freeIndex] = null;
-    return freeIndex;
-  }
-  getLastBindBaseLocation(glBuffer) {
-    const index = glBuffer._lastBindBaseLocation;
-    if (this._boundBufferBases[index] === glBuffer) {
-      return index;
-    }
-    return -1;
+    if (this._boundBuffers[index] === glBuffer && this._boundSizes[index] === -1) return;
+    this._boundBuffers[index] = glBuffer;
+    this._boundOffsets[index] = 0;
+    this._boundSizes[index] = -1;
+    this._gl.bindBufferBase(this._gl.UNIFORM_BUFFER, index, glBuffer.buffer);
   }
   /**
-   * Binds a buffer whilst also binding its range.
-   * This will make the buffer start from the offset supplied rather than 0 when it is read.
-   * @param glBuffer - the buffer to bind
-   * @param index - the base index to bind at, defaults to 0
-   * @param offset - the offset to bind at (this is blocks of 256). 0 = 0, 1 = 256, 2 = 512 etc
-   * @param size - the size to bind at (this is blocks of 256).
+   * Binds part of a uniform buffer to a binding slot, so it is read from the offset supplied rather than 0.
+   *
+   * A cache is used so a range will not be bound again if already bound.
+   * @param glBuffer - the buffer to bind, which must have been uploaded
+   * @param index - the binding slot to bind it to, defaults to 0
+   * @param offset - the byte offset to bind at, defaults to 0. Must be a multiple of
+   * `renderer.limits.minUniformBufferOffsetAlignment`.
+   * @param size - the number of bytes to bind, defaults to the rest of the buffer after `offset`
    */
-  bindBufferRange(glBuffer, index, offset, size) {
-    const { _gl: gl } = this;
-    offset || (offset = 0);
-    index || (index = 0);
-    this._boundBufferBases[index] = null;
-    gl.bindBufferRange(gl.UNIFORM_BUFFER, index || 0, glBuffer.buffer, offset * 256, size || 256);
+  bindBufferRange(glBuffer, index = 0, offset = 0, size) {
+    size ?? (size = glBuffer.byteLength - offset);
+    if (this._boundBuffers[index] === glBuffer && this._boundOffsets[index] === offset && this._boundSizes[index] === size) return;
+    this._boundBuffers[index] = glBuffer;
+    this._boundOffsets[index] = offset;
+    this._boundSizes[index] = size;
+    this._gl.bindBufferRange(this._gl.UNIFORM_BUFFER, index, glBuffer.buffer, offset, size);
   }
   /**
    * Will ensure the data in the buffer is uploaded to the GPU.
+   *
+   * Runs on each `update` event of a vertex or uniform buffer once it has a `GlBuffer`, and when a geometry
+   * or uniform block that uses the buffer is bound. The second call for one update is a no-op.
    * @param {Buffer} buffer - the buffer to update
    */
   updateBuffer(buffer) {
-    const { _gl: gl } = this;
     const glBuffer = this.getGlBuffer(buffer);
-    if (buffer._updateID === glBuffer.updateID) {
-      return glBuffer;
-    }
+    this._upload(buffer, glBuffer, glBuffer.type);
+    return glBuffer;
+  }
+  /**
+   * Uploads the buffer's latest update through `target`, if it has not been uploaded yet.
+   * @param buffer - the buffer to upload
+   * @param glBuffer - its `GlBuffer`
+   * @param target - the binding point to upload through
+   */
+  _upload(buffer, glBuffer, target) {
+    const { _gl: gl } = this;
+    if (buffer._updateID === glBuffer.updateID) return;
     glBuffer.updateID = buffer._updateID;
-    gl.bindBuffer(glBuffer.type, glBuffer.buffer);
+    gl.bindBuffer(target, glBuffer.buffer);
     const data = buffer.data;
     const drawType = buffer.descriptor.usage & BufferUsage.STATIC ? gl.STATIC_DRAW : gl.DYNAMIC_DRAW;
     if (data) {
       if (glBuffer.byteLength >= data.byteLength) {
-        gl.bufferSubData(
-          glBuffer.type,
-          buffer._updateOffset,
-          data,
-          buffer._updateOffset / data.BYTES_PER_ELEMENT,
-          (buffer._updateSize || data.byteLength) / data.BYTES_PER_ELEMENT
-        );
+        const start = buffer._updateOffset / data.BYTES_PER_ELEMENT;
+        const length = (buffer._updateSize || data.byteLength) / data.BYTES_PER_ELEMENT;
+        if (this._renderer.context.webGLVersion === 2) {
+          gl.bufferSubData(target, buffer._updateOffset, data, start, length);
+        } else {
+          gl.bufferSubData(
+            target,
+            buffer._updateOffset,
+            length === data.length ? data : data.subarray(start, start + length)
+          );
+        }
       } else {
         glBuffer.byteLength = data.byteLength;
-        gl.bufferData(glBuffer.type, data, drawType);
+        gl.bufferData(target, data, drawType);
       }
     } else {
       glBuffer.byteLength = buffer.descriptor.size;
-      gl.bufferData(glBuffer.type, glBuffer.byteLength, drawType);
+      gl.bufferData(target, glBuffer.byteLength, drawType);
     }
-    return glBuffer;
   }
   /**
    * dispose all WebGL resources of all managed buffers
@@ -226,6 +190,8 @@ class GlBufferSystem {
     this._managedBuffers.removeAll(contextLost);
   }
   onBufferUnload(buffer, contextLost = false) {
+    buffer.off("update", this.updateBuffer, this);
+    buffer.off("update", this._updateIndexBuffer, this);
     const glBuffer = buffer._gpuData[this._renderer.uid];
     if (!glBuffer) return;
     if (!contextLost) this._gl.deleteBuffer(glBuffer.buffer);
@@ -245,11 +211,36 @@ class GlBufferSystem {
     }
     const glBuffer = new GlBuffer(gl.createBuffer(), type);
     buffer._gpuData[this._renderer.uid] = glBuffer;
-    this._managedBuffers.add(buffer);
+    if (this._managedBuffers.add(buffer)) {
+      if (type === BUFFER_TYPE.ELEMENT_ARRAY_BUFFER) {
+        buffer.on("update", this._updateIndexBuffer, this);
+      } else {
+        buffer.on("update", this.updateBuffer, this);
+      }
+    }
     return glBuffer;
   }
+  /**
+   * Uploads an index buffer's update without changing any vertex array's index buffer.
+   *
+   * ELEMENT_ARRAY_BUFFER is vertex array state, so binding an index buffer there to upload it would make it
+   * the index buffer of whichever vertex array is bound. WebGL2 uploads through COPY_WRITE_BUFFER instead,
+   * which no vertex array reads. WebGL1 has no copy target, so it unbinds the vertex array first, and the
+   * next `geometry.bind()` binds its own again.
+   * @param buffer - the index buffer that was updated
+   */
+  _updateIndexBuffer(buffer) {
+    const glBuffer = this.getGlBuffer(buffer);
+    if (glBuffer.byteLength < 0) return;
+    if (this._renderer.context.webGLVersion === 2) {
+      this._upload(buffer, glBuffer, this._gl.COPY_WRITE_BUFFER);
+      return;
+    }
+    if (this._renderer.geometry._activeVao) this._renderer.geometry.resetState();
+    this._upload(buffer, glBuffer, glBuffer.type);
+  }
   resetState() {
-    this._boundBufferBases = /* @__PURE__ */ Object.create(null);
+    this._boundBuffers.length = 0;
   }
 }
 GlBufferSystem.extension = {
@@ -1081,6 +1072,7 @@ class GlLimitsSystem {
     this.maxBatchableTextures = checkMaxIfStatementsInShader(this.maxTextures, gl);
     const isWebGl2 = this._renderer.context.webGLVersion === 2;
     this.maxUniformBindings = isWebGl2 ? gl.getParameter(gl.MAX_UNIFORM_BUFFER_BINDINGS) : 0;
+    this.minUniformBufferOffsetAlignment = isWebGl2 ? gl.getParameter(gl.UNIFORM_BUFFER_OFFSET_ALIGNMENT) : 0;
   }
   destroy() {
   }
@@ -1098,7 +1090,8 @@ class GlRenderTarget {
     this.msaa = false;
     this._attachedMipLevel = 0;
     this._attachedLayer = 0;
-    this.msaaRenderBuffer = [];
+    this._drawBuffersMask = -1;
+    this._attachedDepthStencilRenderBuffer = null;
     this.stencilMode = STENCIL_MODES.DISABLED;
     this.stencilReference = 0;
     this.maskStackIndex = 0;
@@ -1302,6 +1295,9 @@ class GlRenderTargetAdaptor {
     this._clearColorCache = [0, 0, 0, 0];
     this._viewPortCache = new Rectangle();
     this._boundFramebuffer = void 0;
+    this._canvasMultisampled = false;
+    this._clearUint = new Uint32Array(4);
+    this._clearInt = new Int32Array(4);
   }
   init(renderer, renderTargetSystem) {
     this._renderer = renderer;
@@ -1313,10 +1309,8 @@ class GlRenderTargetAdaptor {
     this._viewPortCache = new Rectangle();
     this._boundFramebuffer = void 0;
     const gl = this._renderer.gl;
+    this._canvasMultisampled = !!gl.getContextAttributes()?.antialias;
     this._drawBuffersCache = [];
-    for (let i = 1; i <= 16; i++) {
-      this._drawBuffersCache[i] = Array.from({ length: i }, (_, j) => gl.COLOR_ATTACHMENT0 + j);
-    }
   }
   copyToTexture(sourceRenderSurfaceTexture, destinationTexture, originSrc, size, originDest) {
     const renderTargetSystem = this._renderTargetSystem;
@@ -1346,7 +1340,28 @@ class GlRenderTargetAdaptor {
     const destinationRenderTarget = renderTargetSystem.getRenderTarget(destination);
     const srcGl = renderTargetSystem.getGpuRenderTarget(source);
     const dstGl = renderTargetSystem.getGpuRenderTarget(destinationRenderTarget);
-    gl.bindFramebuffer(gl.READ_FRAMEBUFFER, srcGl.framebuffer);
+    let readFramebuffer = srcGl.framebuffer;
+    const multisampled = srcGl.msaa || source.isRoot && this._canvasMultisampled;
+    if (multisampled && (originSrc.x !== originDest.x || originSrc.y !== originDest.y)) {
+      srcGl.resolveTargetFramebuffer ?? (srcGl.resolveTargetFramebuffer = gl.createFramebuffer());
+      gl.bindFramebuffer(gl.FRAMEBUFFER, srcGl.resolveTargetFramebuffer);
+      this._attachDepthStencilTexture(source, 0, 0);
+      gl.bindFramebuffer(gl.READ_FRAMEBUFFER, srcGl.framebuffer);
+      gl.blitFramebuffer(
+        originSrc.x,
+        originSrc.y,
+        originSrc.x + size.width,
+        originSrc.y + size.height,
+        originSrc.x,
+        originSrc.y,
+        originSrc.x + size.width,
+        originSrc.y + size.height,
+        gl.DEPTH_BUFFER_BIT,
+        gl.NEAREST
+      );
+      readFramebuffer = srcGl.resolveTargetFramebuffer;
+    }
+    gl.bindFramebuffer(gl.READ_FRAMEBUFFER, readFramebuffer);
     gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, dstGl.framebuffer);
     this._boundFramebuffer = void 0;
     gl.blitFramebuffer(
@@ -1424,13 +1439,18 @@ class GlRenderTargetAdaptor {
     }
     if (gpuRenderTarget.framebuffer) {
       if (renderTarget.depthStencilAttachment) {
-        this._attachDepthStencilTexture(renderTarget, mipLevel, layer);
+        if (gpuRenderTarget.msaa) {
+          this._attachMsaaDepthStencil(renderTarget, gpuRenderTarget);
+        } else {
+          this._attachDepthStencilTexture(renderTarget, mipLevel, layer);
+        }
       } else if (!gpuRenderTarget.depthStencilRenderBuffer && (renderTarget.stencil || renderTarget.depth)) {
         this._initStencil(gpuRenderTarget);
       }
     }
-    if (renderTarget.colorAttachments.length > 1) {
-      this._setDrawBuffers(renderTarget, gl);
+    const colorCount = renderTarget.colorAttachments.length;
+    if (colorCount > 1 && gpuRenderTarget._drawBuffersMask === -1) {
+      this._setDrawBuffers(renderTarget, (1 << colorCount) - 1);
     }
     let viewPortY = viewport.y;
     if (renderTarget.isRoot) {
@@ -1450,6 +1470,74 @@ class GlRenderTargetAdaptor {
       );
     }
     this.clear(renderTarget, clear, clearColor);
+    const activeProgram = this._renderer.shader._activeProgram;
+    if (colorCount > 1 && activeProgram) {
+      this.setFragmentOutputs(activeProgram);
+    }
+  }
+  /**
+   * On a target with several color attachments, switches on only the attachments the program has a
+   * fragment output for. GLES leaves an attachment undefined when it's switched on but the shader
+   * doesn't write it, so a color-only draw would otherwise overwrite every other attachment.
+   * WebGL1 keeps every attachment on, as it always has.
+   *
+   * Takes the program rather than its outputs so they're only read (and parsed, on first use)
+   * for a target that has several attachments.
+   * @param program - the bound program; outputs it couldn't read switch every attachment on
+   * @internal
+   */
+  setFragmentOutputs(program) {
+    const renderTarget = this._renderTargetSystem.renderTarget;
+    const count = renderTarget?.colorAttachments.length ?? 0;
+    if (count < 2 || this._renderer.context.webGLVersion === 1) return;
+    const all = (1 << count) - 1;
+    this._setDrawBuffers(renderTarget, (program.fragmentOutputMask ?? all) & all);
+  }
+  /**
+   * Sets which color attachments are switched on: exactly those in `mask` (one bit each: 0b101 = 0 and 2),
+   * and records the setting on the target, so a call that changes nothing makes no GL call.
+   *
+   * Draw buffers belong to a framebuffer and can only be set while it's bound, so a target that
+   * isn't bound is left alone; its next pass sets it. Single-attachment targets are never touched.
+   * @param renderTarget - the target whose attachments to switch
+   * @param mask - the attachments to switch on
+   */
+  _setDrawBuffers(renderTarget, mask) {
+    if (renderTarget.colorAttachments.length < 2) return;
+    const glRenderTarget = this._renderTargetSystem.getGpuRenderTarget(renderTarget);
+    if (glRenderTarget.framebuffer !== this._boundFramebuffer) return;
+    if (glRenderTarget._drawBuffersMask === mask) return;
+    glRenderTarget._drawBuffersMask = mask;
+    const buffers = this._getDrawBuffers(mask);
+    if (this._renderer.context.webGLVersion === 1) {
+      const ext = this._renderer.context.extensions.drawBuffers;
+      if (!ext) {
+        warn("[RenderTexture] This WebGL1 context does not support rendering to multiple targets");
+      } else {
+        ext.drawBuffersWEBGL(buffers);
+      }
+    } else {
+      this._renderer.gl.drawBuffers(buffers);
+    }
+  }
+  /**
+   * The `gl.drawBuffers` list for a mask. It runs only up to the last attachment that's on: GL
+   * switches off every draw buffer past the end of the list, so the same list serves a target with
+   * any number of attachments. A mask of 0 (a shader with no color output) is `[NONE]`.
+   * @param mask - the attachments to enable, one bit each
+   * @returns the cached list
+   */
+  _getDrawBuffers(mask) {
+    let buffers = this._drawBuffersCache[mask];
+    if (!buffers) {
+      const gl = this._renderer.gl;
+      buffers = this._drawBuffersCache[mask] = [];
+      for (let i = 0; mask >> i > 0; i++) {
+        buffers[i] = mask & 1 << i ? gl.COLOR_ATTACHMENT0 + i : gl.NONE;
+      }
+      if (buffers.length === 0) buffers[0] = gl.NONE;
+    }
+    return buffers;
   }
   finishRenderPass(renderTarget) {
     const renderTargetSystem = this._renderTargetSystem;
@@ -1458,18 +1546,40 @@ class GlRenderTargetAdaptor {
     const gl = this._renderer.gl;
     gl.bindFramebuffer(gl.FRAMEBUFFER, glRenderTarget.resolveTargetFramebuffer);
     gl.bindFramebuffer(gl.READ_FRAMEBUFFER, glRenderTarget.framebuffer);
-    gl.blitFramebuffer(
-      0,
-      0,
-      glRenderTarget.width,
-      glRenderTarget.height,
-      0,
-      0,
-      glRenderTarget.width,
-      glRenderTarget.height,
-      gl.COLOR_BUFFER_BIT,
-      gl.NEAREST
-    );
+    const count = renderTarget.colorAttachments.length;
+    if (count === 1) {
+      gl.blitFramebuffer(
+        0,
+        0,
+        glRenderTarget.width,
+        glRenderTarget.height,
+        0,
+        0,
+        glRenderTarget.width,
+        glRenderTarget.height,
+        gl.COLOR_BUFFER_BIT,
+        gl.NEAREST
+      );
+    } else {
+      for (let i = 0; i < count; i++) {
+        gl.readBuffer(gl.COLOR_ATTACHMENT0 + i);
+        gl.drawBuffers(this._getDrawBuffers(1 << i));
+        gl.blitFramebuffer(
+          0,
+          0,
+          glRenderTarget.width,
+          glRenderTarget.height,
+          0,
+          0,
+          glRenderTarget.width,
+          glRenderTarget.height,
+          gl.COLOR_BUFFER_BIT,
+          gl.NEAREST
+        );
+      }
+      gl.readBuffer(gl.COLOR_ATTACHMENT0);
+      gl.drawBuffers(this._getDrawBuffers(1));
+    }
     gl.bindFramebuffer(gl.FRAMEBUFFER, glRenderTarget.framebuffer);
     this._boundFramebuffer = glRenderTarget.framebuffer;
   }
@@ -1492,7 +1602,7 @@ class GlRenderTargetAdaptor {
     } else {
       this._initColor(renderTarget, glRenderTarget);
     }
-    if (renderTarget.depthStencilAttachment) {
+    if (renderTarget.depthStencilAttachment && !glRenderTarget.msaa) {
       this._attachDepthStencilTexture(renderTarget, 0, 0);
     }
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
@@ -1513,41 +1623,87 @@ class GlRenderTargetAdaptor {
       gl.deleteRenderbuffer(gpuRenderTarget.depthStencilRenderBuffer);
       gpuRenderTarget.depthStencilRenderBuffer = null;
     }
-    gpuRenderTarget.msaaRenderBuffer.forEach((renderBuffer) => {
-      gl.deleteRenderbuffer(renderBuffer);
-    });
-    gpuRenderTarget.msaaRenderBuffer.length = 0;
   }
+  /**
+   * Clears the target, when a pass opens and on an explicit `clear()`. `clear` decides whether color
+   * clears, and a color attachment whose own `loadOp` is `'load'` keeps its contents anyway. WebGL1
+   * clears all or none.
+   * @param renderTarget - the target to clear
+   * @param clear - what to clear
+   * @param clearColor - the colour for attachments without a `clearValue`
+   * @param _viewport - unused on WebGL
+   * @param _mipLevel - unused on WebGL
+   * @param layer - must be 0 on WebGL
+   */
   clear(renderTarget, clear, clearColor, _viewport, _mipLevel = 0, layer = 0) {
-    if (!clear) return;
     if (layer !== 0) {
       throw new Error("[RenderTargetSystem] Clearing array layers is not supported in WebGL renderer.");
     }
-    const renderTargetSystem = this._renderTargetSystem;
     if (typeof clear === "boolean") {
       clear = clear ? CLEAR.ALL : CLEAR.NONE;
     }
-    if (renderTarget.colorAttachments.length === 0) {
-      clear &= ~CLEAR.COLOR;
-      if (!clear) return;
-    }
-    const gl = this._renderer.gl;
-    const forceDepthMask = !!(clear & CLEAR.DEPTH) && !this._renderer.state.depthMaskEnabled;
+    const attachments = renderTarget.colorAttachments;
+    let colorMask = 0;
     if (clear & CLEAR.COLOR) {
-      clearColor ?? (clearColor = renderTargetSystem.defaultClearColor);
-      const clearColorCache = this._clearColorCache;
-      const clearColorArray = clearColor;
-      if (clearColorCache[0] !== clearColorArray[0] || clearColorCache[1] !== clearColorArray[1] || clearColorCache[2] !== clearColorArray[2] || clearColorCache[3] !== clearColorArray[3]) {
-        clearColorCache[0] = clearColorArray[0];
-        clearColorCache[1] = clearColorArray[1];
-        clearColorCache[2] = clearColorArray[2];
-        clearColorCache[3] = clearColorArray[3];
-        gl.clearColor(clearColorArray[0], clearColorArray[1], clearColorArray[2], clearColorArray[3]);
+      for (let i = 0; i < attachments.length; i++) {
+        if (attachments[i].loadOp !== "load") colorMask |= 1 << i;
       }
     }
+    if (!colorMask) clear &= ~CLEAR.COLOR;
+    if (!clear) return;
+    const gl = this._renderer.gl;
+    const forceDepthMask = !!(clear & CLEAR.DEPTH) && !this._renderer.state.depthMaskEnabled;
     if (forceDepthMask) gl.depthMask(true);
-    gl.clear(clear);
+    if (clear & CLEAR.COLOR) {
+      const glRenderTarget = this._renderTargetSystem.getGpuRenderTarget(renderTarget);
+      const eachAlone = this._renderer.context.webGLVersion === 2 && (attachments.length > 1 || isIntegerFormat(attachments[0].texture.format));
+      if (eachAlone && glRenderTarget.framebuffer === this._boundFramebuffer) {
+        const previousMask = glRenderTarget._drawBuffersMask;
+        this._setDrawBuffers(renderTarget, (1 << attachments.length) - 1);
+        this._clearEachAttachment(renderTarget, colorMask, clearColor);
+        if (previousMask !== -1) this._setDrawBuffers(renderTarget, previousMask);
+        clear &= ~CLEAR.COLOR;
+      } else {
+        const color = attachments[0].clearValue ?? clearColor ?? this._renderTargetSystem.defaultClearColor;
+        const cache = this._clearColorCache;
+        if (cache[0] !== color[0] || cache[1] !== color[1] || cache[2] !== color[2] || cache[3] !== color[3]) {
+          cache[0] = color[0];
+          cache[1] = color[1];
+          cache[2] = color[2];
+          cache[3] = color[3];
+          gl.clearColor(color[0], color[1], color[2], color[3]);
+        }
+      }
+    }
+    if (clear) gl.clear(clear);
     if (forceDepthMask) gl.depthMask(false);
+  }
+  /**
+   * Clears the color attachments in `mask` (one bit each), each to its own `clearValue` or to
+   * `clearColor` where it has none, with the `clearBuffer` call that matches its format. Integer
+   * attachments take the numbers as integers, as WebGPU converts them.
+   * @param renderTarget - the target to clear; its attachments are all switched on
+   * @param mask - the attachments to clear
+   * @param clearColor - the colour for attachments without a `clearValue`
+   */
+  _clearEachAttachment(renderTarget, mask, clearColor) {
+    const gl = this._renderer.gl;
+    const attachments = renderTarget.colorAttachments;
+    const fallback = clearColor ?? this._renderTargetSystem.defaultClearColor;
+    for (let i = 0; i < attachments.length; i++) {
+      if (!(mask & 1 << i)) continue;
+      const format = attachments[i].texture.format;
+      const color = attachments[i].clearValue ?? fallback;
+      if (format.endsWith("uint")) {
+        this._clearUint.set(color);
+        gl.clearBufferuiv(gl.COLOR, i, this._clearUint);
+      } else if (format.endsWith("sint")) {
+        this._clearInt.set(color);
+        gl.clearBufferiv(gl.COLOR, i, this._clearInt);
+      } else {
+        gl.clearBufferfv(gl.COLOR, i, color);
+      }
+    }
   }
   resizeGpuRenderTarget(renderTarget) {
     if (renderTarget.isRoot) return;
@@ -1610,13 +1766,7 @@ class GlRenderTargetAdaptor {
       }
     });
     if (glRenderTarget.msaa) {
-      const viewFramebuffer = gl.createFramebuffer();
-      glRenderTarget.framebuffer = viewFramebuffer;
-      gl.bindFramebuffer(gl.FRAMEBUFFER, viewFramebuffer);
-      renderTarget.colorAttachments.forEach((_, i) => {
-        const msaaRenderBuffer = gl.createRenderbuffer();
-        glRenderTarget.msaaRenderBuffer[i] = msaaRenderBuffer;
-      });
+      glRenderTarget.framebuffer = gl.createFramebuffer();
     } else {
       glRenderTarget.framebuffer = resolveTargetFramebuffer;
     }
@@ -1646,32 +1796,52 @@ class GlRenderTargetAdaptor {
     if (glRenderTarget.msaa) {
       const renderer = this._renderer;
       const gl = renderer.gl;
-      const viewFramebuffer = glRenderTarget.framebuffer;
-      gl.bindFramebuffer(gl.FRAMEBUFFER, viewFramebuffer);
+      gl.bindFramebuffer(gl.FRAMEBUFFER, glRenderTarget.framebuffer);
       renderTarget.colorAttachments.forEach((colorAttachment, i) => {
-        const source2 = colorAttachment.texture;
-        renderer.texture.bindSource(source2, 0);
-        const glSource = renderer.texture.getGlSource(source2);
-        const glInternalFormat = glSource.internalFormat;
-        const msaaRenderBuffer = glRenderTarget.msaaRenderBuffer[i];
-        gl.bindRenderbuffer(
-          gl.RENDERBUFFER,
-          msaaRenderBuffer
-        );
-        gl.renderbufferStorageMultisample(
-          gl.RENDERBUFFER,
-          4,
-          glInternalFormat,
-          source2.pixelWidth,
-          source2.pixelHeight
-        );
         gl.framebufferRenderbuffer(
           gl.FRAMEBUFFER,
           gl.COLOR_ATTACHMENT0 + i,
           gl.RENDERBUFFER,
-          msaaRenderBuffer
+          renderer.texture.getMsaaRenderBuffer(colorAttachment.texture)
         );
       });
+    }
+  }
+  /**
+   * Attaches the samples of an MSAA target's depth/stencil texture to its framebuffer, which is bound. They
+   * are kept in a renderbuffer with the texture (see GlTextureSystem.getMsaaRenderBuffer), so every MSAA
+   * target over the texture tests and writes the same depth. Runs every pass: getting the renderbuffer marks
+   * the texture used, which nothing else does as the target never binds it, so the GC can't unload samples
+   * in use; and it follows the texture's size, reallocating the storage after a resize.
+   * @param renderTarget - the target, which has a depth/stencil texture
+   * @param glRenderTarget - its backend target
+   */
+  _attachMsaaDepthStencil(renderTarget, glRenderTarget) {
+    const gl = this._renderer.gl;
+    const textures = this._renderer.texture;
+    const source = renderTarget.depthStencilAttachment.texture;
+    const ownRenderBuffer = glRenderTarget.depthStencilRenderBuffer;
+    if (ownRenderBuffer) {
+      const glTexture = textures.getGlSource(source);
+      if (!glTexture.msaaRenderBuffer && glTexture.internalFormat === gl.DEPTH24_STENCIL8) {
+        glTexture.msaaRenderBuffer = ownRenderBuffer;
+        glTexture.msaaWidth = glRenderTarget.width;
+        glTexture.msaaHeight = glRenderTarget.height;
+        glRenderTarget._attachedDepthStencilRenderBuffer = ownRenderBuffer;
+      } else {
+        gl.deleteRenderbuffer(ownRenderBuffer);
+      }
+      glRenderTarget.depthStencilRenderBuffer = null;
+    }
+    const renderBuffer = textures.getMsaaRenderBuffer(source);
+    if (glRenderTarget._attachedDepthStencilRenderBuffer !== renderBuffer) {
+      glRenderTarget._attachedDepthStencilRenderBuffer = renderBuffer;
+      gl.framebufferRenderbuffer(
+        gl.FRAMEBUFFER,
+        this._getDepthStencilAttachmentPoint(renderTarget),
+        gl.RENDERBUFFER,
+        renderBuffer
+      );
     }
   }
   _attachDepthStencilTexture(renderTarget, mipLevel, layer) {
@@ -1680,15 +1850,7 @@ class GlRenderTargetAdaptor {
     const source = renderTarget.depthStencilAttachment.texture;
     const glSource = renderer.texture.getGlSource(source);
     const glTexture = glSource.texture;
-    const format = source.format;
-    let attachment;
-    if (format === "depth24plus-stencil8" || format === "depth32float-stencil8") {
-      attachment = gl.DEPTH_STENCIL_ATTACHMENT;
-    } else if (format === "stencil8") {
-      attachment = gl.STENCIL_ATTACHMENT;
-    } else {
-      attachment = gl.DEPTH_ATTACHMENT;
-    }
+    const attachment = this._getDepthStencilAttachmentPoint(renderTarget);
     if (glSource.target === gl.TEXTURE_2D) {
       gl.framebufferTexture2D(
         gl.FRAMEBUFFER,
@@ -1714,6 +1876,22 @@ class GlRenderTargetAdaptor {
         mipLevel
       );
     }
+  }
+  /**
+   * The framebuffer attachment point for a target's depth/stencil buffer. It must match the
+   * buffer's aspects, or the framebuffer is incomplete.
+   * @param renderTarget - the target whose depth/stencil buffer is being attached
+   */
+  _getDepthStencilAttachmentPoint(renderTarget) {
+    const gl = this._renderer.gl;
+    const format = renderTarget.depthStencilAttachment.texture.format;
+    if (format === "depth24plus-stencil8" || format === "depth32float-stencil8") {
+      return gl.DEPTH_STENCIL_ATTACHMENT;
+    }
+    if (format === "stencil8") {
+      return gl.STENCIL_ATTACHMENT;
+    }
+    return gl.DEPTH_ATTACHMENT;
   }
   _initStencil(glRenderTarget) {
     if (glRenderTarget.framebuffer === null) return;
@@ -1773,20 +1951,6 @@ class GlRenderTargetAdaptor {
         0,
         canvasSource.pixelHeight - contextCanvas.height
       );
-    }
-  }
-  _setDrawBuffers(renderTarget, gl) {
-    const count = renderTarget.colorAttachments.length;
-    const bufferArray = this._drawBuffersCache[count];
-    if (this._renderer.context.webGLVersion === 1) {
-      const ext = this._renderer.context.extensions.drawBuffers;
-      if (!ext) {
-        warn("[RenderTexture] This WebGL1 context does not support rendering to multiple targets");
-      } else {
-        ext.drawBuffersWEBGL(bufferArray);
-      }
-    } else {
-      gl.drawBuffers(bufferArray);
     }
   }
   /**
@@ -1862,6 +2026,11 @@ class TextureView extends EventEmitter {
     this.removeAllListeners();
   }
 }
+function invert(layout) {
+  const names = {};
+  for (const name in layout) names[layout[name]] = name;
+  return names;
+}
 function generateShaderSyncCode(shader, shaderSystem) {
   const funcFragments = [];
   const headerFragments = [`
@@ -1876,37 +2045,29 @@ function generateShaderSyncCode(shader, shaderSystem) {
   const programData = shaderSystem._getProgramData(shader.glProgram);
   for (const i in shader.groups) {
     const group = shader.groups[i];
+    const bindingNames = group.layout ? invert(group.layout) : shader._uniformBindMap[i];
     funcFragments.push(`
             resources = g[${i}].resources;
         `);
     for (const j in group.resources) {
       const resource = group.resources[j];
-      if (resource instanceof UniformGroup) {
-        if (resource.ubo) {
-          const resName = shader._uniformBindMap[i][Number(j)];
+      if (resource instanceof UniformGroup && !resource.ubo) {
+        funcFragments.push(`
+                    ugS.updateUniformGroup(resources[${j}], p, sD);
+                `);
+      } else if (resource instanceof UniformGroup || resource instanceof BufferResource) {
+        const resName = bindingNames[Number(j)];
+        const blockData = shader.glProgram._uniformBlockData[resName];
+        if (blockData) {
           funcFragments.push(`
                         sS.bindUniformBlock(
                             resources[${j}],
-                            '${resName}',
-                            ${shader.glProgram._uniformBlockData[resName].index}
+                            '${resName}'
                         );
                     `);
-        } else {
-          funcFragments.push(`
-                        ugS.updateUniformGroup(resources[${j}], p, sD);
-                    `);
         }
-      } else if (resource instanceof BufferResource) {
-        const resName = shader._uniformBindMap[i][Number(j)];
-        funcFragments.push(`
-                    sS.bindUniformBlock(
-                        resources[${j}],
-                        '${resName}',
-                        ${shader.glProgram._uniformBlockData[resName].index}
-                    );
-                `);
       } else if (resource instanceof TextureSource || resource instanceof TextureView) {
-        const uniformName = shader._uniformBindMap[i][j];
+        const uniformName = bindingNames[Number(j)];
         const uniformData = programData.uniformData[uniformName];
         if (uniformData) {
           if (!addedTextureSystem) {
@@ -1938,14 +2099,12 @@ class GlProgramData {
     this.uniformData = uniformData;
     this.uniformGroups = {};
     this.uniformDirtyGroups = {};
-    this.uniformBlockBindings = {};
   }
   /** Destroys this program. */
   destroy() {
     this.uniformData = null;
     this.uniformGroups = null;
     this.uniformDirtyGroups = null;
-    this.uniformBlockBindings = null;
     this.program = null;
   }
 }
@@ -2143,7 +2302,7 @@ function extractAttributesFromGlProgram(program, gl, sortAttributes = false) {
   }
   return attributes;
 }
-function getUboData(program, gl) {
+function getUboData(program, gl, firstBinding = 0) {
   if (!gl.ACTIVE_UNIFORM_BLOCKS) return {};
   const uniformBlocks = {};
   const totalUniformsBlocks = gl.getProgramParameter(program, gl.ACTIVE_UNIFORM_BLOCKS);
@@ -2154,6 +2313,7 @@ function getUboData(program, gl) {
     uniformBlocks[name] = {
       name,
       index: uniformBlockIndex,
+      binding: uniformBlockIndex + firstBinding,
       size
     };
   }
@@ -2249,7 +2409,11 @@ function generateProgram(gl, program) {
     !/^[ \t]*#[ \t]*version[ \t]+300[ \t]+es[ \t]*$/m.test(program.vertex)
   );
   program._uniformData = getUniformData(webGLProgram, gl);
-  program._uniformBlockData = getUboData(webGLProgram, gl);
+  program._uniformBlockData = getUboData(webGLProgram, gl, transformFeedbackVaryings ? 1 : 0);
+  for (const name in program._uniformBlockData) {
+    const { index, binding } = program._uniformBlockData[name];
+    gl.uniformBlockBinding(webGLProgram, index, binding);
+  }
   gl.deleteShader(glVertShader);
   gl.deleteShader(glFragShader);
   const uniformData = {};
@@ -2264,8 +2428,7 @@ function generateProgram(gl, program) {
   return glProgram;
 }
 const defaultSyncData = {
-  textureCount: 0,
-  blockIndex: 0
+  textureCount: 0
 };
 class GlShaderSystem {
   constructor(renderer) {
@@ -2290,12 +2453,10 @@ class GlShaderSystem {
     this._setProgram(shader.glProgram);
     if (skipSync) return;
     defaultSyncData.textureCount = 0;
-    defaultSyncData.blockIndex = 0;
     let syncFunction = this._shaderSyncFunctions[shader.glProgram._key];
     if (!syncFunction) {
       syncFunction = this._shaderSyncFunctions[shader.glProgram._key] = this._generateShaderSync(shader, this);
     }
-    this._renderer.buffer.nextBindBase(!!shader.glProgram.transformFeedbackVaryings);
     syncFunction(this._renderer, shader, defaultSyncData);
   }
   /**
@@ -2309,38 +2470,36 @@ class GlShaderSystem {
    * Binds a uniform block to the shader.
    * @param uniformGroup - the uniform group to bind
    * @param name - the name of the uniform block
-   * @param index - the index of the uniform block
    */
-  bindUniformBlock(uniformGroup, name, index = 0) {
+  bindUniformBlock(uniformGroup, name) {
     const bufferSystem = this._renderer.buffer;
-    const programData = this._getProgramData(this._activeProgram);
+    const { binding } = this._activeProgram._uniformBlockData[name];
     const isBufferResource = uniformGroup._bufferResource;
     if (!isBufferResource) {
       this._renderer.ubo.updateUniformGroup(uniformGroup);
     }
-    const buffer = uniformGroup.buffer;
-    const glBuffer = bufferSystem.updateBuffer(buffer);
-    const boundLocation = bufferSystem.freeLocationForBufferBase(glBuffer);
-    if (isBufferResource) {
-      const { offset, size } = uniformGroup;
-      if (offset === 0 && size === buffer.data.byteLength) {
-        bufferSystem.bindBufferBase(glBuffer, boundLocation);
-      } else {
-        bufferSystem.bindBufferRange(glBuffer, boundLocation, offset);
-      }
-    } else if (bufferSystem.getLastBindBaseLocation(glBuffer) !== boundLocation) {
-      bufferSystem.bindBufferBase(glBuffer, boundLocation);
+    const glBuffer = bufferSystem.updateBuffer(uniformGroup.buffer);
+    if (!isBufferResource) {
+      bufferSystem.bindBufferBase(glBuffer, binding);
+      return;
     }
-    const uniformBlockIndex = this._activeProgram._uniformBlockData[name].index;
-    if (programData.uniformBlockBindings[index] === boundLocation) return;
-    programData.uniformBlockBindings[index] = boundLocation;
-    this._renderer.gl.uniformBlockBinding(programData.program, uniformBlockIndex, boundLocation);
+    const { offset, size } = uniformGroup;
+    if (offset === 0 && (size === void 0 || size === glBuffer.byteLength)) {
+      bufferSystem.bindBufferBase(glBuffer, binding);
+      return;
+    }
+    const alignment = this._renderer.limits.minUniformBufferOffsetAlignment;
+    if (offset % alignment !== 0) {
+      warn(`[GlShaderSystem] uniform block "${name}" has a BufferResource offset of ${offset}, which is not a multiple of renderer.limits.minUniformBufferOffsetAlignment (${alignment}). WebGL will not bind it.`);
+    }
+    bufferSystem.bindBufferRange(glBuffer, binding, offset, size);
   }
   _setProgram(program) {
     if (this._activeProgram === program) return;
     this._activeProgram = program;
     const programData = this._getProgramData(program);
     this._gl.useProgram(programData.program);
+    this._renderer.renderTarget.adaptor.setFragmentOutputs(program);
   }
   /**
    * @param program - the program to get the data for
@@ -2883,6 +3042,9 @@ class GlTexture {
   constructor(texture) {
     this.target = GL_TARGETS.TEXTURE_2D;
     this._layerInitMask = 0;
+    this.msaaRenderBuffer = null;
+    this.msaaWidth = -1;
+    this.msaaHeight = -1;
     this.texture = texture;
     this.width = -1;
     this.height = -1;
@@ -3321,7 +3483,7 @@ function applyStyleParams(style, gl, mipmaps, anisotropicExt, glFunctionName, fi
   if (style.compare) {
     gl[glFunctionName](castParam, gl.TEXTURE_COMPARE_FUNC, compareModeToGlCompare[style.compare]);
     gl[glFunctionName](castParam, gl.TEXTURE_COMPARE_MODE, gl.COMPARE_REF_TO_TEXTURE);
-  } else if (!firstCreation) {
+  } else if (!firstCreation && gl.TEXTURE_COMPARE_MODE) {
     gl[glFunctionName](castParam, gl.TEXTURE_COMPARE_MODE, gl.NONE);
   }
 }
@@ -3780,6 +3942,7 @@ const _GlTextureSystem = class _GlTextureSystem2 {
     if (!contextLost) {
       this.unbind(source);
       this._gl.deleteTexture(glTexture.texture);
+      if (glTexture.msaaRenderBuffer) this._gl.deleteRenderbuffer(glTexture.msaaRenderBuffer);
     }
     source.off("update", this.onSourceUpdate, this);
     source.off("resize", this.onSourceUpdate, this);
@@ -3951,6 +4114,31 @@ const _GlTextureSystem = class _GlTextureSystem2 {
     source._gcLastUsed = this._renderer.gc.now;
     return source._gpuData[this._renderer.uid] || this._initSource(source);
   }
+  /**
+   * The multisampled renderbuffer an antialiased texture is drawn into, made on first use, with its storage
+   * at the texture's current size. It belongs to the texture, so every render target over the texture shares
+   * its samples, and it is deleted with the texture's GL texture.
+   * @param source - a colour attachment of an antialiased target, or its depth/stencil texture
+   * @returns its multisampled renderbuffer
+   */
+  getMsaaRenderBuffer(source) {
+    const gl = this._gl;
+    const glTexture = this.getGlSource(source);
+    glTexture.msaaRenderBuffer ?? (glTexture.msaaRenderBuffer = gl.createRenderbuffer());
+    if (glTexture.msaaWidth !== source.pixelWidth || glTexture.msaaHeight !== source.pixelHeight) {
+      glTexture.msaaWidth = source.pixelWidth;
+      glTexture.msaaHeight = source.pixelHeight;
+      gl.bindRenderbuffer(gl.RENDERBUFFER, glTexture.msaaRenderBuffer);
+      gl.renderbufferStorageMultisample(
+        gl.RENDERBUFFER,
+        4,
+        glTexture.internalFormat,
+        source.pixelWidth,
+        source.pixelHeight
+      );
+    }
+    return glTexture.msaaRenderBuffer;
+  }
   generateCanvas(texture) {
     const { pixels, width, height } = this.getPixels(texture);
     const canvas = DOMAdapter.get().createCanvas();
@@ -4017,7 +4205,7 @@ _GlTextureSystem.extension = {
 _GlTextureSystem.uploadExtensions = /* @__PURE__ */ Object.create(null);
 let GlTextureSystem = _GlTextureSystem;
 extensions.handleByMap(ExtensionType.TextureUploaderWebGL, GlTextureSystem.uploadExtensions);
-class GlGraphicsAdaptor {
+class GlGraphicsAdaptor extends AbstractGlGraphicsAdaptor {
   contextChange(renderer) {
     const uniforms = new UniformGroup({
       uColor: { value: new Float32Array([1, 1, 1, 1]), type: "vec4<f32>" },
@@ -4042,34 +4230,8 @@ class GlGraphicsAdaptor {
       }
     });
   }
-  execute(graphicsPipe, renderable) {
-    const context = renderable.context;
-    const shader = context.customShader || this.shader;
-    const renderer = graphicsPipe.renderer;
-    const contextSystem = renderer.graphicsContext;
-    const {
-      batcher,
-      instructions
-    } = contextSystem.getContextRenderData(context);
-    shader.groups[0] = renderer.globalUniforms.bindGroup;
-    renderer.state.set(graphicsPipe.state);
-    renderer.shader.bind(shader);
-    renderer.geometry.bind(batcher.geometry, shader.glProgram);
-    const batches = instructions.instructions;
-    for (let i = 0; i < instructions.instructionSize; i++) {
-      const batch = batches[i];
-      if (batch.size) {
-        for (let j = 0; j < batch.textures.count; j++) {
-          renderer.texture.bind(batch.textures.textures[j], j);
-        }
-        renderer.texture.unbindIntegerTextures(batch.textures.count);
-        renderer.geometry.draw(batch.topology, batch.size, batch.start);
-      }
-    }
-  }
-  destroy() {
-    this.shader.destroy(true);
-    this.shader = null;
+  _getRenderData(renderer, context) {
+    return renderer.graphicsContext.getContextRenderData(context);
   }
 }
 GlGraphicsAdaptor.extension = {

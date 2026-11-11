@@ -1,4 +1,4 @@
-import { w as warn, g as getAttributeInfoFromFormat, c as STENCIL_MODES, u as unsafeEvalSupported, B as Buffer, d as BufferUsage, E as EventEmitter, e as uid } from "./index--N2NeSe_.js";
+import { w as warn, g as getAttributeInfoFromFormat, c as STENCIL_MODES, u as unsafeEvalSupported, B as Buffer, d as BufferUsage, E as EventEmitter, e as uid } from "./index-SPjj9M5Z.js";
 const textureBit = {
   name: "texture-bit",
   vertex: {
@@ -480,12 +480,18 @@ class BufferResource extends EventEmitter {
    * Create a new Buffer Resource.
    * @param options - The options for the buffer resource
    * @param options.buffer - The underlying buffer that this resource is using
-   * @param options.offset - The offset of the buffer this resource is using.
-   * If not provided, then it will use the offset of the buffer.
-   * @param options.size - The size of the buffer this resource is using.
-   * If not provided, then it will use the size of the buffer.
+   * @param options.offset - The byte offset into the buffer this resource starts at, defaulting to 0.
+   * Must be a multiple of `renderer.limits.minUniformBufferOffsetAlignment`.
+   * @param options.size - The number of bytes this resource covers.
+   * If not provided, it covers the rest of the buffer after `offset`.
+   * @param options.watch - Listen to the buffer, defaulting to true. A watched resource changes its id and
+   * emits `change` when the buffer resizes, unloads or is destroyed, so the bind groups holding it rebuild.
+   * Pass false when many resources share one buffer and every bind group holds them with
+   * `BindGroup.setResourceUnwatched`, as thousands of listeners on one buffer cost memory and time to add and
+   * remove. An unwatched resource keeps its id through those changes, so whoever owns it must
+   * replace it with a new resource once the buffer changes, or bind groups keep using the old GPU buffer.
    */
-  constructor({ buffer, offset, size }) {
+  constructor({ buffer, offset, size, watch = true }) {
     super();
     this.uid = uid("buffer");
     this._resourceType = "bufferResource";
@@ -495,7 +501,8 @@ class BufferResource extends EventEmitter {
     this.buffer = buffer;
     this.offset = offset | 0;
     this.size = size;
-    this.buffer.on("change", this.onBufferChange, this);
+    this.watch = watch;
+    if (watch) this.buffer.on("change", this.onBufferChange, this);
   }
   /**
    * The GC tracks the underlying buffer, not this resource — a GC stamp here (see
@@ -524,6 +531,7 @@ class BufferResource extends EventEmitter {
       this.buffer.destroy();
     }
     this.emit("change", this);
+    if (this.watch) this.buffer.off("change", this.onBufferChange, this);
     this.buffer = null;
     this.removeAllListeners();
   }

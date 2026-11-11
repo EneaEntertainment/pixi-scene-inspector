@@ -1,5 +1,5 @@
-import { M as Matrix, f as canvasUtils, V as CanvasPool, ay as getPo2TextureFromSource, a4 as Bounds, j as ExtensionType, G as GpuProgram, b as GlProgram, Q as UniformGroup, I as BindGroup, a5 as TexturePool, T as Texture, an as Geometry, R as RendererType, w as warn, r as extensions } from "./index--N2NeSe_.js";
-import { F as Filter } from "./Filter-BH24HVWH.js";
+import { M as Matrix, f as canvasUtils, a9 as CanvasPool, aA as getPo2TextureFromSource, K as Bounds, j as ExtensionType, G as GpuProgram, b as GlProgram, z as UniformGroup, a4 as BindGroup, L as TexturePool, T as Texture, ap as Geometry, R as RendererType, w as warn, r as extensions } from "./index-SPjj9M5Z.js";
+import { F as Filter } from "./Filter-bbWdas5q.js";
 const tempProjectionMatrix = new Matrix();
 function getGlobalRenderableBounds(renderables, bounds) {
   bounds.clear();
@@ -363,6 +363,10 @@ class FilterSystem {
     this._globalFilterBindGroup = new BindGroup({});
     this.renderer = renderer;
   }
+  /** @internal */
+  init() {
+    TexturePool.on("evict", this._unbindPassTextures, this);
+  }
   /**
    * The back texture of the currently active filter. Requires the filter to have `blendRequired` set to true.
    * @readonly
@@ -484,22 +488,34 @@ class FilterSystem {
    * @param previousBounds - The previous bounds to use for offsetting the copy.
    */
   getBackTexture(lastRenderSurface, bounds, previousBounds) {
-    const backgroundResolution = lastRenderSurface.colorTexture.source._resolution;
+    const { _resolution: resolution, format } = lastRenderSurface.colorTexture.source;
     const backTexture = TexturePool.getOptimalTexture({
       width: bounds.width,
       height: bounds.height,
-      resolution: backgroundResolution
+      resolution,
+      format
     });
+    return this._copyBackTexture(lastRenderSurface, backTexture, bounds, previousBounds);
+  }
+  /**
+   * Copies an area of a render surface into a texture at the resolution of the surface.
+   * @param lastRenderSurface - The render surface to copy from.
+   * @param backTexture - The texture to copy to.
+   * @param bounds - The bounds of the area to copy.
+   * @param previousBounds - The previous bounds to use for offsetting the copy.
+   */
+  _copyBackTexture(lastRenderSurface, backTexture, bounds, previousBounds) {
+    const backgroundResolution = backTexture.source._resolution;
     let x = bounds.minX;
     let y = bounds.minY;
     if (previousBounds) {
       x -= previousBounds.minX;
       y -= previousBounds.minY;
     }
-    x = Math.floor(x * backgroundResolution);
-    y = Math.floor(y * backgroundResolution);
-    const width = Math.ceil(bounds.width * backgroundResolution);
-    const height = Math.ceil(bounds.height * backgroundResolution);
+    x = Math.floor(x * backgroundResolution + 1e-6);
+    y = Math.floor(y * backgroundResolution + 1e-6);
+    const width = Math.min(Math.ceil(bounds.width * backgroundResolution), backTexture.source.pixelWidth);
+    const height = Math.min(Math.ceil(bounds.height * backgroundResolution), backTexture.source.pixelHeight);
     this.renderer.renderTarget.copyToTexture(
       lastRenderSurface,
       backTexture,
@@ -568,6 +584,18 @@ class FilterSystem {
   destroy() {
     this._passthroughFilter?.destroy(true);
     this._passthroughFilter = null;
+    TexturePool.off("evict", this._unbindPassTextures, this);
+    this._globalFilterBindGroup.destroy();
+  }
+  /**
+   * Swaps the last pass's textures in the filter bind group for the empty texture before the texture pool
+   * destroys idle textures, as a bind group warns when a texture bound to it is destroyed.
+   */
+  _unbindPassTextures() {
+    const bindGroup = this._globalFilterBindGroup;
+    bindGroup.setResource(Texture.EMPTY.source, 1);
+    bindGroup.setResource(Texture.EMPTY.source.style, 2);
+    bindGroup.setResource(Texture.EMPTY.source, 3);
   }
   _getPassthroughFilter() {
     this._passthroughFilter ?? (this._passthroughFilter = new PassthroughFilter());
@@ -617,7 +645,18 @@ class FilterSystem {
     if (filterData.blendRequired) {
       renderer.renderTarget.finishRenderPass();
       const renderTarget = renderer.renderTarget.getRenderTarget(filterData.outputRenderSurface);
-      filterData.backTexture = this.getBackTexture(renderTarget, bounds, previousFilterData?.bounds);
+      const surfaceSource = renderTarget.colorTexture.source;
+      const backTexture = TexturePool.getAlignedTexture(
+        filterData.inputTexture,
+        surfaceSource._resolution,
+        surfaceSource.format
+      );
+      filterData.backTexture = this._copyBackTexture(
+        renderTarget,
+        backTexture,
+        bounds,
+        previousFilterData?.bounds
+      );
     }
     renderer.renderTarget.bind({ target: filterData.inputTexture, clear: true });
     renderer.globalUniforms.push({
