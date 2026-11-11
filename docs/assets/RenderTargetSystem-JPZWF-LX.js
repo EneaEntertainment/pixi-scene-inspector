@@ -1,5 +1,5 @@
-import { a0 as TextureMatrix, Q as UniformGroup, M as Matrix, G as GpuProgram, b as GlProgram, w as warn, T as Texture, a as State, a1 as DefaultBatcher, j as ExtensionType, r as extensions, a2 as BigPool, a3 as getGlobalBounds, a4 as Bounds, a5 as TexturePool, R as RendererType, a6 as FilterEffect, a7 as Sprite, c as STENCIL_MODES, N as CLEAR, a8 as BatchableSprite, a9 as RenderGroup, aa as multiplyColors, ab as UPDATE_VISIBLE, ac as UPDATE_COLOR, ad as UPDATE_BLEND, x as Container, C as Color, D as DOMAdapter, L as TextureSource, O as Rectangle, ae as getLocalBounds, P as Point, af as color32BitToUniform, I as BindGroup, t as Ticker, ag as VERSION, ah as deprecation, E as EventEmitter, e as uid$1, q as CanvasSource, ai as GlobalResourceRegistry, aj as v8_0_0, V as CanvasPool, ak as RendererInitHook, al as SystemRunner, am as v8_21_0 } from "./index--N2NeSe_.js";
-import { F as Filter } from "./Filter-BH24HVWH.js";
+import { y as TextureMatrix, z as UniformGroup, M as Matrix, G as GpuProgram, b as GlProgram, w as warn, T as Texture, a as State, H as DefaultBatcher, j as ExtensionType, r as extensions, I as BigPool, J as getGlobalBounds, K as Bounds, L as TexturePool, R as RendererType, N as FilterEffect, O as Sprite, c as STENCIL_MODES, Q as CLEAR, V as BatchableSprite, W as RenderGroup, X as multiplyColors, Y as UPDATE_VISIBLE, Z as UPDATE_COLOR, _ as UPDATE_BLEND, x as Container, C as Color, D as DOMAdapter, $ as isIntegerFormat, a0 as TextureSource, a1 as Rectangle, a2 as getLocalBounds, P as Point, a3 as color32BitToUniform, a4 as BindGroup, t as Ticker, a5 as VERSION, a6 as deprecation, E as EventEmitter, e as uid$1, q as CanvasSource, a7 as GlobalResourceRegistry, a8 as v8_0_0, a9 as CanvasPool, aa as RendererInitHook, ab as SystemRunner, ac as v8_21_0 } from "./index-SPjj9M5Z.js";
+import { F as Filter } from "./Filter-bbWdas5q.js";
 var fragment = "in vec2 vMaskCoord;\nin vec2 vTextureCoord;\n\nuniform sampler2D uTexture;\nuniform sampler2D uMaskTexture;\n\nuniform float uAlpha;\nuniform vec4 uMaskClamp;\nuniform float uInverse;\nuniform float uChannel;\n\nout vec4 finalColor;\n\nvoid main(void)\n{\n    float clip = step(3.5,\n        step(uMaskClamp.x, vMaskCoord.x) +\n        step(uMaskClamp.y, vMaskCoord.y) +\n        step(vMaskCoord.x, uMaskClamp.z) +\n        step(vMaskCoord.y, uMaskClamp.w));\n\n    // TODO look into why this is needed\n    float npmAlpha = uAlpha;\n    vec4 original = texture(uTexture, vTextureCoord);\n    vec4 masky = texture(uMaskTexture, vMaskCoord);\n\n    float a;\n    if (uChannel == 1.0) {\n        a = masky.a * npmAlpha * clip;\n    } else {\n        float alphaMul = 1.0 - npmAlpha * (1.0 - masky.a);\n        a = alphaMul * masky.r * npmAlpha * clip;\n    }\n\n    if (uInverse == 1.0) {\n        a = 1.0 - a;\n    }\n\n    finalColor = original * a;\n}\n";
 var vertex = "in vec2 aPosition;\n\nout vec2 vTextureCoord;\nout vec2 vMaskCoord;\n\n\nuniform vec4 uInputSize;\nuniform vec4 uOutputFrame;\nuniform vec4 uOutputTexture;\nuniform mat3 uFilterMatrix;\n\nvec4 filterVertexPosition(  vec2 aPosition )\n{\n    vec2 position = aPosition * uOutputFrame.zw + uOutputFrame.xy;\n       \n    position.x = position.x * (2.0 / uOutputTexture.x) - 1.0;\n    position.y = position.y * (2.0*uOutputTexture.z / uOutputTexture.y) - uOutputTexture.z;\n\n    return vec4(position, 0.0, 1.0);\n}\n\nvec2 filterTextureCoord(  vec2 aPosition )\n{\n    return aPosition * (uOutputFrame.zw * uInputSize.zw);\n}\n\nvec2 getFilterCoord( vec2 aPosition )\n{\n    return  ( uFilterMatrix * vec3( filterTextureCoord(aPosition), 1.0)  ).xy;\n}   \n\nvoid main(void)\n{\n    gl_Position = filterVertexPosition(aPosition);\n    vTextureCoord = filterTextureCoord(aPosition);\n    vMaskCoord = getFilterCoord(aPosition);\n}\n";
 var source = "struct GlobalFilterUniforms {\n  uInputSize:vec4<f32>,\n  uInputPixel:vec4<f32>,\n  uInputClamp:vec4<f32>,\n  uOutputFrame:vec4<f32>,\n  uGlobalFrame:vec4<f32>,\n  uOutputTexture:vec4<f32>,\n};\n\nstruct MaskUniforms {\n  uFilterMatrix:mat3x3<f32>,\n  uMaskClamp:vec4<f32>,\n  uAlpha:f32,\n  uInverse:f32,\n  uChannel:f32,\n};\n\n@group(0) @binding(0) var<uniform> gfu: GlobalFilterUniforms;\n@group(0) @binding(1) var uTexture: texture_2d<f32>;\n@group(0) @binding(2) var uSampler : sampler;\n\n@group(1) @binding(0) var<uniform> filterUniforms : MaskUniforms;\n@group(1) @binding(1) var uMaskTexture: texture_2d<f32>;\n\nstruct VSOutput {\n    @builtin(position) position: vec4<f32>,\n    @location(0) uv : vec2<f32>,\n    @location(1) filterUv : vec2<f32>,\n};\n\nfn filterVertexPosition(aPosition:vec2<f32>) -> vec4<f32>\n{\n    var position = aPosition * gfu.uOutputFrame.zw + gfu.uOutputFrame.xy;\n\n    position.x = position.x * (2.0 / gfu.uOutputTexture.x) - 1.0;\n    position.y = position.y * (2.0*gfu.uOutputTexture.z / gfu.uOutputTexture.y) - gfu.uOutputTexture.z;\n\n    return vec4(position, 0.0, 1.0);\n}\n\nfn filterTextureCoord( aPosition:vec2<f32> ) -> vec2<f32>\n{\n    return aPosition * (gfu.uOutputFrame.zw * gfu.uInputSize.zw);\n}\n\nfn globalTextureCoord( aPosition:vec2<f32> ) -> vec2<f32>\n{\n  return  (aPosition.xy / gfu.uGlobalFrame.zw) + (gfu.uGlobalFrame.xy / gfu.uGlobalFrame.zw);\n}\n\nfn getFilterCoord(aPosition:vec2<f32> ) -> vec2<f32>\n{\n  return ( filterUniforms.uFilterMatrix * vec3( filterTextureCoord(aPosition), 1.0)  ).xy;\n}\n\nfn getSize() -> vec2<f32>\n{\n  return gfu.uGlobalFrame.zw;\n}\n\n@vertex\nfn mainVertex(\n  @location(0) aPosition : vec2<f32>,\n) -> VSOutput {\n  return VSOutput(\n   filterVertexPosition(aPosition),\n   filterTextureCoord(aPosition),\n   getFilterCoord(aPosition)\n  );\n}\n\n@fragment\nfn mainFragment(\n  @location(0) uv: vec2<f32>,\n  @location(1) filterUv: vec2<f32>,\n  @builtin(position) position: vec4<f32>\n) -> @location(0) vec4<f32> {\n\n    var maskClamp = filterUniforms.uMaskClamp;\n    var uAlpha = filterUniforms.uAlpha;\n\n    var clip = step(3.5,\n      step(maskClamp.x, filterUv.x) +\n      step(maskClamp.y, filterUv.y) +\n      step(filterUv.x, maskClamp.z) +\n      step(filterUv.y, maskClamp.w));\n\n    var mask = textureSample(uMaskTexture, uSampler, filterUv);\n    var source = textureSample(uTexture, uSampler, uv);\n\n    var a: f32;\n    if (filterUniforms.uChannel == 1.0) {\n        a = mask.a * uAlpha * clip;\n    } else {\n        var alphaMul = 1.0 - uAlpha * (1.0 - mask.a);\n        a = alphaMul * mask.r * uAlpha * clip;\n    }\n\n    if (filterUniforms.uInverse == 1.0) {\n        a = 1.0 - a;\n    }\n\n    return source * a;\n}\n";
@@ -662,8 +662,14 @@ class RenderGroupPipe {
       this._renderer.renderTarget.pop();
       this._renderer.globalUniforms.pop();
     }
-    renderGroup._batchableRenderGroup._batcher.updateElement(renderGroup._batchableRenderGroup);
-    renderGroup._batchableRenderGroup._batcher.geometry.buffers[0].update();
+    const batchableRenderGroup = renderGroup._batchableRenderGroup;
+    const batcher = batchableRenderGroup._batcher;
+    batcher.updateElement(batchableRenderGroup);
+    batcher.geometry.buffers[0].update(
+      // eslint-disable-next-line dot-notation
+      batchableRenderGroup.attributeSize * batcher["vertexSize"] * 4,
+      batchableRenderGroup._attributeStart * 4
+    );
   }
   _executeDirect(renderGroup) {
     this._renderer.globalUniforms.push({
@@ -1210,6 +1216,16 @@ _BackgroundSystem.defaultOptions = {
   clearBeforeRender: true
 };
 let BackgroundSystem = _BackgroundSystem;
+function assertReadable(texture, generated = false) {
+  const format = texture.source.format;
+  if (!format.endsWith("float") && !isIntegerFormat(format) && !format.startsWith("depth") && format !== "stencil8") {
+    return;
+  }
+  if (generated) texture.destroy(true);
+  throw new Error(
+    `[ExtractSystem] can't read ${format} textures: extract reads 8-bit color only. Extract a Mesh whose shader reads the texture and outputs color instead.`
+  );
+}
 const imageTypes = {
   png: "image/png",
   jpg: "image/jpeg",
@@ -1371,6 +1387,7 @@ const _ExtractSystem = class _ExtractSystem2 {
    *     antialias: true
    * });
    * ```
+   * @throws If the target is a float, integer or depth texture
    * @see {@link ExtractOptions} For detailed options
    * @see {@link ExtractSystem.image} For HTMLImage output
    * @see {@link ExtractSystem.pixels} For raw pixel data
@@ -1381,9 +1398,11 @@ const _ExtractSystem = class _ExtractSystem2 {
     const target = options.target;
     const renderer = this._renderer;
     if (target instanceof Texture) {
+      assertReadable(target);
       return renderer.texture.generateCanvas(target);
     }
     const texture = renderer.textureGenerator.generateTexture(options);
+    assertReadable(texture, true);
     const canvas = renderer.texture.generateCanvas(texture);
     texture.destroy(true);
     return canvas;
@@ -1391,28 +1410,29 @@ const _ExtractSystem = class _ExtractSystem2 {
   /**
    * Returns a one-dimensional array containing the pixel data of the entire texture in RGBA order,
    * with integer values between 0 and 255 (inclusive).
-   * > [!NOE] The returned array is a flat Uint8Array where every 4 values represent RGBA
+   * > [!NOTE] `pixels` is a flat Uint8ClampedArray where every 4 values represent RGBA
    * @param options - The options for extracting the image, or the target to extract
-   * @returns One-dimensional Uint8Array containing the pixel data in RGBA format
+   * @returns The RGBA `pixels` as a flat Uint8ClampedArray, with their `width` and `height`
    * @example
    * ```ts
    * // Basic pixel extraction
    * const sprite = new Sprite(texture);
-   * const pixels = renderer.extract.pixels(sprite);
+   * const { pixels } = renderer.extract.pixels(sprite);
    * console.log(pixels[0], pixels[1], pixels[2], pixels[3]); // R,G,B,A values
    *
    * // Extract with custom region
-   * const pixels = renderer.extract.pixels({
+   * const { pixels } = renderer.extract.pixels({
    *     target: sprite,
    *     frame: new Rectangle(0, 0, 100, 100)
    * });
    *
    * // Extract with high resolution
-   * const pixels = renderer.extract.pixels({
+   * const { pixels } = renderer.extract.pixels({
    *     target: sprite,
    *     resolution: 2
    * });
    * ```
+   * @throws If the target is a float, integer or depth texture
    * @see {@link ExtractOptions} For detailed options
    * @see {@link ExtractSystem.canvas} For canvas output
    * @see {@link ExtractSystem.image} For image output
@@ -1423,6 +1443,7 @@ const _ExtractSystem = class _ExtractSystem2 {
     const target = options.target;
     const renderer = this._renderer;
     const texture = target instanceof Texture ? target : renderer.textureGenerator.generateTexture(options);
+    assertReadable(texture, !(target instanceof Texture));
     const pixelInfo = renderer.texture.getPixels(texture);
     if (target instanceof Container) {
       texture.destroy(true);
@@ -2522,6 +2543,7 @@ const _RenderTarget = class _RenderTarget2 extends EventEmitter {
     this.isRoot = false;
     this._size = new Float32Array(2);
     this._managedColorTextures = false;
+    this._managedDepthStencilTexture = false;
     this._depth = false;
     this._stencil = false;
     this._colorTextures = null;
@@ -2561,7 +2583,6 @@ const _RenderTarget = class _RenderTarget2 extends EventEmitter {
               resolution: opts.resolution,
               antialias: opts.antialias
             }),
-            loadOp: "clear",
             storeOp: "store"
           });
         }
@@ -2570,7 +2591,6 @@ const _RenderTarget = class _RenderTarget2 extends EventEmitter {
       opts.colorTextures.forEach((texture) => {
         colorAttachments.push({
           texture: texture.source,
-          loadOp: "clear",
           storeOp: "store"
         });
       });
@@ -2625,7 +2645,10 @@ const _RenderTarget = class _RenderTarget2 extends EventEmitter {
     this._colorTextures || (this._colorTextures = this.colorAttachments.map((a) => a.texture));
     return this._colorTextures;
   }
-  /** The stencil and depth buffer will write to this texture in WebGPU. */
+  /**
+   * The texture the depth and stencil buffers write to. On an antialiased target shaders can't
+   * read it as a normal depth texture, see {@link RenderTargetOptions.depthStencilTexture}.
+   */
   get depthStencilTexture() {
     return this.depthStencilAttachment?.texture ?? null;
   }
@@ -2682,7 +2705,7 @@ const _RenderTarget = class _RenderTarget2 extends EventEmitter {
       });
     }
     if (this.depthStencilAttachment) {
-      this.depthStencilAttachment.texture.destroy();
+      if (this._managedDepthStencilTexture) this.depthStencilAttachment.texture.destroy();
       delete this.depthStencilAttachment;
     }
     this.colorAttachments = null;
@@ -2696,18 +2719,20 @@ const _RenderTarget = class _RenderTarget2 extends EventEmitter {
    * @param resolution
    */
   _createDepthStencilTexture(width, height, resolution) {
-    this.depthStencilAttachment ?? (this.depthStencilAttachment = {
-      texture: new TextureSource({
-        width,
-        height,
-        resolution,
-        format: "depth24plus-stencil8",
-        autoGenerateMipmaps: false,
-        antialias: false,
-        mipLevelCount: 1
-        // sampleCount: handled by the render target system..
-      })
+    if (this.depthStencilAttachment) return this.depthStencilAttachment;
+    const texture = new TextureSource({
+      width,
+      height,
+      resolution,
+      format: "depth24plus-stencil8",
+      autoGenerateMipmaps: false,
+      antialias: false,
+      mipLevelCount: 1
+      // sampleCount: handled by the render target system..
     });
+    texture.resize(width, height, resolution);
+    this._managedDepthStencilTexture = true;
+    this.depthStencilAttachment = { texture };
     return this.depthStencilAttachment;
   }
 };
@@ -2795,6 +2820,9 @@ const _ViewSystem = class _ViewSystem2 {
     this.canvas = options.canvas || DOMAdapter.get().createCanvas();
     this.antialias = !!options.antialias;
     const { depth, ...canvasOptions } = options;
+    if (!canvasOptions.format && this._renderer.type === RendererType.WEBGPU) {
+      canvasOptions.format = DOMAdapter.get().getNavigator().gpu.getPreferredCanvasFormat();
+    }
     this.texture = getCanvasTexture(this.canvas, canvasOptions);
     this.renderTarget = new RenderTarget({
       colorTextures: [this.texture],
@@ -2814,6 +2842,7 @@ const _ViewSystem = class _ViewSystem2 {
    */
   resize(desiredScreenWidth, desiredScreenHeight, resolution) {
     this.texture.source.resize(desiredScreenWidth, desiredScreenHeight, resolution);
+    this._updateScreenSize();
     this.screen.width = this.texture.frame.width;
     this.screen.height = this.texture.frame.height;
   }
@@ -2837,12 +2866,13 @@ const _ViewSystem = class _ViewSystem2 {
   }
   /**
    * Tells the texture and canvas pools how big this renderer's screen is, in physical pixels, so they
-   * can hand out screen sized resources instead of rounding every request up to a power of two.
+   * can hand out screen sized resources instead of rounding every request up to a power of two. The
+   * texture pool is told the resolution as well, to fit textures of other resolutions to the screen.
    */
   _updateScreenSize() {
     const { pixelWidth, pixelHeight } = this.texture.source;
     const uid2 = this._renderer.uid;
-    TexturePool.setScreenSize(uid2, pixelWidth, pixelHeight);
+    TexturePool.setScreenSize(uid2, pixelWidth, pixelHeight, this.resolution);
     CanvasPool.setScreenSize(uid2, pixelWidth, pixelHeight);
   }
 };
@@ -3275,6 +3305,10 @@ class RenderTargetSystem {
    * **Important Note:** When using the copied depth buffer in a subsequent render pass,
    * you must ensure you do not clear the depth buffer again. If you need to clear the color
    * buffer of the destination render target, use `clear: CLEAR.COLOR` to preserve the copied depth data.
+   *
+   * Copying from an antialiased target resolves its multisampled depth, keeping sample 0 of each pixel,
+   * and copies depth only. So does copying part of a texture on WebGPU, which only copies depth/stencil
+   * textures whole.
    * @example
    * ```js
    * renderer.renderTarget.copyDepthTexture(
@@ -3419,7 +3453,7 @@ class RenderTargetSystem {
     this._releaseGpuRenderTarget(renderTarget);
   }
   /**
-   * Frees the backend objects (framebuffers, renderbuffers, MSAA textures) cached for a render target.
+   * Frees the backend objects (framebuffers, own renderbuffers, a canvas's MSAA textures) cached for a render target.
    * @param renderTarget - the render target whose backend counterpart is no longer needed
    */
   _releaseGpuRenderTarget(renderTarget) {
@@ -3430,7 +3464,19 @@ class RenderTargetSystem {
     }
   }
   getGpuRenderTarget(renderTarget) {
-    return this._gpuRenderTargetHash[renderTarget.uid] || (this._gpuRenderTargetHash[renderTarget.uid] = this.adaptor.initGpuRenderTarget(renderTarget));
+    return this._gpuRenderTargetHash[renderTarget.uid] || (this._gpuRenderTargetHash[renderTarget.uid] = this._initGpuRenderTarget(renderTarget));
+  }
+  _initGpuRenderTarget(renderTarget) {
+    const attachments = renderTarget.colorAttachments;
+    if (attachments.some((attachment) => attachment.texture.antialias)) {
+      const index = attachments.findIndex((attachment) => isIntegerFormat(attachment.texture.format));
+      if (index !== -1) {
+        throw new Error(
+          `[RenderTargetSystem] color attachment ${index} is ${attachments[index].texture.format}, an integer format, and integer formats can't be antialiased. Create the render target's textures without antialias.`
+        );
+      }
+    }
+    return this.adaptor.initGpuRenderTarget(renderTarget);
   }
   resetState() {
     this.renderTarget = null;

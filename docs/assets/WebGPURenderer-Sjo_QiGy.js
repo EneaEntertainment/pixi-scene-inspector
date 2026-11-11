@@ -1,7 +1,7 @@
-import { y as getTextureBatchBindGroup, a as State, j as ExtensionType, z as GCManagedHash, H as fastCopy, w as warn, D as DOMAdapter, d as BufferUsage, B as Buffer, I as BindGroup, c as STENCIL_MODES, J as createIdFromString, K as ShaderOverrides, L as TextureSource, N as CLEAR, q as CanvasSource, O as Rectangle, Q as UniformGroup, V as CanvasPool, r as extensions, M as Matrix, W as compileHighShaderGpuProgram, X as colorBit, Y as localUniformBitGroup2, Z as roundPixelsBit, _ as generateTextureBatchBit, S as Shader, $ as localUniformBit, T as Texture, A as AbstractRenderer, R as RendererType } from "./index--N2NeSe_.js";
-import { c as compileBufferSync, u as uboSyncFunctionsWGSL, U as UboSystem, B as BufferResource, G as GpuStencilModesToPixi, e as ensureAttributes, g as getTexelRangeRects, t as textureBit } from "./getTexelRangeRects-BTk_1JrT.js";
-import { R as RenderTargetSystem, S as SharedSystems, d as SharedRenderPipes } from "./RenderTargetSystem-jftNEtXG.js";
-import "./Filter-BH24HVWH.js";
+import { ad as getTextureBatchBindGroup, a as State, j as ExtensionType, ae as GCManagedHash, af as fastCopy, D as DOMAdapter, w as warn, B as Buffer, d as BufferUsage, a4 as BindGroup, c as STENCIL_MODES, ag as createIdFromString, ah as ShaderOverrides, a0 as TextureSource, Q as CLEAR, q as CanvasSource, $ as isIntegerFormat, a1 as Rectangle, z as UniformGroup, a9 as CanvasPool, r as extensions, ai as AbstractGpuGraphicsAdaptor, M as Matrix, aj as compileHighShaderGpuProgram, ak as colorBit, al as localUniformBitGroup2, am as roundPixelsBit, an as generateTextureBatchBit, S as Shader, ao as localUniformBit, T as Texture, A as AbstractRenderer, R as RendererType } from "./index-SPjj9M5Z.js";
+import { c as compileBufferSync, u as uboSyncFunctionsWGSL, U as UboSystem, B as BufferResource, G as GpuStencilModesToPixi, e as ensureAttributes, g as getTexelRangeRects, t as textureBit } from "./getTexelRangeRects-95pujm4c.js";
+import { R as RenderTargetSystem, S as SharedSystems, d as SharedRenderPipes } from "./RenderTargetSystem-JPZWF-LX.js";
+import "./Filter-bbWdas5q.js";
 const tempState = State.for2d();
 class GpuBatchAdaptor {
   start(batchPipe, geometry, shader) {
@@ -60,12 +60,17 @@ GpuBatchAdaptor.extension = {
   ],
   name: "batch"
 };
+let nextCacheId = 0;
 class GpuBindGroupEntry {
-  constructor(gpuBindGroup, now) {
+  constructor(gpuBindGroup, now, keyLow, keyHigh, layoutKey, cacheId) {
     this.autoGarbageCollect = true;
     this._gpuData = null;
     this.gpuBindGroup = gpuBindGroup;
     this._gcLastUsed = now;
+    this.keyLow = keyLow;
+    this.keyHigh = keyHigh;
+    this.layoutKey = layoutKey;
+    this.cacheId = cacheId;
   }
   /**
    * Native bind groups have no destroy; dropping the reference is the whole release. Anything
@@ -79,32 +84,55 @@ class GpuBindGroupEntry {
 class BindGroupSystem {
   constructor(renderer) {
     this._hash = /* @__PURE__ */ Object.create(null);
+    this._cacheId = 0;
     this._renderer = renderer;
     renderer.gc.addResourceHash(this, "_hash", "resource");
     renderer.gc.addCollection(this, "_hash", "hash");
   }
   contextChange(gpu) {
     this._gpu = gpu;
+    this._cacheId = ++nextCacheId;
     this._hash = /* @__PURE__ */ Object.create(null);
   }
   getBindGroup(bindGroup, program, groupIndex) {
-    const key = `${bindGroup._key}:${program._layoutKey << 4 | groupIndex}`;
-    const entry = this._hash[key];
-    if (entry) {
+    const layoutKey = program._layoutKey << 4 | groupIndex;
+    let entry = bindGroup._gpuEntry;
+    if (entry !== null && bindGroup._gpuEntryLayoutKey === layoutKey && entry.gpuBindGroup !== null && entry.cacheId === this._cacheId) {
       entry._gcLastUsed = this._renderer.gc.now;
       return entry.gpuBindGroup;
     }
-    return this._createBindGroup(key, bindGroup, program, groupIndex);
+    const keyLow = bindGroup._keyLow;
+    const keyHigh = bindGroup._keyHigh;
+    const slot = (keyLow ^ Math.imul(layoutKey + 1, 2654435761)) & 1073741823;
+    entry = this._hash[slot];
+    if (entry && entry.keyLow === keyLow && entry.keyHigh === keyHigh && entry.layoutKey === layoutKey) {
+      entry._gcLastUsed = this._renderer.gc.now;
+    } else {
+      const gpuBindGroup = this._createBindGroup(bindGroup, program, groupIndex);
+      entry = new GpuBindGroupEntry(
+        gpuBindGroup,
+        this._renderer.gc.now,
+        keyLow,
+        keyHigh,
+        layoutKey,
+        this._cacheId
+      );
+      this._hash[slot] = entry;
+    }
+    bindGroup._gpuEntry = entry;
+    bindGroup._gpuEntryLayoutKey = layoutKey;
+    return entry.gpuBindGroup;
   }
-  _createBindGroup(key, group, program, groupIndex) {
+  _createBindGroup(group, program, groupIndex) {
     const device = this._gpu.device;
-    const groupLayout = program.layout[groupIndex];
+    const programLayout = program.layout[groupIndex];
+    const groupLayout = group.layout;
     const entries = [];
     const renderer = this._renderer;
-    for (const j in groupLayout) {
-      const resource = group.resources[j] ?? group.resources[groupLayout[j]];
+    for (const j in programLayout) {
+      const resource = group.resources[groupLayout ? groupLayout[j] : programLayout[j]];
       if (!resource || resource.destroyed) {
-        throw new Error(`[BindGroup] the resource bound as '${j}' was destroyed while a shader still uses it. Remove it from the shader before destroying it.`);
+        throw new Error(`[BindGroup] no usable resource for the shader's '${j}' binding: it was never set, was destroyed while a shader still uses it, or is missing from the bind group's layout.`);
       }
       let gpuResource;
       if (resource._resourceType === "uniformGroup") {
@@ -128,7 +156,8 @@ class BindGroupSystem {
         gpuResource = {
           buffer: renderer.buffer.getGPUBuffer(bufferResource.buffer),
           offset: bufferResource.offset,
-          size: bufferResource.size ?? bufferResource.buffer.descriptor.size
+          // undefined binds the rest of the buffer after the offset
+          size: bufferResource.size
         };
       } else if (resource._resourceType === "textureSampler") {
         const sampler = resource;
@@ -141,17 +170,15 @@ class BindGroupSystem {
         gpuResource = renderer.texture.getTextureView(textureView.source, textureView.viewDescriptor);
       }
       entries.push({
-        binding: groupLayout[j],
+        binding: programLayout[j],
         resource: gpuResource
       });
     }
     const layout = renderer.shader.getProgramData(program).bindGroups[groupIndex];
-    const gpuBindGroup = device.createBindGroup({
+    return device.createBindGroup({
       layout,
       entries
     });
-    this._hash[key] = new GpuBindGroupEntry(gpuBindGroup, renderer.gc.now);
-    return gpuBindGroup;
   }
   destroy() {
     this._hash = null;
@@ -306,6 +333,25 @@ GpuColorMaskSystem.extension = {
   ],
   name: "colorMask"
 };
+function isWebKit(range) {
+  const { userAgent } = DOMAdapter.get().getNavigator();
+  if (!/AppleWebKit\//.test(userAgent) || /Chrome\/|Chromium\//.test(userAgent)) return false;
+  if (!range) return true;
+  const version = /Version\/([\d.]+)/.exec(userAgent)?.[1];
+  if (!version) return true;
+  if (range.from && compareVersions(version, range.from) < 0) return false;
+  if (range.before && compareVersions(version, range.before) >= 0) return false;
+  return true;
+}
+function compareVersions(a, b) {
+  const pa = a.split(".");
+  const pb = b.split(".");
+  for (let i = 0; i < Math.max(pa.length, pb.length); i++) {
+    const diff = (parseInt(pa[i], 10) || 0) - (parseInt(pb[i], 10) || 0);
+    if (diff) return diff;
+  }
+  return 0;
+}
 const tileBasedVendors = /* @__PURE__ */ new Set(["apple", "arm", "qualcomm", "img-tec"]);
 class GpuDeviceSystem {
   /**
@@ -323,7 +369,10 @@ class GpuDeviceSystem {
   _setGpu(gpu) {
     this.gpu = gpu;
     this.extensions = {
-      transientAttachment: typeof GPUTextureUsage.TRANSIENT_ATTACHMENT === "number",
+      // Safari 27.1+ loses the device when a command buffer is submitted while another holds an unsubmitted pass
+      // on a transient (memoryless) texture: its lazy clear blits into it. WebKit main has the fix, so Safari 28
+      // is clean. https://github.com/pixijs/pixijs/issues/12344
+      transientAttachment: typeof GPUTextureUsage.TRANSIENT_ATTACHMENT === "number" && !isWebKit({ from: "27.1", before: "28" }),
       tileBased: tileBasedVendors.has(gpu.adapter?.info?.vendor)
     };
     if (!this._options.gpu) {
@@ -375,7 +424,9 @@ class GpuDeviceSystem {
       requiredFeatures,
       requiredLimits: {
         maxSampledTexturesPerShaderStage: adapter.limits.maxSampledTexturesPerShaderStage,
-        maxSamplersPerShaderStage: adapter.limits.maxSamplersPerShaderStage
+        maxSamplersPerShaderStage: adapter.limits.maxSamplersPerShaderStage,
+        // the spec default is 256; the adapter's own value is always supported and often smaller
+        minUniformBufferOffsetAlignment: adapter.limits.minUniformBufferOffsetAlignment
       }
     });
     return { adapter, device };
@@ -427,7 +478,7 @@ class GpuEncoderSystem {
     this._boundVertexBuffer = /* @__PURE__ */ Object.create(null);
     this._renderer = renderer;
     for (let i = 0; i < 16; i++) {
-      this._boundBindGroup[i] = { bindGroup: null, program: null, key: null };
+      this._boundBindGroup[i] = { bindGroup: null, program: null, entry: null };
     }
   }
   renderStart() {
@@ -591,16 +642,16 @@ class GpuEncoderSystem {
     const slot = this._boundBindGroup[index];
     slot.bindGroup = null;
     slot.program = null;
-    slot.key = null;
+    slot.entry = null;
   }
   setBindGroup(index, bindGroup, program) {
     const slot = this._boundBindGroup[index];
-    if (slot.bindGroup === bindGroup && slot.program === program && slot.key === bindGroup._key) return;
+    if (slot.bindGroup === bindGroup && slot.program === program && slot.entry === bindGroup._gpuEntry) return;
     slot.bindGroup = bindGroup;
     slot.program = program;
-    slot.key = bindGroup._key;
     bindGroup._touch(this._renderer.gc.now);
     const gpuBindGroup = this._renderer.bindGroup.getBindGroup(bindGroup, program, index);
+    slot.entry = bindGroup._gpuEntry;
     this.renderPassEncoder.setBindGroup(index, gpuBindGroup);
   }
   setGeometry(geometry, program) {
@@ -699,7 +750,7 @@ class GpuEncoderSystem {
       const slot = this._boundBindGroup[i];
       slot.bindGroup = null;
       slot.program = null;
-      slot.key = null;
+      slot.entry = null;
       this._boundVertexBuffer[i] = null;
     }
     this._boundIndexBuffer = null;
@@ -736,6 +787,7 @@ class GpuLimitsSystem {
       device.limits.maxSamplersPerShaderStage
     );
     this.maxBatchableTextures = this.maxTextures;
+    this.minUniformBufferOffsetAlignment = device.limits.minUniformBufferOffsetAlignment;
     this._detectOverrideConstantsSupport(device);
   }
   _detectOverrideConstantsSupport(device) {
@@ -912,11 +964,9 @@ class GpuUniformBatchPipe {
     this._batchBuffer = new UboBatch({ minUniformOffsetAlignment });
     const totalBuffers = 256 / minUniformOffsetAlignment;
     for (let i = 0; i < totalBuffers; i++) {
-      let usage = BufferUsage.UNIFORM | BufferUsage.COPY_DST;
-      if (i === 0) usage |= BufferUsage.COPY_SRC;
       this._buffers.push(new Buffer({
         data: this._batchBuffer.data,
-        usage
+        usage: BufferUsage.UNIFORM | BufferUsage.COPY_DST
       }));
     }
   }
@@ -980,18 +1030,18 @@ class GpuUniformBatchPipe {
     const firstBuffer = this._buffers[0];
     firstBuffer.update(this._batchBuffer.byteIndex);
     bufferSystem.updateBuffer(firstBuffer);
-    const commandEncoder = this._renderer.gpu.device.createCommandEncoder();
+    const data = this._batchBuffer.data;
+    const size = this._batchBuffer.byteIndex - minUniformOffsetAlignment;
+    if (size <= 0) return;
     for (let i = 1; i < this._buffers.length; i++) {
-      const buffer = this._buffers[i];
-      commandEncoder.copyBufferToBuffer(
-        bufferSystem.getGPUBuffer(firstBuffer),
-        minUniformOffsetAlignment,
-        bufferSystem.getGPUBuffer(buffer),
+      this._renderer.gpu.device.queue.writeBuffer(
+        bufferSystem.getGPUBuffer(this._buffers[i]),
         0,
-        this._batchBuffer.byteIndex
+        data.buffer,
+        data.byteOffset + minUniformOffsetAlignment,
+        size
       );
     }
-    this._renderer.gpu.device.queue.submit([commandEncoder.finish()]);
   }
   destroy() {
     for (let i = 0; i < this._bindGroups.length; i++) {
@@ -1054,16 +1104,16 @@ function getGraphicsStateKey(geometryLayout, shaderKey, state, blendMode, topolo
 }
 const colorFormatIds = /* @__PURE__ */ Object.create(null);
 let nextColorFormatId = 0;
-function getColorFormatId(format) {
-  let id = colorFormatIds[format];
-  if (id === void 0) id = colorFormatIds[format] = nextColorFormatId++;
+function getColorFormatId(formats) {
+  let id = colorFormatIds[formats];
+  if (id === void 0) id = colorFormatIds[formats] = nextColorFormatId++;
   return id;
 }
-function getGlobalStateKey(stencilStateId, multiSampleCount, colorMask, colorTargetCount, depthStencilFormat, colorFormatId, depthReadOnly, invertFrontFace) {
-  return invertFrontFace << 20 | colorFormatId << 16 | depthStencilFormat << 13 | colorMask << 9 | stencilStateId << 6 | depthReadOnly << 5 | colorTargetCount << 1 | multiSampleCount;
+function getGlobalStateKey(stencilStateId, multiSampleCount, colorMask, depthStencilFormat, colorFormatId, depthReadOnly, invertFrontFace) {
+  return colorFormatId << 13 | invertFrontFace << 12 | depthStencilFormat << 9 | colorMask << 5 | stencilStateId << 2 | depthReadOnly << 1 | multiSampleCount;
 }
-function getBundleStateKey(multiSampleCount, colorTargetCount, depthStencilFormat, depthReadOnly, stencilReadOnly, invertFrontFace, colorFormatId) {
-  return colorFormatId << 11 | invertFrontFace << 10 | stencilReadOnly << 9 | depthReadOnly << 8 | depthStencilFormat << 5 | colorTargetCount << 1 | multiSampleCount;
+function getBundleStateKey(multiSampleCount, depthStencilFormat, depthReadOnly, stencilReadOnly, invertFrontFace, colorFormatId) {
+  return colorFormatId << 7 | invertFrontFace << 6 | stencilReadOnly << 5 | depthReadOnly << 4 | depthStencilFormat << 1 | multiSampleCount;
 }
 class PipelineSystem {
   constructor(renderer) {
@@ -1074,8 +1124,7 @@ class PipelineSystem {
     this._pipeStateCaches = /* @__PURE__ */ Object.create(null);
     this._colorMask = 15;
     this._multisampleCount = 1;
-    this._colorTargetCount = 1;
-    this._colorFormat = "bgra8unorm";
+    this._colorFormats = ["bgra8unorm"];
     this._colorFormatId = getColorFormatId("bgra8unorm");
     this._depthStencilFormat = "depth24plus-stencil8";
     this._depthStencilFormatData = emptyDepthStencilFormatData;
@@ -1099,9 +1148,7 @@ class PipelineSystem {
   setRenderTarget(renderTarget) {
     const colorTexture = renderTarget.colorAttachments[0]?.texture;
     this._multisampleCount = colorTexture?.source.antialias ? 4 : 1;
-    this._colorTargetCount = renderTarget.colorAttachments.length;
-    this._colorFormat = colorTexture?.format ?? "bgra8unorm";
-    this._colorFormatId = getColorFormatId(this._colorFormat);
+    this._setColorFormats(renderTarget);
     this._depthStencilFormat = renderTarget.depthStencilAttachment?.texture.format;
     this._depthStencilFormatData = depthStencilFormatMap[this._depthStencilFormat] || emptyDepthStencilFormatData;
     this._depthReadOnly = renderTarget.depthStencilAttachment?.depthReadOnly ?? false;
@@ -1138,9 +1185,8 @@ class PipelineSystem {
     const formatData = this._depthStencilFormatData;
     return getBundleStateKey(
       // normalize the raw sample count (1 or 4 — WebGPU's only renderable counts) to a
-      // true single bit, so it cannot spill into the colorTargetCount field above it
+      // true single bit, so it cannot spill into the field above it
       this._multisampleCount === 1 ? 0 : 1,
-      this._colorTargetCount,
       formatData.index,
       // the same two flags getBundleDescriptor sets — keep them in step
       formatData.depth && this._depthReadOnly ? 1 : 0,
@@ -1157,12 +1203,8 @@ class PipelineSystem {
    * @returns A descriptor for creating a GPURenderBundleEncoder.
    */
   getBundleDescriptor() {
-    const colorFormats = [];
-    for (let i = 0; i < this._colorTargetCount; i++) {
-      colorFormats.push(this._colorFormat);
-    }
     const descriptor = {
-      colorFormats,
+      colorFormats: this._colorFormats.slice(),
       sampleCount: this._multisampleCount
     };
     const formatData = this._depthStencilFormatData;
@@ -1225,11 +1267,9 @@ class PipelineSystem {
   _createPipeline(geometry, program, state, topology, overrides) {
     const device = this._gpu.device;
     const buffers = this._createVertexBufferLayouts(geometry, program);
-    const blendModes = this._renderer.state.getColorTargets(state, this._colorTargetCount, this._colorFormat);
+    const blendModes = this._renderer.state.getColorTargets(state, this._colorFormats);
     const writeMask = this._stencilMode === STENCIL_MODES.RENDERING_MASK_ADD ? 0 : this._colorMask;
-    for (let i = 0; i < blendModes.length; i++) {
-      blendModes[i].writeMask = writeMask;
-    }
+    this._applyFragmentOutputs(blendModes, program, writeMask);
     const layout = this._renderer.shader.getProgramData(program).pipeline;
     const hasOverrides = Object.keys(overrides.data).length > 0;
     let vertexSource = program.vertex.source;
@@ -1340,6 +1380,11 @@ class PipelineSystem {
    * @returns The buffer names, indexed by vertex buffer slot.
    */
   getBufferNamesToBind(geometry, program) {
+    if (!geometry._layoutKey) {
+      ensureAttributes(geometry, program.attributeData);
+      this._generateBufferKey(geometry);
+    }
+    if (!program._attributeLocationsKey) this._generateAttributeLocationsKey(program);
     const key = geometry._layoutKey << 16 | program._attributeLocationsKey;
     if (this._bindingNamesCache[key]) return this._bindingNamesCache[key];
     const data = this._createVertexBufferLayouts(geometry, program);
@@ -1394,15 +1439,46 @@ class PipelineSystem {
     this._bufferLayoutsCache[key] = vertexBuffersLayout;
     return vertexBuffersLayout;
   }
+  /**
+   * Reads the color attachment formats off a render target and interns the list. A one-attachment
+   * list joins to its bare format, so that target keeps the id it has always had; a depth-only
+   * target has an empty list.
+   * @param renderTarget - the render target being bound
+   */
+  _setColorFormats(renderTarget) {
+    const attachments = renderTarget.colorAttachments;
+    const formats = this._colorFormats;
+    formats.length = attachments.length;
+    for (let i = 0; i < attachments.length; i++) {
+      formats[i] = attachments[i].texture.format;
+    }
+    this._colorFormatId = getColorFormatId(formats.join("|"));
+  }
+  /**
+   * Writes only the attachments the fragment shader has an output for: WebGPU rejects a non-zero
+   * write mask on a target the shader doesn't write, and leaving it alone is what a draw that
+   * doesn't output to it means. The program is part of the per-draw key, so this needs no key
+   * bits of its own.
+   * @param targets - the color targets, one per attachment
+   * @param program - the program whose fragment outputs decide which targets are written
+   * @param writeMask - the mask for every written target
+   */
+  _applyFragmentOutputs(targets, program, writeMask) {
+    const outputs = program.fragmentOutputMask ?? -1;
+    for (let i = 0; i < targets.length; i++) {
+      const written = (outputs & 1 << i) !== 0;
+      targets[i].writeMask = written ? writeMask : 0;
+      if (!written) targets[i].blend = void 0;
+    }
+  }
   _updatePipeHash() {
     var _a;
     const key = getGlobalStateKey(
       this._stencilMode,
       // normalize the raw sample count (1 or 4 — WebGPU's only renderable counts) to a
-      // true single bit, so it cannot spill into the colorTargetCount field above it
+      // true single bit, so it cannot spill into the field above it
       this._multisampleCount === 1 ? 0 : 1,
       this._colorMask,
-      this._colorTargetCount,
       this._depthStencilFormatData.index,
       this._colorFormatId,
       this._depthReadOnly ? 1 : 0,
@@ -1424,6 +1500,120 @@ PipelineSystem.extension = {
   type: [ExtensionType.WebGPUSystem],
   name: "pipeline"
 };
+class GpuDepthCopy {
+  constructor(renderer) {
+    this._variants = /* @__PURE__ */ Object.create(null);
+    this._bindGroups = /* @__PURE__ */ new WeakMap();
+    this._depthStencilAttachment = {
+      view: null,
+      depthLoadOp: "load",
+      depthStoreOp: "store"
+    };
+    this._passDescriptor = {
+      label: "depth-copy",
+      colorAttachments: [],
+      depthStencilAttachment: this._depthStencilAttachment
+    };
+    this._renderer = renderer;
+    this._device = renderer.gpu.device;
+  }
+  /**
+   * Records the copy of a region of a depth texture into another depth texture. Must be recorded outside a
+   * render pass.
+   * @param commandEncoder - the encoder to record the copy on
+   * @param source - the depth texture to read, created with `TEXTURE_BINDING`; it may be multisampled
+   * @param destination - the single-sample texture to write depth into; it must have a depth aspect
+   * @param originSrc - the top left of the region in the source
+   * @param originSrc.x - its x, in pixels
+   * @param originSrc.y - its y, in pixels
+   * @param size - the size of the region
+   * @param size.width - its width, in pixels
+   * @param size.height - its height, in pixels
+   * @param originDest - where the region lands in the destination
+   * @param originDest.x - its x, in pixels
+   * @param originDest.y - its y, in pixels
+   */
+  copy(commandEncoder, source, destination, originSrc, size, originDest) {
+    var _a, _b;
+    const sourceTexture = this._renderer.texture.getGpuSource(source);
+    const sampleCount = sourceTexture.sampleCount;
+    const variant = (_a = this._variants)[sampleCount] ?? (_a[sampleCount] = this._createVariant(sampleCount));
+    let bindGroup = this._bindGroups.get(sourceTexture);
+    if (!bindGroup) {
+      bindGroup = this._device.createBindGroup({
+        layout: variant.layout,
+        entries: [{ binding: 0, resource: sourceTexture.createView({ aspect: "depth-only" }) }]
+      });
+      this._bindGroups.set(sourceTexture, bindGroup);
+    }
+    const format = destination.format;
+    const attachment = this._depthStencilAttachment;
+    const stencil = format.includes("stencil");
+    attachment.view = this._renderer.texture.getTextureView(destination);
+    attachment.stencilLoadOp = stencil ? "load" : void 0;
+    attachment.stencilStoreOp = stencil ? "store" : void 0;
+    const pass = commandEncoder.beginRenderPass(this._passDescriptor);
+    attachment.view = null;
+    const packed = (originSrc.x - originDest.x + 32768 | originSrc.y - originDest.y + 32768 << 16) >>> 0;
+    pass.setViewport(originDest.x, originDest.y, size.width, size.height, 0, 1);
+    pass.setPipeline((_b = variant.pipelines)[format] ?? (_b[format] = this._createPipeline(format, variant)));
+    pass.setBindGroup(0, bindGroup);
+    pass.draw(3, 1, 0, packed);
+    pass.end();
+  }
+  _createVariant(sampleCount) {
+    const multisampled = sampleCount > 1;
+    const layout = this._device.createBindGroupLayout({
+      entries: [{
+        binding: 0,
+        visibility: GPUShaderStage.FRAGMENT,
+        texture: { sampleType: "depth", multisampled }
+      }]
+    });
+    const module = this._device.createShaderModule({
+      label: "depth-copy",
+      code: (
+        /* wgsl */
+        `
+                @group(0) @binding(0) var source: ${multisampled ? "texture_depth_multisampled_2d" : "texture_depth_2d"};
+
+                struct Varyings {
+                    @builtin(position) position: vec4<f32>,
+                    @location(0) @interpolate(flat) offset: vec2<i32>,
+                };
+
+                @vertex
+                fn vertexMain(@builtin(vertex_index) i: u32, @builtin(instance_index) packed: u32) -> Varyings {
+                    let pos = array<vec2<f32>, 3>(vec2<f32>(-1.0, -1.0), vec2<f32>(3.0, -1.0), vec2<f32>(-1.0, 3.0));
+                    let offset = vec2<i32>(i32(packed & 0xffffu), i32(packed >> 16u)) - vec2<i32>(32768);
+
+                    return Varyings(vec4<f32>(pos[i], 0.0, 1.0), offset);
+                }
+
+                @fragment
+                fn fragmentMain(varyings: Varyings) -> @builtin(frag_depth) f32 {
+                    return textureLoad(source, vec2<i32>(varyings.position.xy) + varyings.offset, 0);
+                }
+            `
+      )
+    });
+    return {
+      layout,
+      pipelineLayout: this._device.createPipelineLayout({ bindGroupLayouts: [layout] }),
+      module,
+      pipelines: /* @__PURE__ */ Object.create(null)
+    };
+  }
+  _createPipeline(format, variant) {
+    return this._device.createRenderPipeline({
+      label: "depth-copy",
+      layout: variant.pipelineLayout,
+      vertex: { module: variant.module, entryPoint: "vertexMain" },
+      fragment: { module: variant.module, entryPoint: "fragmentMain", targets: [] },
+      depthStencil: { format, depthWriteEnabled: true, depthCompare: "always" }
+    });
+  }
+}
 class GpuMsaaRestore {
   constructor(renderer) {
     this._pipelines = /* @__PURE__ */ Object.create(null);
@@ -1457,7 +1647,7 @@ class GpuMsaaRestore {
       width: colorTexture.width,
       height: colorTexture.height,
       resolution: colorTexture._resolution,
-      format: gpuRenderTarget.msaaTextures[index].format,
+      format: colorTexture.format,
       autoGenerateMipmaps: false,
       // every restore copies into it afresh, so an idle one can be freed and re-created on the next restore
       autoGarbageCollect: true
@@ -1555,13 +1745,40 @@ class GpuRenderTarget {
   constructor() {
     this.contexts = [];
     this.canvasTextures = [];
-    this.msaaTextures = [];
+    this.canvasMsaaTextures = [];
     this.transient = false;
     this.msaaSamples = 1;
     this.msaaBackTextures = [];
     this.stencilMode = STENCIL_MODES.DISABLED;
     this.stencilReference = 0;
     this.maskStackIndex = 0;
+  }
+}
+class GpuMsaaTexture {
+  /**
+   * @param renderer - the renderer whose device makes it
+   * @param source - the texture it holds the samples of, which sets its format and size
+   */
+  constructor(renderer, source) {
+    const { tileBased, transientAttachment } = renderer.device.extensions;
+    this.transient = tileBased || source.transient;
+    let usage = GPUTextureUsage.RENDER_ATTACHMENT;
+    if (this.transient && transientAttachment) usage |= GPUTextureUsage.TRANSIENT_ATTACHMENT;
+    this.texture = renderer.gpu.device.createTexture({
+      label: source.label,
+      size: { width: source.pixelWidth, height: source.pixelHeight, depthOrArrayLayers: source.depthOrArrayLayers },
+      format: source.format,
+      sampleCount: 4,
+      // WebGPU requires multisampled textures to have exactly 1 mip level
+      mipLevelCount: 1,
+      usage
+    });
+    this.view = this.texture.createView();
+  }
+  destroy() {
+    this.texture.destroy();
+    this.texture = null;
+    this.view = null;
   }
 }
 const canvasAllowedFormats = {
@@ -1585,12 +1802,14 @@ class GpuRenderTargetAdaptor {
     renderer.runners.contextChange.add(this);
     renderer.runners.destroy.add(this);
   }
-  /** Drops the restore helper, whose pipelines belong to the old device. The next restore makes a new one. */
+  /** Drops the MSAA helpers, whose pipelines belong to the old device. The next use makes new ones. */
   contextChange() {
     this._msaaRestore = null;
+    this._depthCopy = null;
   }
   destroy() {
     this._msaaRestore = null;
+    this._depthCopy = null;
   }
   copyToTexture(sourceRenderSurfaceTexture, destinationTexture, originSrc, size, originDest) {
     const renderer = this._renderer;
@@ -1618,31 +1837,54 @@ class GpuRenderTargetAdaptor {
     const renderer = this._renderer;
     this.finishRenderPass();
     const srcDepth = source.depthStencilAttachment.texture;
+    const dstDepth = destination.source;
     const srcGpu = renderer.texture.getGpuSource(srcDepth);
-    const dstGpu = renderer.texture.getGpuSource(destination.source);
+    const dstGpu = renderer.texture.getGpuSource(dstDepth);
+    const drawn = srcGpu.sampleCount > 1 || originSrc.x !== 0 || originSrc.y !== 0 || originDest.x !== 0 || originDest.y !== 0 || size.width !== srcGpu.width || size.height !== srcGpu.height || size.width !== dstGpu.width || size.height !== dstGpu.height;
+    if (drawn) {
+      if (srcDepth.transient) {
+        warn("[RenderTargetSystem] copyDepthTexture: the source target is transient, so its multisampled depth is discarded at the end of each pass and there is nothing to copy");
+        return;
+      }
+      if (!srcDepth.format.includes("depth") || !dstDepth.format.includes("depth")) {
+        warn(`[RenderTargetSystem] copyDepthTexture: copying from an antialiased target or a region copies depth only, so both textures need a depth aspect (got '${srcDepth.format}' to '${dstDepth.format}')`);
+        return;
+      }
+    }
     const standAlone = renderer.encoder.commandEncoder === null;
     const commandEncoder = standAlone ? renderer.gpu.device.createCommandEncoder() : renderer.encoder.commandEncoder;
-    commandEncoder.copyTextureToTexture(
-      { texture: srcGpu, origin: originSrc },
-      { texture: dstGpu, origin: originDest },
-      { width: size.width, height: size.height }
-    );
+    if (drawn) {
+      this._depthCopy ?? (this._depthCopy = new GpuDepthCopy(renderer));
+      this._depthCopy.copy(commandEncoder, srcDepth, dstDepth, originSrc, size, originDest);
+    } else {
+      commandEncoder.copyTextureToTexture({ texture: srcGpu }, { texture: dstGpu }, size);
+    }
     if (standAlone) {
       renderer.gpu.device.queue.submit([commandEncoder.finish()]);
     }
   }
+  /**
+   * Opens a pass on the target. The bind's `clear` decides whether color clears, and a color
+   * attachment whose own `loadOp` is `'load'` keeps its contents anyway.
+   * @param renderTarget - the target to render to
+   * @param clear - what to clear
+   * @param clearColor - the colour for attachments without a `clearValue`
+   * @param viewport - the viewport
+   * @param mipLevel - the mip level to render to
+   * @param layer - the array layer to render to
+   */
   startRenderPass(renderTarget, clear = true, clearColor, viewport, mipLevel = 0, layer = 0) {
     const renderTargetSystem = this._renderTargetSystem;
     const gpuRenderTarget = renderTargetSystem.getGpuRenderTarget(renderTarget);
-    if (layer !== 0 && gpuRenderTarget.msaaTextures?.length) {
+    if (layer !== 0 && gpuRenderTarget.msaa) {
       throw new Error("[RenderTargetSystem] Rendering to array layers is not supported with MSAA render targets.");
     }
-    if (mipLevel > 0 && gpuRenderTarget.msaaTextures?.length) {
+    if (mipLevel > 0 && gpuRenderTarget.msaa) {
       throw new Error("[RenderTargetSystem] Rendering to mip levels is not supported with MSAA render targets.");
     }
     let clearBits = clear;
-    if (typeof clearBits === "boolean") {
-      clearBits = clearBits ? CLEAR.ALL : CLEAR.NONE;
+    if (typeof clear === "boolean") {
+      clearBits = clear ? CLEAR.ALL : CLEAR.NONE;
     }
     if ((renderTarget.stencil || renderTarget.depth) && !renderTarget.depthStencilAttachment) {
       renderTarget.ensureDepthStencilTexture();
@@ -1655,7 +1897,7 @@ class GpuRenderTargetAdaptor {
       this._renderer.encoder.setViewport(viewport);
       return;
     }
-    const { descriptor, restore } = this._buildDescriptor(renderTarget, clear, clearColor, mipLevel, layer);
+    const { descriptor, restore } = this._buildDescriptor(renderTarget, clearBits, clearColor, mipLevel, layer);
     gpuRenderTarget.descriptor = descriptor;
     const encoder = this._renderer.encoder;
     if (restore) {
@@ -1721,7 +1963,7 @@ class GpuRenderTargetAdaptor {
    * `load`. Those buffers were discarded, so the pass must restore them before drawing.
    * @param renderTarget - the target to render to
    * @param clear - what to clear
-   * @param clearValue - the colour to clear to
+   * @param clearValue - the colour to clear attachments that have no `clearValue` of their own to
    * @param mipLevel - the mip level to render to
    * @param layer - the array layer to render to
    */
@@ -1734,6 +1976,7 @@ class GpuRenderTargetAdaptor {
     const gpuRenderTarget = renderTargetSystem.getGpuRenderTarget(renderTarget);
     const colorAttachments = renderTarget.colorAttachments.map(
       (colorAttachment, i) => {
+        var _a;
         const colorTexture = colorAttachment.texture;
         const context = colorTexture instanceof CanvasSource ? colorTexture._gpuContext : null;
         let view;
@@ -1756,17 +1999,15 @@ class GpuRenderTargetAdaptor {
             colorAttachment.viewDescriptor
           );
         }
-        const msaaTexture = gpuRenderTarget.msaaTextures[i];
-        if (msaaTexture) {
+        let msaa = null;
+        if (colorTexture.antialias) {
+          msaa = context ? (_a = gpuRenderTarget.canvasMsaaTextures)[i] ?? (_a[i] = new GpuMsaaTexture(this._renderer, colorTexture)) : this._renderer.texture.getMsaaTexture(colorTexture);
           resolveTarget = view;
-          view = this._renderer.texture.getTextureView(msaaTexture);
+          view = msaa.view;
         }
-        let loadOp = colorAttachment.loadOp;
-        if (clear !== void 0) {
-          loadOp = clear & CLEAR.COLOR ? "clear" : "load";
-        }
-        clearValue ?? (clearValue = renderTargetSystem.defaultClearColor);
-        const transient = !!msaaTexture?.transient;
+        const clearsColor = (clear & CLEAR.COLOR) !== 0;
+        let loadOp = clearsColor && colorAttachment.loadOp !== "load" ? "clear" : "load";
+        const transient = !!msaa?.transient;
         const load = transient && loadOp !== "clear";
         const restore = load && !newCanvasFrame;
         if (load) {
@@ -1785,8 +2026,7 @@ class GpuRenderTargetAdaptor {
         if (load) {
           baseAttachment.clearValue = [0, 0, 0, 0];
         } else if (loadOp === "clear") {
-          clearValue ?? (clearValue = colorAttachment.clearValue ?? renderTargetSystem.defaultClearColor);
-          baseAttachment.clearValue = clearValue;
+          baseAttachment.clearValue = colorAttachment.clearValue ?? clearValue ?? renderTargetSystem.defaultClearColor;
         }
         for (const key in colorAttachment) {
           if (key !== "texture" && key !== "viewDescriptor" && key !== "clearValue" && key !== "loadOp" && key !== "storeOp") {
@@ -1888,21 +2128,7 @@ class GpuRenderTargetAdaptor {
         }
         gpuRenderTarget.contexts[i] = context;
       }
-      gpuRenderTarget.msaa = colorTexture.source.antialias;
-      if (colorTexture.antialias) {
-        const msaaTexture = new TextureSource({
-          width: 0,
-          height: 0,
-          sampleCount: 4,
-          // WebGPU requires multisampled textures to have exactly 1 mip level, so this must never
-          // inherit TextureSource.defaultOptions.autoGenerateMipmaps
-          autoGenerateMipmaps: false,
-          transient: this._renderer.device.extensions.tileBased || gpuRenderTarget.transient,
-          arrayLayerCount: colorTexture.arrayLayerCount,
-          format: colorTexture.format
-        });
-        gpuRenderTarget.msaaTextures[i] = msaaTexture;
-      }
+      gpuRenderTarget.msaa || (gpuRenderTarget.msaa = colorTexture.source.antialias);
     });
     if (gpuRenderTarget.msaa) {
       gpuRenderTarget.msaaSamples = 4;
@@ -1926,13 +2152,13 @@ class GpuRenderTargetAdaptor {
     gpuRenderTarget.contexts.forEach((context) => {
       context.unconfigure();
     });
-    gpuRenderTarget.msaaTextures.forEach((texture) => {
+    gpuRenderTarget.canvasMsaaTextures.forEach((texture) => {
       texture.destroy();
     });
     gpuRenderTarget.msaaBackTextures.forEach((texture) => {
       texture?.destroy();
     });
-    gpuRenderTarget.msaaTextures.length = 0;
+    gpuRenderTarget.canvasMsaaTextures.length = 0;
     gpuRenderTarget.msaaBackTextures.length = 0;
     gpuRenderTarget.contexts.length = 0;
   }
@@ -1946,7 +2172,10 @@ class GpuRenderTargetAdaptor {
     if (gpuRenderTarget.msaa) {
       renderTarget.colorAttachments.forEach((colorAttachment, i) => {
         const colorTexture = colorAttachment.texture;
-        gpuRenderTarget.msaaTextures[i]?.resize(colorTexture.width, colorTexture.height, colorTexture._resolution);
+        if (colorTexture instanceof CanvasSource && colorTexture.antialias) {
+          gpuRenderTarget.canvasMsaaTextures[i]?.destroy();
+          gpuRenderTarget.canvasMsaaTextures[i] = null;
+        }
         gpuRenderTarget.msaaBackTextures[i]?.resize(
           colorTexture.width,
           colorTexture.height,
@@ -2014,8 +2243,8 @@ GpuBlendModesToPixi.normal = {
 };
 GpuBlendModesToPixi.add = {
   alpha: {
-    srcFactor: "src-alpha",
-    dstFactor: "one-minus-src-alpha",
+    srcFactor: "one",
+    dstFactor: "one",
     operation: "add"
   },
   color: {
@@ -2116,7 +2345,7 @@ GpuBlendModesToPixi.erase = {
   },
   color: {
     srcFactor: "zero",
-    dstFactor: "one-minus-src",
+    dstFactor: "one-minus-src-alpha",
     operation: "add"
   }
 };
@@ -2155,17 +2384,18 @@ class GpuStateSystem {
   /**
    * Gets the blend mode data for the current state
    * @param state - The state to get the blend mode from
-   * @param count - The number of color targets to create
-   * @param format - The texture format of the color attachments (assumed uniform across attachments)
+   * @param formats - The texture format of each color attachment; one target is created per format
    */
-  getColorTargets(state, count, format) {
+  getColorTargets(state, formats) {
     const blend = state.blend ? GpuBlendModesToPixi[state.blendMode] || GpuBlendModesToPixi.normal : void 0;
     const targets = [];
-    for (let i = 0; i < count; i++) {
+    for (let i = 0; i < formats.length; i++) {
+      const format = formats[i];
       targets[i] = {
         format,
         writeMask: 0,
-        blend
+        // integer formats can't blend: WebGPU rejects a blend on them, and WebGL skips it
+        blend: isIntegerFormat(format) ? void 0 : blend
       };
     }
     return targets;
@@ -2561,14 +2791,17 @@ class GPUTextureGpuData {
   constructor(gpuTexture) {
     this.textureView = null;
     this.textureViews = /* @__PURE__ */ Object.create(null);
+    this.msaa = null;
     this.gpuTexture = gpuTexture;
   }
   /** Destroys this GPU data instance. */
   destroy() {
     this.gpuTexture.destroy();
+    this.msaa?.destroy();
     this.textureView = null;
     this.textureViews = null;
     this.gpuTexture = null;
+    this.msaa = null;
   }
 }
 const SRGB_CAPABLE = /^(rgba8|bgra8|bc[1237]-rgba-|etc2-rgb8|etc2-rgb8a1|etc2-rgba8|astc-\d+x\d+-)unorm$/;
@@ -2633,8 +2866,12 @@ const _GpuTextureSystem = class _GpuTextureSystem2 {
     let viewFormats;
     if (source.sampleCount > 1) {
       usage = GPUTextureUsage.RENDER_ATTACHMENT;
-      if (source.transient && this._renderer.device.extensions.transientAttachment) {
-        usage |= GPUTextureUsage.TRANSIENT_ATTACHMENT;
+      if (source.transient) {
+        if (this._renderer.device.extensions.transientAttachment) {
+          usage |= GPUTextureUsage.TRANSIENT_ATTACHMENT;
+        }
+      } else if (source.format.includes("depth")) {
+        usage |= GPUTextureUsage.TEXTURE_BINDING;
       }
     } else {
       usage = GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.COPY_DST;
@@ -2720,6 +2957,19 @@ const _GpuTextureSystem = class _GpuTextureSystem2 {
     return source._gpuData[this._renderer.uid]?.gpuTexture || this.initSource(source);
   }
   /**
+   * The multisampled texture an antialiased texture is drawn into, made on first use. It belongs to the
+   * texture, so every render target over the texture shares its samples, and it goes with the texture's GPU
+   * texture: when the texture is destroyed, unloaded or resized.
+   * @param source - the antialiased texture
+   * @returns its multisampled texture
+   */
+  getMsaaTexture(source) {
+    this.getGpuSource(source);
+    const gpuData = source._gpuData[this._renderer.uid];
+    gpuData.msaa ?? (gpuData.msaa = new GpuMsaaTexture(this._renderer, source));
+    return gpuData.msaa;
+  }
+  /**
    * this returns s bind group for a specific texture, the bind group contains
    * - the texture source
    * - the texture style
@@ -2790,10 +3040,12 @@ const _GpuTextureSystem = class _GpuTextureSystem2 {
     canvas.width = texture.source.pixelWidth;
     canvas.height = texture.source.pixelHeight;
     const context = canvas.getContext("webgpu");
+    const sourceFormat = texture.source.format.replace("-srgb", "");
+    const format = canvasAllowedFormats[sourceFormat] ? sourceFormat : DOMAdapter.get().getNavigator().gpu.getPreferredCanvasFormat();
     context.configure({
       device: renderer.gpu.device,
       usage: GPUTextureUsage.COPY_DST | GPUTextureUsage.COPY_SRC,
-      format: DOMAdapter.get().getNavigator().gpu.getPreferredCanvasFormat(),
+      format,
       alphaMode: "premultiplied"
     });
     commandEncoder.copyTextureToTexture({
@@ -2846,10 +3098,7 @@ _GpuTextureSystem.extension = {
 _GpuTextureSystem.uploadExtensions = /* @__PURE__ */ Object.create(null);
 let GpuTextureSystem = _GpuTextureSystem;
 extensions.handleByMap(ExtensionType.TextureUploaderWebGPU, GpuTextureSystem.uploadExtensions);
-class GpuGraphicsAdaptor {
-  constructor() {
-    this._maxTextures = 0;
-  }
+class GpuGraphicsAdaptor extends AbstractGpuGraphicsAdaptor {
   contextChange(renderer) {
     const localUniforms = new UniformGroup({
       uTransformMatrix: { value: new Matrix(), type: "mat3x3<f32>" },
@@ -2874,56 +3123,8 @@ class GpuGraphicsAdaptor {
       }
     });
   }
-  execute(graphicsPipe, renderable) {
-    const context = renderable.context;
-    const shader = context.customShader || this.shader;
-    const renderer = graphicsPipe.renderer;
-    const contextSystem = renderer.graphicsContext;
-    const {
-      batcher,
-      instructions
-    } = contextSystem.getContextRenderData(context);
-    const encoder = renderer.encoder;
-    encoder.setGeometry(batcher.geometry, shader.gpuProgram);
-    const globalUniformsBindGroup = renderer.globalUniforms.bindGroup;
-    encoder.setBindGroup(0, globalUniformsBindGroup, shader.gpuProgram);
-    const localBindGroup = renderer.renderPipes.uniformBatch.getUniformBindGroup(shader.resources.localUniforms, true);
-    encoder.setBindGroup(2, localBindGroup, shader.gpuProgram);
-    const batches = instructions.instructions;
-    let topology = null;
-    for (let i = 0; i < instructions.instructionSize; i++) {
-      const batch = batches[i];
-      if (batch.topology !== topology) {
-        topology = batch.topology;
-        encoder.setPipelineFromGeometryProgramAndState(
-          batcher.geometry,
-          shader.gpuProgram,
-          graphicsPipe.state,
-          batch.topology,
-          shader._overrides
-        );
-      }
-      shader.groups[1] = batch.bindGroup;
-      if (!batch.gpuBindGroup) {
-        const textureBatch = batch.textures;
-        batch.bindGroup = getTextureBatchBindGroup(
-          textureBatch.textures,
-          textureBatch.count,
-          this._maxTextures
-        );
-        batch.gpuBindGroup = renderer.bindGroup.getBindGroup(
-          batch.bindGroup,
-          shader.gpuProgram,
-          1
-        );
-      }
-      encoder.setBindGroup(1, batch.bindGroup, shader.gpuProgram);
-      encoder.renderPassEncoder.drawIndexed(batch.size, 1, batch.start);
-    }
-  }
-  destroy() {
-    this.shader.destroy();
-    this.shader = null;
+  _getRenderData(renderer, context) {
+    return renderer.graphicsContext.getContextRenderData(context);
   }
 }
 GpuGraphicsAdaptor.extension = {

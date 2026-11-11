@@ -1,4 +1,4 @@
-const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/browserAll-CJGBepZQ.js","assets/webworkerAll-BgNrMzlz.js","assets/Filter-BH24HVWH.js","assets/WebGPURenderer-DVFmvgjL.js","assets/getTexelRangeRects-BTk_1JrT.js","assets/RenderTargetSystem-jftNEtXG.js","assets/WebGLRenderer-B4i-p0OC.js","assets/CanvasRenderer-CETR1UZP.js"])))=>i.map(i=>d[i]);
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/browserAll-CSYhjKZ2.js","assets/webworkerAll-D-RQQEJS.js","assets/Filter-bbWdas5q.js","assets/WebGPURenderer-Sjo_QiGy.js","assets/getTexelRangeRects-95pujm4c.js","assets/RenderTargetSystem-JPZWF-LX.js","assets/WebGLRenderer-DKWVTKKh.js","assets/CanvasRenderer-02Qfq8Os.js"])))=>i.map(i=>d[i]);
 (function polyfill() {
   const relList = document.createElement("link").relList;
   if (relList && relList.supports && relList.supports("modulepreload")) return;
@@ -69,10 +69,10 @@ const __vitePreload = function preload(baseModule, deps, importerUrl) {
     }));
   }
   function handlePreloadError(err$2) {
-    const e$1 = new Event("vite:preloadError", { cancelable: true });
-    e$1.payload = err$2;
-    window.dispatchEvent(e$1);
-    if (!e$1.defaultPrevented) throw err$2;
+    const e$12 = new Event("vite:preloadError", { cancelable: true });
+    e$12.payload = err$2;
+    window.dispatchEvent(e$12);
+    if (!e$12.defaultPrevented) throw err$2;
   }
   return promise2.then((res) => {
     for (const item of res || []) {
@@ -355,7 +355,7 @@ const browserExt = {
   },
   test: () => true,
   load: async () => {
-    await __vitePreload(() => import("./browserAll-CJGBepZQ.js"), true ? __vite__mapDeps([0,1,2]) : void 0);
+    await __vitePreload(() => import("./browserAll-CSYhjKZ2.js"), true ? __vite__mapDeps([0,1,2]) : void 0);
   }
 };
 const webworkerExt = {
@@ -366,7 +366,7 @@ const webworkerExt = {
   },
   test: () => typeof self !== "undefined" && self.WorkerGlobalScope !== void 0,
   load: async () => {
-    await __vitePreload(() => import("./webworkerAll-BgNrMzlz.js"), true ? __vite__mapDeps([1,2]) : void 0);
+    await __vitePreload(() => import("./webworkerAll-D-RQQEJS.js"), true ? __vite__mapDeps([1,2]) : void 0);
   }
 };
 class ObservablePoint {
@@ -1696,10 +1696,10 @@ class Matrix {
    * @see {@link Matrix.identity} For resetting matrices
    */
   static get shared() {
-    return tempMatrix$4.identity();
+    return tempMatrix$5.identity();
   }
 }
-const tempMatrix$4 = new Matrix();
+const tempMatrix$5 = new Matrix();
 const identityMatrix$1 = new Matrix();
 const ux = [1, 1, 0, -1, -1, -1, 0, 1, 1, 1, 0, -1, -1, -1, 0, 1];
 const uy = [0, 1, 1, 1, 0, -1, -1, -1, 0, 1, 1, 1, 0, -1, -1, -1];
@@ -1717,9 +1717,9 @@ function init() {
       const _uy = signum(uy[i2] * ux[j2] + vy[i2] * uy[j2]);
       const _vx = signum(ux[i2] * vx[j2] + vx[i2] * vy[j2]);
       const _vy = signum(uy[i2] * vx[j2] + vy[i2] * vy[j2]);
-      for (let k2 = 0; k2 < 16; k2++) {
-        if (ux[k2] === _ux && uy[k2] === _uy && vx[k2] === _vx && vy[k2] === _vy) {
-          row.push(k2);
+      for (let k = 0; k < 16; k++) {
+        if (ux[k] === _ux && uy[k] === _uy && vx[k] === _vx && vy[k] === _vy) {
+          row.push(k);
           break;
         }
       }
@@ -4236,141 +4236,152 @@ class Bounds {
     return this;
   }
 }
-var r = { grad: 0.9, turn: 360, rad: 360 / (2 * Math.PI) }, t = function(r2) {
+for (var r = { grad: 0.9, turn: 360, rad: 360 / (2 * Math.PI) }, t = function(r2) {
   return "string" == typeof r2 ? r2.length > 0 : "number" == typeof r2;
 }, n = function(r2, t2, n2) {
   return void 0 === t2 && (t2 = 0), void 0 === n2 && (n2 = Math.pow(10, t2)), Math.round(n2 * r2) / n2 + 0;
-}, e = function(r2, t2, n2) {
+}, e$1 = function(r2) {
+  var t2 = Math.round(100 * r2) / 100;
+  return Math.round(255 * t2) === 255 * r2 ? t2 : Math.round(1e3 * r2) / 1e3;
+}, u = function(r2, t2, n2) {
   return void 0 === t2 && (t2 = 0), void 0 === n2 && (n2 = 1), r2 > n2 ? n2 : r2 > t2 ? r2 : t2;
-}, u = function(r2) {
-  return (r2 = isFinite(r2) ? r2 % 360 : 0) > 0 ? r2 : r2 + 360;
-}, a = function(r2) {
-  return { r: e(r2.r, 0, 255), g: e(r2.g, 0, 255), b: e(r2.b, 0, 255), a: e(r2.a) };
 }, o = function(r2) {
-  return { r: n(r2.r), g: n(r2.g), b: n(r2.b), a: n(r2.a, 3) };
-}, i = /^#([0-9a-f]{3,8})$/i, s = function(r2) {
-  var t2 = r2.toString(16);
-  return t2.length < 2 ? "0" + t2 : t2;
-}, h = function(r2) {
-  var t2 = r2.r, n2 = r2.g, e2 = r2.b, u2 = r2.a, a2 = Math.max(t2, n2, e2), o2 = a2 - Math.min(t2, n2, e2), i2 = o2 ? a2 === t2 ? (n2 - e2) / o2 : a2 === n2 ? 2 + (e2 - t2) / o2 : 4 + (t2 - n2) / o2 : 0;
-  return { h: 60 * (i2 < 0 ? i2 + 6 : i2), s: a2 ? o2 / a2 * 100 : 0, v: a2 / 255 * 100, a: u2 };
-}, b = function(r2) {
+  return (r2 = isFinite(r2) ? r2 % 360 : 0) < 0 ? r2 + 360 : r2;
+}, a = function(r2, t2) {
+  return void 0 === t2 && (t2 = 0), n(r2, t2) % 360;
+}, i = function(r2) {
+  return { r: u(r2.r, 0, 255), g: u(r2.g, 0, 255), b: u(r2.b, 0, 255), a: u(r2.a) };
+}, s = function(r2) {
+  return { r: n(r2.r), g: n(r2.g), b: n(r2.b), a: e$1(r2.a) };
+}, d = /^#([0-9a-f]{3,8})$/i, h = function(r2, t2) {
+  var n2 = r2.charCodeAt(t2);
+  return (15 & n2) + 9 * (n2 >> 6);
+}, b = function(r2, t2) {
+  return h(r2, t2) << 4 | h(r2, t2 + 1);
+}, f = [], g = 0; g < 256; g++) f.push((g < 16 ? "0" : "") + g.toString(16));
+var c = function(r2) {
+  return f[u(r2, 0, 255)];
+}, v = function(r2) {
+  var t2 = r2.r, n2 = r2.g, e2 = r2.b, u2 = r2.a, o2 = Math.max(t2, n2, e2), a2 = o2 - Math.min(t2, n2, e2), i2 = a2 ? o2 === t2 ? (n2 - e2) / a2 : o2 === n2 ? 2 + (e2 - t2) / a2 : 4 + (t2 - n2) / a2 : 0;
+  return { h: 60 * (i2 < 0 ? i2 + 6 : i2), s: o2 ? a2 / o2 * 100 : 0, v: o2 / 255 * 100, a: u2 };
+}, l = function(r2) {
   var t2 = r2.h, n2 = r2.s, e2 = r2.v, u2 = r2.a;
   t2 = t2 / 360 * 6, n2 /= 100, e2 /= 100;
-  var a2 = Math.floor(t2), o2 = e2 * (1 - n2), i2 = e2 * (1 - (t2 - a2) * n2), s2 = e2 * (1 - (1 - t2 + a2) * n2), h2 = a2 % 6;
-  return { r: 255 * [e2, i2, o2, o2, s2, e2][h2], g: 255 * [s2, e2, e2, i2, o2, o2][h2], b: 255 * [o2, o2, s2, e2, e2, i2][h2], a: u2 };
-}, g = function(r2) {
-  return { h: u(r2.h), s: e(r2.s, 0, 100), l: e(r2.l, 0, 100), a: e(r2.a) };
-}, d = function(r2) {
-  return { h: n(r2.h), s: n(r2.s), l: n(r2.l), a: n(r2.a, 3) };
-}, f = function(r2) {
-  return b((n2 = (t2 = r2).s, { h: t2.h, s: (n2 *= ((e2 = t2.l) < 50 ? e2 : 100 - e2) / 100) > 0 ? 2 * n2 / (e2 + n2) * 100 : 0, v: e2 + n2, a: t2.a }));
+  var o2 = Math.floor(t2), a2 = e2 * (1 - n2), i2 = e2 * (1 - (t2 - o2) * n2), s2 = e2 * (1 - (1 - t2 + o2) * n2), d2 = o2 % 6;
+  return { r: 255 * [e2, i2, a2, a2, s2, e2][d2], g: 255 * [s2, e2, e2, i2, a2, a2][d2], b: 255 * [a2, a2, s2, e2, e2, i2][d2], a: u2 };
+}, p = function(r2) {
+  return { h: o(r2.h), s: u(r2.s, 0, 100), l: u(r2.l, 0, 100), a: u(r2.a) };
+}, m = function(r2) {
+  return { h: a(r2.h), s: n(r2.s), l: n(r2.l), a: e$1(r2.a) };
+}, y = function(r2) {
+  return l((n2 = (t2 = r2).s, { h: t2.h, s: (n2 *= ((e2 = t2.l) < 50 ? e2 : 100 - e2) / 100) > 0 ? 2 * n2 / (e2 + n2) * 100 : 0, v: e2 + n2, a: t2.a }));
   var t2, n2, e2;
-}, c = function(r2) {
-  return { h: (t2 = h(r2)).h, s: (u2 = (200 - (n2 = t2.s)) * (e2 = t2.v) / 100) > 0 && u2 < 200 ? n2 * e2 / 100 / (u2 <= 100 ? u2 : 200 - u2) * 100 : 0, l: u2 / 2, a: t2.a };
+}, N = function(r2) {
+  return { h: (t2 = v(r2)).h, s: (u2 = (200 - (n2 = t2.s)) * (e2 = t2.v) / 100) > 0 && u2 < 200 ? n2 * e2 / 100 / (u2 <= 100 ? u2 : 200 - u2) * 100 : 0, l: u2 / 2, a: t2.a };
   var t2, n2, e2, u2;
-}, l = /^hsla?\(\s*([+-]?\d*\.?\d+)(deg|rad|grad|turn)?\s*,\s*([+-]?\d*\.?\d+)%\s*,\s*([+-]?\d*\.?\d+)%\s*(?:,\s*([+-]?\d*\.?\d+)(%)?\s*)?\)$/i, p = /^hsla?\(\s*([+-]?\d*\.?\d+)(deg|rad|grad|turn)?\s+([+-]?\d*\.?\d+)%\s+([+-]?\d*\.?\d+)%\s*(?:\/\s*([+-]?\d*\.?\d+)(%)?\s*)?\)$/i, v = /^rgba?\(\s*([+-]?\d*\.?\d+)(%)?\s*,\s*([+-]?\d*\.?\d+)(%)?\s*,\s*([+-]?\d*\.?\d+)(%)?\s*(?:,\s*([+-]?\d*\.?\d+)(%)?\s*)?\)$/i, m = /^rgba?\(\s*([+-]?\d*\.?\d+)(%)?\s+([+-]?\d*\.?\d+)(%)?\s+([+-]?\d*\.?\d+)(%)?\s*(?:\/\s*([+-]?\d*\.?\d+)(%)?\s*)?\)$/i, y = { string: [[function(r2) {
-  var t2 = i.exec(r2);
-  return t2 ? (r2 = t2[1]).length <= 4 ? { r: parseInt(r2[0] + r2[0], 16), g: parseInt(r2[1] + r2[1], 16), b: parseInt(r2[2] + r2[2], 16), a: 4 === r2.length ? n(parseInt(r2[3] + r2[3], 16) / 255, 2) : 1 } : 6 === r2.length || 8 === r2.length ? { r: parseInt(r2.substr(0, 2), 16), g: parseInt(r2.substr(2, 2), 16), b: parseInt(r2.substr(4, 2), 16), a: 8 === r2.length ? n(parseInt(r2.substr(6, 2), 16) / 255, 2) : 1 } : null : null;
+}, M = /^hsla?\(\s*([+-]?(?:\d*\.\d+|\d+)(?:e[+-]?\d+)?)(deg|rad|grad|turn)?\s*,\s*([+-]?(?:\d*\.\d+|\d+)(?:e[+-]?\d+)?)%\s*,\s*([+-]?(?:\d*\.\d+|\d+)(?:e[+-]?\d+)?)%\s*(?:,\s*([+-]?(?:\d*\.\d+|\d+)(?:e[+-]?\d+)?)(%)?\s*)?\)$/i, x = /^hsla?\(\s*([+-]?(?:\d*\.\d+|\d+)(?:e[+-]?\d+)?)(deg|rad|grad|turn)?\s+([+-]?(?:\d*\.\d+|\d+)(?:e[+-]?\d+)?)%\s+([+-]?(?:\d*\.\d+|\d+)(?:e[+-]?\d+)?)%\s*(?:\/\s*([+-]?(?:\d*\.\d+|\d+)(?:e[+-]?\d+)?)(%)?\s*)?\)$/i, H = /^rgba?\(\s*([+-]?(?:\d*\.\d+|\d+)(?:e[+-]?\d+)?)(%)?\s*,\s*([+-]?(?:\d*\.\d+|\d+)(?:e[+-]?\d+)?)(%)?\s*,\s*([+-]?(?:\d*\.\d+|\d+)(?:e[+-]?\d+)?)(%)?\s*(?:,\s*([+-]?(?:\d*\.\d+|\d+)(?:e[+-]?\d+)?)(%)?\s*)?\)$/i, $ = /^rgba?\(\s*([+-]?(?:\d*\.\d+|\d+)(?:e[+-]?\d+)?)(%)?\s+([+-]?(?:\d*\.\d+|\d+)(?:e[+-]?\d+)?)(%)?\s+([+-]?(?:\d*\.\d+|\d+)(?:e[+-]?\d+)?)(%)?\s*(?:\/\s*([+-]?(?:\d*\.\d+|\d+)(?:e[+-]?\d+)?)(%)?\s*)?\)$/i, w = { string: [[function(r2) {
+  if (!d.test(r2)) return null;
+  var t2 = r2.length;
+  return t2 <= 5 ? { r: 17 * h(r2, 1), g: 17 * h(r2, 2), b: 17 * h(r2, 3), a: 5 === t2 ? 17 * h(r2, 4) / 255 : 1 } : 7 === t2 || 9 === t2 ? { r: b(r2, 1), g: b(r2, 3), b: b(r2, 5), a: 9 === t2 ? b(r2, 7) / 255 : 1 } : null;
 }, "hex"], [function(r2) {
-  var t2 = v.exec(r2) || m.exec(r2);
-  return t2 ? t2[2] !== t2[4] || t2[4] !== t2[6] ? null : a({ r: Number(t2[1]) / (t2[2] ? 100 / 255 : 1), g: Number(t2[3]) / (t2[4] ? 100 / 255 : 1), b: Number(t2[5]) / (t2[6] ? 100 / 255 : 1), a: void 0 === t2[7] ? 1 : Number(t2[7]) / (t2[8] ? 100 : 1) }) : null;
+  var t2 = H.exec(r2) || $.exec(r2);
+  return t2 ? t2[2] !== t2[4] || t2[4] !== t2[6] ? null : i({ r: Number(t2[1]) / (t2[2] ? 100 / 255 : 1), g: Number(t2[3]) / (t2[4] ? 100 / 255 : 1), b: Number(t2[5]) / (t2[6] ? 100 / 255 : 1), a: void 0 === t2[7] ? 1 : Number(t2[7]) / (t2[8] ? 100 : 1) }) : null;
 }, "rgb"], [function(t2) {
-  var n2 = l.exec(t2) || p.exec(t2);
+  var n2 = M.exec(t2) || x.exec(t2);
   if (!n2) return null;
-  var e2, u2, a2 = g({ h: (e2 = n2[1], u2 = n2[2], void 0 === u2 && (u2 = "deg"), Number(e2) * (r[u2] || 1)), s: Number(n2[3]), l: Number(n2[4]), a: void 0 === n2[5] ? 1 : Number(n2[5]) / (n2[6] ? 100 : 1) });
-  return f(a2);
+  var e2, u2, o2 = p({ h: (e2 = n2[1], u2 = n2[2], void 0 === u2 && (u2 = "deg"), Number(e2) * (r[u2.toLowerCase()] || 1)), s: Number(n2[3]), l: Number(n2[4]), a: void 0 === n2[5] ? 1 : Number(n2[5]) / (n2[6] ? 100 : 1) });
+  return y(o2);
 }, "hsl"]], object: [[function(r2) {
-  var n2 = r2.r, e2 = r2.g, u2 = r2.b, o2 = r2.a, i2 = void 0 === o2 ? 1 : o2;
-  return t(n2) && t(e2) && t(u2) ? a({ r: Number(n2), g: Number(e2), b: Number(u2), a: Number(i2) }) : null;
+  var n2 = r2.r, e2 = r2.g, u2 = r2.b, o2 = r2.a, a2 = void 0 === o2 ? 1 : o2;
+  return t(n2) && t(e2) && t(u2) ? i({ r: Number(n2), g: Number(e2), b: Number(u2), a: Number(a2) }) : null;
 }, "rgb"], [function(r2) {
-  var n2 = r2.h, e2 = r2.s, u2 = r2.l, a2 = r2.a, o2 = void 0 === a2 ? 1 : a2;
+  var n2 = r2.h, e2 = r2.s, u2 = r2.l, o2 = r2.a, a2 = void 0 === o2 ? 1 : o2;
   if (!t(n2) || !t(e2) || !t(u2)) return null;
-  var i2 = g({ h: Number(n2), s: Number(e2), l: Number(u2), a: Number(o2) });
-  return f(i2);
+  var i2 = p({ h: Number(n2), s: Number(e2), l: Number(u2), a: Number(a2) });
+  return y(i2);
 }, "hsl"], [function(r2) {
-  var n2 = r2.h, a2 = r2.s, o2 = r2.v, i2 = r2.a, s2 = void 0 === i2 ? 1 : i2;
-  if (!t(n2) || !t(a2) || !t(o2)) return null;
-  var h2 = (function(r3) {
-    return { h: u(r3.h), s: e(r3.s, 0, 100), v: e(r3.v, 0, 100), a: e(r3.a) };
-  })({ h: Number(n2), s: Number(a2), v: Number(o2), a: Number(s2) });
-  return b(h2);
-}, "hsv"]] }, N = function(r2, t2) {
+  var n2 = r2.h, e2 = r2.s, a2 = r2.v, i2 = r2.a, s2 = void 0 === i2 ? 1 : i2;
+  if (!t(n2) || !t(e2) || !t(a2)) return null;
+  var d2 = (function(r3) {
+    return { h: o(r3.h), s: u(r3.s, 0, 100), v: u(r3.v, 0, 100), a: u(r3.a) };
+  })({ h: Number(n2), s: Number(e2), v: Number(a2), a: Number(s2) });
+  return l(d2);
+}, "hsv"]] }, j = function(r2, t2) {
   for (var n2 = 0; n2 < t2.length; n2++) {
     var e2 = t2[n2][0](r2);
     if (e2) return [e2, t2[n2][1]];
   }
   return [null, void 0];
-}, x = function(r2) {
-  return "string" == typeof r2 ? N(r2.trim(), y.string) : "object" == typeof r2 && null !== r2 ? N(r2, y.object) : [null, void 0];
-}, M = function(r2, t2) {
-  var n2 = c(r2);
-  return { h: n2.h, s: e(n2.s + 100 * t2, 0, 100), l: n2.l, a: n2.a };
-}, H = function(r2) {
+}, S = function(r2) {
+  return "string" == typeof r2 ? j(r2.trim(), w.string) : "object" == typeof r2 && null !== r2 ? j(r2, w.object) : [null, void 0];
+}, C = function(r2, t2) {
+  var n2 = N(r2);
+  return { h: n2.h, s: u(n2.s + 100 * t2, 0, 100), l: n2.l, a: n2.a };
+}, E = function(r2) {
   return (299 * r2.r + 587 * r2.g + 114 * r2.b) / 1e3 / 255;
-}, $ = function(r2, t2) {
-  var n2 = c(r2);
-  return { h: n2.h, s: n2.s, l: e(n2.l + 100 * t2, 0, 100), a: n2.a };
-}, j = (function() {
+}, L = function(r2, t2) {
+  var n2 = N(r2);
+  return { h: n2.h, s: n2.s, l: u(n2.l + 100 * t2, 0, 100), a: n2.a };
+}, R = (function() {
   function r2(r3) {
-    this.parsed = x(r3)[0], this.rgba = this.parsed || { r: 0, g: 0, b: 0, a: 1 };
+    this.parsed = S(r3)[0], this.rgba = this.parsed || { r: 0, g: 0, b: 0, a: 1 };
   }
   return r2.prototype.isValid = function() {
     return null !== this.parsed;
   }, r2.prototype.brightness = function() {
-    return n(H(this.rgba), 2);
+    return n(E(this.rgba), 2);
   }, r2.prototype.isDark = function() {
-    return H(this.rgba) < 0.5;
+    return E(this.rgba) < 0.5;
   }, r2.prototype.isLight = function() {
-    return H(this.rgba) >= 0.5;
+    return E(this.rgba) >= 0.5;
   }, r2.prototype.toHex = function() {
-    return r3 = o(this.rgba), t2 = r3.r, e2 = r3.g, u2 = r3.b, i2 = (a2 = r3.a) < 1 ? s(n(255 * a2)) : "", "#" + s(t2) + s(e2) + s(u2) + i2;
-    var r3, t2, e2, u2, a2, i2;
+    return r3 = s(this.rgba), t2 = r3.r, e2 = r3.g, u2 = r3.b, a2 = (o2 = r3.a) < 1 ? c(n(255 * o2)) : "", "#" + c(t2) + c(e2) + c(u2) + a2;
+    var r3, t2, e2, u2, o2, a2;
   }, r2.prototype.toRgb = function() {
-    return o(this.rgba);
+    return s(this.rgba);
   }, r2.prototype.toRgbString = function() {
-    return r3 = o(this.rgba), t2 = r3.r, n2 = r3.g, e2 = r3.b, (u2 = r3.a) < 1 ? "rgba(" + t2 + ", " + n2 + ", " + e2 + ", " + u2 + ")" : "rgb(" + t2 + ", " + n2 + ", " + e2 + ")";
+    return r3 = s(this.rgba), t2 = r3.r, n2 = r3.g, e2 = r3.b, (u2 = r3.a) < 1 ? "rgba(" + t2 + ", " + n2 + ", " + e2 + ", " + u2 + ")" : "rgb(" + t2 + ", " + n2 + ", " + e2 + ")";
     var r3, t2, n2, e2, u2;
   }, r2.prototype.toHsl = function() {
-    return d(c(this.rgba));
+    return m(N(this.rgba));
   }, r2.prototype.toHslString = function() {
-    return r3 = d(c(this.rgba)), t2 = r3.h, n2 = r3.s, e2 = r3.l, (u2 = r3.a) < 1 ? "hsla(" + t2 + ", " + n2 + "%, " + e2 + "%, " + u2 + ")" : "hsl(" + t2 + ", " + n2 + "%, " + e2 + "%)";
+    return r3 = m(N(this.rgba)), t2 = r3.h, n2 = r3.s, e2 = r3.l, (u2 = r3.a) < 1 ? "hsla(" + t2 + ", " + n2 + "%, " + e2 + "%, " + u2 + ")" : "hsl(" + t2 + ", " + n2 + "%, " + e2 + "%)";
     var r3, t2, n2, e2, u2;
   }, r2.prototype.toHsv = function() {
-    return r3 = h(this.rgba), { h: n(r3.h), s: n(r3.s), v: n(r3.v), a: n(r3.a, 3) };
+    return r3 = v(this.rgba), { h: a(r3.h), s: n(r3.s), v: n(r3.v), a: e$1(r3.a) };
     var r3;
   }, r2.prototype.invert = function() {
-    return w({ r: 255 - (r3 = this.rgba).r, g: 255 - r3.g, b: 255 - r3.b, a: r3.a });
+    return q({ r: 255 - (r3 = this.rgba).r, g: 255 - r3.g, b: 255 - r3.b, a: r3.a });
     var r3;
   }, r2.prototype.saturate = function(r3) {
-    return void 0 === r3 && (r3 = 0.1), w(M(this.rgba, r3));
+    return void 0 === r3 && (r3 = 0.1), q(C(this.rgba, r3));
   }, r2.prototype.desaturate = function(r3) {
-    return void 0 === r3 && (r3 = 0.1), w(M(this.rgba, -r3));
+    return void 0 === r3 && (r3 = 0.1), q(C(this.rgba, -r3));
   }, r2.prototype.grayscale = function() {
-    return w(M(this.rgba, -1));
+    return q(C(this.rgba, -1));
   }, r2.prototype.lighten = function(r3) {
-    return void 0 === r3 && (r3 = 0.1), w($(this.rgba, r3));
+    return void 0 === r3 && (r3 = 0.1), q(L(this.rgba, r3));
   }, r2.prototype.darken = function(r3) {
-    return void 0 === r3 && (r3 = 0.1), w($(this.rgba, -r3));
+    return void 0 === r3 && (r3 = 0.1), q(L(this.rgba, -r3));
   }, r2.prototype.rotate = function(r3) {
-    return void 0 === r3 && (r3 = 15), this.hue(this.hue() + r3);
+    return void 0 === r3 && (r3 = 15), this.hue(N(this.rgba).h + r3);
   }, r2.prototype.alpha = function(r3) {
-    return "number" == typeof r3 ? w({ r: (t2 = this.rgba).r, g: t2.g, b: t2.b, a: r3 }) : n(this.rgba.a, 3);
+    return "number" == typeof r3 ? q({ r: (t2 = this.rgba).r, g: t2.g, b: t2.b, a: r3 }) : e$1(this.rgba.a);
     var t2;
   }, r2.prototype.hue = function(r3) {
-    var t2 = c(this.rgba);
-    return "number" == typeof r3 ? w({ h: r3, s: t2.s, l: t2.l, a: t2.a }) : n(t2.h);
+    var t2 = N(this.rgba);
+    return "number" == typeof r3 ? q({ h: r3, s: t2.s, l: t2.l, a: t2.a }) : a(t2.h);
   }, r2.prototype.isEqual = function(r3) {
-    return this.toHex() === w(r3).toHex();
+    return this.toHex() === q(r3).toHex();
   }, r2;
-})(), w = function(r2) {
-  return r2 instanceof j ? r2 : new j(r2);
-}, S = [], k = function(r2) {
+})(), q = function(r2) {
+  return r2 instanceof R ? r2 : new R(r2);
+}, A = [], D = function(r2) {
   r2.forEach(function(r3) {
-    S.indexOf(r3) < 0 && (r3(j, y), S.push(r3));
+    A.indexOf(r3) < 0 && (r3(R, w), A.push(r3));
   });
 };
-function namesPlugin(e2, f2) {
+var e = function(e2, f2) {
   var a2 = { white: "#ffffff", bisque: "#ffe4c4", blue: "#0000ff", cadetblue: "#5f9ea0", chartreuse: "#7fff00", chocolate: "#d2691e", coral: "#ff7f50", antiquewhite: "#faebd7", aqua: "#00ffff", azure: "#f0ffff", whitesmoke: "#f5f5f5", papayawhip: "#ffefd5", plum: "#dda0dd", blanchedalmond: "#ffebcd", black: "#000000", gold: "#ffd700", goldenrod: "#daa520", gainsboro: "#dcdcdc", cornsilk: "#fff8dc", cornflowerblue: "#6495ed", burlywood: "#deb887", aquamarine: "#7fffd4", beige: "#f5f5dc", crimson: "#dc143c", cyan: "#00ffff", darkblue: "#00008b", darkcyan: "#008b8b", darkgoldenrod: "#b8860b", darkkhaki: "#bdb76b", darkgray: "#a9a9a9", darkgreen: "#006400", darkgrey: "#a9a9a9", peachpuff: "#ffdab9", darkmagenta: "#8b008b", darkred: "#8b0000", darkorchid: "#9932cc", darkorange: "#ff8c00", darkslateblue: "#483d8b", gray: "#808080", darkslategray: "#2f4f4f", darkslategrey: "#2f4f4f", deeppink: "#ff1493", deepskyblue: "#00bfff", wheat: "#f5deb3", firebrick: "#b22222", floralwhite: "#fffaf0", ghostwhite: "#f8f8ff", darkviolet: "#9400d3", magenta: "#ff00ff", green: "#008000", dodgerblue: "#1e90ff", grey: "#808080", honeydew: "#f0fff0", hotpink: "#ff69b4", blueviolet: "#8a2be2", forestgreen: "#228b22", lawngreen: "#7cfc00", indianred: "#cd5c5c", indigo: "#4b0082", fuchsia: "#ff00ff", brown: "#a52a2a", maroon: "#800000", mediumblue: "#0000cd", lightcoral: "#f08080", darkturquoise: "#00ced1", lightcyan: "#e0ffff", ivory: "#fffff0", lightyellow: "#ffffe0", lightsalmon: "#ffa07a", lightseagreen: "#20b2aa", linen: "#faf0e6", mediumaquamarine: "#66cdaa", lemonchiffon: "#fffacd", lime: "#00ff00", khaki: "#f0e68c", mediumseagreen: "#3cb371", limegreen: "#32cd32", mediumspringgreen: "#00fa9a", lightskyblue: "#87cefa", lightblue: "#add8e6", midnightblue: "#191970", lightpink: "#ffb6c1", mistyrose: "#ffe4e1", moccasin: "#ffe4b5", mintcream: "#f5fffa", lightslategray: "#778899", lightslategrey: "#778899", navajowhite: "#ffdead", navy: "#000080", mediumvioletred: "#c71585", powderblue: "#b0e0e6", palegoldenrod: "#eee8aa", oldlace: "#fdf5e6", paleturquoise: "#afeeee", mediumturquoise: "#48d1cc", mediumorchid: "#ba55d3", rebeccapurple: "#663399", lightsteelblue: "#b0c4de", mediumslateblue: "#7b68ee", thistle: "#d8bfd8", tan: "#d2b48c", orchid: "#da70d6", mediumpurple: "#9370db", purple: "#800080", pink: "#ffc0cb", skyblue: "#87ceeb", springgreen: "#00ff7f", palegreen: "#98fb98", red: "#ff0000", yellow: "#ffff00", slateblue: "#6a5acd", lavenderblush: "#fff0f5", peru: "#cd853f", palevioletred: "#db7093", violet: "#ee82ee", teal: "#008080", slategray: "#708090", slategrey: "#708090", aliceblue: "#f0f8ff", darkseagreen: "#8fbc8f", darkolivegreen: "#556b2f", greenyellow: "#adff2f", seagreen: "#2e8b57", seashell: "#fff5ee", tomato: "#ff6347", silver: "#c0c0c0", sienna: "#a0522d", lavender: "#e6e6fa", lightgreen: "#90ee90", orange: "#ffa500", orangered: "#ff4500", steelblue: "#4682b4", royalblue: "#4169e1", turquoise: "#40e0d0", yellowgreen: "#9acd32", salmon: "#fa8072", saddlebrown: "#8b4513", sandybrown: "#f4a460", rosybrown: "#bc8f8f", darksalmon: "#e9967a", lightgoldenrodyellow: "#fafad2", snow: "#fffafa", lightgrey: "#d3d3d3", lightgray: "#d3d3d3", dimgray: "#696969", dimgrey: "#696969", olivedrab: "#6b8e23", olive: "#808000" }, r2 = {};
   for (var d2 in a2) r2[a2[d2]] = d2;
   var l2 = {};
@@ -4392,8 +4403,8 @@ function namesPlugin(e2, f2) {
     var r3 = f3.toLowerCase(), d3 = "transparent" === r3 ? "#0000" : a2[r3];
     return d3 ? new e2(d3).toRgb() : null;
   }, "name"]);
-}
-k([namesPlugin]);
+};
+D([e]);
 const _Color = class _Color2 {
   /**
    * @param {ColorSource} value - Optional value to use, if not provided, white is used.
@@ -5065,7 +5076,7 @@ const _Color = class _Color2 {
           value = `#${match[2]}`;
         }
       }
-      const color = w(value);
+      const color = q(value);
       if (color.isValid()) {
         ({ r: r2, g: g2, b: b2, a: a2 } = color.rgba);
         r2 /= 255;
@@ -5159,6 +5170,9 @@ const _Color = class _Color2 {
    * @category utility
    */
   static isColorLike(value) {
+    if (value === null || value === void 0) {
+      return false;
+    }
     return typeof value === "number" || typeof value === "string" || value instanceof Number || value instanceof _Color2 || Array.isArray(value) || value instanceof Uint8Array || value instanceof Uint8ClampedArray || value instanceof Float32Array || value.r !== void 0 && value.g !== void 0 && value.b !== void 0 || value.r !== void 0 && value.g !== void 0 && value.b !== void 0 && value.a !== void 0 || value.h !== void 0 && value.s !== void 0 && value.l !== void 0 || value.h !== void 0 && value.s !== void 0 && value.l !== void 0 && value.a !== void 0 || value.h !== void 0 && value.s !== void 0 && value.v !== void 0 || value.h !== void 0 && value.s !== void 0 && value.v !== void 0 && value.a !== void 0;
   }
 };
@@ -5427,7 +5441,7 @@ const childrenHelperMixin = {
         removed.push(child2);
         child2.parent = null;
       }
-      removeItems(this.children, beginIndex, end);
+      removeItems(this.children, beginIndex, range);
       const renderGroup = this.renderGroup || this.parentRenderGroup;
       if (renderGroup) {
         renderGroup.removeChildren(removed);
@@ -5775,7 +5789,7 @@ const findMixin = {
 };
 const matrixPool = BigPool.getPool(Matrix);
 const boundsPool = BigPool.getPool(Bounds);
-const tempMatrix$3 = new Matrix();
+const tempMatrix$4 = new Matrix();
 const getFastGlobalBoundsMixin = {
   getFastGlobalBounds(factorRenderLayers, bounds) {
     bounds || (bounds = new Bounds());
@@ -5829,7 +5843,7 @@ const getFastGlobalBoundsMixin = {
         }
       }
       if (advanced) {
-        localBounds.applyMatrix(renderGroup.worldTransform.copyTo(tempMatrix$3).invert());
+        localBounds.applyMatrix(renderGroup.worldTransform.copyTo(tempMatrix$4).invert());
       }
       bounds.addBounds(localBounds);
       boundsPool.return(localBounds);
@@ -6052,7 +6066,7 @@ function checkChildrenDidChange(container, previousData) {
   }
   return previousData.didChange;
 }
-const tempMatrix$2 = new Matrix();
+const tempMatrix$3 = new Matrix();
 const measureMixin = {
   _localBoundsCacheId: -1,
   _localBoundsCacheData: null,
@@ -6090,7 +6104,7 @@ const measureMixin = {
     }
     checkChildrenDidChange(this, localBoundsCacheData);
     if (localBoundsCacheData.didChange) {
-      getLocalBounds(this, localBoundsCacheData.localBounds, tempMatrix$2);
+      getLocalBounds(this, localBoundsCacheData.localBounds, tempMatrix$3);
     }
     return localBoundsCacheData.localBounds;
   },
@@ -6223,6 +6237,8 @@ class ScreenSizeRegistry {
     this._screenSizes = /* @__PURE__ */ new Map();
     this._widths = [];
     this._heights = [];
+    this._logicalWidths = [];
+    this._logicalHeights = [];
   }
   /** The number of renderers with a registered screen. */
   get size() {
@@ -6233,12 +6249,13 @@ class ScreenSizeRegistry {
    * @param rendererUid - The uid of the renderer, used to update or remove this screen later.
    * @param pixelWidth - The width of the screen in physical pixels.
    * @param pixelHeight - The height of the screen in physical pixels.
+   * @param resolution - The resolution of the screen.
    * @returns `true` if this changed the registered screens, `false` if the size was already registered.
    */
-  set(rendererUid, pixelWidth, pixelHeight) {
+  set(rendererUid, pixelWidth, pixelHeight, resolution = 1) {
     const current2 = this._screenSizes.get(rendererUid);
-    if (current2 && current2.pixelWidth === pixelWidth && current2.pixelHeight === pixelHeight) return false;
-    this._screenSizes.set(rendererUid, { pixelWidth, pixelHeight });
+    if (current2 && current2.pixelWidth === pixelWidth && current2.pixelHeight === pixelHeight && current2.resolution === resolution) return false;
+    this._screenSizes.set(rendererUid, { pixelWidth, pixelHeight, resolution });
     this._update();
     return true;
   }
@@ -6253,20 +6270,25 @@ class ScreenSizeRegistry {
     return true;
   }
   /**
-   * The smallest registered screen width the request fits in.
+   * The smallest registered screen width the request fits in. A screen counts at its physical size and at
+   * its size at the resolution of the request, so a resolution 1 request that covers a screen at 3x gets a
+   * third of the screen's physical width, not all of it.
    * @param pixelWidth - The requested width in physical pixels.
+   * @param resolution - The resolution of the request.
    * @returns The smallest live screen width that is at least `pixelWidth`, or `undefined` if none.
    */
-  getFittingWidth(pixelWidth) {
-    return this._getFittingAxis(pixelWidth, this._widths);
+  getFittingWidth(pixelWidth, resolution = 1) {
+    return this._getFittingAxis(pixelWidth, resolution, this._widths, this._logicalWidths);
   }
   /**
-   * The smallest registered screen height the request fits in.
+   * The smallest registered screen height the request fits in, counted as
+   * {@link ScreenSizeRegistry#getFittingWidth|getFittingWidth} counts widths.
    * @param pixelHeight - The requested height in physical pixels.
+   * @param resolution - The resolution of the request.
    * @returns The smallest live screen height that is at least `pixelHeight`, or `undefined` if none.
    */
-  getFittingHeight(pixelHeight) {
-    return this._getFittingAxis(pixelHeight, this._heights);
+  getFittingHeight(pixelHeight, resolution = 1) {
+    return this._getFittingAxis(pixelHeight, resolution, this._heights, this._logicalHeights);
   }
   /**
    * Whether a live screen uses this width.
@@ -6285,21 +6307,40 @@ class ScreenSizeRegistry {
   /**
    * The smallest registered screen on this axis that the request still fits in.
    * @param pixelSize - The requested size on this axis in physical pixels.
-   * @param screenSizes - The live screen sizes on this axis, sorted ascending.
+   * @param resolution - The resolution of the request.
+   * @param screenSizes - The live screen sizes on this axis in physical pixels, sorted ascending.
+   * @param logicalSizes - The live screen sizes on this axis over their resolution, sorted ascending.
    * @returns The smallest screen size that is at least `pixelSize`, or `undefined` if none.
    */
-  _getFittingAxis(pixelSize, screenSizes) {
+  _getFittingAxis(pixelSize, resolution, screenSizes, logicalSizes) {
+    let fitting;
     for (let i2 = 0; i2 < screenSizes.length; i2++) {
-      const screenSize = screenSizes[i2];
-      if (screenSize >= pixelSize) return screenSize;
+      if (screenSizes[i2] >= pixelSize) {
+        fitting = screenSizes[i2];
+        break;
+      }
     }
-    return void 0;
+    for (let i2 = 0; i2 < logicalSizes.length; i2++) {
+      const screenSize = Math.ceil(logicalSizes[i2] * resolution - 1e-6);
+      if (screenSize >= pixelSize) {
+        return fitting === void 0 ? screenSize : Math.min(fitting, screenSize);
+      }
+    }
+    return fitting;
   }
   /** Rebuilds the sorted unique sizes for each axis. */
   _update() {
-    this._widths = [...this._screenSizes.values()].map((screenSize) => screenSize.pixelWidth).filter((width, i2, widths) => widths.indexOf(width) === i2).sort((a2, b2) => a2 - b2);
-    this._heights = [...this._screenSizes.values()].map((screenSize) => screenSize.pixelHeight).filter((height, i2, heights) => heights.indexOf(height) === i2).sort((a2, b2) => a2 - b2);
+    const screenSizes = [...this._screenSizes.values()];
+    this._widths = sortedUnique(screenSizes.map((screenSize) => screenSize.pixelWidth));
+    this._heights = sortedUnique(screenSizes.map((screenSize) => screenSize.pixelHeight));
+    this._logicalWidths = sortedUnique(screenSizes.map((screenSize) => screenSize.pixelWidth / screenSize.resolution));
+    this._logicalHeights = sortedUnique(
+      screenSizes.map((screenSize) => screenSize.pixelHeight / screenSize.resolution)
+    );
   }
+}
+function sortedUnique(sizes) {
+  return sizes.filter((size, i2) => sizes.indexOf(size) === i2).sort((a2, b2) => a2 - b2);
 }
 let count = 0;
 const maxKeyDimension$1 = 32767;
@@ -6317,12 +6358,13 @@ function bucketKey$1(width, height, antialias, autoGenerateMipmaps, format, scal
   const scale = scaleMode === "nearest" ? 1 : 0;
   return packed + scale * scaleBit + formatId(format) * formatBit;
 }
-class TexturePoolClass {
+class TexturePoolClass extends EventEmitter {
   /**
    * @param textureOptions - options that will be passed to BaseRenderTexture constructor
    * @param {SCALE_MODE} [textureOptions.scaleMode] - See {@link SCALE_MODE} for possible values.
    */
   constructor(textureOptions) {
+    super();
     this._buckets = /* @__PURE__ */ new Map();
     this._poolKey = /* @__PURE__ */ Object.create(null);
     this._poolStyle = /* @__PURE__ */ Object.create(null);
@@ -6397,6 +6439,39 @@ class TexturePoolClass {
         autoGenerateMipmaps: args[4] ?? false
       };
     }
+    const { width, height } = this.getOptimalSize(options.width, options.height, options.resolution ?? 1);
+    return this._getTexture(width, height, options);
+  }
+  /**
+   * Gets a pooled texture that covers the same area as another texture at a resolution of its own, so
+   * texture coordinates for one address the same point in the other. Use it for a texture a shader
+   * samples with the coordinates of the other, such as the backdrop a filter reads alongside its input.
+   *
+   * The backing size is the other texture's scaled by the two resolutions, so it is not rounded to a
+   * power of two or capped to a screen. A size that does not scale to whole pixels is rounded up, which
+   * leaves the two under a pixel apart at the far edge.
+   * @param texture - The texture to line up with.
+   * @param resolution - The resolution of the new texture.
+   * @param format - The format of the new texture. Defaults to the pool's.
+   * @returns A pooled texture with a frame the size of the given texture's.
+   * @internal
+   */
+  getAlignedTexture(texture, resolution, format) {
+    const source2 = texture.source;
+    const scale = resolution / source2._resolution;
+    return this._getTexture(
+      Math.ceil(source2.pixelWidth * scale - 1e-6),
+      Math.ceil(source2.pixelHeight * scale - 1e-6),
+      { width: texture.frame.width, height: texture.frame.height, resolution, format }
+    );
+  }
+  /**
+   * Takes a texture of a backing size from its bucket, creating one if the bucket is empty.
+   * @param textureWidth - The backing width in physical pixels.
+   * @param textureHeight - The backing height in physical pixels.
+   * @param options - The request the texture is for; its width and height become the frame.
+   */
+  _getTexture(textureWidth, textureHeight, options) {
     const frameWidth = options.width;
     const frameHeight = options.height;
     const resolution = options.resolution ?? 1;
@@ -6404,11 +6479,6 @@ class TexturePoolClass {
     const autoGenerateMipmaps = options.autoGenerateMipmaps ?? false;
     const format = options.format ?? this.textureOptions.format ?? TextureSource.defaultOptions.format;
     const scaleMode = options.scaleMode ?? this.textureOptions.scaleMode ?? TextureStyle.defaultOptions.scaleMode;
-    const { width: textureWidth, height: textureHeight } = this.getOptimalSize(
-      frameWidth,
-      frameHeight,
-      resolution
-    );
     if (textureWidth > maxKeyDimension$1 || textureHeight > maxKeyDimension$1) {
       warn(`TexturePool: ${textureWidth}x${textureHeight} is larger than the ${maxKeyDimension$1}px pool key limit, textures of this size may be pooled together`);
     }
@@ -6448,9 +6518,10 @@ class TexturePoolClass {
    * would allocate for a request, without taking a texture from the pool.
    *
    * Each axis is the next power of two, or the smallest registered screen the request fits inside
-   * (see {@link TexturePoolClass#setScreenSize|setScreenSize}). Use it when a consumer needs to know
-   * where a request's content will sit inside its pooled texture before it has one, such as a uniform
-   * that maps content space onto texture space.
+   * (see {@link TexturePoolClass#setScreenSize|setScreenSize}). A screen counts at its physical size and
+   * at its size at the resolution of the request. Use it when a consumer needs to know where a request's
+   * content will sit inside its pooled texture before it has one, such as a uniform that maps content
+   * space onto texture space.
    * @param frameWidth - The minimum width of the texture.
    * @param frameHeight - The minimum height of the texture.
    * @param resolution - The resolution of the texture.
@@ -6460,9 +6531,9 @@ class TexturePoolClass {
     const pixelWidth = Math.ceil(frameWidth * resolution - 1e-6);
     const pixelHeight = Math.ceil(frameHeight * resolution - 1e-6);
     const po2Width = nextPow2(pixelWidth);
-    const screenWidth = this._screens.getFittingWidth(pixelWidth);
+    const screenWidth = this._screens.getFittingWidth(pixelWidth, resolution);
     const po2Height = nextPow2(pixelHeight);
-    const screenHeight = this._screens.getFittingHeight(pixelHeight);
+    const screenHeight = this._screens.getFittingHeight(pixelHeight, resolution);
     return {
       width: screenWidth !== void 0 ? Math.min(screenWidth, po2Width) : po2Width,
       height: screenHeight !== void 0 ? Math.min(screenHeight, po2Height) : po2Height
@@ -6511,9 +6582,7 @@ class TexturePoolClass {
     }
     const textures = this._buckets.get(key);
     if (!textures) {
-      delete this._poolKey[uid2];
-      delete this._poolStyle[uid2];
-      renderTexture.destroy(true);
+      this._dropTextures([renderTexture], true);
       return;
     }
     textures.push(renderTexture);
@@ -6525,12 +6594,17 @@ class TexturePoolClass {
    * that axis instead of the next power of two, which stops a full screen filter from allocating a texture
    * far larger than the screen. Requests larger than every registered screen on an axis keep the power of
    * two size - the pool never rounds a request up to a screen it does not fit in.
+   *
+   * The resolution says how large the screen is in the scene. A request at another resolution is fitted
+   * to the screen at that resolution too, so a resolution 1 filter over a 1179x2556 screen at 3x gets a
+   * 393x852 texture, where the physical size alone would leave it at 512x1024.
    * @param rendererUid - The uid of the renderer, used to update or remove this screen later.
    * @param pixelWidth - The width of the screen in physical pixels.
    * @param pixelHeight - The height of the screen in physical pixels.
+   * @param resolution - The resolution of the screen. Defaults to 1.
    */
-  setScreenSize(rendererUid, pixelWidth, pixelHeight) {
-    if (!this._screens.set(rendererUid, pixelWidth, pixelHeight)) return;
+  setScreenSize(rendererUid, pixelWidth, pixelHeight, resolution = 1) {
+    if (!this._screens.set(rendererUid, pixelWidth, pixelHeight, resolution)) return;
     this._pruneScreenTextures();
   }
   /**
@@ -6545,7 +6619,9 @@ class TexturePoolClass {
   }
   /**
    * Destroys the idle textures in every bucket that has a non power of two dimension matching no live
-   * screen. Power of two buckets are always kept, as any request can fall back to them.
+   * screen. Power of two buckets are always kept, as any request can fall back to them. Aligned textures
+   * of other sizes and textures fitted to a screen at another resolution go too, and are made again the
+   * next time they are asked for.
    */
   _pruneScreenTextures() {
     for (const [key, textures] of this._buckets) {
@@ -6563,6 +6639,7 @@ class TexturePoolClass {
    * @param destroy - Whether to destroy the textures as well.
    */
   _dropTextures(textures, destroy) {
+    if (destroy && textures.length > 0) this.emit("evict");
     for (let i2 = 0; i2 < textures.length; i2++) {
       const texture = textures[i2];
       delete this._poolKey[texture.uid];
@@ -7602,8 +7679,7 @@ class Container extends EventEmitter {
     return this.localAlpha;
   }
   set tint(value) {
-    const tempColor = Color$1.shared.setValue(value ?? 16777215);
-    const bgr = tempColor.toBgrNumber();
+    const bgr = typeof value === "number" ? bgr2rgb(value) : Color$1.shared.setValue(value ?? 16777215).toBgrNumber();
     if (bgr === this.localColor) return;
     this.localColor = bgr;
     this._updateFlags |= UPDATE_COLOR;
@@ -11060,6 +11136,28 @@ function createIdFromString(value, groupId) {
   }
   return id;
 }
+function stripShaderComments(source2) {
+  return source2.replace(/\/\*[\s\S]*?\*\/|\/\/.*$/gm, "");
+}
+const OUTPUT_REGEX = new RegExp(
+  "(?:layout\\s*\\(\\s*location\\s*=\\s*(\\d+)\\s*\\)\\s*)?\\bout\\s+(?:(?:highp|mediump|lowp)\\s+)?\\w+\\s+\\w+\\s*(?:\\[\\s*(\\d+)\\s*\\])?\\s*;",
+  // optional [length], then ;
+  "g"
+);
+function extractFragmentOutputMaskFromGlProgram(fragment2) {
+  if (!fragment2.includes("#version 300 es")) return fragment2.includes("gl_FragData") ? null : 1;
+  const clean = stripShaderComments(fragment2);
+  let mask = 0;
+  let match;
+  while ((match = OUTPUT_REGEX.exec(clean)) !== null) {
+    const location = match[1] === void 0 ? 0 : parseInt(match[1], 10);
+    const length2 = match[2] === void 0 ? 1 : parseInt(match[2], 10);
+    mask |= (1 << length2) - 1 << location;
+  }
+  OUTPUT_REGEX.lastIndex = 0;
+  if (mask) return mask;
+  return /\bout\b/.test(clean) ? null : 0;
+}
 let context;
 function getTestContext() {
   if (!context || context?.isContextLost()) {
@@ -11211,6 +11309,18 @@ const _GlProgram = class _GlProgram2 {
     this.transformFeedbackVaryings = options.transformFeedbackVaryings;
     this._key = createIdFromString(`${this.vertex}:${this.fragment}`, "gl-program");
   }
+  /**
+   * Which color locations the fragment shader writes: bit `n` is set when it writes location `n`.
+   * A render target's color attachments that the shader doesn't write are left alone.
+   * `null` if the outputs couldn't be read, in which case every attachment is written.
+   * @advanced
+   */
+  get fragmentOutputMask() {
+    if (this._fragmentOutputMask === void 0) {
+      this._fragmentOutputMask = extractFragmentOutputMaskFromGlProgram(this.fragment);
+    }
+    return this._fragmentOutputMask;
+  }
   /** destroys the program */
   destroy() {
     this.fragment = null;
@@ -11304,10 +11414,10 @@ const WGSL_TO_VERTEX_TYPES = {
   "vec3<bool>": "uint32x3",
   "vec4<bool>": "uint32x4"
 };
-const LOCATION_REGEX = /@location\((\d+)\)\s+([a-zA-Z0-9_]+)\s*:\s*([a-zA-Z0-9_<>]+)(?:,|\s|\)|$)/g;
+const LOCATION_REGEX$1 = /@location\((\d+)\)\s+([a-zA-Z0-9_]+)\s*:\s*([a-zA-Z0-9_<>]+)(?:,|\s|\)|$)/g;
 function parseLocations(str, results) {
   let match;
-  while ((match = LOCATION_REGEX.exec(str)) !== null) {
+  while ((match = LOCATION_REGEX$1.exec(str)) !== null) {
     const format = WGSL_TO_VERTEX_TYPES[match[3]] ?? "float32";
     results[match[2]] = {
       location: parseInt(match[1], 10),
@@ -11318,14 +11428,11 @@ function parseLocations(str, results) {
       start: 0
     };
   }
-  LOCATION_REGEX.lastIndex = 0;
-}
-function stripComments(source2) {
-  return source2.replace(/\/\/.*$/gm, "").replace(/\/\*[\s\S]*?\*\//g, "");
+  LOCATION_REGEX$1.lastIndex = 0;
 }
 function extractAttributesFromGpuProgram({ source: source2, entryPoint }) {
   const results = {};
-  const cleanSource = stripComments(source2);
+  const cleanSource = stripShaderComments(source2);
   const mainVertStart = cleanSource.indexOf(`fn ${entryPoint}(`);
   if (mainVertStart === -1) {
     return results;
@@ -11348,6 +11455,39 @@ function extractAttributesFromGpuProgram({ source: source2, entryPoint }) {
     }
   }
   return results;
+}
+const LOCATION_REGEX = /@location\(\s*(\d+)\s*\)/g;
+function locationMask(declarations) {
+  let mask = 0;
+  let match;
+  while ((match = LOCATION_REGEX.exec(declarations)) !== null) {
+    mask |= 1 << parseInt(match[1], 10);
+  }
+  LOCATION_REGEX.lastIndex = 0;
+  return mask;
+}
+function extractFragmentOutputMaskFromGpuProgram({ source: source2, entryPoint }) {
+  if (!entryPoint) return null;
+  const clean = stripShaderComments(source2);
+  const fnMatch = new RegExp(`fn\\s+${entryPoint}\\s*\\(`).exec(clean);
+  if (!fnMatch) return null;
+  let depth = 1;
+  let i2 = fnMatch.index + fnMatch[0].length;
+  while (i2 < clean.length && depth > 0) {
+    const char = clean[i2++];
+    if (char === "(") depth++;
+    else if (char === ")") depth--;
+  }
+  const bodyStart = clean.indexOf("{", i2);
+  if (bodyStart === -1) return null;
+  const signatureTail = clean.substring(i2, bodyStart).trim();
+  if (!signatureTail.startsWith("->")) return 0;
+  const returnType = signatureTail.substring(2).trim();
+  if (returnType.startsWith("@builtin")) return 0;
+  if (returnType.startsWith("@location")) return locationMask(returnType);
+  if (!/^\w+$/.test(returnType)) return null;
+  const structBody = new RegExp(`struct\\s+${returnType}\\s*\\{([^}]*)\\}`).exec(clean);
+  return structBody ? locationMask(structBody[1]) : null;
 }
 function extractStructAndGroups(wgsl2) {
   const linePattern = /(^|[^/])@(group|binding)\(\d+\)[^;]+;/g;
@@ -11592,6 +11732,18 @@ class GpuProgram {
     this._attributeData ?? (this._attributeData = extractAttributesFromGpuProgram(this.vertex));
     return this._attributeData;
   }
+  /**
+   * Which color locations the fragment entry point writes: bit `n` is set when it writes
+   * `@location(n)`. A render target's color attachments that the shader doesn't write are left alone.
+   * `null` if the entry point couldn't be read, in which case every attachment is written.
+   * @advanced
+   */
+  get fragmentOutputMask() {
+    if (this._fragmentOutputMask === void 0) {
+      this._fragmentOutputMask = extractFragmentOutputMaskFromGpuProgram(this.fragment);
+    }
+    return this._fragmentOutputMask;
+  }
   /** destroys the program */
   destroy() {
     this.gpuLayout = null;
@@ -11783,19 +11935,47 @@ _UniformGroup.defaultOptions = {
   isStatic: false
 };
 let UniformGroup = _UniformGroup;
+function mixLow(binding, id) {
+  let h2 = Math.imul(id + 2654435769, 2246822507) ^ Math.imul(binding + 1, 3266489909);
+  h2 ^= h2 >>> 16;
+  h2 = Math.imul(h2, 2146121005);
+  h2 ^= h2 >>> 15;
+  h2 = Math.imul(h2, 2221713035);
+  return h2 ^ h2 >>> 16;
+}
+function mixHigh(binding, id) {
+  let h2 = Math.imul(id + 2135587861, 668265263) ^ Math.imul(binding + 374761393, 2654435761);
+  h2 ^= h2 >>> 15;
+  h2 = Math.imul(h2, 739982445);
+  h2 ^= h2 >>> 12;
+  h2 = Math.imul(h2, 695872825);
+  return h2 ^ h2 >>> 15;
+}
 class BindGroup {
   /**
    * Create a new instance of the Bind Group.
-   * @param resources - The resources that are bound together for use by a shader.
+   * @param resources - The resources that are bound together for use by a shader, keyed by binding
+   * name or by binding number. Don't mix the two: the first key decides which the group is. Either
+   * way they take binding numbers `0, 1, 2...` in order. By name, the keys are the shader's binding
+   * names, and a `null` declares a binding to be set later with {@link BindGroup#setResource}.
    */
   constructor(resources) {
     this.resources = /* @__PURE__ */ Object.create(null);
     this._resourceKeysValue = null;
-    this._dirty = true;
+    this._touchKeysValue = null;
+    this._keyLow = 0;
+    this._keyHigh = 0;
+    this._gpuEntry = null;
+    this._gpuEntryLayoutKey = -1;
+    this._keyedIds = [];
+    this.layout = null;
     let index = 0;
     for (const i2 in resources) {
+      if (index === 0 && !/^\d/.test(i2)) this.layout = {};
+      if (this.layout) this.layout[i2] = index;
       const resource = resources[i2];
-      this.setResource(resource, index++);
+      if (resource) this.setResource(resource, index);
+      index++;
     }
   }
   /**
@@ -11809,64 +11989,101 @@ class BindGroup {
     return this._resourceKeysValue;
   }
   /**
-   * A key used internally to match it up to a WebGPU BindGroup.
-   * Lazily rebuilt from resource IDs when dirty.
-   * @internal
-   */
-  get _key() {
-    if (this._dirty) {
-      this._dirty = false;
-      const keyParts = [];
-      let index = 0;
-      for (const i2 in this.resources) {
-        keyParts[index++] = this.resources[i2] ? this.resources[i2]._resourceId : -1;
-      }
-      this._keyValue = keyParts.join("|");
-    }
-    return this._keyValue;
-  }
-  /**
    * Set a resource at a given index. This function will
    * ensure that listeners will be removed from the current resource
    * and added to the new resource.
    * @param resource - The resource to set.
-   * @param index - The index to set the resource at.
+   * @param index - The binding number to set the resource at, or its name in a group keyed by name.
    */
   setResource(resource, index) {
+    if (typeof index === "string") index = this._bindingOf(index);
     const currentResource = this.resources[index];
     if (resource === currentResource) return;
     if (currentResource) {
       currentResource.off?.("change", this.onResourceChange, this);
     }
     resource.on?.("change", this.onResourceChange, this);
+    this.setResourceUnwatched(resource, index);
+  }
+  /**
+   * Sets a resource at a given index without listening for its changes.
+   *
+   * {@link BindGroup#setResource} adds a `change` listener to every resource it holds, so the group
+   * re-keys when the resource changes or is destroyed. That listener costs more than the bind for a
+   * slot that is re-pointed on every draw, such as a pass that binds this frame's pooled texture,
+   * draws, and puts a placeholder back. Use this form for such a slot, and re-point it before the
+   * resource changes or is destroyed. A subclass that watches its own resources can instead pass
+   * every change of a resource it holds to `onResourceChange`.
+   * @param resource - The resource to set.
+   * @param index - The index to set the resource at.
+   */
+  setResourceUnwatched(resource, index) {
+    const currentResource = this.resources[index];
+    if (resource === currentResource) return;
+    const id = resource._resourceId;
+    if (currentResource?._resourceType !== resource._resourceType) this._touchKeysValue = null;
     if (currentResource === void 0) {
       this._resourceKeysValue = null;
+      this._keyLow ^= mixLow(index, id);
+      this._keyHigh ^= mixHigh(index, id);
+      this._keyedIds[index] = id;
+      this._gpuEntry = null;
+    } else if (this._keyedIds[index] !== id) {
+      this._rekey(index, id);
     }
     this.resources[index] = resource;
-    this._dirty = true;
+  }
+  /**
+   * Swaps the id a binding is in the key with.
+   * @param index - The binding number.
+   * @param id - The id of the resource now bound there, -1 for a destroyed resource's null slot.
+   */
+  _rekey(index, id) {
+    const keyedId = this._keyedIds[index];
+    this._keyLow ^= mixLow(index, keyedId) ^ mixLow(index, id);
+    this._keyHigh ^= mixHigh(index, keyedId) ^ mixHigh(index, id);
+    this._keyedIds[index] = id;
+    this._gpuEntry = null;
   }
   /**
    * Returns the resource at the current specified index.
-   * @param index - The index of the resource to get.
+   * @param index - The binding number of the resource to get, or its name in a group keyed by name.
    * @returns - The resource at the specified index.
    */
   getResource(index) {
-    return this.resources[index];
+    return this.resources[typeof index === "string" ? this._bindingOf(index) : index];
   }
   /**
-   * Used internally to 'touch' each resource, to ensure that the GC
-   * knows that all resources in this bind group are still being used.
+   * The binding number a name has in this group's layout. A name the group doesn't have is a
+   * mistake, and this is the only moment it is visible: by number nothing checks.
+   * @param name - The binding name.
+   */
+  _bindingOf(name) {
+    const index = this.layout?.[name];
+    if (index === void 0) {
+      throw new Error(`[BindGroup] no binding named '${name}' in this group`);
+    }
+    return index;
+  }
+  /**
+   * Used internally to 'touch' each resource but the samplers, so the GC knows this bind group still
+   * uses them. See {@link BindGroup#_touchKeysValue}.
    * @param now - The current time in milliseconds.
    * @internal
    */
   _touch(now) {
     const resources = this.resources;
-    const keys = this._resourceKeys;
+    const keys = this._touchKeys;
     for (let i2 = 0; i2 < keys.length; i2++) {
       const resource = resources[keys[i2]];
       if (!resource) continue;
       resource._gcLastUsed = now;
     }
+  }
+  /** The binding numbers {@link BindGroup#_touch} stamps, see {@link BindGroup#_touchKeysValue}. */
+  get _touchKeys() {
+    this._touchKeysValue ?? (this._touchKeysValue = this._resourceKeys.filter((index) => this.resources[index]?._resourceType !== "textureSampler"));
+    return this._touchKeysValue;
   }
   /** Destroys this bind group and removes all listeners. */
   destroy() {
@@ -11877,16 +12094,21 @@ class BindGroup {
     }
     this.resources = null;
     this._resourceKeysValue = null;
+    this._touchKeysValue = null;
+    this._gpuEntry = null;
   }
   onResourceChange(resource) {
-    this._dirty = true;
-    if (resource.destroyed) {
-      const resources = this.resources;
-      for (const i2 in resources) {
-        if (resources[i2] === resource) {
-          resources[i2] = null;
-        }
-      }
+    const resources = this.resources;
+    if (!resources) return;
+    const keys = this._resourceKeys;
+    const destroyed = resource.destroyed;
+    for (let i2 = 0; i2 < keys.length; i2++) {
+      const index = keys[i2];
+      if (resources[index] !== resource) continue;
+      if (destroyed) resources[index] = null;
+      this._rekey(index, destroyed ? -1 : resource._resourceId);
+    }
+    if (destroyed) {
       warn(`[BindGroup] a '${resource._resourceType}' was destroyed while still bound to a shader. Remove it from the shader before destroying it.`);
     }
   }
@@ -11905,7 +12127,7 @@ class ShaderOverrides {
    */
   constructor(data) {
     this.data = { ...data };
-    const key = Object.keys(data).sort().map((k2) => `${k2}:${data[k2]}`).join("|");
+    const key = Object.keys(data).sort().map((k) => `${k}:${data[k]}`).join("|");
     this.id = createIdFromString(key, "shader-overrides");
   }
   /**
@@ -11951,8 +12173,8 @@ class Shader extends EventEmitter {
         for (const j2 in groupMap[i2]) {
           const uniformName = groupMap[i2][j2];
           nameHash[uniformName] = {
-            group: i2,
-            binding: j2,
+            group: Number(i2),
+            binding: Number(j2),
             name: uniformName
           };
         }
@@ -12041,10 +12263,12 @@ class Shader extends EventEmitter {
       const data = nameHash[i2];
       Object.defineProperty(uniformsOut, data.name, {
         get() {
-          return groups[data.group].getResource(data.binding);
+          const group = groups[data.group];
+          return group.getResource(group.layout ? group.layout[data.name] : data.binding);
         },
         set(value) {
-          groups[data.group].setResource(value, data.binding);
+          const group = groups[data.group];
+          group.setResource(value, group.layout ? group.layout[data.name] : data.binding);
         }
       });
     }
@@ -12479,7 +12703,7 @@ function indexSegment(head, stop) {
     const b2 = numBlocks++;
     blockHead[b2] = p2;
     let minX = p2.x, minY = p2.y, maxX = p2.x, maxY = p2.y;
-    let k2 = 0;
+    let k = 0;
     do {
       const c2 = p2.next;
       p2.z = b2;
@@ -12488,7 +12712,7 @@ function indexSegment(head, stop) {
       if (c2.y < minY) minY = c2.y;
       if (c2.y > maxY) maxY = c2.y;
       p2 = c2;
-    } while (++k2 < K && p2 !== stop);
+    } while (++k < K && p2 !== stop);
     blockStop[b2] = p2;
     const g2 = b2 * 4;
     blockBBox[g2] = minX;
@@ -12676,8 +12900,8 @@ function isValidDiagonal(a2, b2) {
   (area(a2.prev, a2, b2.prev) !== 0 || area(a2, b2.prev, b2) !== 0)) && // no opposite-facing sectors
   !intersectsPolygon(a2, b2) && (zeroLength || middleInside(a2, b2));
 }
-function area(p2, q, r2) {
-  return (q.y - p2.y) * (r2.x - q.x) - (q.x - p2.x) * (r2.y - q.y);
+function area(p2, q2, r2) {
+  return (q2.y - p2.y) * (r2.x - q2.x) - (q2.x - p2.x) * (r2.y - q2.y);
 }
 function equals$1(p1, p2) {
   return p1.x === p2.x && p1.y === p2.y;
@@ -12695,8 +12919,8 @@ function intersects(p1, q1, p2, q2, includeBoundary = true) {
   if (o4 === 0 && onSegment(p2, q1, q2)) return true;
   return false;
 }
-function onSegment(p2, q, r2) {
-  return q.x <= Math.max(p2.x, r2.x) && q.x >= Math.min(p2.x, r2.x) && q.y <= Math.max(p2.y, r2.y) && q.y >= Math.min(p2.y, r2.y);
+function onSegment(p2, q2, r2) {
+  return q2.x <= Math.max(p2.x, r2.x) && q2.x >= Math.min(p2.x, r2.x) && q2.y <= Math.max(p2.y, r2.y) && q2.y >= Math.min(p2.y, r2.y);
 }
 function intersectsPolygon(a2, b2) {
   const minX = Math.min(a2.x, b2.x);
@@ -13297,7 +13521,7 @@ async function autoDetectRenderer(options) {
     const rendererType = preferredOrder[i2];
     if (rendererType === "webgpu" && await isWebGPUSupported()) {
       const { WebGPURenderer } = await __vitePreload(async () => {
-        const { WebGPURenderer: WebGPURenderer2 } = await import("./WebGPURenderer-DVFmvgjL.js");
+        const { WebGPURenderer: WebGPURenderer2 } = await import("./WebGPURenderer-Sjo_QiGy.js");
         return { WebGPURenderer: WebGPURenderer2 };
       }, true ? __vite__mapDeps([3,4,5,2]) : void 0);
       RendererClass = WebGPURenderer;
@@ -13307,7 +13531,7 @@ async function autoDetectRenderer(options) {
       options.failIfMajorPerformanceCaveat ?? AbstractRenderer.defaultOptions.failIfMajorPerformanceCaveat
     )) {
       const { WebGLRenderer } = await __vitePreload(async () => {
-        const { WebGLRenderer: WebGLRenderer2 } = await import("./WebGLRenderer-B4i-p0OC.js");
+        const { WebGLRenderer: WebGLRenderer2 } = await import("./WebGLRenderer-DKWVTKKh.js");
         return { WebGLRenderer: WebGLRenderer2 };
       }, true ? __vite__mapDeps([6,4,5,2]) : void 0);
       RendererClass = WebGLRenderer;
@@ -13315,7 +13539,7 @@ async function autoDetectRenderer(options) {
       break;
     } else if (rendererType === "canvas") {
       const { CanvasRenderer } = await __vitePreload(async () => {
-        const { CanvasRenderer: CanvasRenderer2 } = await import("./CanvasRenderer-CETR1UZP.js");
+        const { CanvasRenderer: CanvasRenderer2 } = await import("./CanvasRenderer-02Qfq8Os.js");
         return { CanvasRenderer: CanvasRenderer2 };
       }, true ? __vite__mapDeps([7,5,2]) : void 0);
       RendererClass = CanvasRenderer;
@@ -13333,7 +13557,7 @@ async function autoDetectRenderer(options) {
   await renderer.init(finalOptions);
   return renderer;
 }
-const VERSION = "8.22.0";
+const VERSION = "8.23.0";
 class ApplicationInitHook {
   static init() {
     globalThis.__PIXI_APP_INIT__?.(this, VERSION);
@@ -15671,7 +15895,8 @@ class RoundedRectangle {
    * @see {@link RoundedRectangle.getBounds} For getting stroke bounds
    */
   strokeContains(pX, pY, strokeWidth, alignment = 0.5) {
-    const { x: x2, y: y2, width, height, radius } = this;
+    const { x: x2, y: y2, width, height } = this;
+    const radius = Math.max(0, Math.min(this.radius, Math.min(width, height) / 2));
     const strokeWidthOuter = strokeWidth * (1 - alignment);
     const strokeWidthInner = strokeWidth - strokeWidthOuter;
     const innerX = x2 + radius;
@@ -15726,28 +15951,6 @@ class RoundedRectangle {
   toString() {
     return `[pixi.js/math:RoundedRectangle x=${this.x} y=${this.y}width=${this.width} height=${this.height} radius=${this.radius}]`;
   }
-}
-const cachedGroups = {};
-function getTextureBatchBindGroup(textures, size, maxTextures) {
-  let uid2 = 2166136261;
-  for (let i2 = 0; i2 < size; i2++) {
-    uid2 ^= textures[i2].uid;
-    uid2 = Math.imul(uid2, 16777619);
-    uid2 >>>= 0;
-  }
-  return cachedGroups[uid2] || generateTextureBatchBindGroup(textures, size, uid2, maxTextures);
-}
-function generateTextureBatchBindGroup(textures, size, key, maxTextures) {
-  const bindGroupResources = {};
-  let bindIndex = 0;
-  for (let i2 = 0; i2 < maxTextures; i2++) {
-    const texture = i2 < size ? textures[i2] : Texture$1.EMPTY.source;
-    bindGroupResources[bindIndex++] = texture.source;
-    bindGroupResources[bindIndex++] = texture.style;
-  }
-  const bindGroup = new BindGroup(bindGroupResources);
-  cachedGroups[key] = bindGroup;
-  return bindGroup;
 }
 class ViewableBuffer {
   constructor(sizeOrBuffer) {
@@ -16127,7 +16330,6 @@ const _Batcher = class _Batcher2 {
         batchElements.push(element);
         continue;
       }
-      source2._batchTick = BATCH_TICK;
       if (textureBatch.count >= maxTextures || breakRequired) {
         this._finishBatch(
           batch,
@@ -16150,6 +16352,7 @@ const _Batcher = class _Batcher2 {
         batchElements = [];
         ++BATCH_TICK;
       }
+      source2._batchTick = BATCH_TICK;
       element._textureId = source2._textureBindLocation = textureBatch.count;
       textureBatch.ids[source2.uid] = textureBatch.count;
       textureBatch.textures[textureBatch.count++] = source2;
@@ -16383,7 +16586,7 @@ class Buffer extends EventEmitter {
    * Sets the data in the buffer to the given value. This will immediately update the buffer on the GPU.
    * If you only want to update a subset of the buffer, you can pass in the size of the data.
    * @param value - the data to set
-   * @param size - the size of the data in bytes
+   * @param size - the number of elements of `value` to upload
    * @param syncGPU - should the buffer be updated on the GPU immediately?
    */
   setDataWithSize(value, size, syncGPU) {
@@ -16413,11 +16616,11 @@ class Buffer extends EventEmitter {
    * updates the buffer on the GPU to reflect the data in the buffer.
    * By default it will update the entire buffer. If you only want to update a subset of the buffer,
    * you can pass in the size of the buffer to update.
-   * @param sizeInBytes - the new size of the buffer in bytes
-   * @param offsetInBytes - the offset to start updating from
+   * @param sizeInBytes - the number of bytes to upload, the whole buffer when omitted
+   * @param offsetInBytes - the byte offset to start uploading from, defaults to 0
    */
   update(sizeInBytes, offsetInBytes) {
-    this._updateSize = sizeInBytes ?? this._updateSize;
+    this._updateSize = sizeInBytes;
     this._updateOffset = offsetInBytes || 0;
     this._updateID++;
     this.emit("update", this);
@@ -16650,19 +16853,19 @@ class Geometry extends EventEmitter {
     this._bounds = null;
   }
 }
-const placeHolderBufferData$1 = new Float32Array(1);
-const placeHolderIndexData$1 = new Uint32Array(1);
+const placeHolderBufferData$2 = new Float32Array(1);
+const placeHolderIndexData$2 = new Uint32Array(1);
 class BatchGeometry extends Geometry {
   constructor() {
     const vertexSize = 6;
     const attributeBuffer = new Buffer({
-      data: placeHolderBufferData$1,
+      data: placeHolderBufferData$2,
       label: "attribute-batch-buffer",
       usage: BufferUsage.VERTEX | BufferUsage.COPY_DST,
       shrinkToFit: false
     });
     const indexBuffer = new Buffer({
-      data: placeHolderIndexData$1,
+      data: placeHolderIndexData$2,
       label: "index-batch-buffer",
       usage: BufferUsage.INDEX | BufferUsage.COPY_DST,
       // | BufferUsage.STATIC,
@@ -17419,6 +17622,28 @@ _DefaultBatcher.extension = {
   name: "default"
 };
 let DefaultBatcher = _DefaultBatcher;
+const cachedGroups = {};
+function getTextureBatchBindGroup(textures, size, maxTextures) {
+  let uid2 = 2166136261;
+  for (let i2 = 0; i2 < size; i2++) {
+    uid2 ^= textures[i2].uid;
+    uid2 = Math.imul(uid2, 16777619);
+    uid2 >>>= 0;
+  }
+  return cachedGroups[uid2] || generateTextureBatchBindGroup(textures, size, uid2, maxTextures);
+}
+function generateTextureBatchBindGroup(textures, size, key, maxTextures) {
+  const bindGroupResources = {};
+  let bindIndex = 0;
+  for (let i2 = 0; i2 < maxTextures; i2++) {
+    const texture = i2 < size ? textures[i2] : Texture$1.EMPTY.source;
+    bindGroupResources[bindIndex++] = texture.source;
+    bindGroupResources[bindIndex++] = texture.style;
+  }
+  const bindGroup = new BindGroup(bindGroupResources);
+  cachedGroups[key] = bindGroup;
+  return bindGroup;
+}
 class GCManagedHash {
   constructor(options) {
     this.items = /* @__PURE__ */ Object.create(null);
@@ -17458,6 +17683,147 @@ class GCManagedHash {
     this.items = /* @__PURE__ */ Object.create(null);
     this._renderer = null;
     this._onUnload = null;
+  }
+}
+class AbstractGraphicsContextRenderData {
+  constructor() {
+    this.instructions = new InstructionSet();
+  }
+  init(options) {
+    const maxTextures = options.maxTextures;
+    this.batcher ? this.batcher._updateMaxTextures(maxTextures) : this.batcher = this._createBatcher(maxTextures);
+    this.instructions.reset();
+  }
+  destroy() {
+    this.batcher.destroy();
+    this.instructions.destroy();
+    this.batcher = null;
+    this.instructions = null;
+  }
+}
+class AbstractGpuGraphicsContext {
+  constructor() {
+    this.batches = [];
+  }
+  reset() {
+    if (this.batches) {
+      this.batches.forEach((batch) => {
+        BigPool.return(batch);
+      });
+    }
+    if (this.graphicsData) {
+      BigPool.return(this.graphicsData);
+    }
+    this.isBatchable = false;
+    this.context = null;
+    this.batches.length = 0;
+    this.graphicsData = null;
+  }
+  destroy() {
+    this.reset();
+    this.batches = null;
+  }
+}
+class AbstractGraphicsContextSystem {
+  /**
+   * @param renderer - The renderer this system works for
+   * @param name - Name of the managed contexts, for the garbage collector
+   */
+  constructor(renderer, name) {
+    this._renderer = renderer;
+    this._managedContexts = new GCManagedHash({ renderer, type: "resource", name });
+  }
+  /**
+   * Returns the render data for a given GraphicsContext.
+   * @param context - The GraphicsContext to get the render data for.
+   * @internal
+   */
+  getContextRenderData(context2) {
+    return this._getGpuData(context2).graphicsData || this._initContextRenderData(context2);
+  }
+  /**
+   * Updates the GPU context for a given GraphicsContext.
+   * If the context is dirty, it will rebuild the batches and geometry data.
+   * @param context - The GraphicsContext to update.
+   * @returns The updated GPU context.
+   * @internal
+   */
+  updateGpuContext(context2) {
+    const hasContext = !!this._getGpuData(context2);
+    const gpuContext = this._getGpuData(context2) || this._initContext(context2);
+    if (context2.dirty || !hasContext) {
+      if (hasContext) {
+        gpuContext.reset();
+        gpuContext.context = context2;
+      }
+      this._buildContextData(context2, gpuContext);
+      const batchMode = context2.batchMode;
+      if (context2.customShader || batchMode === "no-batch") {
+        gpuContext.isBatchable = false;
+      } else if (batchMode === "auto") {
+        gpuContext.isBatchable = this._getGeometrySize(gpuContext).attributes < 400;
+      } else {
+        gpuContext.isBatchable = true;
+      }
+      context2.dirty = false;
+    }
+    return gpuContext;
+  }
+  /**
+   * Returns the GPU context for a given GraphicsContext.
+   * If it does not exist, it will initialize a new one.
+   * @param context - The GraphicsContext to get the GPU context for.
+   * @returns The GPU context for the given GraphicsContext.
+   * @internal
+   */
+  getGpuContext(context2) {
+    return this._getGpuData(context2) || this._initContext(context2);
+  }
+  _getGpuData(context2) {
+    return context2._gpuData[this._renderer.uid];
+  }
+  _initContextRenderData(context2) {
+    const maxTextures = this._renderer.limits.maxBatchableTextures;
+    const gpuContext = this._getGpuData(context2);
+    const graphicsData = this._getRenderData(maxTextures, gpuContext);
+    const { batches } = gpuContext;
+    gpuContext.graphicsData = graphicsData;
+    const { attributes, indices } = this._getGeometrySize(gpuContext);
+    for (let i2 = 0; i2 < batches.length; i2++) {
+      batches[i2].applyTransform = false;
+    }
+    const batcher = graphicsData.batcher;
+    batcher.ensureAttributeBuffer(attributes);
+    batcher.ensureIndexBuffer(indices);
+    batcher.begin();
+    for (let i2 = 0; i2 < batches.length; i2++) {
+      batcher.add(batches[i2]);
+    }
+    batcher.finish(graphicsData.instructions);
+    const geometry = batcher.geometry;
+    geometry.indexBuffer.setDataWithSize(batcher.indexBuffer, batcher.indexSize, true);
+    geometry.buffers[0].setDataWithSize(batcher.attributeBuffer.float32View, batcher.attributeSize, true);
+    const drawBatches = batcher.batches;
+    for (let i2 = 0; i2 < batcher.batchIndex; i2++) {
+      const batch = drawBatches[i2];
+      batch.bindGroup = getTextureBatchBindGroup(
+        batch.textures.textures,
+        batch.textures.count,
+        maxTextures
+      );
+    }
+    return graphicsData;
+  }
+  _initContext(context2) {
+    const gpuContext = this._createGpuContext();
+    gpuContext.context = context2;
+    context2._gpuData[this._renderer.uid] = gpuContext;
+    this._managedContexts.add(context2);
+    return gpuContext;
+  }
+  destroy() {
+    this._managedContexts.destroy();
+    this._renderer = null;
   }
 }
 function buildUvs(vertices, verticesStride, verticesOffset, uvs, uvsOffset, uvsStride, size, matrix = null) {
@@ -17510,24 +17876,14 @@ function transformVertices(vertices, m2, offset, stride, size) {
   }
 }
 const identityMatrix = new Matrix();
-class BatchableGraphics {
+class AbstractBatchableGraphics {
   constructor() {
     this.packAsQuad = false;
-    this.batcherName = "default";
     this.topology = "triangle-list";
     this.applyTransform = true;
     this.roundPixels = 0;
     this._batcher = null;
     this._batch = null;
-  }
-  get uvs() {
-    return this.geometryData.uvs;
-  }
-  get positions() {
-    return this.geometryData.vertices;
-  }
-  get indices() {
-    return this.geometryData.indices;
   }
   get blendMode() {
     if (this.renderable && this.applyTransform) {
@@ -17547,6 +17903,32 @@ class BatchableGraphics {
   get transform() {
     return this.renderable?.groupTransform || identityMatrix;
   }
+  reset() {
+    this.applyTransform = true;
+    this.renderable = null;
+    this.topology = "triangle-list";
+  }
+  destroy() {
+    this.renderable = null;
+    this.texture = null;
+    this._batcher = null;
+    this._batch = null;
+  }
+}
+class BatchableGraphics extends AbstractBatchableGraphics {
+  constructor() {
+    super(...arguments);
+    this.batcherName = "default";
+  }
+  get uvs() {
+    return this.geometryData.uvs;
+  }
+  get positions() {
+    return this.geometryData.vertices;
+  }
+  get indices() {
+    return this.geometryData.indices;
+  }
   copyTo(gpuBuffer) {
     gpuBuffer.indexOffset = this.indexOffset;
     gpuBuffer.indexSize = this.indexSize;
@@ -17558,17 +17940,9 @@ class BatchableGraphics {
     gpuBuffer.geometryData = this.geometryData;
     gpuBuffer.topology = this.topology;
   }
-  reset() {
-    this.applyTransform = true;
-    this.renderable = null;
-    this.topology = "triangle-list";
-  }
   destroy() {
-    this.renderable = null;
-    this.texture = null;
+    super.destroy();
     this.geometryData = null;
-    this._batcher = null;
-    this._batch = null;
   }
 }
 const buildCircle = {
@@ -18566,7 +18940,7 @@ function addShapePathToGeometryData(shapePath, style, isStroke, batches, geometr
       if (holes) {
         const holeIndices = [];
         const otherPoints = points.slice();
-        const holeArrays = getHoleArrays(holes);
+        const holeArrays = getHoleArrays$1(holes);
         holeArrays.forEach((holePoints) => {
           holeIndices.push(otherPoints.length / 2);
           otherPoints.push(...holePoints);
@@ -18606,10 +18980,10 @@ function addShapePathToGeometryData(shapePath, style, isStroke, batches, geometr
     batches.push(graphicsBatch);
   });
 }
-function getHoleArrays(holePrimitives) {
+function getHoleArrays$1(holePrimitives) {
   const holeArrays = [];
-  for (let k2 = 0; k2 < holePrimitives.length; k2++) {
-    const holePrimitive = holePrimitives[k2].shape;
+  for (let k = 0; k < holePrimitives.length; k++) {
+    const holePrimitive = holePrimitives[k].shape;
     const holePoints = [];
     const holeBuilder = shapeBuilders[holePrimitive.type];
     if (holeBuilder.build(holePrimitive, holePoints)) {
@@ -18618,9 +18992,9 @@ function getHoleArrays(holePrimitives) {
   }
   return holeArrays;
 }
-class GpuGraphicsContext {
+class GpuGraphicsContext extends AbstractGpuGraphicsContext {
   constructor() {
-    this.batches = [];
+    super(...arguments);
     this.geometryData = {
       vertices: [],
       uvs: [],
@@ -18628,37 +19002,17 @@ class GpuGraphicsContext {
     };
   }
   reset() {
-    if (this.batches) {
-      this.batches.forEach((batch) => {
-        BigPool.return(batch);
-      });
-    }
-    if (this.graphicsData) {
-      BigPool.return(this.graphicsData);
-    }
-    this.isBatchable = false;
-    this.context = null;
-    this.batches.length = 0;
+    super.reset();
     this.geometryData.indices.length = 0;
     this.geometryData.vertices.length = 0;
     this.geometryData.uvs.length = 0;
-    this.graphicsData = null;
   }
   destroy() {
-    this.reset();
-    this.batches = null;
+    super.destroy();
     this.geometryData = null;
   }
 }
-class GraphicsContextRenderData {
-  constructor() {
-    this.instructions = new InstructionSet();
-  }
-  init(options) {
-    const maxTextures = options.maxTextures;
-    this.batcher ? this.batcher._updateMaxTextures(maxTextures) : this.batcher = new DefaultBatcher({ maxTextures });
-    this.instructions.reset();
-  }
+class GraphicsContextRenderData extends AbstractGraphicsContextRenderData {
   /**
    * @deprecated since version 8.0.0
    * Use `batcher.geometry` instead.
@@ -18668,17 +19022,13 @@ class GraphicsContextRenderData {
     deprecation(v8_3_4, "GraphicsContextRenderData#geometry is deprecated, please use batcher.geometry instead.");
     return this.batcher.geometry;
   }
-  destroy() {
-    this.batcher.destroy();
-    this.instructions.destroy();
-    this.batcher = null;
-    this.instructions = null;
+  _createBatcher(maxTextures) {
+    return new DefaultBatcher({ maxTextures });
   }
 }
-const _GraphicsContextSystem = class _GraphicsContextSystem2 {
+const _GraphicsContextSystem = class _GraphicsContextSystem2 extends AbstractGraphicsContextSystem {
   constructor(renderer) {
-    this._renderer = renderer;
-    this._managedContexts = new GCManagedHash({ renderer, type: "resource", name: "graphicsContext" });
+    super(renderer, "graphicsContext");
   }
   /**
    * Runner init called, update the default options
@@ -18687,96 +19037,18 @@ const _GraphicsContextSystem = class _GraphicsContextSystem2 {
   init(options) {
     _GraphicsContextSystem2.defaultOptions.bezierSmoothness = options?.bezierSmoothness ?? _GraphicsContextSystem2.defaultOptions.bezierSmoothness;
   }
-  /**
-   * Returns the render data for a given GraphicsContext.
-   * @param context - The GraphicsContext to get the render data for.
-   * @internal
-   */
-  getContextRenderData(context2) {
-    return context2._gpuData[this._renderer.uid].graphicsData || this._initContextRenderData(context2);
+  _createGpuContext() {
+    return new GpuGraphicsContext();
   }
-  /**
-   * Updates the GPU context for a given GraphicsContext.
-   * If the context is dirty, it will rebuild the batches and geometry data.
-   * @param context - The GraphicsContext to update.
-   * @returns The updated GpuGraphicsContext.
-   * @internal
-   */
-  updateGpuContext(context2) {
-    const hasContext = !!context2._gpuData[this._renderer.uid];
-    const gpuContext = context2._gpuData[this._renderer.uid] || this._initContext(context2);
-    if (context2.dirty || !hasContext) {
-      if (hasContext) {
-        gpuContext.reset();
-      }
-      buildContextBatches(context2, gpuContext);
-      const batchMode = context2.batchMode;
-      if (context2.customShader || batchMode === "no-batch") {
-        gpuContext.isBatchable = false;
-      } else if (batchMode === "auto") {
-        gpuContext.isBatchable = gpuContext.geometryData.vertices.length < 400;
-      } else {
-        gpuContext.isBatchable = true;
-      }
-      context2.dirty = false;
-    }
-    return gpuContext;
+  _buildContextData(context2, gpuContext) {
+    buildContextBatches(context2, gpuContext);
   }
-  /**
-   * Returns the GpuGraphicsContext for a given GraphicsContext.
-   * If it does not exist, it will initialize a new one.
-   * @param context - The GraphicsContext to get the GpuGraphicsContext for.
-   * @returns The GpuGraphicsContext for the given GraphicsContext.
-   * @internal
-   */
-  getGpuContext(context2) {
-    return context2._gpuData[this._renderer.uid] || this._initContext(context2);
+  _getGeometrySize(gpuContext) {
+    const { vertices, indices } = gpuContext.geometryData;
+    return { attributes: vertices.length, indices: indices.length };
   }
-  _initContextRenderData(context2) {
-    const graphicsData = BigPool.get(GraphicsContextRenderData, {
-      maxTextures: this._renderer.limits.maxBatchableTextures
-    });
-    const gpuContext = context2._gpuData[this._renderer.uid];
-    const { batches, geometryData } = gpuContext;
-    gpuContext.graphicsData = graphicsData;
-    const vertexSize = geometryData.vertices.length;
-    const indexSize = geometryData.indices.length;
-    for (let i2 = 0; i2 < batches.length; i2++) {
-      batches[i2].applyTransform = false;
-    }
-    const batcher = graphicsData.batcher;
-    batcher.ensureAttributeBuffer(vertexSize);
-    batcher.ensureIndexBuffer(indexSize);
-    batcher.begin();
-    for (let i2 = 0; i2 < batches.length; i2++) {
-      const batch = batches[i2];
-      batcher.add(batch);
-    }
-    batcher.finish(graphicsData.instructions);
-    const geometry = batcher.geometry;
-    geometry.indexBuffer.setDataWithSize(batcher.indexBuffer, batcher.indexSize, true);
-    geometry.buffers[0].setDataWithSize(batcher.attributeBuffer.float32View, batcher.attributeSize, true);
-    const drawBatches = batcher.batches;
-    for (let i2 = 0; i2 < batcher.batchIndex; i2++) {
-      const batch = drawBatches[i2];
-      batch.bindGroup = getTextureBatchBindGroup(
-        batch.textures.textures,
-        batch.textures.count,
-        this._renderer.limits.maxBatchableTextures
-      );
-    }
-    return graphicsData;
-  }
-  _initContext(context2) {
-    const gpuContext = new GpuGraphicsContext();
-    gpuContext.context = context2;
-    context2._gpuData[this._renderer.uid] = gpuContext;
-    this._managedContexts.add(context2);
-    return gpuContext;
-  }
-  destroy() {
-    this._managedContexts.destroy();
-    this._renderer = null;
+  _getRenderData(maxTextures) {
+    return BigPool.get(GraphicsContextRenderData, { maxTextures });
   }
 };
 _GraphicsContextSystem.extension = {
@@ -20593,14 +20865,14 @@ function renderChildren(svg, session, fillStyle, strokeStyle) {
       break;
     case "polygon":
       pointsString = svg.getAttribute("points");
-      points = pointsString.match(/-?\d+/g).map((n2) => parseInt(n2, 10));
+      points = pointsString.match(/-?\d*\.?\d+(?:e[-+]?\d+)?/gi).map(Number);
       session.context.poly(points, true);
       if (fillStyle) session.context.fill(fillStyle);
       if (strokeStyle) session.context.stroke(strokeStyle);
       break;
     case "polyline":
       pointsString = svg.getAttribute("points");
-      points = pointsString.match(/-?\d+/g).map((n2) => parseInt(n2, 10));
+      points = pointsString.match(/-?\d*\.?\d+(?:e[-+]?\d+)?/gi).map(Number);
       session.context.poly(points, false);
       if (strokeStyle) session.context.stroke(strokeStyle);
       break;
@@ -20818,7 +21090,7 @@ function getMaxMiterRatio(path2, miterLimit) {
   return maxRatio;
 }
 const tmpPoint = new Point();
-const tempMatrix$1 = new Matrix();
+const tempMatrix$2 = new Matrix();
 const _GraphicsContext = class _GraphicsContext2 extends EventEmitter {
   constructor() {
     super(...arguments);
@@ -21431,8 +21703,8 @@ const _GraphicsContext = class _GraphicsContext2 extends EventEmitter {
       this._transform.append(a2);
       return this;
     }
-    tempMatrix$1.set(a2, b2, c2, d2, dx, dy);
-    this._transform.append(tempMatrix$1);
+    tempMatrix$2.set(a2, b2, c2, d2, dx, dy);
+    this._transform.append(tempMatrix$2);
     return this;
   }
   /**
@@ -21508,8 +21780,8 @@ const _GraphicsContext = class _GraphicsContext2 extends EventEmitter {
     if (!this.bounds.containsPoint(point.x, point.y)) return false;
     const instructions = this.instructions;
     let hasHit = false;
-    for (let k2 = 0; k2 < instructions.length; k2++) {
-      const instruction = instructions[k2];
+    for (let k = 0; k < instructions.length; k++) {
+      const instruction = instructions[k];
       const data = instruction.data;
       const path2 = data.path;
       if (!instruction.action || !path2) continue;
@@ -23025,8 +23297,22 @@ const canvasUtils = {
   canvas: null,
   convertTintToImage: false,
   cacheStepsPerColorChannel: 8,
-  canUseMultiply: canUseNewCanvasBlendModes(),
-  tintMethod: null,
+  // Resolved on first use rather than at module load: the probe draws to 2D canvases and reads a pixel back,
+  // which can stall the main thread (for example on GPU-rasterized canvases) even when canvas tinting is never used.
+  _canUseMultiply: void 0,
+  get canUseMultiply() {
+    return this._canUseMultiply ?? (this._canUseMultiply = canUseNewCanvasBlendModes());
+  },
+  set canUseMultiply(value) {
+    this._canUseMultiply = value;
+  },
+  _tintMethod: null,
+  get tintMethod() {
+    return this._tintMethod ?? (this._tintMethod = this.canUseMultiply ? this.tintWithMultiply : this.tintWithPerPixel);
+  },
+  set tintMethod(value) {
+    this._tintMethod = value;
+  },
   _canvasSourceCache: /* @__PURE__ */ new WeakMap(),
   _unpremultipliedCache: /* @__PURE__ */ new WeakMap(),
   getCanvasSource: (texture) => {
@@ -23122,7 +23408,12 @@ const canvasUtils = {
     const canvas = cachedCanvas && "getContext" in cachedCanvas ? cachedCanvas : DOMAdapter.get().createCanvas();
     canvasUtils.tintMethod(texture, color, canvas);
     canvas.tintId = resourceId;
-    {
+    if (canvasUtils.convertTintToImage && canvas.toDataURL !== void 0) {
+      const tintImage = DOMAdapter.get().createImage();
+      tintImage.src = canvas.toDataURL();
+      tintImage.tintId = resourceId;
+      cache[stringColor] = tintImage;
+    } else {
       cache[stringColor] = canvas;
     }
     return cache[stringColor];
@@ -23328,7 +23619,6 @@ const canvasUtils = {
     context2.transform(a2, b2, c2, d2, tx, ty);
   }
 };
-canvasUtils.tintMethod = canvasUtils.canUseMultiply ? canvasUtils.tintWithMultiply : canvasUtils.tintWithPerPixel;
 const maxKeyDimension = 32767;
 function bucketKey(width, height) {
   return (width << 17) + (height << 2);
@@ -23695,13 +23985,13 @@ class GraphicsGpuData {
     this.batches.length = 0;
   }
 }
-class GraphicsPipe {
-  constructor(renderer, adaptor) {
+class AbstractGraphicsPipe {
+  constructor(renderer, adaptor, name) {
     this.state = State.for2d();
     this.renderer = renderer;
     this._adaptor = adaptor;
     this.renderer.runners.contextChange.add(this);
-    this._managedGraphics = new GCManagedHash({ renderer, type: "renderable", priority: -1, name: "graphics" });
+    this._managedGraphics = new GCManagedHash({ renderer, type: "renderable", priority: -1, name });
   }
   contextChange() {
     this._adaptor.contextChange(this.renderer);
@@ -23709,16 +23999,14 @@ class GraphicsPipe {
   validateRenderable(graphics) {
     const context2 = graphics.context;
     const wasBatched = !!graphics._gpuData;
-    const contextSystem = this.renderer.graphicsContext;
-    const gpuContext = contextSystem.updateGpuContext(context2);
+    const gpuContext = this._contextSystem.updateGpuContext(context2);
     if (gpuContext.isBatchable || wasBatched !== gpuContext.isBatchable) {
       return true;
     }
     return false;
   }
   addRenderable(graphics, instructionSet) {
-    const contextSystem = this.renderer.graphicsContext;
-    const gpuContext = contextSystem.updateGpuContext(graphics.context);
+    const gpuContext = this._contextSystem.updateGpuContext(graphics.context);
     if (graphics.didViewUpdate || !graphics._gpuData[this.renderer.uid]) {
       this._rebuild(graphics);
     }
@@ -23741,8 +24029,7 @@ class GraphicsPipe {
     if (!graphics.isRenderable) return;
     const renderer = this.renderer;
     const context2 = graphics.context;
-    const contextSystem = renderer.graphicsContext;
-    if (!contextSystem.getGpuContext(context2).batches.length) {
+    if (!this._contextSystem.getGpuContext(context2).batches.length) {
       return;
     }
     const shader = context2.customShader || this._adaptor.shader;
@@ -23759,8 +24046,7 @@ class GraphicsPipe {
   }
   _rebuild(graphics) {
     const gpuData = this._getGpuDataForRenderable(graphics);
-    const contextSystem = this.renderer.graphicsContext;
-    const gpuContext = contextSystem.updateGpuContext(graphics.context);
+    const gpuContext = this._contextSystem.updateGpuContext(graphics.context);
     gpuData.destroy();
     if (gpuContext.isBatchable) {
       this._updateBatchesForRenderable(graphics, gpuData);
@@ -23784,12 +24070,10 @@ class GraphicsPipe {
     return gpuData;
   }
   _updateBatchesForRenderable(graphics, gpuData) {
-    const context2 = graphics.context;
-    const contextSystem = this.renderer.graphicsContext;
-    const gpuContext = contextSystem.getGpuContext(context2);
+    const gpuContext = this._contextSystem.getGpuContext(graphics.context);
     const roundPixels = this.renderer._roundPixels | graphics._roundPixels;
     gpuData.batches = gpuContext.batches.map((batch) => {
-      const batchClone = BigPool.get(BatchableGraphics);
+      const batchClone = BigPool.get(this._batchableClass);
       batch.copyTo(batchClone);
       batchClone.renderable = graphics;
       batchClone.roundPixels = roundPixels;
@@ -23802,6 +24086,15 @@ class GraphicsPipe {
     this._adaptor.destroy();
     this._adaptor = null;
     this.state = null;
+  }
+}
+class GraphicsPipe extends AbstractGraphicsPipe {
+  constructor(renderer, adaptor) {
+    super(renderer, adaptor, "graphics");
+    this._batchableClass = BatchableGraphics;
+  }
+  get _contextSystem() {
+    return this.renderer.graphicsContext;
   }
 }
 GraphicsPipe.extension = {
@@ -27809,18 +28102,18 @@ function getCharacterGroups(token, breakWords, splitFn, canBreakCharsFn) {
   for (let j2 = 0; j2 < characters.length; j2++) {
     let char = characters[j2];
     let lastChar = char;
-    let k2 = 1;
-    while (characters[j2 + k2]) {
-      const nextChar = characters[j2 + k2];
+    let k = 1;
+    while (characters[j2 + k]) {
+      const nextChar = characters[j2 + k];
       if (!canBreakCharsFn(lastChar, nextChar, token, j2, breakWords)) {
         char += nextChar;
         lastChar = nextChar;
-        k2++;
+        k++;
       } else {
         break;
       }
     }
-    j2 += k2 - 1;
+    j2 += k - 1;
     groups.push(char);
   }
   return groups;
@@ -28787,7 +29080,7 @@ class CanvasTextGeneratorClass {
     }
     for (let i2 = 0; i2 < passesCount; ++i2) {
       const isShadowPass = style.dropShadow && i2 === 0;
-      const dsOffsetText = isShadowPass ? Math.ceil(Math.max(1, height) + padding * 2) : 0;
+      const dsOffsetText = isShadowPass ? Math.ceil(Math.max(1, height, height / resolution) + padding * 2) : 0;
       const dsOffsetShadow = dsOffsetText * resolution;
       if (isShadowPass) {
         this._setupDropShadow(context2, style, resolution, dsOffsetShadow);
@@ -28901,7 +29194,7 @@ class CanvasTextGeneratorClass {
     }
     for (let pass = 0; pass < passesCount; ++pass) {
       const isShadowPass = hasDropShadow && pass === 0;
-      const dsOffsetText = isShadowPass ? Math.ceil(Math.max(1, height) + padding * 2) : 0;
+      const dsOffsetText = isShadowPass ? Math.ceil(Math.max(1, height, height / resolution) + padding * 2) : 0;
       const dsOffsetShadow = dsOffsetText * resolution;
       if (!isShadowPass) {
         context2.shadowColor = "rgba(0,0,0,0)";
@@ -31941,9 +32234,10 @@ function getTemporaryCanvasFromImage(image, resolution) {
   return canvasAndContext;
 }
 function loadSVGImage(image, url, delay) {
+  const delayMs = delay === true ? 100 : Number(delay) || 0;
   return new Promise(async (resolve) => {
-    if (delay) {
-      await new Promise((resolve2) => setTimeout(resolve2, 100));
+    if (delayMs > 0) {
+      await new Promise((resolve2) => setTimeout(resolve2, delayMs));
     }
     image.onload = () => {
       resolve();
@@ -31952,11 +32246,19 @@ function loadSVGImage(image, url, delay) {
     image.crossOrigin = "anonymous";
   });
 }
-class HTMLTextSystem {
+const _HTMLTextSystem = class _HTMLTextSystem2 {
   constructor(renderer) {
+    this.safariFontDelay = _HTMLTextSystem2.defaultOptions.safariFontDelay;
     this._activeTextures = {};
     this._renderer = renderer;
     this._createCanvas = renderer.type === RendererType.WEBGPU;
+  }
+  /**
+   * Initializes the system with the given options.
+   * @param options - The options for the system
+   */
+  init(options) {
+    this.safariFontDelay = options?.safariFontDelay ?? _HTMLTextSystem2.defaultOptions.safariFontDelay;
   }
   /**
    * @param options
@@ -32041,7 +32343,7 @@ class HTMLTextSystem {
     image.width = (width | 0) + uvSafeOffset;
     image.height = (height | 0) + uvSafeOffset;
     const svgURL = getSVGUrl(text, style, resolution, fontCSS, htmlTextData);
-    await loadSVGImage(image, svgURL, isSafari() && fontFamilies.length > 0);
+    await loadSVGImage(image, svgURL, isSafari() && fontFamilies.length > 0 ? this.safariFontDelay : 0);
     const resource = image;
     let canvasAndContext;
     if (this._createCanvas) {
@@ -32082,8 +32384,8 @@ class HTMLTextSystem {
     }
     this._activeTextures = null;
   }
-}
-HTMLTextSystem.extension = {
+};
+_HTMLTextSystem.extension = {
   type: [
     ExtensionType.WebGLSystem,
     ExtensionType.WebGPUSystem,
@@ -32091,6 +32393,11 @@ HTMLTextSystem.extension = {
   ],
   name: "htmlText"
 };
+_HTMLTextSystem.defaultOptions = {
+  /** {@link HTMLTextSystemOptions.safariFontDelay} */
+  safariFontDelay: 100
+};
+let HTMLTextSystem = _HTMLTextSystem;
 extensions.add(HTMLTextSystem);
 extensions.add(HTMLTextPipe);
 class HTMLText extends AbstractText {
@@ -32162,6 +32469,113 @@ class HTMLText extends AbstractText {
     return input.replace(brokenTagPattern, "");
   }
 }
+class AbstractGlGraphicsAdaptor {
+  /**
+   * Returns the shader used when the context has no custom shader.
+   * @param _renderData - The render data of the context
+   */
+  _getShader(_renderData) {
+    return this.shader;
+  }
+  execute(graphicsPipe, renderable) {
+    const context2 = renderable.context;
+    const renderer = graphicsPipe.renderer;
+    const renderData = this._getRenderData(renderer, context2);
+    const { batcher, instructions } = renderData;
+    const shader = context2.customShader || this._getShader(renderData);
+    shader.groups[0] = renderer.globalUniforms.bindGroup;
+    renderer.state.set(graphicsPipe.state);
+    renderer.shader.bind(shader);
+    renderer.geometry.bind(batcher.geometry, shader.glProgram);
+    const batches = instructions.instructions;
+    for (let i2 = 0; i2 < instructions.instructionSize; i2++) {
+      const batch = batches[i2];
+      if (batch.size) {
+        for (let j2 = 0; j2 < batch.textures.count; j2++) {
+          renderer.texture.bind(batch.textures.textures[j2], j2);
+        }
+        renderer.texture.unbindIntegerTextures(batch.textures.count);
+        renderer.geometry.draw(batch.topology, batch.size, batch.start);
+      }
+    }
+  }
+  destroy() {
+    this.shader.destroy(true);
+    this.shader = null;
+  }
+}
+class AbstractGpuGraphicsAdaptor {
+  constructor() {
+    this._maxTextures = 0;
+  }
+  /**
+   * Returns the shader used when the context has no custom shader.
+   * @param _renderData - The render data of the context
+   */
+  _getShader(_renderData) {
+    return this.shader;
+  }
+  execute(graphicsPipe, renderable) {
+    const context2 = renderable.context;
+    const renderer = graphicsPipe.renderer;
+    const renderData = this._getRenderData(renderer, context2);
+    const { batcher, instructions } = renderData;
+    const shader = context2.customShader || this._getShader(renderData);
+    const encoder = renderer.encoder;
+    encoder.setGeometry(batcher.geometry, shader.gpuProgram);
+    const globalUniformsBindGroup = renderer.globalUniforms.bindGroup;
+    encoder.setBindGroup(0, globalUniformsBindGroup, shader.gpuProgram);
+    const localBindGroup = renderer.renderPipes.uniformBatch.getUniformBindGroup(shader.resources.localUniforms, true);
+    encoder.setBindGroup(2, localBindGroup, shader.gpuProgram);
+    const layout = shader.gpuProgram.layout;
+    for (let i2 = 3; i2 < layout.length; i2++) {
+      const bindGroup = shader.groups[i2];
+      if (!layout[i2] || !bindGroup) continue;
+      for (const key in bindGroup.resources) {
+        const resource = bindGroup.resources[key];
+        if (resource?.isUniformGroup) {
+          renderer.ubo.updateUniformGroup(resource);
+        }
+      }
+      encoder.setBindGroup(i2, bindGroup, shader.gpuProgram);
+    }
+    const batches = instructions.instructions;
+    let topology = null;
+    for (let i2 = 0; i2 < instructions.instructionSize; i2++) {
+      const batch = batches[i2];
+      if (batch.topology !== topology) {
+        topology = batch.topology;
+        encoder.setPipelineFromGeometryProgramAndState(
+          batcher.geometry,
+          shader.gpuProgram,
+          graphicsPipe.state,
+          batch.topology,
+          shader._overrides
+        );
+      }
+      shader.groups[1] = batch.bindGroup;
+      if (!batch.gpuBindGroup) {
+        const textureBatch = batch.textures;
+        batch.bindGroup = getTextureBatchBindGroup(
+          textureBatch.textures,
+          textureBatch.count,
+          this._maxTextures
+        );
+        batch.gpuBindGroup = renderer.bindGroup.getBindGroup(
+          batch.bindGroup,
+          shader.gpuProgram,
+          1
+        );
+      }
+      encoder.setBindGroup(1, batch.bindGroup, shader.gpuProgram);
+      encoder.renderPassEncoder.drawIndexed(batch.size, 1, batch.start);
+    }
+  }
+  destroy() {
+    this.shader.destroy();
+    this.shader = null;
+  }
+}
 class RenderContainer extends ViewContainer {
   /**
    * @param options - The options for the container.
@@ -32191,6 +32605,2417 @@ class RenderContainer extends ViewContainer {
    * @param _renderer - The current renderer
    */
   render(_renderer) {
+  }
+}
+class CanvasSmoothGraphicsPipe {
+  constructor(renderer) {
+    this.renderer = renderer;
+  }
+  validateRenderable(graphics) {
+    return this.renderer.renderPipes.graphics.validateRenderable(graphics);
+  }
+  addRenderable(graphics, instructionSet) {
+    this.renderer.renderPipes.graphics.addRenderable(graphics, instructionSet);
+  }
+  updateRenderable(graphics) {
+    this.renderer.renderPipes.graphics.updateRenderable(graphics);
+  }
+  execute(graphics) {
+    this.renderer.renderPipes.graphics.execute(graphics);
+  }
+  destroy() {
+    this.renderer = null;
+  }
+}
+CanvasSmoothGraphicsPipe.extension = {
+  type: [
+    ExtensionType.CanvasPipes
+  ],
+  name: "smoothGraphics"
+};
+function generateGlSampleSrc(maxTextures) {
+  let src = "";
+  for (let i2 = 0; i2 < maxTextures; i2++) {
+    if (i2 > 0) src += "\nelse ";
+    if (i2 < maxTextures - 1) src += `if(textureId < ${i2}.5)`;
+    src += `
+{ texColor = texture2D(uTextures[${i2}], vTextureCoord); }`;
+  }
+  return src;
+}
+function buildGlVertexSrc(includeLocalUniforms = true, textured = false) {
+  return `
+precision highp float;
+
+const float FILL = 1.0;
+const float BEVEL = 4.0;
+const float MITER = 8.0;
+const float ROUND = 12.0;
+const float JOINT_CAP_BUTT = 16.0;
+const float JOINT_CAP_SQUARE = 18.0;
+const float JOINT_CAP_ROUND = 20.0;
+const float FILL_EXPAND = 24.0;
+
+const float CAP_BUTT = 1.0;
+const float CAP_SQUARE = 2.0;
+const float CAP_ROUND = 3.0;
+const float CAP_BUTT2 = 4.0;
+
+const float MITER_LIMIT = 10.0;
+
+attribute vec2 aPrev;
+attribute vec2 aPoint1;
+attribute vec2 aPoint2;
+attribute vec2 aNext;
+attribute float aTravel;
+attribute float aVertexJoint;
+attribute float aLineWidth;
+attribute float aStylePacked;
+attribute vec4 aColor;
+attribute vec2 aTextureIdAndRound;
+${textured ? "attribute vec3 aUvU;\nattribute vec3 aUvV;" : ""}
+
+uniform mat3 uProjectionMatrix;
+uniform mat3 uWorldTransformMatrix;
+uniform vec2 uResolution;
+uniform vec4 uWorldColorAlpha;
+${includeLocalUniforms ? "uniform mat3 uTransformMatrix;\nuniform vec4 uColor;" : ""}
+
+varying vec4 vLine1;
+varying vec4 vLine2;
+varying vec4 vArc;
+varying float vType;
+varying vec4 vColor;
+varying vec2 vTextureCoord;
+varying vec2 vTravel;
+varying float vTextureId;
+
+vec2 doBisect(vec2 norm, float len, vec2 norm2, float len2,
+    float dy, float inner) {
+    vec2 bisect = (norm + norm2) / 2.0;
+    bisect /= dot(norm, bisect);
+    vec2 shift = dy * bisect;
+    if (inner > 0.5) {
+        if (len < len2) {
+            if (abs(dy * (bisect.x * norm.y - bisect.y * norm.x)) > len) {
+                return dy * norm;
+            }
+        } else {
+            if (abs(dy * (bisect.x * norm2.y - bisect.y * norm2.x)) > len2) {
+                return dy * norm;
+            }
+        }
+    }
+    return dy * bisect;
+}
+
+float getScale(mat3 m, float scaleMode) {
+    if (scaleMode > 0.5) {
+        vec2 d = (m * vec3(1.0, 1.0, 0.0)).xy;
+        return sqrt(dot(d, d) * 0.5);
+    }
+    return 1.0;
+}
+
+void main(void){
+    ${includeLocalUniforms ? "mat3 worldMatrix = uWorldTransformMatrix * uTransformMatrix;" : "mat3 worldMatrix = uWorldTransformMatrix;"}
+
+    vec2 pointA = (worldMatrix * vec3(aPoint1, 1.0)).xy;
+    vec2 pointB = (worldMatrix * vec3(aPoint2, 1.0)).xy;
+
+    vec2 xBasis = pointB - pointA;
+    float len = length(xBasis);
+    vec2 forward = xBasis / len;
+    vec2 norm = vec2(forward.y, -forward.x);
+
+    float type = floor(aVertexJoint / 16.0);
+    float vertexNum = aVertexJoint - type * 16.0;
+    float dx = 0.0, dy = 1.0;
+
+    float capType = floor(type / 32.0);
+    type -= capType * 32.0;
+
+    float scaleMode = floor(aStylePacked);
+    float alignment = aStylePacked - scaleMode;
+
+    float renderGroupScale = getScale(worldMatrix, scaleMode);
+    float lineWidth = aLineWidth * renderGroupScale;
+    float avgScale = renderGroupScale;
+
+    lineWidth *= 0.5;
+    float lineAlignment = 2.0 * alignment - 1.0;
+    // number of render target pixels per world unit, AA is computed in render target pixels
+    float resolution = abs(uProjectionMatrix[0][0]) * uResolution.x * 0.5;
+    float expand = 1.0 / resolution;
+
+    vTextureId = aTextureIdAndRound.y;
+    vTextureCoord = vec2(0.0);
+
+    vec2 pos;
+
+    if (capType == CAP_ROUND) {
+        vertexNum += 4.0;
+        type = JOINT_CAP_ROUND;
+        capType = 0.0;
+        lineAlignment = -lineAlignment;
+    }
+
+    vLine1 = vec4(0.0, 10.0, 1.0, 0.0);
+    vLine2 = vec4(0.0, 10.0, 1.0, 0.0);
+    vArc = vec4(0.0);
+    if (type == FILL) {
+        pos = pointA;
+        vType = 0.0;
+        vLine2 = vec4(-2.0, -2.0, -2.0, 0.0);
+    } else if (type >= FILL_EXPAND && type < FILL_EXPAND + 7.5) {
+        float flags = type - FILL_EXPAND;
+        float flag3 = floor(flags / 4.0);
+        float flag2 = floor((flags - flag3 * 4.0) / 2.0);
+        float flag1 = flags - flag3 * 4.0 - flag2 * 2.0;
+
+        vec2 prev = (worldMatrix * vec3(aPrev, 1.0)).xy;
+
+        if (vertexNum < 0.5) {
+            pos = prev;
+        } else if (vertexNum < 1.5) {
+            pos = pointA;
+        } else {
+            pos = pointB;
+        }
+        float len2 = length(aNext);
+        vec2 bisect = (worldMatrix * vec3(aNext, 0.0)).xy;
+        if (len2 > 0.01) {
+            bisect = normalize(bisect) * len2;
+        }
+
+        vec2 n1 = normalize(vec2(pointA.y - prev.y, -(pointA.x - prev.x)));
+        vec2 n2 = normalize(vec2(pointB.y - pointA.y, -(pointB.x - pointA.x)));
+        vec2 n3 = normalize(vec2(prev.y - pointB.y, -(prev.x - pointB.x)));
+
+        if (n1.x * n2.y - n1.y * n2.x < 0.0) {
+            n1 = -n1;
+            n2 = -n2;
+            n3 = -n3;
+        }
+        pos += bisect * expand;
+
+        vLine1 = vec4(16.0, 16.0, 16.0, -1.0);
+        if (flag1 > 0.5) {
+            vLine1.x = -dot(pos - prev, n1);
+        }
+        if (flag2 > 0.5) {
+            vLine1.y = -dot(pos - pointA, n2);
+        }
+        if (flag3 > 0.5) {
+            vLine1.z = -dot(pos - pointB, n3);
+        }
+        vLine1.xyz *= resolution;
+        vType = 2.0;
+    } else if (type >= BEVEL) {
+        float dy = lineWidth + expand;
+        float shift = lineWidth * lineAlignment;
+        float inner = 0.0;
+        if (vertexNum >= 1.5) {
+            dy = -dy;
+            inner = 1.0;
+        }
+
+        vec2 base, next, xBasis2, bisect;
+        float flag = 0.0;
+        float side2 = 1.0;
+        if (vertexNum < 0.5 || vertexNum > 2.5 && vertexNum < 3.5) {
+            next = (worldMatrix * vec3(aPrev, 1.0)).xy;
+            base = pointA;
+            flag = type - floor(type / 2.0) * 2.0;
+            side2 = -1.0;
+        } else {
+            next = (worldMatrix * vec3(aNext, 1.0)).xy;
+            base = pointB;
+            if (type >= MITER && type < MITER + 3.5) {
+                flag = step(MITER + 1.5, type);
+            }
+        }
+        xBasis2 = next - base;
+        float len2 = length(xBasis2);
+        vec2 norm2 = vec2(xBasis2.y, -xBasis2.x) / len2;
+        float D = norm.x * norm2.y - norm.y * norm2.x;
+        if (D < 0.0) {
+            inner = 1.0 - inner;
+        }
+
+        norm2 *= side2;
+
+        float collinear = step(0.0, dot(norm, norm2));
+
+        vType = 0.0;
+        float dy2 = -1000.0;
+
+        if (abs(D) < 0.01 && collinear < 0.5) {
+            if (type >= ROUND && type < ROUND + 1.5) {
+                type = JOINT_CAP_ROUND;
+            }
+        }
+
+        vLine1 = vec4(0.0, lineWidth, max(abs(norm.x), abs(norm.y)), min(abs(norm.x), abs(norm.y)));
+        vLine2 = vec4(0.0, lineWidth, max(abs(norm2.x), abs(norm2.y)), min(abs(norm2.x), abs(norm2.y)));
+
+        if (vertexNum < 3.5) {
+            if (abs(D) < 0.01 && collinear < 0.5) {
+                pos = (shift + dy) * norm;
+            } else {
+                if (flag < 0.5 && inner < 0.5) {
+                    pos = (shift + dy) * norm;
+                } else {
+                    pos = doBisect(norm, len, norm2, len2, shift + dy, inner);
+                }
+            }
+            vLine2.y = -1000.0;
+            if (capType >= CAP_BUTT && capType < CAP_ROUND) {
+                float extra = step(CAP_SQUARE, capType) * lineWidth;
+                vec2 back = -forward;
+                if (vertexNum < 0.5 || vertexNum > 2.5) {
+                    pos += back * (expand + extra);
+                    dy2 = expand;
+                } else {
+                    dy2 = dot(pos + base - pointA, back) - extra;
+                }
+            }
+            if (type >= JOINT_CAP_BUTT && type < JOINT_CAP_SQUARE + 0.5) {
+                float extra = step(JOINT_CAP_SQUARE, type) * lineWidth;
+                if (vertexNum < 0.5 || vertexNum > 2.5) {
+                    vLine2.y = dot(pos + base - pointB, forward) - extra;
+                } else {
+                    pos += forward * (expand + extra);
+                    vLine2.y = expand;
+                    if (capType >= CAP_BUTT) {
+                        dy2 -= expand + extra;
+                    }
+                }
+            }
+        } else if (type >= JOINT_CAP_ROUND && type < JOINT_CAP_ROUND + 1.5) {
+            base += shift * norm;
+            if (inner > 0.5) {
+                dy = -dy;
+                inner = 0.0;
+            }
+            vec2 d2 = abs(dy) * forward;
+            if (vertexNum < 4.5) {
+                dy = -dy;
+                pos = dy * norm;
+            } else if (vertexNum < 5.5) {
+                pos = dy * norm;
+            } else if (vertexNum < 6.5) {
+                pos = dy * norm + d2;
+                vArc.x = abs(dy);
+            } else {
+                dy = -dy;
+                pos = dy * norm + d2;
+                vArc.x = abs(dy);
+            }
+            vLine2 = vec4(0.0, lineWidth * 2.0 + 10.0, 1.0, 0.0);
+            vArc.y = dy;
+            vArc.z = 0.0;
+            vArc.w = lineWidth;
+            vType = 3.0;
+        } else if (abs(D) < 0.01 && collinear < 0.5) {
+            pos = dy * norm;
+        } else {
+            if (inner > 0.5) {
+                dy = -dy;
+                inner = 0.0;
+            }
+            float side = sign(dy);
+            vec2 norm3 = normalize(norm + norm2);
+
+            if (type >= MITER && type < MITER + 3.5) {
+                vec2 farVertex = doBisect(norm, len, norm2, len2, shift + dy, 0.0);
+                if (length(farVertex) > abs(shift + dy) * MITER_LIMIT) {
+                    type = BEVEL;
+                }
+            }
+
+            if (vertexNum < 4.5) {
+                pos = doBisect(norm, len, norm2, len2, shift - dy, 1.0);
+            } else if (vertexNum < 5.5) {
+                pos = (shift + dy) * norm;
+            } else if (vertexNum > 7.5) {
+                pos = (shift + dy) * norm2;
+            } else {
+                if (type >= ROUND && type < ROUND + 1.5) {
+                    pos = doBisect(norm, len, norm2, len2, shift + dy, 0.0);
+                    float d2 = abs(shift + dy);
+                    if (length(pos) > abs(shift + dy) * 1.5) {
+                        if (vertexNum < 6.5) {
+                            pos.x = (shift + dy) * norm.x - d2 * norm.y;
+                            pos.y = (shift + dy) * norm.y + d2 * norm.x;
+                        } else {
+                            pos.x = (shift + dy) * norm2.x + d2 * norm2.y;
+                            pos.y = (shift + dy) * norm2.y - d2 * norm2.x;
+                        }
+                    }
+                } else if (type >= MITER && type < MITER + 3.5) {
+                    pos = doBisect(norm, len, norm2, len2, shift + dy, 0.0);
+                } else if (type >= BEVEL && type < BEVEL + 1.5) {
+                    float d2 = side / resolution;
+                    if (vertexNum < 6.5) {
+                        pos = (shift + dy) * norm + d2 * norm3;
+                    } else {
+                        pos = (shift + dy) * norm2 + d2 * norm3;
+                    }
+                }
+            }
+
+            if (type >= ROUND && type < ROUND + 1.5) {
+                vArc.x = side * dot(pos, norm3);
+                vArc.y = pos.x * norm3.y - pos.y * norm3.x;
+                vArc.z = dot(norm, norm3) * (lineWidth + side * shift);
+                vArc.w = lineWidth + side * shift;
+                vType = 3.0;
+            } else if (type >= MITER && type < MITER + 3.5) {
+                vType = 1.0;
+            } else if (type >= BEVEL && type < BEVEL + 1.5) {
+                vType = 4.0;
+                vArc.z = dot(norm, norm3) * (lineWidth + side * shift) - side * dot(pos, norm3);
+            }
+
+            dy = side * (dot(pos, norm) - shift);
+            dy2 = side * (dot(pos, norm2) - shift);
+        }
+
+        pos += base;
+        vLine1.xy = vec2(dy, vLine1.y) * resolution;
+        vLine2.xy = vec2(dy2, vLine2.y) * resolution;
+        vArc = vArc * resolution;
+        vTravel = vec2(aTravel * avgScale + dot(pos - pointA, vec2(-norm.y, norm.x)), avgScale);
+    }
+
+${textured ? glUvBlock() : ""}
+    gl_Position = vec4((uProjectionMatrix * vec3(pos, 1.0)).xy, 0.0, 1.0);
+
+    // the uniform color is premultiplied, only the vertex color has to be
+    vColor = vec4(aColor.rgb * aColor.a, aColor.a) * ${includeLocalUniforms ? "uColor * uWorldColorAlpha" : "uWorldColorAlpha"};
+}
+`;
+}
+function glUvBlock() {
+  return `
+    vec2 rel = pos - worldMatrix[2].xy;
+    float det = worldMatrix[0][0] * worldMatrix[1][1] - worldMatrix[1][0] * worldMatrix[0][1];
+    vec3 local = vec3(
+        (worldMatrix[1][1] * rel.x - worldMatrix[1][0] * rel.y) / det,
+        (worldMatrix[0][0] * rel.y - worldMatrix[0][1] * rel.x) / det,
+        1.0);
+    vTextureCoord = vec2(dot(aUvU, local), dot(aUvV, local));
+`;
+}
+function glFragmentPreamble(maxTextures, extraUniforms = "") {
+  return `
+#ifdef GL_FRAGMENT_PRECISION_HIGH
+  precision highp float;
+#else
+  precision mediump float;
+#endif
+
+varying vec4 vColor;
+varying vec4 vLine1;
+varying vec4 vLine2;
+varying vec4 vArc;
+varying float vType;
+varying float vTextureId;
+varying vec2 vTextureCoord;
+varying vec2 vTravel;
+// must be named uTextures to match getBatchSamplersUniformGroup()
+uniform sampler2D uTextures[${maxTextures}];
+${extraUniforms}`;
+}
+function glPixelLineFunction() {
+  return `
+float pixelLine(float x, float A, float B) {
+    return clamp(x + 0.5, 0.0, 1.0);
+}
+`;
+}
+function glHhaaAlphaBlock() {
+  return `    if (vType < 0.5) {
+        float left = pixelLine(-vLine1.y - vLine1.x, vLine1.z, vLine1.w);
+        float right = pixelLine(vLine1.y - vLine1.x, vLine1.z, vLine1.w);
+        float near = vLine2.x - 0.5;
+        float far = min(vLine2.x + 0.5, 0.0);
+        float top = vLine2.y - 0.5;
+        float bottom = min(vLine2.y + 0.5, 0.0);
+        alpha = (right - left) * max(bottom - top, 0.0) * max(far - near, 0.0);
+    } else if (vType < 1.5) {
+        float a1 = pixelLine(-vLine1.y - vLine1.x, vLine1.z, vLine1.w);
+        float a2 = pixelLine(vLine1.y - vLine1.x, vLine1.z, vLine1.w);
+        float b1 = pixelLine(-vLine2.y - vLine2.x, vLine2.z, vLine2.w);
+        float b2 = pixelLine(vLine2.y - vLine2.x, vLine2.z, vLine2.w);
+        alpha = a2 * b2 - a1 * b1;
+    } else if (vType < 2.5) {
+        alpha *= max(min(vLine1.x + 0.5, 1.0), 0.0);
+        alpha *= max(min(vLine1.y + 0.5, 1.0), 0.0);
+        alpha *= max(min(vLine1.z + 0.5, 1.0), 0.0);
+    } else if (vType < 3.5) {
+        float a1 = pixelLine(-vLine1.y - vLine1.x, vLine1.z, vLine1.w);
+        float a2 = pixelLine(vLine1.y - vLine1.x, vLine1.z, vLine1.w);
+        float b1 = pixelLine(-vLine2.y - vLine2.x, vLine2.z, vLine2.w);
+        float b2 = pixelLine(vLine2.y - vLine2.x, vLine2.z, vLine2.w);
+        float alpha_miter = a2 * b2 - a1 * b1;
+        float alpha_plane = clamp(vArc.z - vArc.x + 0.5, 0.0, 1.0);
+        float d = length(vArc.xy);
+        float circle_hor = max(min(vArc.w, d + 0.5) - max(-vArc.w, d - 0.5), 0.0);
+        float circle_vert = min(vArc.w * 2.0, 1.0);
+        float alpha_circle = circle_hor * circle_vert;
+        alpha = min(alpha_miter, max(alpha_circle, alpha_plane));
+    } else {
+        float a1 = pixelLine(-vLine1.y - vLine1.x, vLine1.z, vLine1.w);
+        float a2 = pixelLine(vLine1.y - vLine1.x, vLine1.z, vLine1.w);
+        float b1 = pixelLine(-vLine2.y - vLine2.x, vLine2.z, vLine2.w);
+        float b2 = pixelLine(vLine2.y - vLine2.x, vLine2.z, vLine2.w);
+        alpha = a2 * b2 - a1 * b1;
+        alpha *= clamp(vArc.z + 0.5, 0.0, 1.0);
+    }
+`;
+}
+function glTextureSampleAndOutput(maxTextures) {
+  const sampleSrc = generateGlSampleSrc(maxTextures);
+  return `
+    vec4 texColor;
+    float textureId = floor(vTextureId + 0.5);
+    ${sampleSrc}
+
+    gl_FragColor = vColor * texColor * alpha;
+}
+`;
+}
+function wgslTextureBindingsAndBranches(maxTextures) {
+  let bindings = "";
+  let branches = "";
+  for (let i2 = 0; i2 < maxTextures; i2++) {
+    bindings += `@group(1) @binding(${i2 * 2}) var uTexture${i2}: texture_2d<f32>;
+`;
+    bindings += `@group(1) @binding(${i2 * 2 + 1}) var uSampler${i2}: sampler;
+`;
+    const cond = i2 < maxTextures - 1 ? `if textureIndex == ${i2}u` : "";
+    const elseStr = i2 > 0 ? "else " : "";
+    branches += `    ${elseStr}${cond} {
+`;
+    branches += `        texColor = textureSampleGrad(uTexture${i2}, uSampler${i2}, vTextureCoord, uvDx, uvDy);
+`;
+    branches += `    }
+`;
+  }
+  return { bindings, branches };
+}
+function wgslStructsAndConstants(textured = false) {
+  return `struct GlobalUniforms {
+    uProjectionMatrix: mat3x3<f32>,
+    uWorldTransformMatrix: mat3x3<f32>,
+    uWorldColorAlpha: vec4<f32>,
+    uResolution: vec2<f32>,
+}
+
+@group(0) @binding(0) var<uniform> globalUniforms: GlobalUniforms;
+
+struct VSInput {
+    @location(0) aPrev: vec2<f32>,
+    @location(1) aPoint1: vec2<f32>,
+    @location(2) aPoint2: vec2<f32>,
+    @location(3) aNext: vec2<f32>,
+    @location(4) aTravel: f32,
+    @location(5) aVertexJoint: f32,
+    @location(6) aLineWidth: f32,
+    @location(7) aStylePacked: f32,
+    @location(8) aColor: vec4<f32>,
+    @location(9) aTextureIdAndRound: vec2<u32>,
+${textured ? "    @location(10) aUvU: vec3<f32>,\n    @location(11) aUvV: vec3<f32>,\n" : ""}}
+
+struct VSOutput {
+    @builtin(position) position: vec4<f32>,
+    @location(0) vLine1: vec4<f32>,
+    @location(1) vLine2: vec4<f32>,
+    @location(2) vArc: vec4<f32>,
+    @location(3) vType: f32,
+    @location(4) vColor: vec4<f32>,
+    @location(5) vTextureCoord: vec2<f32>,
+    @location(6) vTravel: vec2<f32>,
+    @location(7) @interpolate(flat) vTextureId: u32,
+}
+
+const FILL: f32 = 1.0;
+const BEVEL: f32 = 4.0;
+const MITER: f32 = 8.0;
+const ROUND: f32 = 12.0;
+const JOINT_CAP_BUTT: f32 = 16.0;
+const JOINT_CAP_SQUARE: f32 = 18.0;
+const JOINT_CAP_ROUND: f32 = 20.0;
+const FILL_EXPAND: f32 = 24.0;
+const CAP_BUTT: f32 = 1.0;
+const CAP_SQUARE: f32 = 2.0;
+const CAP_ROUND: f32 = 3.0;
+const MITER_LIMIT: f32 = 10.0;
+`;
+}
+function wgslLocalUniformsBlock() {
+  return `struct LocalUniforms {
+    uTransformMatrix: mat3x3<f32>,
+    uColor: vec4<f32>,
+    uRound: f32,
+}
+
+@group(2) @binding(0) var<uniform> localUniforms: LocalUniforms;
+`;
+}
+function wgslHelperFunctions() {
+  return `fn doBisect(norm: vec2<f32>, len: f32, norm2: vec2<f32>, len2: f32, dy: f32, inner: f32) -> vec2<f32> {
+    var bisect = (norm + norm2) / 2.0;
+    bisect = bisect / dot(norm, bisect);
+    if (inner > 0.5) {
+        if (len < len2) {
+            if (abs(dy * (bisect.x * norm.y - bisect.y * norm.x)) > len) {
+                return dy * norm;
+            }
+        } else {
+            if (abs(dy * (bisect.x * norm2.y - bisect.y * norm2.x)) > len2) {
+                return dy * norm;
+            }
+        }
+    }
+    return dy * bisect;
+}
+
+fn getScale(m: mat3x3<f32>, scaleMode: f32) -> f32 {
+    if (scaleMode > 0.5) {
+        let d = (m * vec3<f32>(1.0, 1.0, 0.0)).xy;
+        return sqrt(dot(d, d) * 0.5);
+    }
+    return 1.0;
+}
+`;
+}
+function wgslVertexBody(worldMatrixExpr, colorUniformExpr, textured = false) {
+  return `@vertex
+fn mainVertex(input: VSInput) -> VSOutput {
+    var output: VSOutput;
+    let worldMatrix = ${worldMatrixExpr};
+
+    let pointA = (worldMatrix * vec3<f32>(input.aPoint1, 1.0)).xy;
+    let pointB = (worldMatrix * vec3<f32>(input.aPoint2, 1.0)).xy;
+
+    let xBasis = pointB - pointA;
+    let segLen = length(xBasis);
+    let forward = xBasis / segLen;
+    let norm = vec2<f32>(forward.y, -forward.x);
+
+    var jointType = floor(input.aVertexJoint / 16.0);
+    var vertexNum = input.aVertexJoint - jointType * 16.0;
+
+    var capType = floor(jointType / 32.0);
+    jointType = jointType - capType * 32.0;
+
+    let scaleMode = floor(input.aStylePacked);
+    let alignmentVal = input.aStylePacked - scaleMode;
+
+    let renderGroupScale = getScale(worldMatrix, scaleMode);
+    var lineWidth = input.aLineWidth * renderGroupScale * 0.5;
+    let avgScale = renderGroupScale;
+    var lineAlignment = 2.0 * alignmentVal - 1.0;
+    // number of render target pixels per world unit, AA is computed in render target pixels
+    let resolution = abs(globalUniforms.uProjectionMatrix[0][0]) * globalUniforms.uResolution.x * 0.5;
+    let expand = 1.0 / resolution;
+
+    output.vTextureId = input.aTextureIdAndRound.y;
+    output.vTextureCoord = vec2<f32>(0.0);
+    output.vLine1 = vec4<f32>(0.0, 10.0, 1.0, 0.0);
+    output.vLine2 = vec4<f32>(0.0, 10.0, 1.0, 0.0);
+    output.vArc = vec4<f32>(0.0);
+    output.vType = 0.0;
+    output.vTravel = vec2<f32>(0.0);
+
+    var pos = vec2<f32>(0.0);
+
+    if (capType == CAP_ROUND) {
+        vertexNum += 4.0;
+        jointType = JOINT_CAP_ROUND;
+        capType = 0.0;
+        lineAlignment = -lineAlignment;
+    }
+
+    if (jointType == FILL) {
+        pos = pointA;
+        output.vType = 0.0;
+        output.vLine2 = vec4<f32>(-2.0, -2.0, -2.0, 0.0);
+    } else if (jointType >= FILL_EXPAND && jointType < FILL_EXPAND + 7.5) {
+        let flags = jointType - FILL_EXPAND;
+        let flag3 = floor(flags / 4.0);
+        let flag2 = floor((flags - flag3 * 4.0) / 2.0);
+        let flag1 = flags - flag3 * 4.0 - flag2 * 2.0;
+
+        let prev = (worldMatrix * vec3<f32>(input.aPrev, 1.0)).xy;
+
+        if (vertexNum < 0.5) {
+            pos = prev;
+        } else if (vertexNum < 1.5) {
+            pos = pointA;
+        } else {
+            pos = pointB;
+        }
+        let len2 = length(input.aNext);
+        var bisect = (worldMatrix * vec3<f32>(input.aNext, 0.0)).xy;
+        if (len2 > 0.01) {
+            bisect = normalize(bisect) * len2;
+        }
+
+        var n1 = normalize(vec2<f32>(pointA.y - prev.y, -(pointA.x - prev.x)));
+        var n2 = normalize(vec2<f32>(pointB.y - pointA.y, -(pointB.x - pointA.x)));
+        var n3 = normalize(vec2<f32>(prev.y - pointB.y, -(prev.x - pointB.x)));
+
+        if (n1.x * n2.y - n1.y * n2.x < 0.0) {
+            n1 = -n1; n2 = -n2; n3 = -n3;
+        }
+        pos += bisect * expand;
+
+        output.vLine1 = vec4<f32>(16.0, 16.0, 16.0, -1.0);
+        if (flag1 > 0.5) { output.vLine1.x = -dot(pos - prev, n1); }
+        if (flag2 > 0.5) { output.vLine1.y = -dot(pos - pointA, n2); }
+        if (flag3 > 0.5) { output.vLine1.z = -dot(pos - pointB, n3); }
+        output.vLine1 = vec4<f32>(output.vLine1.xyz * resolution, output.vLine1.w);
+        output.vType = 2.0;
+    } else if (jointType >= BEVEL) {
+        var dy = lineWidth + expand;
+        let shift = lineWidth * lineAlignment;
+        var inner: f32 = 0.0;
+        if (vertexNum >= 1.5) { dy = -dy; inner = 1.0; }
+
+        var base: vec2<f32>;
+        var nextPt: vec2<f32>;
+        var flag: f32 = 0.0;
+        var side2: f32 = 1.0;
+        if (vertexNum < 0.5 || (vertexNum > 2.5 && vertexNum < 3.5)) {
+            nextPt = (worldMatrix * vec3<f32>(input.aPrev, 1.0)).xy;
+            base = pointA;
+            flag = jointType - floor(jointType / 2.0) * 2.0;
+            side2 = -1.0;
+        } else {
+            nextPt = (worldMatrix * vec3<f32>(input.aNext, 1.0)).xy;
+            base = pointB;
+            if (jointType >= MITER && jointType < MITER + 3.5) {
+                flag = step(MITER + 1.5, jointType);
+            }
+        }
+        let xBasis2 = nextPt - base;
+        let len2 = length(xBasis2);
+        var norm2 = vec2<f32>(xBasis2.y, -xBasis2.x) / len2;
+        let D = norm.x * norm2.y - norm.y * norm2.x;
+        if (D < 0.0) { inner = 1.0 - inner; }
+        norm2 *= side2;
+        let collinear = step(0.0, dot(norm, norm2));
+
+        output.vType = 0.0;
+        var dy2: f32 = -1000.0;
+
+        if (abs(D) < 0.01 && collinear < 0.5) {
+            if (jointType >= ROUND && jointType < ROUND + 1.5) {
+                jointType = JOINT_CAP_ROUND;
+            }
+        }
+
+        output.vLine1 = vec4<f32>(0.0, lineWidth, max(abs(norm.x), abs(norm.y)), min(abs(norm.x), abs(norm.y)));
+        output.vLine2 = vec4<f32>(0.0, lineWidth, max(abs(norm2.x), abs(norm2.y)), min(abs(norm2.x), abs(norm2.y)));
+
+        if (vertexNum < 3.5) {
+            if (abs(D) < 0.01 && collinear < 0.5) {
+                pos = (shift + dy) * norm;
+            } else {
+                if (flag < 0.5 && inner < 0.5) {
+                    pos = (shift + dy) * norm;
+                } else {
+                    pos = doBisect(norm, segLen, norm2, len2, shift + dy, inner);
+                }
+            }
+            output.vLine2 = vec4<f32>(output.vLine2.x, -1000.0, output.vLine2.z, output.vLine2.w);
+            if (capType >= CAP_BUTT && capType < CAP_ROUND) {
+                let extra = step(CAP_SQUARE, capType) * lineWidth;
+                let back = -forward;
+                if (vertexNum < 0.5 || vertexNum > 2.5) {
+                    pos += back * (expand + extra);
+                    dy2 = expand;
+                } else {
+                    dy2 = dot(pos + base - pointA, back) - extra;
+                }
+            }
+            if (jointType >= JOINT_CAP_BUTT && jointType < JOINT_CAP_SQUARE + 0.5) {
+                let extra = step(JOINT_CAP_SQUARE, jointType) * lineWidth;
+                if (vertexNum < 0.5 || vertexNum > 2.5) {
+                    output.vLine2 = vec4<f32>(output.vLine2.x, dot(pos + base - pointB, forward) - extra, output.vLine2.z, output.vLine2.w);
+                } else {
+                    pos += forward * (expand + extra);
+                    output.vLine2 = vec4<f32>(output.vLine2.x, expand, output.vLine2.z, output.vLine2.w);
+                    if (capType >= CAP_BUTT) {
+                        dy2 -= expand + extra;
+                    }
+                }
+            }
+        } else if (jointType >= JOINT_CAP_ROUND && jointType < JOINT_CAP_ROUND + 1.5) {
+            var baseShifted = base + shift * norm;
+            if (inner > 0.5) { dy = -dy; inner = 0.0; }
+            let d2 = abs(dy) * forward;
+            if (vertexNum < 4.5) { dy = -dy; pos = dy * norm; }
+            else if (vertexNum < 5.5) { pos = dy * norm; }
+            else if (vertexNum < 6.5) { pos = dy * norm + d2; output.vArc = vec4<f32>(abs(dy), output.vArc.y, output.vArc.z, output.vArc.w); }
+            else { dy = -dy; pos = dy * norm + d2; output.vArc = vec4<f32>(abs(dy), output.vArc.y, output.vArc.z, output.vArc.w); }
+            output.vLine2 = vec4<f32>(0.0, lineWidth * 2.0 + 10.0, 1.0, 0.0);
+            output.vArc = vec4<f32>(output.vArc.x, dy, 0.0, lineWidth);
+            output.vType = 3.0;
+            base = baseShifted;
+        } else if (abs(D) < 0.01 && collinear < 0.5) {
+            pos = dy * norm;
+        } else {
+            if (inner > 0.5) { dy = -dy; inner = 0.0; }
+            let side = sign(dy);
+            let norm3 = normalize(norm + norm2);
+
+            if (jointType >= MITER && jointType < MITER + 3.5) {
+                let farVertex = doBisect(norm, segLen, norm2, len2, shift + dy, 0.0);
+                if (length(farVertex) > abs(shift + dy) * MITER_LIMIT) {
+                    jointType = BEVEL;
+                }
+            }
+
+            if (vertexNum < 4.5) {
+                pos = doBisect(norm, segLen, norm2, len2, shift - dy, 1.0);
+            } else if (vertexNum < 5.5) {
+                pos = (shift + dy) * norm;
+            } else if (vertexNum > 7.5) {
+                pos = (shift + dy) * norm2;
+            } else {
+                if (jointType >= ROUND && jointType < ROUND + 1.5) {
+                    pos = doBisect(norm, segLen, norm2, len2, shift + dy, 0.0);
+                    let dd = abs(shift + dy);
+                    if (length(pos) > abs(shift + dy) * 1.5) {
+                        if (vertexNum < 6.5) {
+                            pos = vec2<f32>((shift + dy) * norm.x - dd * norm.y, (shift + dy) * norm.y + dd * norm.x);
+                        } else {
+                            pos = vec2<f32>((shift + dy) * norm2.x + dd * norm2.y, (shift + dy) * norm2.y - dd * norm2.x);
+                        }
+                    }
+                } else if (jointType >= MITER && jointType < MITER + 3.5) {
+                    pos = doBisect(norm, segLen, norm2, len2, shift + dy, 0.0);
+                } else if (jointType >= BEVEL && jointType < BEVEL + 1.5) {
+                    let dd = side / resolution;
+                    if (vertexNum < 6.5) {
+                        pos = (shift + dy) * norm + dd * norm3;
+                    } else {
+                        pos = (shift + dy) * norm2 + dd * norm3;
+                    }
+                }
+            }
+
+            if (jointType >= ROUND && jointType < ROUND + 1.5) {
+                output.vArc = vec4<f32>(side * dot(pos, norm3), pos.x * norm3.y - pos.y * norm3.x, dot(norm, norm3) * (lineWidth + side * shift), lineWidth + side * shift);
+                output.vType = 3.0;
+            } else if (jointType >= MITER && jointType < MITER + 3.5) {
+                output.vType = 1.0;
+            } else if (jointType >= BEVEL && jointType < BEVEL + 1.5) {
+                output.vType = 4.0;
+                output.vArc = vec4<f32>(output.vArc.x, output.vArc.y, dot(norm, norm3) * (lineWidth + side * shift) - side * dot(pos, norm3), output.vArc.w);
+            }
+
+            dy = side * (dot(pos, norm) - shift);
+            dy2 = side * (dot(pos, norm2) - shift);
+        }
+
+        pos += base;
+        output.vLine1 = vec4<f32>(dy * resolution, output.vLine1.y * resolution, output.vLine1.z, output.vLine1.w);
+        output.vLine2 = vec4<f32>(dy2 * resolution, output.vLine2.y * resolution, output.vLine2.z, output.vLine2.w);
+        output.vArc = output.vArc * resolution;
+        output.vTravel = vec2<f32>(input.aTravel * avgScale + dot(pos - pointA, vec2<f32>(-norm.y, norm.x)), avgScale);
+    }
+
+${textured ? wgslUvBlock() : ""}
+    output.position = vec4<f32>((globalUniforms.uProjectionMatrix * vec3<f32>(pos, 1.0)).xy, 0.0, 1.0);
+    // the uniform color is premultiplied, only the vertex color has to be
+    output.vColor = vec4<f32>(input.aColor.rgb * input.aColor.a, input.aColor.a) * ${colorUniformExpr};
+
+    return output;
+}
+`;
+}
+function wgslUvBlock() {
+  return `
+    let rel = pos - worldMatrix[2].xy;
+    let det = worldMatrix[0][0] * worldMatrix[1][1] - worldMatrix[1][0] * worldMatrix[0][1];
+    let local = vec3<f32>(
+        (worldMatrix[1][1] * rel.x - worldMatrix[1][0] * rel.y) / det,
+        (worldMatrix[0][0] * rel.y - worldMatrix[0][1] * rel.x) / det,
+        1.0);
+    output.vTextureCoord = vec2<f32>(dot(input.aUvU, local), dot(input.aUvV, local));
+`;
+}
+function wgslPixelLineFunction() {
+  return `fn pixelLine(x: f32, A: f32, B: f32) -> f32 {
+    return clamp(x + 0.5, 0.0, 1.0);
+}
+`;
+}
+function wgslFragmentOpen() {
+  return `@fragment
+fn mainFragment(input: VSOutput) -> @location(0) vec4<f32> {
+    var alpha: f32 = 1.0;
+    let vLine1 = input.vLine1;
+    let vLine2 = input.vLine2;
+    let vArc = input.vArc;
+`;
+}
+function wgslHhaaAlphaBlock() {
+  return `
+    if (input.vType < 0.5) {
+        let left = pixelLine(-vLine1.y - vLine1.x, vLine1.z, vLine1.w);
+        let right = pixelLine(vLine1.y - vLine1.x, vLine1.z, vLine1.w);
+        let near = vLine2.x - 0.5;
+        let far = min(vLine2.x + 0.5, 0.0);
+        let top = vLine2.y - 0.5;
+        let bottom = min(vLine2.y + 0.5, 0.0);
+        alpha = (right - left) * max(bottom - top, 0.0) * max(far - near, 0.0);
+    } else if (input.vType < 1.5) {
+        let a1 = pixelLine(-vLine1.y - vLine1.x, vLine1.z, vLine1.w);
+        let a2 = pixelLine(vLine1.y - vLine1.x, vLine1.z, vLine1.w);
+        let b1 = pixelLine(-vLine2.y - vLine2.x, vLine2.z, vLine2.w);
+        let b2 = pixelLine(vLine2.y - vLine2.x, vLine2.z, vLine2.w);
+        alpha = a2 * b2 - a1 * b1;
+    } else if (input.vType < 2.5) {
+        alpha *= max(min(vLine1.x + 0.5, 1.0), 0.0);
+        alpha *= max(min(vLine1.y + 0.5, 1.0), 0.0);
+        alpha *= max(min(vLine1.z + 0.5, 1.0), 0.0);
+    } else if (input.vType < 3.5) {
+        let a1 = pixelLine(-vLine1.y - vLine1.x, vLine1.z, vLine1.w);
+        let a2 = pixelLine(vLine1.y - vLine1.x, vLine1.z, vLine1.w);
+        let b1 = pixelLine(-vLine2.y - vLine2.x, vLine2.z, vLine2.w);
+        let b2 = pixelLine(vLine2.y - vLine2.x, vLine2.z, vLine2.w);
+        let alpha_miter = a2 * b2 - a1 * b1;
+        let alpha_plane = clamp(vArc.z - vArc.x + 0.5, 0.0, 1.0);
+        let d = length(vArc.xy);
+        let circle_hor = max(min(vArc.w, d + 0.5) - max(-vArc.w, d - 0.5), 0.0);
+        let circle_vert = min(vArc.w * 2.0, 1.0);
+        let alpha_circle = circle_hor * circle_vert;
+        alpha = min(alpha_miter, max(alpha_circle, alpha_plane));
+    } else {
+        let a1 = pixelLine(-vLine1.y - vLine1.x, vLine1.z, vLine1.w);
+        let a2 = pixelLine(vLine1.y - vLine1.x, vLine1.z, vLine1.w);
+        let b1 = pixelLine(-vLine2.y - vLine2.x, vLine2.z, vLine2.w);
+        let b2 = pixelLine(vLine2.y - vLine2.x, vLine2.z, vLine2.w);
+        alpha = a2 * b2 - a1 * b1;
+        alpha *= clamp(vArc.z + 0.5, 0.0, 1.0);
+    }
+`;
+}
+function wgslTextureSampleAndReturn(sampleBranches) {
+  return `    var texColor: vec4<f32> = vec4<f32>(1.0);
+    let textureIndex = input.vTextureId;
+    let vTextureCoord = input.vTextureCoord;
+    let uvDx = dpdx(vTextureCoord);
+    let uvDy = dpdy(vTextureCoord);
+${sampleBranches}
+
+    return input.vColor * texColor * alpha;
+}
+`;
+}
+function generateSmoothGlSource(options) {
+  const { maxTextures, localUniforms = false, textured = false, fragmentHeader = "", fragmentAlpha = "" } = options;
+  const fragment2 = `${glFragmentPreamble(maxTextures, fragmentHeader)}${glPixelLineFunction()}
+void main(void){
+    float alpha = 1.0;
+${glHhaaAlphaBlock()}${fragmentAlpha}${glTextureSampleAndOutput(maxTextures)}`;
+  return { vertex: buildGlVertexSrc(localUniforms, textured), fragment: fragment2 };
+}
+function generateSmoothWgslSource(options) {
+  const { maxTextures, localUniforms = false, textured = false, fragmentHeader = "", fragmentAlpha = "" } = options;
+  const { bindings, branches } = wgslTextureBindingsAndBranches(maxTextures);
+  const worldMatrix2 = localUniforms ? "globalUniforms.uWorldTransformMatrix * localUniforms.uTransformMatrix" : "globalUniforms.uWorldTransformMatrix";
+  const uniformColor = localUniforms ? "localUniforms.uColor * globalUniforms.uWorldColorAlpha" : "globalUniforms.uWorldColorAlpha";
+  return `
+${wgslStructsAndConstants(textured)}${localUniforms ? wgslLocalUniformsBlock() : ""}${fragmentHeader}${bindings}
+${wgslHelperFunctions()}${wgslVertexBody(worldMatrix2, uniformColor, textured)}${wgslPixelLineFunction()}${wgslFragmentOpen()}${wgslHhaaAlphaBlock()}${fragmentAlpha}${wgslTextureSampleAndReturn(branches)}`;
+}
+function getSmoothGlProgram(options) {
+  return GlProgram.from({ ...generateSmoothGlSource(options), name: options.name });
+}
+function getSmoothGpuProgram(options) {
+  const source2 = generateSmoothWgslSource(options);
+  return GpuProgram.from({
+    vertex: { source: source2, entryPoint: "mainVertex" },
+    fragment: { source: source2, entryPoint: "mainFragment" },
+    name: options.name
+  });
+}
+class SmoothShader extends Shader {
+  /**
+   * @param maxTextures - Max batch textures
+   * @param textured - Whether the vertices carry a texture coordinate matrix
+   */
+  constructor(maxTextures, textured = false) {
+    const options = { maxTextures, textured, name: textured ? "smooth-batch-textured" : "smooth-batch" };
+    super({
+      glProgram: getSmoothGlProgram(options),
+      gpuProgram: getSmoothGpuProgram(options),
+      resources: {
+        batchSamplers: getBatchSamplersUniformGroup(maxTextures)
+      }
+    });
+    this.maxTextures = maxTextures;
+  }
+}
+class GlSmoothGraphicsAdaptor extends AbstractGlGraphicsAdaptor {
+  contextChange(renderer) {
+    const uniforms = new UniformGroup({
+      uColor: { value: new Float32Array([1, 1, 1, 1]), type: "vec4<f32>" },
+      uTransformMatrix: { value: new Matrix(), type: "mat3x3<f32>" },
+      uRound: { value: 0, type: "f32" }
+    });
+    const maxTextures = renderer.limits.maxBatchableTextures;
+    const batchSamplers = getBatchSamplersUniformGroup(maxTextures);
+    this.shader = new Shader({
+      glProgram: getSmoothGlProgram({ name: "smooth-local", maxTextures, localUniforms: true }),
+      resources: { localUniforms: uniforms, batchSamplers }
+    });
+    this._texturedShader = new Shader({
+      glProgram: getSmoothGlProgram({
+        name: "smooth-local-textured",
+        maxTextures,
+        localUniforms: true,
+        textured: true
+      }),
+      resources: { localUniforms: uniforms, batchSamplers }
+    });
+  }
+  _getRenderData(renderer, context2) {
+    return renderer.smoothGraphicsContext.getContextRenderData(context2);
+  }
+  _getShader(renderData) {
+    return renderData.textured ? this._texturedShader : this.shader;
+  }
+  destroy() {
+    this._texturedShader.destroy();
+    this._texturedShader = null;
+    this.shader.destroy();
+    this.shader = null;
+  }
+}
+GlSmoothGraphicsAdaptor.extension = {
+  type: [
+    ExtensionType.WebGLPipesAdaptor
+  ],
+  name: "smoothGraphics"
+};
+class GpuSmoothGraphicsAdaptor extends AbstractGpuGraphicsAdaptor {
+  contextChange(renderer) {
+    const localUniforms = new UniformGroup({
+      uTransformMatrix: { value: new Matrix(), type: "mat3x3<f32>" },
+      uColor: { value: new Float32Array([1, 1, 1, 1]), type: "vec4<f32>" },
+      uRound: { value: 0, type: "f32" }
+    });
+    const maxTextures = this._maxTextures = renderer.limits.maxBatchableTextures;
+    this.shader = new Shader({
+      gpuProgram: getSmoothGpuProgram({ name: "smooth-local", maxTextures, localUniforms: true }),
+      resources: { localUniforms }
+    });
+    this._texturedShader = new Shader({
+      gpuProgram: getSmoothGpuProgram({
+        name: "smooth-local-textured",
+        maxTextures,
+        localUniforms: true,
+        textured: true
+      }),
+      resources: { localUniforms }
+    });
+  }
+  _getRenderData(renderer, context2) {
+    return renderer.smoothGraphicsContext.getContextRenderData(context2);
+  }
+  _getShader(renderData) {
+    return renderData.textured ? this._texturedShader : this.shader;
+  }
+  destroy() {
+    this._texturedShader.destroy();
+    this._texturedShader = null;
+    super.destroy();
+  }
+}
+GpuSmoothGraphicsAdaptor.extension = {
+  type: [
+    ExtensionType.WebGPUPipesAdaptor
+  ],
+  name: "smoothGraphics"
+};
+class BatchableSmoothGraphics extends AbstractBatchableGraphics {
+  constructor() {
+    super(...arguments);
+    this.batcherName = "smooth";
+    this.lineWidth = 0;
+    this.alignment = 0.5;
+    this.pixelLine = false;
+    this.uvMatrix = null;
+  }
+  get uvs() {
+    return this.geometryData.vertices;
+  }
+  get positions() {
+    return this.geometryData.vertices;
+  }
+  get indices() {
+    return this.geometryData.indices;
+  }
+  copyTo(target) {
+    target.indexOffset = this.indexOffset;
+    target.indexSize = this.indexSize;
+    target.attributeOffset = this.attributeOffset;
+    target.attributeSize = this.attributeSize;
+    target.baseColor = this.baseColor;
+    target.alpha = this.alpha;
+    target.texture = this.texture;
+    target.geometryData = this.geometryData;
+    target.topology = this.topology;
+    target.lineWidth = this.lineWidth;
+    target.alignment = this.alignment;
+    target.pixelLine = this.pixelLine;
+    target.uvMatrix = this.uvMatrix;
+    target.batcherName = this.batcherName;
+  }
+  destroy() {
+    super.destroy();
+    this.geometryData = null;
+    this.uvMatrix = null;
+  }
+}
+var JOINT_TYPE = /* @__PURE__ */ ((JOINT_TYPE2) => {
+  JOINT_TYPE2[JOINT_TYPE2["NONE"] = 0] = "NONE";
+  JOINT_TYPE2[JOINT_TYPE2["FILL"] = 1] = "FILL";
+  JOINT_TYPE2[JOINT_TYPE2["JOINT_BEVEL"] = 4] = "JOINT_BEVEL";
+  JOINT_TYPE2[JOINT_TYPE2["JOINT_MITER"] = 8] = "JOINT_MITER";
+  JOINT_TYPE2[JOINT_TYPE2["JOINT_ROUND"] = 12] = "JOINT_ROUND";
+  JOINT_TYPE2[JOINT_TYPE2["JOINT_CAP_BUTT"] = 16] = "JOINT_CAP_BUTT";
+  JOINT_TYPE2[JOINT_TYPE2["JOINT_CAP_SQUARE"] = 18] = "JOINT_CAP_SQUARE";
+  JOINT_TYPE2[JOINT_TYPE2["JOINT_CAP_ROUND"] = 20] = "JOINT_CAP_ROUND";
+  JOINT_TYPE2[JOINT_TYPE2["FILL_EXPAND"] = 24] = "FILL_EXPAND";
+  JOINT_TYPE2[JOINT_TYPE2["CAP_BUTT"] = 32] = "CAP_BUTT";
+  JOINT_TYPE2[JOINT_TYPE2["CAP_SQUARE"] = 64] = "CAP_SQUARE";
+  JOINT_TYPE2[JOINT_TYPE2["CAP_ROUND"] = 96] = "CAP_ROUND";
+  JOINT_TYPE2[JOINT_TYPE2["CAP_BUTT2"] = 128] = "CAP_BUTT2";
+  return JOINT_TYPE2;
+})(JOINT_TYPE || {});
+const FILL_EXPAND_BASES = {
+  /** Default: vertices are based on prev, point1, point2 */
+  TRIANGLE: 0,
+  /** Vertices are based on point1, point2, point2 (first half of an edge strip) */
+  FRINGE_1: 1 << 8,
+  /** Vertices are based on point1, point2, point1 (second half of an edge strip) */
+  FRINGE_2: 2 << 8
+};
+const placeHolderBufferData$1 = new Float32Array(1);
+const placeHolderIndexData$1 = new Uint32Array(1);
+class SmoothBatchGeometry extends Geometry {
+  /**
+   * @param textured - whether to include the texture coordinate matrix attributes
+   */
+  constructor(textured = false) {
+    const vertexSize = textured ? 20 : 14;
+    const attributeBuffer = new Buffer({
+      data: placeHolderBufferData$1,
+      label: "attribute-smooth-batch-buffer",
+      usage: BufferUsage.VERTEX | BufferUsage.COPY_DST,
+      shrinkToFit: false
+    });
+    const indexBuffer = new Buffer({
+      data: placeHolderIndexData$1,
+      label: "index-smooth-batch-buffer",
+      usage: BufferUsage.INDEX | BufferUsage.COPY_DST,
+      shrinkToFit: false
+    });
+    const stride = vertexSize * 4;
+    super({
+      attributes: {
+        aPrev: {
+          buffer: attributeBuffer,
+          format: "float32x2",
+          stride,
+          offset: 0
+        },
+        aPoint1: {
+          buffer: attributeBuffer,
+          format: "float32x2",
+          stride,
+          offset: 2 * 4
+        },
+        aPoint2: {
+          buffer: attributeBuffer,
+          format: "float32x2",
+          stride,
+          offset: 4 * 4
+        },
+        aNext: {
+          buffer: attributeBuffer,
+          format: "float32x2",
+          stride,
+          offset: 6 * 4
+        },
+        aTravel: {
+          buffer: attributeBuffer,
+          format: "float32",
+          stride,
+          offset: 8 * 4
+        },
+        aVertexJoint: {
+          buffer: attributeBuffer,
+          format: "float32",
+          stride,
+          offset: 9 * 4
+        },
+        aLineWidth: {
+          buffer: attributeBuffer,
+          format: "float32",
+          stride,
+          offset: 10 * 4
+        },
+        aStylePacked: {
+          buffer: attributeBuffer,
+          format: "float32",
+          stride,
+          offset: 11 * 4
+        },
+        aColor: {
+          buffer: attributeBuffer,
+          format: "unorm8x4",
+          stride,
+          offset: 12 * 4
+        },
+        aTextureIdAndRound: {
+          buffer: attributeBuffer,
+          format: "uint16x2",
+          stride,
+          offset: 13 * 4
+        },
+        ...textured ? {
+          aUvU: {
+            buffer: attributeBuffer,
+            format: "float32x3",
+            stride,
+            offset: 14 * 4
+          },
+          aUvV: {
+            buffer: attributeBuffer,
+            format: "float32x3",
+            stride,
+            offset: 17 * 4
+          }
+        } : {}
+      },
+      indexBuffer
+    });
+  }
+}
+const sharedShaders = { plain: null, textured: null };
+const GEOM_STRIDE$1 = 10;
+const _SmoothBatcher = class _SmoothBatcher2 extends Batcher {
+  constructor(options) {
+    super(options);
+    this.geometry = new SmoothBatchGeometry(this.textured);
+    this.name = _SmoothBatcher2.extension.name;
+    this.vertexSize = this.textured ? 20 : 14;
+    this.shader = this._getSharedShader(options?.maxTextures ?? getMaxTexturesPerBatch());
+  }
+  /** Whether this batcher writes the texture coordinate matrix (20 floats per vertex). */
+  get textured() {
+    return false;
+  }
+  /**
+   * Packs the 10 floats per vertex of an element into 14 (or 20) floats per vertex, with its transform and style.
+   * @param element - Smooth graphics batchable element
+   * @param float32View - Output float32 view
+   * @param uint32View - Output uint32 view
+   * @param index - Starting float offset in output
+   * @param textureId - Texture slot ID
+   */
+  packAttributes(element, float32View, uint32View, index, textureId) {
+    const smoothElement = element;
+    const wt = smoothElement.transform;
+    const a2 = wt.a;
+    const b2 = wt.b;
+    const c2 = wt.c;
+    const d2 = wt.d;
+    const tx = wt.tx;
+    const ty = wt.ty;
+    const srcFloats = smoothElement.geometryData.vertices;
+    const offset = smoothElement.attributeOffset;
+    const count2 = smoothElement.attributeSize;
+    const elementScale = smoothElement.pixelLine ? 1 : Math.sqrt(Math.abs(a2 * d2 - b2 * c2));
+    const effectiveLineWidth = smoothElement.lineWidth * elementScale;
+    const stylePacked = (smoothElement.pixelLine ? 0 : 1) + Math.max(0, Math.min(smoothElement.alignment, 0.999));
+    const argb = smoothElement.color;
+    const textureIdAndRound = textureId << 16 | smoothElement.roundPixels & 65535;
+    const textured = this.textured;
+    let ua = 0;
+    let ub = 0;
+    let uc = 0;
+    let ud = 0;
+    let utx = 0;
+    let uty = 0;
+    if (textured && smoothElement.uvMatrix) {
+      const m2 = smoothElement.uvMatrix;
+      const det = a2 * d2 - b2 * c2;
+      const ia = d2 / det;
+      const ib = -b2 / det;
+      const ic = -c2 / det;
+      const id = a2 / det;
+      const itx = (c2 * ty - d2 * tx) / det;
+      const ity = (b2 * tx - a2 * ty) / det;
+      ua = m2.a * ia + m2.c * ib;
+      ub = m2.b * ia + m2.d * ib;
+      uc = m2.a * ic + m2.c * id;
+      ud = m2.b * ic + m2.d * id;
+      utx = m2.a * itx + m2.c * ity + m2.tx;
+      uty = m2.b * itx + m2.d * ity + m2.ty;
+    }
+    for (let i2 = 0; i2 < count2; i2++) {
+      const srcBase = (offset + i2) * GEOM_STRIDE$1;
+      const prevX = srcFloats[srcBase];
+      const prevY = srcFloats[srcBase + 1];
+      float32View[index] = a2 * prevX + c2 * prevY + tx;
+      float32View[index + 1] = b2 * prevX + d2 * prevY + ty;
+      const p1x = srcFloats[srcBase + 2];
+      const p1y = srcFloats[srcBase + 3];
+      float32View[index + 2] = a2 * p1x + c2 * p1y + tx;
+      float32View[index + 3] = b2 * p1x + d2 * p1y + ty;
+      const p2x = srcFloats[srcBase + 4];
+      const p2y = srcFloats[srcBase + 5];
+      float32View[index + 4] = a2 * p2x + c2 * p2y + tx;
+      float32View[index + 5] = b2 * p2x + d2 * p2y + ty;
+      const nextX = srcFloats[srcBase + 6];
+      const nextY = srcFloats[srcBase + 7];
+      const joint = Math.floor(srcFloats[srcBase + 9] / 16) & 31;
+      if (joint >= JOINT_TYPE.FILL_EXPAND) {
+        const vx2 = a2 * nextX + c2 * nextY;
+        const vy2 = b2 * nextX + d2 * nextY;
+        const vLen = Math.sqrt(vx2 * vx2 + vy2 * vy2);
+        const k = vLen > 0 ? Math.sqrt(nextX * nextX + nextY * nextY) / vLen : 0;
+        float32View[index + 6] = vx2 * k;
+        float32View[index + 7] = vy2 * k;
+      } else {
+        float32View[index + 6] = a2 * nextX + c2 * nextY + tx;
+        float32View[index + 7] = b2 * nextX + d2 * nextY + ty;
+      }
+      float32View[index + 8] = srcFloats[srcBase + 8] * elementScale;
+      float32View[index + 9] = srcFloats[srcBase + 9];
+      float32View[index + 10] = effectiveLineWidth;
+      float32View[index + 11] = stylePacked;
+      uint32View[index + 12] = argb;
+      uint32View[index + 13] = textureIdAndRound;
+      if (textured) {
+        float32View[index + 14] = ua;
+        float32View[index + 15] = uc;
+        float32View[index + 16] = utx;
+        float32View[index + 17] = ub;
+        float32View[index + 18] = ud;
+        float32View[index + 19] = uty;
+        index += 20;
+      } else {
+        index += 14;
+      }
+    }
+  }
+  /**
+   * Smooth graphics elements are never quads.
+   * @param _element - unused
+   * @param _float32View - unused
+   * @param _uint32View - unused
+   * @param _index - unused
+   * @param _textureId - unused
+   */
+  packQuadAttributes(_element, _float32View, _uint32View, _index, _textureId) {
+  }
+  /**
+   * Updates the maximum number of textures used in the shader.
+   * @param maxTextures - new max textures
+   * @internal
+   */
+  _updateMaxTextures(maxTextures) {
+    if (this.shader.maxTextures === maxTextures) return;
+    this.shader = this._getSharedShader(maxTextures);
+  }
+  _getSharedShader(maxTextures) {
+    const key = this.textured ? "textured" : "plain";
+    let shader = sharedShaders[key];
+    if (!shader || shader.maxTextures !== maxTextures) {
+      shader = sharedShaders[key] = new SmoothShader(maxTextures, this.textured);
+    }
+    return shader;
+  }
+  destroy() {
+    this.shader = null;
+    super.destroy();
+  }
+};
+_SmoothBatcher.extension = {
+  type: [
+    ExtensionType.Batcher
+  ],
+  name: "smooth"
+};
+let SmoothBatcher = _SmoothBatcher;
+const _SmoothTexturedBatcher = class _SmoothTexturedBatcher2 extends SmoothBatcher {
+  constructor() {
+    super(...arguments);
+    this.name = _SmoothTexturedBatcher2.extension.name;
+  }
+  get textured() {
+    return true;
+  }
+};
+_SmoothTexturedBatcher.extension = {
+  type: [
+    ExtensionType.Batcher
+  ],
+  name: "smoothTextured"
+};
+let SmoothTexturedBatcher = _SmoothTexturedBatcher;
+class SmoothBuildData {
+  constructor() {
+    this.verts = [];
+    this.joints = [];
+    this.vertexSize = 0;
+    this.indexSize = 0;
+  }
+  clear() {
+    this.verts.length = 0;
+    this.joints.length = 0;
+    this.vertexSize = 0;
+    this.indexSize = 0;
+  }
+  destroy() {
+    this.verts.length = 0;
+    this.joints.length = 0;
+  }
+}
+const vertsByJoint = [];
+for (let i2 = 0; i2 < 256; i2++) {
+  vertsByJoint.push(0);
+}
+vertsByJoint[JOINT_TYPE.FILL] = 1;
+for (let i2 = 0; i2 < 8; i2++) {
+  vertsByJoint[JOINT_TYPE.FILL_EXPAND + i2] = 3;
+}
+vertsByJoint[JOINT_TYPE.JOINT_BEVEL] = 4 + 5;
+vertsByJoint[JOINT_TYPE.JOINT_BEVEL + 1] = 4 + 5;
+vertsByJoint[JOINT_TYPE.JOINT_BEVEL + 2] = 4 + 5;
+vertsByJoint[JOINT_TYPE.JOINT_BEVEL + 3] = 4 + 5;
+vertsByJoint[JOINT_TYPE.JOINT_ROUND] = 4 + 5;
+vertsByJoint[JOINT_TYPE.JOINT_ROUND + 1] = 4 + 5;
+vertsByJoint[JOINT_TYPE.JOINT_ROUND + 2] = 4 + 5;
+vertsByJoint[JOINT_TYPE.JOINT_ROUND + 3] = 4 + 5;
+vertsByJoint[JOINT_TYPE.JOINT_MITER] = 4 + 5;
+vertsByJoint[JOINT_TYPE.JOINT_MITER + 1] = 4 + 5;
+vertsByJoint[JOINT_TYPE.JOINT_MITER + 2] = 4;
+vertsByJoint[JOINT_TYPE.JOINT_MITER + 3] = 4;
+vertsByJoint[JOINT_TYPE.JOINT_CAP_BUTT] = 4;
+vertsByJoint[JOINT_TYPE.JOINT_CAP_BUTT + 1] = 4;
+vertsByJoint[JOINT_TYPE.JOINT_CAP_SQUARE] = 4;
+vertsByJoint[JOINT_TYPE.JOINT_CAP_SQUARE + 1] = 4;
+vertsByJoint[JOINT_TYPE.JOINT_CAP_ROUND] = 4 + 5;
+vertsByJoint[JOINT_TYPE.JOINT_CAP_ROUND + 1] = 4 + 5;
+vertsByJoint[JOINT_TYPE.CAP_ROUND] = 4;
+const fillExpandBases = [];
+fillExpandBases[FILL_EXPAND_BASES.TRIANGLE >> 8] = [0, 1, 2];
+fillExpandBases[FILL_EXPAND_BASES.FRINGE_1 >> 8] = [1, 2, 2];
+fillExpandBases[FILL_EXPAND_BASES.FRINGE_2 >> 8] = [1, 2, 1];
+const GEOM_STRIDE = 10;
+class SmoothSegmentPacker {
+  /**
+   * Count vertices and indices needed for a range of joints.
+   * @param jointStart - Start index in the joints array
+   * @param jointLen - Number of joints to process
+   * @param triangleCount - Number of earcut triangle indices (for FILL joints)
+   * @param target - Build data to accumulate sizes into
+   */
+  updateBufferSize(jointStart, jointLen, triangleCount, target) {
+    const { joints } = target;
+    let foundTriangle = false;
+    let vertexSize = 0;
+    let indexSize = 0;
+    for (let i2 = jointStart; i2 < jointStart + jointLen; i2++) {
+      const prevCap = joints[i2] & -32;
+      const joint = joints[i2] & 31;
+      if (joint === JOINT_TYPE.FILL) {
+        foundTriangle = true;
+        vertexSize++;
+        continue;
+      }
+      if (joint >= JOINT_TYPE.FILL_EXPAND) {
+        vertexSize += 3;
+        indexSize += 3;
+        continue;
+      }
+      const vs = vertsByJoint[joint] + vertsByJoint[prevCap];
+      if (vs >= 4) {
+        vertexSize += vs;
+        indexSize += 6 + 3 * Math.max(vs - 6, 0);
+      }
+    }
+    if (foundTriangle) {
+      indexSize += triangleCount;
+    }
+    target.vertexSize += vertexSize;
+    target.indexSize += indexSize;
+  }
+  /**
+   * Pack joint/vert data into an interleaved Float32Array + index array.
+   * Writes 10 floats per vertex (geometry only).
+   * @param jointStart - Start index in the joints array
+   * @param jointLen - Number of joints to process
+   * @param triangles - Earcut triangle indices (relative to FILL vertex start)
+   * @param buildData - Source build data (joints + verts)
+   * @param bufFloat - Output float32 buffer
+   * @param indices - Output index buffer
+   * @param bufferPos - Starting float offset in bufFloat
+   * @param indexPos - Starting offset in indices
+   * @returns Updated [bufferPos, indexPos]
+   */
+  packInterleavedGeometry(jointStart, jointLen, triangles, buildData, bufFloat, indices, bufferPos, indexPos) {
+    const { joints, verts } = buildData;
+    let bufPos = bufferPos;
+    let indPos = indexPos;
+    let index = bufferPos / GEOM_STRIDE;
+    let hasTriangle = false;
+    let travel = 0;
+    for (let j2 = jointStart; j2 < jointStart + jointLen; j2++) {
+      const fullJoint = joints[j2];
+      const prevCap = joints[j2] & -32;
+      const joint = joints[j2] & 31;
+      if (joint === JOINT_TYPE.FILL) {
+        hasTriangle = true;
+        const x12 = verts[j2 * 2];
+        const y12 = verts[j2 * 2 + 1];
+        bufFloat[bufPos] = x12;
+        bufFloat[bufPos + 1] = y12;
+        bufFloat[bufPos + 2] = x12;
+        bufFloat[bufPos + 3] = y12;
+        bufFloat[bufPos + 4] = x12;
+        bufFloat[bufPos + 5] = y12;
+        bufFloat[bufPos + 6] = x12;
+        bufFloat[bufPos + 7] = y12;
+        bufFloat[bufPos + 8] = travel;
+        bufFloat[bufPos + 9] = 16 * joint;
+        bufPos += GEOM_STRIDE;
+        continue;
+      }
+      if (joint >= JOINT_TYPE.FILL_EXPAND) {
+        const prevX2 = verts[j2 * 2];
+        const prevY2 = verts[j2 * 2 + 1];
+        const x12 = verts[j2 * 2 + 2];
+        const y12 = verts[j2 * 2 + 3];
+        const x22 = verts[j2 * 2 + 4];
+        const y22 = verts[j2 * 2 + 5];
+        const bis = j2 + 3;
+        const bases = fillExpandBases[fullJoint >> 8];
+        for (let i2 = 0; i2 < 3; i2++) {
+          bufFloat[bufPos] = prevX2;
+          bufFloat[bufPos + 1] = prevY2;
+          bufFloat[bufPos + 2] = x12;
+          bufFloat[bufPos + 3] = y12;
+          bufFloat[bufPos + 4] = x22;
+          bufFloat[bufPos + 5] = y22;
+          bufFloat[bufPos + 6] = verts[(bis + i2) * 2];
+          bufFloat[bufPos + 7] = verts[(bis + i2) * 2 + 1];
+          bufFloat[bufPos + 8] = travel;
+          bufFloat[bufPos + 9] = 16 * joint + bases[i2];
+          bufPos += GEOM_STRIDE;
+        }
+        indices[indPos] = index;
+        indices[indPos + 1] = index + 1;
+        indices[indPos + 2] = index + 2;
+        indPos += 3;
+        index += 3;
+        continue;
+      }
+      const vs = vertsByJoint[joint] + vertsByJoint[prevCap];
+      if (vs === 0) {
+        continue;
+      }
+      const x1 = verts[j2 * 2];
+      const y1 = verts[j2 * 2 + 1];
+      const x2 = verts[j2 * 2 + 2];
+      const y2 = verts[j2 * 2 + 3];
+      const prevX = verts[j2 * 2 - 2];
+      const prevY = verts[j2 * 2 - 1];
+      const dist = Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
+      if (vertsByJoint[joint] === 0) {
+        travel -= dist;
+      }
+      let nextX;
+      let nextY;
+      if ((joint & -3) !== JOINT_TYPE.JOINT_CAP_BUTT) {
+        nextX = verts[j2 * 2 + 4];
+        nextY = verts[j2 * 2 + 5];
+      } else {
+        nextX = x1;
+        nextY = y1;
+      }
+      for (let i2 = 0; i2 < vs; i2++) {
+        bufFloat[bufPos] = prevX;
+        bufFloat[bufPos + 1] = prevY;
+        bufFloat[bufPos + 2] = x1;
+        bufFloat[bufPos + 3] = y1;
+        bufFloat[bufPos + 4] = x2;
+        bufFloat[bufPos + 5] = y2;
+        bufFloat[bufPos + 6] = nextX;
+        bufFloat[bufPos + 7] = nextY;
+        bufFloat[bufPos + 8] = travel;
+        bufFloat[bufPos + 9] = 16 * fullJoint + i2;
+        bufPos += GEOM_STRIDE;
+      }
+      travel += dist;
+      indices[indPos] = index;
+      indices[indPos + 1] = index + 1;
+      indices[indPos + 2] = index + 2;
+      indices[indPos + 3] = index;
+      indices[indPos + 4] = index + 2;
+      indices[indPos + 5] = index + 3;
+      indPos += 6;
+      for (let k = 5; k + 1 < vs; k++) {
+        indices[indPos] = index + 4;
+        indices[indPos + 1] = index + k;
+        indices[indPos + 2] = index + k + 1;
+        indPos += 3;
+      }
+      index += vs;
+    }
+    if (hasTriangle) {
+      for (let i2 = 0; i2 < triangles.length; i2++) {
+        indices[indPos + i2] = triangles[i2] + index;
+      }
+      indPos += triangles.length;
+    }
+    return [bufPos, indPos];
+  }
+}
+function buildSmoothCirclePath(x2, y2, rx, ry, dx, dy) {
+  if (!(rx >= 0 && ry >= 0 && dx >= 0 && dy >= 0)) {
+    return [];
+  }
+  const n2 = Math.ceil(2.3 * Math.sqrt(rx + ry));
+  const m2 = n2 * 8 + (dx ? 4 : 0) + (dy ? 4 : 0);
+  const points = new Array(m2);
+  if (m2 === 0) {
+    return points;
+  }
+  if (n2 === 0) {
+    points.length = 8;
+    points[0] = points[6] = x2 + dx;
+    points[1] = points[3] = y2 + dy;
+    points[2] = points[4] = x2 - dx;
+    points[5] = points[7] = y2 - dy;
+    return points;
+  }
+  let j1 = 0;
+  let j2 = n2 * 4 + (dx ? 2 : 0) + 2;
+  let j3 = j2;
+  let j4 = m2;
+  {
+    const x0 = dx + rx;
+    const y0 = dy;
+    const x1p = x2 + x0;
+    const x2p = x2 - x0;
+    const y1p = y2 + y0;
+    points[j1++] = x1p;
+    points[j1++] = y1p;
+    points[--j2] = y1p;
+    points[--j2] = x2p;
+    if (dy) {
+      const y2p = y2 - y0;
+      points[j3++] = x2p;
+      points[j3++] = y2p;
+      points[--j4] = y2p;
+      points[--j4] = x1p;
+    }
+  }
+  for (let i2 = 1; i2 < n2; i2++) {
+    const a2 = Math.PI / 2 * (i2 / n2);
+    const x0 = dx + Math.cos(a2) * rx;
+    const y0 = dy + Math.sin(a2) * ry;
+    const x1p = x2 + x0;
+    const x2p = x2 - x0;
+    const y1p = y2 + y0;
+    const y2p = y2 - y0;
+    points[j1++] = x1p;
+    points[j1++] = y1p;
+    points[--j2] = y1p;
+    points[--j2] = x2p;
+    points[j3++] = x2p;
+    points[j3++] = y2p;
+    points[--j4] = y2p;
+    points[--j4] = x1p;
+  }
+  {
+    const x0 = dx;
+    const y0 = dy + ry;
+    const x1p = x2 + x0;
+    const x2p = x2 - x0;
+    const y1p = y2 + y0;
+    const y2p = y2 - y0;
+    points[j1++] = x1p;
+    points[j1++] = y1p;
+    points[--j4] = y2p;
+    points[--j4] = x1p;
+    if (dx) {
+      points[j1++] = x2p;
+      points[j1++] = y1p;
+      points[--j4] = y2p;
+      points[--j4] = x2p;
+    }
+  }
+  return points;
+}
+function reversePoints(points) {
+  for (let i2 = 0, j2 = points.length - 2; i2 < j2; i2 += 2, j2 -= 2) {
+    const x2 = points[i2];
+    const y2 = points[i2 + 1];
+    points[i2] = points[j2];
+    points[i2 + 1] = points[j2 + 1];
+    points[j2] = x2;
+    points[j2 + 1] = y2;
+  }
+}
+function buildSmoothCircleFill(cx, cy, points, fillAA, buildData) {
+  const { verts, joints } = buildData;
+  if (points.length === 0) {
+    return [];
+  }
+  if (getOrientationOfPoints(points) > 0) {
+    reversePoints(points);
+  }
+  const len = points.length;
+  let x1 = points[len - 2];
+  let y1 = points[len - 1];
+  let nx1 = y1 - points[len - 3];
+  let ny1 = points[len - 4] - x1;
+  const n1 = Math.sqrt(nx1 * nx1 + ny1 * ny1);
+  nx1 /= n1;
+  ny1 /= n1;
+  let bx1;
+  let by1;
+  for (let i2 = 0; i2 < len; i2 += 2) {
+    const x2 = points[i2];
+    const y2 = points[i2 + 1];
+    let nx2 = y2 - y1;
+    let ny2 = x1 - x2;
+    const n2 = Math.sqrt(nx2 * nx2 + ny2 * ny2);
+    nx2 /= n2;
+    ny2 /= n2;
+    let bx2 = nx1 + nx2;
+    let by2 = ny1 + ny2;
+    const b2 = nx2 * bx2 + ny2 * by2;
+    bx2 /= b2;
+    by2 /= b2;
+    if (i2 > 0) {
+      verts.push(bx2, by2);
+    } else {
+      bx1 = bx2;
+      by1 = by2;
+    }
+    verts.push(cx, cy);
+    verts.push(x1, y1);
+    verts.push(x2, y2);
+    verts.push(0, 0);
+    verts.push(bx2, by2);
+    joints.push(JOINT_TYPE.FILL_EXPAND + 2);
+    joints.push(JOINT_TYPE.NONE);
+    joints.push(JOINT_TYPE.NONE);
+    joints.push(JOINT_TYPE.NONE);
+    joints.push(JOINT_TYPE.NONE);
+    joints.push(JOINT_TYPE.NONE);
+    x1 = x2;
+    y1 = y2;
+    nx1 = nx2;
+    ny1 = ny2;
+  }
+  verts.push(bx1, by1);
+  return [];
+}
+function buildSmoothCircleLine(points, buildData) {
+  const { verts, joints } = buildData;
+  const joint = points.length === 8 ? JOINT_TYPE.JOINT_MITER : JOINT_TYPE.JOINT_MITER + 3;
+  const len = points.length;
+  if (len === 0) {
+    return;
+  }
+  verts.push(points[len - 2], points[len - 1]);
+  joints.push(JOINT_TYPE.NONE);
+  for (let i2 = 0; i2 < len; i2 += 2) {
+    verts.push(points[i2], points[i2 + 1]);
+    joints.push(joint);
+  }
+  verts.push(points[0], points[1]);
+  joints.push(JOINT_TYPE.NONE);
+  verts.push(points[2], points[3]);
+  joints.push(JOINT_TYPE.NONE);
+}
+const tempPn = [];
+const tempOwner = [];
+const tempNormals = [];
+const tempBisectors = [];
+const MAX_BISECTOR = 3;
+function removeDuplicatePoints(points) {
+  let n2 = 0;
+  for (let i2 = 0; i2 < points.length; i2 += 2) {
+    const x2 = points[i2];
+    const y2 = points[i2 + 1];
+    if (n2 > 0 && Math.abs(x2 - points[n2 - 2]) < closePointEps && Math.abs(y2 - points[n2 - 1]) < closePointEps) {
+      continue;
+    }
+    points[n2++] = x2;
+    points[n2++] = y2;
+  }
+  while (n2 > 2 && Math.abs(points[0] - points[n2 - 2]) < closePointEps && Math.abs(points[1] - points[n2 - 1]) < closePointEps) {
+    n2 -= 2;
+  }
+  points.length = n2;
+  return points;
+}
+function isConvex(points) {
+  const n2 = points.length / 2;
+  let sign = 0;
+  for (let i2 = 0; i2 < n2; i2++) {
+    const i1 = (i2 + 1) % n2 * 2;
+    const i22 = (i2 + 2) % n2 * 2;
+    const cross = (points[i1] - points[i2 * 2]) * (points[i22 + 1] - points[i1 + 1]) - (points[i1 + 1] - points[i2 * 2 + 1]) * (points[i22] - points[i1]);
+    if (Math.abs(cross) < closePointEps) continue;
+    if (sign === 0) sign = Math.sign(cross);
+    else if (sign !== Math.sign(cross)) return false;
+  }
+  return true;
+}
+function fixOrientation(points, hole = false) {
+  const m2 = points.length;
+  if (m2 < 6) return;
+  const orientation = getOrientationOfPoints(points);
+  const needsReverse = !hole && orientation === 1 || hole && orientation === -1;
+  if (needsReverse) {
+    const n2 = m2 / 2;
+    for (let i2 = n2 + n2 % 2; i2 < m2; i2 += 2) {
+      const i1 = m2 - i2 - 2;
+      const i22 = m2 - i2 - 1;
+      [points[i1], points[i2]] = [points[i2], points[i1]];
+      [points[i22], points[i2 + 1]] = [points[i2 + 1], points[i22]];
+    }
+  }
+}
+function buildSmoothFill(points, holes, fillAA, buildData) {
+  const { verts, joints } = buildData;
+  const eps = closePointEps;
+  removeDuplicatePoints(points);
+  holes = holes.map((hole) => removeDuplicatePoints(hole)).filter((hole) => hole.length >= 6);
+  if (points.length < 6) {
+    return [];
+  }
+  if (holes.length === 0 && isConvex(points)) {
+    let cx = 0;
+    let cy = 0;
+    for (let i2 = 0; i2 < points.length; i2 += 2) {
+      cx += points[i2];
+      cy += points[i2 + 1];
+    }
+    return buildSmoothCircleFill(cx * 2 / points.length, cy * 2 / points.length, points, true, buildData);
+  }
+  let allPoints = points;
+  const holeArray = [];
+  fixOrientation(points, false);
+  for (let i2 = 0; i2 < holes.length; i2++) {
+    const hole = holes[i2];
+    fixOrientation(hole, true);
+    holeArray.push(allPoints.length / 2);
+    allPoints = allPoints.concat(hole);
+  }
+  const triangles = earcut(allPoints, holeArray, 2);
+  if (!triangles || triangles.length === 0) {
+    return [];
+  }
+  const n2 = allPoints.length >> 1;
+  const pn = tempPn;
+  pn.length = n2 * 2;
+  let start = 0;
+  for (let i2 = 0; i2 <= holeArray.length; i2++) {
+    let finish = points.length / 2;
+    if (i2 > 0) {
+      finish = i2 < holeArray.length ? holeArray[i2] : n2;
+    }
+    pn[start * 2] = finish - 1;
+    pn[(finish - 1) * 2 + 1] = start;
+    for (let j2 = start; j2 + 1 < finish; j2++) {
+      pn[j2 * 2 + 1] = j2 + 1;
+      pn[j2 * 2 + 2] = j2;
+    }
+    start = finish;
+  }
+  const owner = tempOwner;
+  owner.length = n2;
+  owner.fill(-1);
+  for (let i2 = 0; i2 < triangles.length; i2 += 3) {
+    for (let j2 = 0; j2 < 3; j2++) {
+      const a2 = triangles[i2 + j2];
+      const b2 = triangles[i2 + (j2 + 1) % 3];
+      const c2 = triangles[i2 + (j2 + 2) % 3];
+      if (pn[a2 * 2 + 1] === b2) {
+        owner[a2] = c2;
+      } else if (pn[b2 * 2 + 1] === a2) {
+        owner[b2] = c2;
+      }
+    }
+  }
+  const normals = tempNormals;
+  normals.length = n2 * 2;
+  for (let i2 = 0; i2 < n2; i2++) {
+    const next = pn[i2 * 2 + 1];
+    const dx = allPoints[next * 2] - allPoints[i2 * 2];
+    const dy = allPoints[next * 2 + 1] - allPoints[i2 * 2 + 1];
+    const d2 = Math.sqrt(dx * dx + dy * dy);
+    let nx = 0;
+    let ny = 0;
+    if (owner[i2] >= 0 && d2 > eps) {
+      nx = dy / d2;
+      ny = -dx / d2;
+      const c2 = owner[i2];
+      if (nx * (allPoints[c2 * 2] - allPoints[i2 * 2]) + ny * (allPoints[c2 * 2 + 1] - allPoints[i2 * 2 + 1]) > 0) {
+        nx = -nx;
+        ny = -ny;
+      }
+    }
+    normals[i2 * 2] = nx;
+    normals[i2 * 2 + 1] = ny;
+  }
+  const bisectors = tempBisectors;
+  bisectors.length = n2 * 2;
+  for (let i2 = 0; i2 < n2; i2++) {
+    const prev = pn[i2 * 2];
+    let nx1 = normals[prev * 2];
+    let ny1 = normals[prev * 2 + 1];
+    let nx2 = normals[i2 * 2];
+    let ny2 = normals[i2 * 2 + 1];
+    if (nx1 === 0 && ny1 === 0) {
+      nx1 = nx2;
+      ny1 = ny2;
+    } else if (nx2 === 0 && ny2 === 0) {
+      nx2 = nx1;
+      ny2 = ny1;
+    }
+    let bx = nx1 + nx2;
+    let by = ny1 + ny2;
+    const d2 = bx * nx1 + by * ny1;
+    if (d2 < eps) {
+      bx = nx1;
+      by = ny1;
+    } else {
+      bx /= d2;
+      by /= d2;
+    }
+    const bLen = Math.sqrt(bx * bx + by * by);
+    if (bLen > MAX_BISECTOR) {
+      bx *= MAX_BISECTOR / bLen;
+      by *= MAX_BISECTOR / bLen;
+    }
+    bisectors[i2 * 2] = bx;
+    bisectors[i2 * 2 + 1] = by;
+  }
+  for (let i2 = 0; i2 < triangles.length; i2 += 3) {
+    joints.push(
+      JOINT_TYPE.FILL_EXPAND,
+      JOINT_TYPE.NONE,
+      JOINT_TYPE.NONE,
+      JOINT_TYPE.NONE,
+      JOINT_TYPE.NONE,
+      JOINT_TYPE.NONE
+    );
+    for (let j2 = 0; j2 < 3; j2++) {
+      const idx = triangles[i2 + j2];
+      verts.push(allPoints[idx * 2], allPoints[idx * 2 + 1]);
+    }
+    for (let j2 = 0; j2 < 3; j2++) {
+      const idx = triangles[i2 + j2];
+      verts.push(-bisectors[idx * 2], -bisectors[idx * 2 + 1]);
+    }
+  }
+  for (let a2 = 0; a2 < n2; a2++) {
+    const c2 = owner[a2];
+    if (c2 < 0 || normals[a2 * 2] === 0 && normals[a2 * 2 + 1] === 0) continue;
+    const b2 = pn[a2 * 2 + 1];
+    const ax = allPoints[a2 * 2];
+    const ay = allPoints[a2 * 2 + 1];
+    const bx = allPoints[b2 * 2];
+    const by = allPoints[b2 * 2 + 1];
+    const cx = allPoints[c2 * 2];
+    const cy = allPoints[c2 * 2 + 1];
+    joints.push(
+      JOINT_TYPE.FILL_EXPAND + 2 + FILL_EXPAND_BASES.FRINGE_1,
+      JOINT_TYPE.NONE,
+      JOINT_TYPE.NONE,
+      JOINT_TYPE.NONE,
+      JOINT_TYPE.NONE,
+      JOINT_TYPE.NONE
+    );
+    verts.push(
+      cx,
+      cy,
+      ax,
+      ay,
+      bx,
+      by,
+      -bisectors[a2 * 2],
+      -bisectors[a2 * 2 + 1],
+      -bisectors[b2 * 2],
+      -bisectors[b2 * 2 + 1],
+      bisectors[b2 * 2],
+      bisectors[b2 * 2 + 1]
+    );
+    joints.push(
+      JOINT_TYPE.FILL_EXPAND + 2 + FILL_EXPAND_BASES.FRINGE_2,
+      JOINT_TYPE.NONE,
+      JOINT_TYPE.NONE,
+      JOINT_TYPE.NONE,
+      JOINT_TYPE.NONE,
+      JOINT_TYPE.NONE
+    );
+    verts.push(
+      cx,
+      cy,
+      ax,
+      ay,
+      bx,
+      by,
+      -bisectors[a2 * 2],
+      -bisectors[a2 * 2 + 1],
+      bisectors[b2 * 2],
+      bisectors[b2 * 2 + 1],
+      bisectors[a2 * 2],
+      bisectors[a2 * 2 + 1]
+    );
+  }
+  return [];
+}
+function mapCap(cap) {
+  switch (cap) {
+    case "square":
+      return JOINT_TYPE.CAP_SQUARE;
+    case "round":
+      return JOINT_TYPE.CAP_ROUND;
+    default:
+      return JOINT_TYPE.CAP_BUTT;
+  }
+}
+function mapJoin(join) {
+  switch (join) {
+    case "bevel":
+      return JOINT_TYPE.JOINT_BEVEL;
+    case "round":
+      return JOINT_TYPE.JOINT_ROUND;
+    default:
+      return JOINT_TYPE.JOINT_MITER;
+  }
+}
+function buildSmoothLine(points, closed, join, cap, buildData) {
+  const len = points.length;
+  if (len <= 2) {
+    return;
+  }
+  const { verts, joints } = buildData;
+  const joint = mapJoin(join);
+  const capType = mapCap(cap);
+  let prevCap = 0;
+  let prevX;
+  let prevY;
+  if (closed) {
+    prevX = points[len - 2];
+    prevY = points[len - 1];
+    joints.push(JOINT_TYPE.NONE);
+  } else {
+    prevX = points[2];
+    prevY = points[3];
+    if (capType === JOINT_TYPE.CAP_ROUND) {
+      verts.push(points[0], points[1]);
+      joints.push(JOINT_TYPE.NONE);
+      joints.push(JOINT_TYPE.CAP_ROUND);
+      prevCap = 0;
+    } else {
+      prevCap = capType;
+      joints.push(JOINT_TYPE.NONE);
+    }
+  }
+  verts.push(prevX, prevY);
+  for (let i2 = 0; i2 < len; i2 += 2) {
+    const x1 = points[i2];
+    const y1 = points[i2 + 1];
+    let endJoint = joint;
+    if (i2 + 2 >= len) {
+      if (!closed) {
+        endJoint = JOINT_TYPE.NONE;
+      }
+    } else if (i2 + 4 >= len) {
+      if (!closed) {
+        if (capType === JOINT_TYPE.CAP_ROUND) {
+          endJoint = JOINT_TYPE.JOINT_CAP_ROUND;
+        } else if (capType === JOINT_TYPE.CAP_BUTT) {
+          endJoint = JOINT_TYPE.JOINT_CAP_BUTT;
+        } else if (capType === JOINT_TYPE.CAP_SQUARE) {
+          endJoint = JOINT_TYPE.JOINT_CAP_SQUARE;
+        }
+      }
+    }
+    endJoint += prevCap;
+    prevCap = 0;
+    verts.push(x1, y1);
+    joints.push(endJoint);
+  }
+  if (closed) {
+    verts.push(points[0], points[1]);
+    joints.push(JOINT_TYPE.NONE);
+    verts.push(points[2], points[3]);
+    joints.push(JOINT_TYPE.NONE);
+  } else {
+    verts.push(points[len - 4], points[len - 3]);
+    joints.push(JOINT_TYPE.NONE);
+  }
+}
+const packer = new SmoothSegmentPacker();
+const tempMatrix$1 = new Matrix();
+const buildDataCache = new SmoothBuildData();
+function usesCircleBuilder(shapeType) {
+  return shapeType === "circle" || shapeType === "ellipse" || shapeType === "roundedRectangle";
+}
+function getCircleParams(shape) {
+  if (shape instanceof Circle) {
+    return [shape.x, shape.y, shape.radius, shape.radius, 0, 0];
+  }
+  if (shape instanceof Ellipse) {
+    return [shape.x, shape.y, shape.halfWidth, shape.halfHeight, 0, 0];
+  }
+  const rr = shape;
+  const halfWidth = rr.width / 2;
+  const halfHeight = rr.height / 2;
+  const r2 = Math.max(0, Math.min(rr.radius, Math.min(halfWidth, halfHeight)));
+  return [rr.x + halfWidth, rr.y + halfHeight, r2, r2, halfWidth - r2, halfHeight - r2];
+}
+function buildSmoothContextData(context2, batches) {
+  batches.length = 0;
+  for (let i2 = 0; i2 < context2.instructions.length; i2++) {
+    const instruction = context2.instructions[i2];
+    if (instruction.action === "texture") {
+      addTexture(instruction.data, batches);
+      continue;
+    }
+    if (instruction.action !== "fill" && instruction.action !== "stroke") {
+      continue;
+    }
+    const isStroke = instruction.action === "stroke";
+    const shapePath = instruction.data.path.shapePath;
+    const style = instruction.data.style;
+    const hole = instruction.data.hole;
+    if (isStroke && hole) {
+      addShapePath(hole.shapePath.shapePrimitives, style, true, null, batches);
+    }
+    addShapePath(shapePath.shapePrimitives, style, isStroke, hole?.shapePath.shapePrimitives, batches);
+  }
+}
+function addShapePath(primitives, style, isStroke, holePrimitives, batches) {
+  const buildData = buildDataCache;
+  primitives.forEach(({ shape, transform: matrix }, index) => {
+    const holes = !isStroke && holePrimitives && index === primitives.length - 1 ? getHoleArrays(holePrimitives) : null;
+    const isCircleShape = usesCircleBuilder(shape.type);
+    buildData.clear();
+    let points;
+    let triangles = [];
+    if (isCircleShape) {
+      const [cx, cy, rx, ry, dx, dy] = getCircleParams(shape);
+      points = buildSmoothCirclePath(cx, cy, rx, ry, dx, dy);
+      if (matrix) {
+        transformVertices(points, matrix);
+      }
+      if (!isStroke) {
+        const tcx = matrix ? matrix.a * cx + matrix.c * cy + matrix.tx : cx;
+        const tcy = matrix ? matrix.b * cx + matrix.d * cy + matrix.ty : cy;
+        triangles = holes ? buildSmoothFill(points, holes, true, buildData) : buildSmoothCircleFill(tcx, tcy, points, true, buildData);
+      } else {
+        buildSmoothCircleLine(points, buildData);
+      }
+    } else {
+      points = [];
+      const build = shapeBuilders[shape.type];
+      if (!build || !build.build(shape, points)) {
+        return;
+      }
+      if (matrix) {
+        transformVertices(points, matrix);
+      }
+      if (!isStroke) {
+        triangles = buildSmoothFill(points, holes ?? [], true, buildData);
+      } else {
+        const strokeStyle = style;
+        const closed = shape.closePath ?? true;
+        const eps = closePointEps;
+        const cleanPoints = [points[0], points[1]];
+        for (let k = 2; k < points.length; k += 2) {
+          const px = points[k - 2];
+          const py = points[k - 1];
+          const cx2 = points[k];
+          const cy2 = points[k + 1];
+          if (Math.abs(px - cx2) >= eps || Math.abs(py - cy2) >= eps) {
+            cleanPoints.push(cx2, cy2);
+          }
+        }
+        if (cleanPoints.length <= 2) {
+          return;
+        }
+        const finalPoints = [cleanPoints[0], cleanPoints[1]];
+        const eps2 = eps * eps;
+        for (let k = 2; k + 2 < cleanPoints.length; k += 2) {
+          const dx1 = cleanPoints[k - 2] - cleanPoints[k];
+          const dy1 = cleanPoints[k - 1] - cleanPoints[k + 1];
+          const dx2 = cleanPoints[k + 2] - cleanPoints[k];
+          const dy2 = cleanPoints[k + 3] - cleanPoints[k + 1];
+          if (Math.abs(dx2 * dy1 - dy2 * dx1) < eps2) {
+            if (dx1 * dx2 + dy1 * dy2 < -eps2) {
+              continue;
+            }
+          }
+          finalPoints.push(cleanPoints[k], cleanPoints[k + 1]);
+        }
+        finalPoints.push(cleanPoints[cleanPoints.length - 2], cleanPoints[cleanPoints.length - 1]);
+        if (finalPoints.length <= 2) {
+          return;
+        }
+        if (closed) {
+          const fx = finalPoints[0];
+          const fy = finalPoints[1];
+          const lx = finalPoints[finalPoints.length - 2];
+          const ly = finalPoints[finalPoints.length - 1];
+          if (Math.abs(fx - lx) < eps && Math.abs(fy - ly) < eps) {
+            finalPoints.pop();
+            finalPoints.pop();
+          }
+        }
+        buildSmoothLine(finalPoints, closed, strokeStyle.join, strokeStyle.cap, buildData);
+      }
+    }
+    const batchable = packBatchable(buildData, triangles);
+    if (!batchable) {
+      return;
+    }
+    if (isStroke) {
+      const strokeStyle = style;
+      batchable.lineWidth = strokeStyle.width;
+      let alignment = strokeStyle.alignment;
+      if (alignment !== 0.5) {
+        alignment = (alignment - 0.5) * getOrientationOfPoints(points) + 0.5;
+      }
+      batchable.alignment = alignment;
+      batchable.pixelLine = !!strokeStyle.pixelLine;
+    } else {
+      batchable.lineWidth = 0;
+      batchable.alignment = 0.5;
+      batchable.pixelLine = true;
+    }
+    batchable.baseColor = style.color;
+    batchable.alpha = style.alpha;
+    setTexture(
+      batchable,
+      style.texture ?? Texture$1.WHITE,
+      () => generateTextureMatrix(new Matrix(), style, shape, matrix)
+    );
+    batches.push(batchable);
+  });
+}
+function addTexture(data, batches) {
+  const { image: texture, dx, dy, dw, dh, transform: transform2 } = data;
+  const buildData = buildDataCache;
+  const points = [dx, dy, dx + dw, dy, dx + dw, dy + dh, dx, dy + dh];
+  if (transform2) {
+    transformVertices(points, transform2);
+  }
+  buildData.clear();
+  const triangles = buildSmoothFill(points, [], true, buildData);
+  const batchable = packBatchable(buildData, triangles);
+  if (!batchable) {
+    return;
+  }
+  batchable.lineWidth = 0;
+  batchable.alignment = 0.5;
+  batchable.pixelLine = true;
+  batchable.baseColor = data.style;
+  batchable.alpha = data.alpha;
+  setTexture(batchable, texture, () => {
+    const { x0, y0, x1, y1, x3, y3 } = texture.uvs;
+    const uvMatrix = new Matrix(
+      (x1 - x0) / dw,
+      (y1 - y0) / dw,
+      (x3 - x0) / dh,
+      (y3 - y0) / dh
+    );
+    uvMatrix.tx = x0 - dx * uvMatrix.a - dy * uvMatrix.c;
+    uvMatrix.ty = y0 - dx * uvMatrix.b - dy * uvMatrix.d;
+    if (transform2) {
+      uvMatrix.append(tempMatrix$1.copyFrom(transform2).invert());
+    }
+    return uvMatrix;
+  });
+  batches.push(batchable);
+}
+function packBatchable(buildData, triangles) {
+  const jointStart = 0;
+  const jointLen = buildData.joints.length;
+  packer.updateBufferSize(jointStart, jointLen, triangles.length, buildData);
+  if (buildData.vertexSize === 0) {
+    return null;
+  }
+  const geomFloats = new Float32Array(buildData.vertexSize * 10);
+  const geomIndices = buildData.indexSize > 65535 ? new Uint32Array(buildData.indexSize) : new Uint16Array(buildData.indexSize);
+  const [, finalIndexPos] = packer.packInterleavedGeometry(
+    jointStart,
+    jointLen,
+    triangles,
+    buildData,
+    geomFloats,
+    geomIndices,
+    0,
+    0
+  );
+  const batchable = BigPool.get(BatchableSmoothGraphics);
+  batchable.geometryData = {
+    vertices: geomFloats,
+    indices: geomIndices
+  };
+  batchable.indexOffset = 0;
+  batchable.indexSize = finalIndexPos;
+  batchable.attributeOffset = 0;
+  batchable.attributeSize = buildData.vertexSize;
+  return batchable;
+}
+function setTexture(batchable, texture, getUvMatrix) {
+  batchable.texture = texture;
+  if (texture === Texture$1.WHITE) {
+    batchable.batcherName = "smooth";
+    batchable.uvMatrix = null;
+  } else {
+    batchable.batcherName = "smoothTextured";
+    batchable.uvMatrix = getUvMatrix();
+  }
+}
+function getHoleArrays(holePrimitives) {
+  const holeArrays = [];
+  for (let k = 0; k < holePrimitives.length; k++) {
+    const { shape, transform: transform2 } = holePrimitives[k];
+    const holePoints = [];
+    if (shapeBuilders[shape.type].build(shape, holePoints)) {
+      if (transform2) {
+        transformVertices(holePoints, transform2);
+      }
+      holeArrays.push(holePoints);
+    }
+  }
+  return holeArrays;
+}
+class SmoothGraphicsContextRenderData extends AbstractGraphicsContextRenderData {
+  constructor() {
+    super(...arguments);
+    this.textured = false;
+  }
+  init(options) {
+    const textured = !!options.textured;
+    if (this.batcher && this.textured !== textured) {
+      this.batcher.destroy();
+      this.batcher = null;
+    }
+    this.textured = textured;
+    super.init(options);
+  }
+  _createBatcher(maxTextures) {
+    return this.textured ? new SmoothTexturedBatcher({ maxTextures }) : new SmoothBatcher({ maxTextures });
+  }
+}
+class GpuSmoothGraphicsContext extends AbstractGpuGraphicsContext {
+}
+class SmoothGraphicsContextSystem extends AbstractGraphicsContextSystem {
+  constructor(renderer) {
+    super(renderer, "smoothGraphicsContext");
+  }
+  _createGpuContext() {
+    return new GpuSmoothGraphicsContext();
+  }
+  _buildContextData(context2, gpuContext) {
+    buildSmoothContextData(context2, gpuContext.batches);
+  }
+  _getGeometrySize(gpuContext) {
+    let attributes = 0;
+    let indices = 0;
+    for (let i2 = 0; i2 < gpuContext.batches.length; i2++) {
+      attributes += gpuContext.batches[i2].attributeSize;
+      indices += gpuContext.batches[i2].indexSize;
+    }
+    return { attributes, indices };
+  }
+  _getRenderData(maxTextures, gpuContext) {
+    const textured = gpuContext.batches.some((batch) => batch.batcherName === "smoothTextured");
+    return BigPool.get(SmoothGraphicsContextRenderData, { maxTextures, textured });
+  }
+}
+SmoothGraphicsContextSystem.extension = {
+  type: [
+    ExtensionType.WebGLSystem,
+    ExtensionType.WebGPUSystem
+  ],
+  name: "smoothGraphicsContext"
+};
+class SmoothGraphicsPipe extends AbstractGraphicsPipe {
+  constructor(renderer, adaptor) {
+    super(renderer, adaptor, "smoothGraphics");
+    this._batchableClass = BatchableSmoothGraphics;
+  }
+  get _contextSystem() {
+    return this.renderer.smoothGraphicsContext;
+  }
+}
+SmoothGraphicsPipe.extension = {
+  type: [
+    ExtensionType.WebGLPipes,
+    ExtensionType.WebGPUPipes
+  ],
+  name: "smoothGraphics"
+};
+extensions.add(
+  SmoothGraphicsPipe,
+  CanvasSmoothGraphicsPipe,
+  SmoothGraphicsContextSystem,
+  GlSmoothGraphicsAdaptor,
+  GpuSmoothGraphicsAdaptor,
+  SmoothBatcher,
+  SmoothTexturedBatcher
+);
+class SmoothGraphics extends Graphics {
+  /**
+   * @param options - Options for the SmoothGraphics, or a context to draw
+   */
+  constructor(options) {
+    if (options instanceof GraphicsContext) {
+      options = { context: options };
+    }
+    super({ label: "SmoothGraphics", ...options });
+    this.renderPipeId = "smoothGraphics";
+  }
+  /**
+   * Creates a new SmoothGraphics with the same context.
+   * @param deep - Whether to clone the context too, instead of sharing it
+   * @returns A new SmoothGraphics
+   */
+  clone(deep = false) {
+    if (deep) {
+      return new SmoothGraphics(this.context.clone());
+    }
+    this._ownedContext = null;
+    return new SmoothGraphics(this.context);
   }
 }
 const _RenderLayer = class _RenderLayer2 extends Container {
@@ -33414,6 +36239,7 @@ function generateUpdateFunction(properties, dynamic) {
     `);
   funcFragments.unshift(`
         var stride = ${offset};
+        var offset = 0, w0 = 0, w1 = 0, h0 = 0, h1 = 0;
     `);
   const functionSource = funcFragments.join("\n");
   return new Function("ps", "f32v", "u32v", functionSource);
@@ -33813,7 +36639,7 @@ const _Particle = class _Particle2 {
     return bgr2rgb(this._tint);
   }
   set tint(value) {
-    this._tint = Color$1.shared.setValue(value ?? 16777215).toBgrNumber();
+    this._tint = typeof value === "number" ? bgr2rgb(value) : Color$1.shared.setValue(value ?? 16777215).toBgrNumber();
     this._updateColor();
   }
   _updateColor() {
@@ -33952,6 +36778,7 @@ extensions.add(GlParticleContainerPipe);
 extensions.add(GpuParticleContainerPipe);
 extensions.add(CanvasParticleContainerPipe);
 const emptyBounds = new Bounds(0, 0, 0, 0);
+const BULK_REMOVE_THRESHOLD = 48;
 const _ParticleContainer = class _ParticleContainer2 extends ViewContainer {
   /**
    * @param options - The options for creating the sprite.
@@ -34038,6 +36865,10 @@ const _ParticleContainer = class _ParticleContainer2 extends ViewContainer {
    * @see {@link ParticleContainer#removeParticleAt} For removing a particle at a specific index
    */
   removeParticle(...children) {
+    if (children.length > BULK_REMOVE_THRESHOLD) {
+      if (this._removeParticlesInOnePass(children)) this.onViewUpdate();
+      return children[0];
+    }
     let didRemove = false;
     for (let i2 = 0; i2 < children.length; i2++) {
       const index = this.particleChildren.indexOf(children[i2]);
@@ -34048,6 +36879,34 @@ const _ParticleContainer = class _ParticleContainer2 extends ViewContainer {
     }
     if (didRemove) this.onViewUpdate();
     return children[0];
+  }
+  /**
+   * Removes many particles with a single compaction of `particleChildren` instead of an
+   * indexOf + splice per particle. Each argument removes the first remaining occurrence of that
+   * particle, the same as the per-particle path, and the order of the kept particles is unchanged.
+   * @param children - The particles to remove
+   * @returns true if any particle was removed
+   */
+  _removeParticlesInOnePass(children) {
+    const counts2 = /* @__PURE__ */ new Map();
+    for (let i2 = 0; i2 < children.length; i2++) {
+      const child2 = children[i2];
+      counts2.set(child2, (counts2.get(child2) ?? 0) + 1);
+    }
+    const particles = this.particleChildren;
+    const length2 = particles.length;
+    let write = 0;
+    for (let read = 0; read < length2; read++) {
+      const particle = particles[read];
+      const count2 = counts2.get(particle);
+      if (count2) {
+        counts2.set(particle, count2 - 1);
+      } else {
+        particles[write++] = particle;
+      }
+    }
+    particles.length = write;
+    return write !== length2;
   }
   /**
    * Updates the particle container's internal state. Call this method after manually modifying
@@ -35271,7 +38130,9 @@ class AbstractSplitText extends Container {
     this.chars = res.chars;
     this.words = res.words;
     this.lines = res.lines;
-    this.addChild(...this.lines);
+    if (this.lines.length > 0) {
+      this.addChild(...this.lines);
+    }
     this.charAnchor = this._charAnchor;
     this.wordAnchor = this._wordAnchor;
     this.lineAnchor = this._lineAnchor;
@@ -39379,34 +42240,34 @@ class BranchManager {
         onscreen = offscreen.effect;
       }
     }
-    for (const [b2, k2] of this.#batches) {
+    for (const [b2, k] of this.#batches) {
       this.#batches.delete(b2);
       if (b2 === batch) {
         break;
       }
-      const offscreen2 = this.#offscreen.get(k2);
+      const offscreen2 = this.#offscreen.get(k);
       if (offscreen2) {
         destroy_effect(offscreen2.effect);
-        this.#offscreen.delete(k2);
+        this.#offscreen.delete(k);
       }
     }
-    for (const [k2, effect2] of this.#onscreen) {
-      if (k2 === key || this.#outroing.has(k2)) continue;
+    for (const [k, effect2] of this.#onscreen) {
+      if (k === key || this.#outroing.has(k)) continue;
       const on_destroy = () => {
         const keys = Array.from(this.#batches.values());
-        if (keys.includes(k2)) {
+        if (keys.includes(k)) {
           var fragment2 = document.createDocumentFragment();
           move_effect(effect2, fragment2);
           fragment2.append(create_text());
-          this.#offscreen.set(k2, { effect: effect2, fragment: fragment2 });
+          this.#offscreen.set(k, { effect: effect2, fragment: fragment2 });
         } else {
           destroy_effect(effect2);
         }
-        this.#outroing.delete(k2);
-        this.#onscreen.delete(k2);
+        this.#outroing.delete(k);
+        this.#onscreen.delete(k);
       };
       if (this.#transition || !onscreen) {
-        this.#outroing.add(k2);
+        this.#outroing.add(k);
         pause_effect(effect2, on_destroy, false);
       } else {
         on_destroy();
@@ -39419,10 +42280,10 @@ class BranchManager {
   #discard = (batch) => {
     this.#batches.delete(batch);
     const keys = Array.from(this.#batches.values());
-    for (const [k2, branch2] of this.#offscreen) {
-      if (!keys.includes(k2)) {
+    for (const [k, branch2] of this.#offscreen) {
+      if (!keys.includes(k)) {
         destroy_effect(branch2.effect);
-        this.#offscreen.delete(k2);
+        this.#offscreen.delete(k);
       }
     }
   };
@@ -39455,15 +42316,15 @@ class BranchManager {
     }
     this.#batches.set(batch, key);
     if (defer) {
-      for (const [k2, effect2] of this.#onscreen) {
-        if (k2 === key) {
+      for (const [k, effect2] of this.#onscreen) {
+        if (k === key) {
           batch.unskip_effect(effect2);
         } else {
           batch.skip_effect(effect2);
         }
       }
-      for (const [k2, branch2] of this.#offscreen) {
-        if (k2 === key) {
+      for (const [k, branch2] of this.#offscreen) {
+        if (k === key) {
           batch.unskip_effect(branch2.effect);
         } else {
           batch.skip_effect(branch2.effect);
@@ -40652,15 +43513,15 @@ function isTreeRewrite(prev, next, threshold = TREE_UID_CONTINUITY_THRESHOLD) {
   return matched / prevUids.size < threshold;
 }
 function nodeNameMatches(node, query) {
-  const q = query.trim().toLowerCase();
-  if (!q) {
+  const q2 = query.trim().toLowerCase();
+  if (!q2) {
     return true;
   }
-  return node.label.toLowerCase().includes(q);
+  return node.label.toLowerCase().includes(q2);
 }
 function filterTreeByName(root2, query) {
-  const q = query.trim().toLowerCase();
-  if (!q) {
+  const q2 = query.trim().toLowerCase();
+  if (!q2) {
     return root2;
   }
   function walk(node) {
@@ -40671,7 +43532,7 @@ function filterTreeByName(root2, query) {
         children.push(kept);
       }
     }
-    const filterMatch = nodeNameMatches(node, q);
+    const filterMatch = nodeNameMatches(node, q2);
     if (!filterMatch && children.length === 0) {
       return null;
     }
@@ -40810,6 +43671,7 @@ const NODE_TYPE_STYLES = [
   { name: "HTMLText", short: "HTML_TEXT", color: "#1a5bb8" },
   { name: "SplitText", short: "SPLIT_TXT", color: "#1a5bb8" },
   { name: "SplitBitmapText", short: "SPLIT_BMP", color: "#1a5bb8" },
+  { name: "SmoothGraphics", short: "SMOOTH_GFX", color: "#f07006" },
   { name: "Graphics", short: "GRAPHICS", color: "#f07006" },
   { name: "Mesh", short: "MESH", color: "#970e83" },
   { name: "SlotMesh", short: "SLOT_MESH", color: "#970e83" },
@@ -40851,6 +43713,7 @@ const NODE_TYPE_INSTANCEOF_ORDER = [
   "HTMLText",
   "SplitText",
   "SplitBitmapText",
+  "SmoothGraphics",
   "Graphics",
   "SlotMesh",
   "DarkSlotMesh",
@@ -41851,7 +44714,7 @@ function Panel_bar($$anchor, $$props) {
   var header = root_2$3();
   var div = child(header);
   var span = sibling(child(div));
-  span.textContent = "1.1.0";
+  span.textContent = "1.1.1";
   var div_1 = sibling(div, 2);
   var text = only_child(div_1, true);
   var button = sibling(div_1, 2);
@@ -54179,7 +57042,10 @@ function buildGraphicsSection() {
   const line = new Graphics().moveTo(0, 31).bezierCurveTo(15, 0, 31, 36, 51, 8).stroke({ width: 4, color: 16628340 });
   line.label = "GfxLine";
   line.position.set(179, 3);
-  section.addChild(rect, circle, poly, line);
+  const smooth = new SmoothGraphics().circle(18, 18, 18).fill(15757318).stroke({ width: 1, color: 16772565 });
+  smooth.label = "SmoothCircle";
+  smooth.position.set(246, 0);
+  section.addChild(rect, circle, poly, line, smooth);
   return section;
 }
 function buildMeshesSection(textures) {
@@ -60634,11 +63500,11 @@ class IkConstraint extends Constraint {
       const c1 = -2 * bb * l1, c22 = bb - aa;
       d2 = c1 * c1 - 4 * c22 * c2;
       if (d2 >= 0) {
-        let q = Math.sqrt(d2);
+        let q2 = Math.sqrt(d2);
         if (c1 < 0)
-          q = -q;
-        q = -(c1 + q) * 0.5;
-        let r0 = q / c22, r1 = c2 / q;
+          q2 = -q2;
+        q2 = -(c1 + q2) * 0.5;
+        let r0 = q2 / c22, r1 = c2 / q2;
         const r2 = Math.abs(r0) < Math.abs(r1) ? r0 : r1;
         r0 = dd - r2 * r2;
         if (r0 >= 0) {
@@ -70196,7 +73062,7 @@ async function main() {
 }
 void main();
 export {
-  localUniformBit as $,
+  isIntegerFormat as $,
   AbstractRenderer as A,
   Buffer as B,
   Color$1 as C,
@@ -70204,62 +73070,64 @@ export {
   EventEmitter as E,
   FillGradient as F,
   GpuProgram as G,
-  fastCopy as H,
-  BindGroup as I,
-  createIdFromString as J,
-  ShaderOverrides as K,
-  TextureSource as L,
+  DefaultBatcher as H,
+  BigPool as I,
+  getGlobalBounds as J,
+  Bounds as K,
+  TexturePool as L,
   Matrix as M,
-  CLEAR as N,
-  Rectangle as O,
+  FilterEffect as N,
+  Sprite as O,
   Point as P,
-  UniformGroup as Q,
+  CLEAR as Q,
   RendererType as R,
   Shader as S,
   Texture$1 as T,
   UPDATE_PRIORITY as U,
-  CanvasPool as V,
-  compileHighShaderGpuProgram as W,
-  colorBit as X,
-  localUniformBitGroup2 as Y,
-  roundPixelsBit as Z,
-  generateTextureBatchBit as _,
+  BatchableSprite as V,
+  RenderGroup as W,
+  multiplyColors as X,
+  UPDATE_VISIBLE as Y,
+  UPDATE_COLOR as Z,
+  UPDATE_BLEND as _,
   State as a,
-  TextureMatrix as a0,
-  DefaultBatcher as a1,
-  BigPool as a2,
-  getGlobalBounds as a3,
-  Bounds as a4,
-  TexturePool as a5,
-  FilterEffect as a6,
-  Sprite as a7,
-  BatchableSprite as a8,
-  RenderGroup as a9,
-  multiplyColors as aa,
-  UPDATE_VISIBLE as ab,
-  UPDATE_COLOR as ac,
-  UPDATE_BLEND as ad,
-  getLocalBounds as ae,
-  color32BitToUniform as af,
-  VERSION as ag,
-  deprecation as ah,
-  GlobalResourceRegistry as ai,
-  v8_0_0 as aj,
-  RendererInitHook as ak,
-  SystemRunner as al,
-  v8_21_0 as am,
-  Geometry as an,
-  checkMaxIfStatementsInShader as ao,
-  STATE_BITS as ap,
-  isSafari as aq,
-  isIntegerFormat as ar,
-  compileHighShaderGlProgram as as,
-  colorBitGl as at,
-  localUniformBitGl as au,
-  roundPixelsBitGl as av,
-  generateTextureBatchBitGl as aw,
-  getBatchSamplersUniformGroup as ax,
-  getPo2TextureFromSource as ay,
+  TextureSource as a0,
+  Rectangle as a1,
+  getLocalBounds as a2,
+  color32BitToUniform as a3,
+  BindGroup as a4,
+  VERSION as a5,
+  deprecation as a6,
+  GlobalResourceRegistry as a7,
+  v8_0_0 as a8,
+  CanvasPool as a9,
+  getPo2TextureFromSource as aA,
+  RendererInitHook as aa,
+  SystemRunner as ab,
+  v8_21_0 as ac,
+  getTextureBatchBindGroup as ad,
+  GCManagedHash as ae,
+  fastCopy as af,
+  createIdFromString as ag,
+  ShaderOverrides as ah,
+  AbstractGpuGraphicsAdaptor as ai,
+  compileHighShaderGpuProgram as aj,
+  colorBit as ak,
+  localUniformBitGroup2 as al,
+  roundPixelsBit as am,
+  generateTextureBatchBit as an,
+  localUniformBit as ao,
+  Geometry as ap,
+  checkMaxIfStatementsInShader as aq,
+  STATE_BITS as ar,
+  isSafari as as,
+  AbstractGlGraphicsAdaptor as at,
+  compileHighShaderGlProgram as au,
+  colorBitGl as av,
+  localUniformBitGl as aw,
+  roundPixelsBitGl as ax,
+  generateTextureBatchBitGl as ay,
+  getBatchSamplersUniformGroup as az,
   GlProgram as b,
   STENCIL_MODES as c,
   BufferUsage as d,
@@ -70283,6 +73151,6 @@ export {
   removeItems as v,
   warn as w,
   Container as x,
-  getTextureBatchBindGroup as y,
-  GCManagedHash as z
+  TextureMatrix as y,
+  UniformGroup as z
 };

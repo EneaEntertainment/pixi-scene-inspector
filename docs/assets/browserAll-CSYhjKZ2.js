@@ -1,6 +1,6 @@
-import { t as Ticker, U as UPDATE_PRIORITY, P as Point, v as removeItems, j as ExtensionType, E as EventEmitter, w as warn, r as extensions, x as Container } from "./index--N2NeSe_.js";
-import "./webworkerAll-BgNrMzlz.js";
-import "./Filter-BH24HVWH.js";
+import { t as Ticker, U as UPDATE_PRIORITY, P as Point, v as removeItems, j as ExtensionType, E as EventEmitter, w as warn, r as extensions, x as Container } from "./index-SPjj9M5Z.js";
+import "./webworkerAll-D-RQQEJS.js";
+import "./Filter-bbWdas5q.js";
 class CanvasObserver {
   constructor(options) {
     this._lastTransform = "";
@@ -65,6 +65,7 @@ class CanvasObserver {
       this._observer.observe(this._canvas);
     } else if (!this._tickerAttached) {
       Ticker.shared.add(this.updateTranslation, this, UPDATE_PRIORITY.HIGH);
+      this._tickerAttached = true;
     }
   }
   /** Destroys the CanvasObserver instance, cleaning up observers and Ticker. */
@@ -73,7 +74,7 @@ class CanvasObserver {
       this._observer.disconnect();
       this._observer = null;
     } else if (this._tickerAttached) {
-      Ticker.shared.remove(this.updateTranslation);
+      Ticker.shared.remove(this.updateTranslation, this);
     }
     this._domElement = null;
     this._renderer = null;
@@ -1254,6 +1255,8 @@ FederatedWheelEvent.DOM_DELTA_PAGE = 2;
 const PROPAGATION_LIMIT = 2048;
 const tempHitLocation = new Point();
 const tempLocalMapping = new Point();
+const handlerKeys = /* @__PURE__ */ Object.create(null);
+const captureKeys = /* @__PURE__ */ Object.create(null);
 class EventBoundary {
   /**
    * @param rootTarget - The holder of the event boundary.
@@ -1402,10 +1405,10 @@ class EventBoundary {
     e.eventPhase = e.BUBBLING_PHASE;
     const events = Array.isArray(type) ? type : [type];
     for (let i = targets.length - 1; i >= 0; i--) {
-      events.forEach((event) => {
+      for (let j = 0; j < events.length; j++) {
         e.currentTarget = targets[i];
-        this.notifyTarget(e, event);
-      });
+        this.notifyTarget(e, events[j]);
+      }
     }
   }
   /**
@@ -1431,8 +1434,9 @@ class EventBoundary {
     if (currentTarget.eventMode === "dynamic" || eventMode === "dynamic") {
       EventsTicker.pauseUpdate = false;
     }
-    if (currentTarget.interactiveChildren && currentTarget.children) {
+    if (currentTarget.interactiveChildren && currentTarget.children && currentTarget.children.length > 0) {
       const children = currentTarget.children;
+      const ignoreChildren = ignore || pruneFn(currentTarget, location);
       for (let i = children.length - 1; i >= 0; i--) {
         const child = children[i];
         const nestedHit = this.hitTestMoveRecursive(
@@ -1441,15 +1445,13 @@ class EventBoundary {
           location,
           testFn,
           pruneFn,
-          ignore || pruneFn(currentTarget, location)
+          ignoreChildren
         );
         if (nestedHit) {
           if (nestedHit.length > 0 && !nestedHit[nestedHit.length - 1].parent) {
             continue;
           }
-          const isInteractive = currentTarget.isInteractive();
-          if (nestedHit.length > 0 || isInteractive) {
-            if (isInteractive) this._allInteractiveElements.push(currentTarget);
+          if (nestedHit.length > 0 || currentTarget.isInteractive()) {
             nestedHit.push(currentTarget);
           }
           if (this._hitElements.length === 0) this._hitElements = nestedHit;
@@ -1459,7 +1461,7 @@ class EventBoundary {
     }
     const isInteractiveMode = this._isInteractive(eventMode);
     const isInteractiveTarget = currentTarget.isInteractive();
-    if (isInteractiveTarget && isInteractiveTarget) this._allInteractiveElements.push(currentTarget);
+    if (isInteractiveTarget) this._allInteractiveElements.push(currentTarget);
     if (ignore || this._hitElements.length > 0) return null;
     if (shouldReturn) return this._hitElements;
     if (isInteractiveMode && (!pruneFn(currentTarget, location) && testFn(currentTarget, location))) {
@@ -1589,9 +1591,9 @@ class EventBoundary {
       return;
     }
     type ?? (type = e.type);
-    const handlerKey = `on${type}`;
+    const handlerKey = handlerKeys[type] ?? (handlerKeys[type] = `on${type}`);
     e.currentTarget[handlerKey]?.(e);
-    const key = e.eventPhase === e.CAPTURING_PHASE || e.eventPhase === e.AT_TARGET ? `${type}capture` : type;
+    const key = e.eventPhase === e.CAPTURING_PHASE || e.eventPhase === e.AT_TARGET ? captureKeys[type] ?? (captureKeys[type] = `${type}capture`) : type;
     this._notifyListeners(e, key);
     if (e.eventPhase === e.AT_TARGET) {
       this._notifyListeners(e, type);

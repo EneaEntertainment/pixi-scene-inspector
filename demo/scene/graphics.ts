@@ -1,4 +1,4 @@
-import { Graphics } from 'pixi.js';
+import { Graphics, SmoothGraphics } from 'pixi.js';
 import { labeledSection } from './layout';
 
 import type { Container } from 'pixi.js';
@@ -33,7 +33,15 @@ export function buildGraphicsSection(): Container
     line.label = 'GfxLine';
     line.position.set(179, 3);
 
-    section.addChild(rect, circle, poly, line);
+    const smooth = new SmoothGraphics()
+        .circle(18, 18, 18)
+        .fill(0xf07006)
+        .stroke({ width: 1, color: 0xffedd5 });
+
+    smooth.label = 'SmoothCircle';
+    smooth.position.set(246, 0);
+
+    section.addChild(rect, circle, poly, line, smooth);
 
     return section;
 }
