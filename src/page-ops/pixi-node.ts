@@ -63,6 +63,7 @@ export type PixiNode = {
     sortableChildren?: boolean;
     cullable?: boolean;
     eventMode?: string;
+    hitVolume?: unknown;
     cursor?: string;
     interactive?: boolean;
     buttonMode?: boolean;

@@ -13,6 +13,7 @@ export type GizmoDom = {
     svg: SVGSVGElement;
     modeBar: HTMLDivElement;
     modeButtons: Record<GizmoMode, HTMLButtonElement>;
+    boundsLines: Array<SVGLineElement>;
     axisLines: Record<'x' | 'y' | 'z', SVGLineElement>;
     axisHits: Record<'x' | 'y' | 'z', SVGLineElement>;
     axisArrows: Record<'x' | 'y' | 'z', SVGPolygonElement>;
@@ -71,6 +72,24 @@ export function createGizmoDom(): GizmoDom
         overflow      : 'visible',
         pointerEvents : 'none',
     });
+
+    const boundsLines: Array<SVGLineElement> = [];
+
+    for (let i = 0; i < 12; i++)
+    {
+        const line = svgEl('line');
+
+        Object.assign(line.style, {
+            stroke        : '#38bdf8',
+            strokeWidth   : '1.5',
+            fill          : 'none',
+            pointerEvents : 'none',
+            display       : 'none',
+        });
+        line.setAttribute('stroke-dasharray', '4 3');
+        boundsLines.push(line);
+        svg.appendChild(line);
+    }
 
     const axisLines = {
         x : svgEl('line'),
@@ -198,6 +217,7 @@ export function createGizmoDom(): GizmoDom
         svg,
         modeBar,
         modeButtons,
+        boundsLines,
         axisLines,
         axisHits,
         axisArrows,

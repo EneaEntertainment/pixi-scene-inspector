@@ -1,8 +1,6 @@
-import { h as Ticker, U as UPDATE_PRIORITY, j as isMobile, r as removeItems, F as FederatedEvent, E as ExtensionType, k as EventSystem, l as extensions, m as Container } from "./index-BlFurYJo.js";
-import "./webworkerAll-Dpob30mE.js";
-import "./canvasUtils-D0W3vlIi.js";
-import "./CanvasPool-CL58H7j1.js";
-import "./Filter-4jlvn1Z3.js";
+import { h as Ticker, U as UPDATE_PRIORITY, i as isMobile, r as removeItems, F as FederatedEvent, E as ExtensionType, j as EventSystem, k as extensions, C as Container } from "./index-DVREQIrz.js";
+import "./webworkerAll-YGFIZjvi.js";
+import "./Filter-COxupEWd.js";
 class CanvasObserver {
   constructor(options) {
     this._lastTransform = "";

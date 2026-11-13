@@ -34,6 +34,43 @@ function isPoint(value: unknown): value is PixiPoint
     );
 }
 
+function hitVolumeSelectValue(value: unknown): string
+{
+    if (value === null || value === undefined)
+    {
+        return 'default';
+    }
+
+    if (value === 'box' || value === 'geometry')
+    {
+        return value;
+    }
+
+    if (typeof value === 'object')
+    {
+        const type = (value as { type?: unknown }).type;
+
+        if (type === 'box')
+        {
+            return 'Box';
+        }
+
+        if (type === 'sphere')
+        {
+            return 'Sphere';
+        }
+
+        if (typeof (value as { raycast?: unknown }).raycast === 'function')
+        {
+            return 'custom';
+        }
+
+        return 'Geometry3D';
+    }
+
+    return 'custom';
+}
+
 function pointHasAxis(point: PixiPoint, axis: 'x' | 'y' | 'z'): boolean
 {
     return typeof point[axis] === 'number';
@@ -728,6 +765,27 @@ export function mapsForNode(node: PixiNode | null | undefined): NodePropertyMaps
                 ),
             ),
         );
+
+        if (isNode3D(node) && allow('hitVolume') && 'hitVolume' in node)
+        {
+            strings.push({
+                key: 'hitVolume',
+
+                get: () => hitVolumeSelectValue(node.hitVolume),
+
+                set: (value) =>
+                {
+                    if (value === 'default')
+                    {
+                        node.hitVolume = null;
+                    }
+                    else if (value === 'box' || value === 'geometry')
+                    {
+                        node.hitVolume = value;
+                    }
+                },
+            });
+        }
 
         if (allow('cursor'))
         {

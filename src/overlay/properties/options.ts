@@ -8,6 +8,12 @@ export const EVENT_MODE_OPTIONS: Array<SelectOption> = [
     { value: 'dynamic', label: 'Dynamic' },
 ];
 
+export const HIT_VOLUME_OPTIONS: Array<SelectOption> = [
+    { value: 'default', label: 'default' },
+    { value: 'box', label: 'box' },
+    { value: 'geometry', label: 'geometry' },
+];
+
 export const CURSOR_OPTIONS: Array<SelectOption> = [
     { value: 'auto', label: 'Auto' },
     { value: 'default', label: 'Default' },

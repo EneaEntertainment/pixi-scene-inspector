@@ -9,6 +9,7 @@ import type { PixiNode } from '../../page-ops/pixi-node';
 
 const INTERACTIVITY_KEYS = new Set([
     'eventMode',
+    'hitVolume',
     'cursor',
     'interactive',
     'buttonMode',

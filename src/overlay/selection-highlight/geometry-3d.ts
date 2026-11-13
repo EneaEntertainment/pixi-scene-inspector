@@ -6,6 +6,26 @@ import type { Vec3 } from './math-3d';
 
 type View3DLike = NonNullable<PixiNode['_view3d']>;
 
+export type LocalBounds3D = {
+    min: Vec3;
+    max: Vec3;
+};
+
+const BOX_EDGE_INDICES: Array<[number, number]> = [
+    [0, 1],
+    [1, 2],
+    [2, 3],
+    [3, 0],
+    [4, 5],
+    [5, 6],
+    [6, 7],
+    [7, 4],
+    [0, 4],
+    [1, 5],
+    [2, 6],
+    [3, 7],
+];
+
 function transformLocalToWorld(elements: ArrayLike<number>, x: number, y: number, z: number): Vec3
 {
     return {
@@ -13,6 +33,142 @@ function transformLocalToWorld(elements: ArrayLike<number>, x: number, y: number
         y : (elements[1] * x) + (elements[5] * y) + (elements[9] * z) + elements[13],
         z : (elements[2] * x) + (elements[6] * y) + (elements[10] * z) + elements[14],
     };
+}
+
+function readVec3Corner(value: unknown): Vec3 | null
+{
+    if (!value || typeof value !== 'object')
+    {
+        return null;
+    }
+
+    const point = value as { x?: unknown; y?: unknown; z?: unknown };
+    const x = asFiniteNumber(point.x);
+    const y = asFiniteNumber(point.y);
+    const z = asFiniteNumber(point.z);
+
+    if (x === null || y === null || z === null)
+    {
+        return null;
+    }
+
+    return { x, y, z };
+}
+
+export function readLocalBounds3D(node: PixiNode): LocalBounds3D | null
+{
+    if (typeof node.getLocalBounds !== 'function')
+    {
+        return null;
+    }
+
+    try
+    {
+        const bounds = node.getLocalBounds() as {
+            min?: unknown;
+            max?: unknown;
+        } | null | undefined;
+
+        if (!bounds || typeof bounds !== 'object')
+        {
+            return null;
+        }
+
+        const min = readVec3Corner(bounds.min);
+        const max = readVec3Corner(bounds.max);
+
+        if (!min || !max)
+        {
+            return null;
+        }
+
+        if (max.x < min.x || max.y < min.y || max.z < min.z)
+        {
+            return null;
+        }
+
+        return { min, max };
+    }
+    catch
+    {
+        return null;
+    }
+}
+
+export function localBoundsWorldCorners(node: PixiNode): Array<Vec3> | null
+{
+    const bounds = readLocalBounds3D(node);
+    const elements = readMatrix4Elements(node);
+
+    if (!bounds || !elements)
+    {
+        return null;
+    }
+
+    const { min, max } = bounds;
+
+    return [
+        transformLocalToWorld(elements, min.x, min.y, min.z),
+        transformLocalToWorld(elements, max.x, min.y, min.z),
+        transformLocalToWorld(elements, max.x, max.y, min.z),
+        transformLocalToWorld(elements, min.x, max.y, min.z),
+        transformLocalToWorld(elements, min.x, min.y, max.z),
+        transformLocalToWorld(elements, max.x, min.y, max.z),
+        transformLocalToWorld(elements, max.x, max.y, max.z),
+        transformLocalToWorld(elements, min.x, max.y, max.z),
+    ];
+}
+
+export function localBoundsScreenEdges(
+    node: PixiNode,
+    view: View3DLike,
+    scaleX: number,
+    scaleY: number,
+): Array<{ x1: number; y1: number; x2: number; y2: number }>
+{
+    const corners = localBoundsWorldCorners(node);
+
+    if (!corners)
+    {
+        return [];
+    }
+
+    const screens: Array<{ x: number; y: number } | null> = corners.map((corner) =>
+    {
+        const screen = projectWorldPoint(view, corner);
+
+        if (!screen)
+        {
+            return null;
+        }
+
+        return {
+            x : screen.x * scaleX,
+            y : screen.y * scaleY,
+        };
+    });
+
+    const edges: Array<{ x1: number; y1: number; x2: number; y2: number }> = [];
+
+    for (const [a, b] of BOX_EDGE_INDICES)
+    {
+        const from = screens[a];
+        const to = screens[b];
+
+        if (!from || !to)
+        {
+            continue;
+        }
+
+        edges.push({
+            x1 : from.x,
+            y1 : from.y,
+            x2 : to.x,
+            y2 : to.y,
+        });
+    }
+
+    return edges;
 }
 
 export function projectWorldPoint(view: View3DLike, world: Vec3): { x: number; y: number } | null

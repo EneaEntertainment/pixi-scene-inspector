@@ -1,5 +1,7 @@
+import { highlightStroke } from '../../../highlight-colors';
 import {
     cameraDistanceToWorld,
+    localBoundsScreenEdges,
     projectWorldPoint,
     screenToWorldAtDistance,
 } from '../geometry-3d';
@@ -192,6 +194,7 @@ function gizmoWorldLength(
 
 export type GizmoLayoutInput = {
     dom: GizmoDom;
+    node: PixiNode;
     view: NonNullable<PixiNode['_view3d']>;
     axes: AxesWorld;
     rect: DOMRect;
@@ -200,13 +203,59 @@ export type GizmoLayoutInput = {
     mode: GizmoMode;
 };
 
+function paintBoundsWireframe(
+    dom: GizmoDom,
+    node: PixiNode,
+    view: NonNullable<PixiNode['_view3d']>,
+    scaleX: number,
+    scaleY: number,
+)
+{
+    const stroke = highlightStroke();
+    const edges = localBoundsScreenEdges(node, view, scaleX, scaleY);
+
+    for (let i = 0; i < dom.boundsLines.length; i++)
+    {
+        const line = dom.boundsLines[i];
+        const edge = edges[i];
+
+        if (!line)
+        {
+            continue;
+        }
+
+        if (!edge)
+        {
+            line.style.display = 'none';
+
+            continue;
+        }
+
+        line.setAttribute('x1', String(edge.x1));
+        line.setAttribute('y1', String(edge.y1));
+        line.setAttribute('x2', String(edge.x2));
+        line.setAttribute('y2', String(edge.y2));
+        line.style.stroke = stroke;
+        line.style.display = 'block';
+    }
+}
+
+function hideBoundsWireframe(dom: GizmoDom)
+{
+    for (const line of dom.boundsLines)
+    {
+        line.style.display = 'none';
+    }
+}
+
 export function paintGizmoLayout(input: GizmoLayoutInput)
 {
-    const { dom, view, axes, rect, scaleX, scaleY, mode } = input;
+    const { dom, node, view, axes, rect, scaleX, scaleY, mode } = input;
     const originScreen = projectWorldPoint(view, axes.origin);
 
     if (!originScreen)
     {
+        hideBoundsWireframe(dom);
         setGizmoVisible(dom, false);
 
         return;
@@ -223,6 +272,8 @@ export function paintGizmoLayout(input: GizmoLayoutInput)
     dom.root.style.height = `${rect.height}px`;
     dom.svg.setAttribute('width', String(rect.width));
     dom.svg.setAttribute('height', String(rect.height));
+
+    paintBoundsWireframe(dom, node, view, scaleX, scaleY);
 
     const ox = originScreen.x * scaleX;
     const oy = originScreen.y * scaleY;

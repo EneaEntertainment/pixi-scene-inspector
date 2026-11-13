@@ -23,6 +23,11 @@ export function installGizmo3D(resolveNode: () => PixiNode | null): Gizmo3DContr
 
     function hide()
     {
+        for (const line of dom.boundsLines)
+        {
+            line.style.display = 'none';
+        }
+
         setGizmoVisible(dom, false);
     }
 
@@ -72,6 +77,7 @@ export function installGizmo3D(resolveNode: () => PixiNode | null): Gizmo3DContr
 
         paintGizmoLayout({
             dom,
+            node,
             view,
             axes,
             rect   : next.rect,

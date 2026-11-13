@@ -333,6 +333,15 @@ function writeEulerRadians(node: PixiNode, euler: Euler3): boolean
             rotation.y = euler.y;
             rotation.z = euler.z;
         }
+
+        if (!isRotationDirty(node))
+        {
+            node.rotation = {
+                x : euler.x,
+                y : euler.y,
+                z : euler.z,
+            };
+        }
     }
     catch
     {

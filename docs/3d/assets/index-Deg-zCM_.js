@@ -1,4 +1,4 @@
-const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/browserAll-LgqLDEB0.js","assets/webworkerAll-Dpob30mE.js","assets/canvasUtils-D0W3vlIi.js","assets/CanvasPool-CL58H7j1.js","assets/Filter-4jlvn1Z3.js","assets/WebGPURenderer-DmKJNgl_.js","assets/getTexelRangeRects-5ULcZMYr.js","assets/RenderTargetSystem-Be14f8lg.js","assets/RenderTexture-BCDvCICf.js","assets/WebGLRenderer-kSqcBFJq.js","assets/isSafari-B31r88pP.js","assets/CanvasRenderer-CuHfdBFb.js","assets/BitmapFont-DQK1TnPR.js","assets/init-TPymi50x.js","assets/View3DGlobalData-BrNBNgbY.js","assets/init-Y5kpzMow.js"])))=>i.map(i=>d[i]);
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/browserAll-C6HT3NB3.js","assets/webworkerAll-4_2RKgdF.js","assets/canvasUtils-CAPOntGG.js","assets/CanvasPool-BCxnOVS-.js","assets/Filter-CaxacB9M.js","assets/WebGPURenderer-WvKchBll.js","assets/getTexelRangeRects-DGSOrsIG.js","assets/RenderTargetSystem-ot3hO6CN.js","assets/RenderTexture-Bvxi1VST.js","assets/WebGLRenderer-DH-rRvVV.js","assets/isSafari-BW4u_MNy.js","assets/CanvasRenderer-BCC1W0cQ.js","assets/BitmapFont-D_5N3P1Q.js","assets/init-DY_B3_yH.js","assets/View3DGlobalData-DSrNafDU.js","assets/init-C_ZAJB99.js"])))=>i.map(i=>d[i]);
 (function polyfill() {
   const relList = document.createElement("link").relList;
   if (relList && relList.supports && relList.supports("modulepreload")) return;
@@ -355,7 +355,7 @@ const browserExt = {
   },
   test: () => true,
   load: async () => {
-    await __vitePreload(() => import("./browserAll-LgqLDEB0.js"), true ? __vite__mapDeps([0,1,2,3,4]) : void 0);
+    await __vitePreload(() => import("./browserAll-C6HT3NB3.js"), true ? __vite__mapDeps([0,1,2,3,4]) : void 0);
   }
 };
 const webworkerExt = {
@@ -366,7 +366,7 @@ const webworkerExt = {
   },
   test: () => typeof self !== "undefined" && self.WorkerGlobalScope !== void 0,
   load: async () => {
-    await __vitePreload(() => import("./webworkerAll-Dpob30mE.js"), true ? __vite__mapDeps([1,2,3,4]) : void 0);
+    await __vitePreload(() => import("./webworkerAll-4_2RKgdF.js"), true ? __vite__mapDeps([1,2,3,4]) : void 0);
   }
 };
 class ObservablePoint {
@@ -13768,7 +13768,7 @@ async function autoDetectRenderer(options) {
     const rendererType = preferredOrder[i2];
     if (rendererType === "webgpu" && await isWebGPUSupported()) {
       const { WebGPURenderer } = await __vitePreload(async () => {
-        const { WebGPURenderer: WebGPURenderer2 } = await import("./WebGPURenderer-DmKJNgl_.js");
+        const { WebGPURenderer: WebGPURenderer2 } = await import("./WebGPURenderer-WvKchBll.js");
         return { WebGPURenderer: WebGPURenderer2 };
       }, true ? __vite__mapDeps([5,6,7,8,4,3]) : void 0);
       RendererClass = WebGPURenderer;
@@ -13778,7 +13778,7 @@ async function autoDetectRenderer(options) {
       options.failIfMajorPerformanceCaveat ?? AbstractRenderer.defaultOptions.failIfMajorPerformanceCaveat
     )) {
       const { WebGLRenderer } = await __vitePreload(async () => {
-        const { WebGLRenderer: WebGLRenderer2 } = await import("./WebGLRenderer-kSqcBFJq.js");
+        const { WebGLRenderer: WebGLRenderer2 } = await import("./WebGLRenderer-DH-rRvVV.js");
         return { WebGLRenderer: WebGLRenderer2 };
       }, true ? __vite__mapDeps([9,6,7,8,4,3,10]) : void 0);
       RendererClass = WebGLRenderer;
@@ -13786,7 +13786,7 @@ async function autoDetectRenderer(options) {
       break;
     } else if (rendererType === "canvas") {
       const { CanvasRenderer } = await __vitePreload(async () => {
-        const { CanvasRenderer: CanvasRenderer2 } = await import("./CanvasRenderer-CuHfdBFb.js");
+        const { CanvasRenderer: CanvasRenderer2 } = await import("./CanvasRenderer-BCC1W0cQ.js");
         return { CanvasRenderer: CanvasRenderer2 };
       }, true ? __vite__mapDeps([11,7,8,4,3,2]) : void 0);
       RendererClass = CanvasRenderer;
@@ -14374,7 +14374,7 @@ const loadBitmapFont = {
     }
     const [loadedTextures, { BitmapFont }] = await Promise.all([
       loader.load(textureUrls),
-      __vitePreload(() => import("./BitmapFont-DQK1TnPR.js"), true ? __vite__mapDeps([12,3,2]) : void 0)
+      __vitePreload(() => import("./BitmapFont-D_5N3P1Q.js"), true ? __vite__mapDeps([12,3,2]) : void 0)
     ]);
     const textures = textureUrls.map((url2) => loadedTextures[url2.src]);
     const bitmapFont = new BitmapFont({
@@ -32135,6 +32135,11 @@ const EVENT_MODE_OPTIONS = [
   { value: "static", label: "Static" },
   { value: "dynamic", label: "Dynamic" }
 ];
+const HIT_VOLUME_OPTIONS = [
+  { value: "default", label: "default" },
+  { value: "box", label: "box" },
+  { value: "geometry", label: "geometry" }
+];
 const CURSOR_OPTIONS = [
   { value: "auto", label: "Auto" },
   { value: "default", label: "Default" },
@@ -32838,6 +32843,12 @@ const OBJECT_CATALOG_SECTIONS = [
         key: "eventMode",
         label: "eventMode",
         options: EVENT_MODE_OPTIONS
+      },
+      {
+        kind: "select",
+        key: "hitVolume",
+        label: "hitVolume",
+        options: HIT_VOLUME_OPTIONS
       },
       {
         kind: "select",
@@ -36392,6 +36403,13 @@ function writeEulerRadians(node, euler) {
       rotation.y = euler.y;
       rotation.z = euler.z;
     }
+    if (!isRotationDirty(node)) {
+      node.rotation = {
+        x: euler.x,
+        y: euler.y,
+        z: euler.z
+      };
+    }
   } catch {
     return false;
   }
@@ -38417,6 +38435,7 @@ function appendThreeDPropertyMaps(node, allow, numbers, booleans, strings) {
 }
 const INTERACTIVITY_KEYS = /* @__PURE__ */ new Set([
   "eventMode",
+  "hitVolume",
   "cursor",
   "interactive",
   "buttonMode",
@@ -38504,6 +38523,28 @@ function shouldMapProp(kind, key, node) {
 }
 function isPoint(value) {
   return typeof value === "object" && value !== null && typeof value.x === "number" && typeof value.y === "number";
+}
+function hitVolumeSelectValue(value) {
+  if (value === null || value === void 0) {
+    return "default";
+  }
+  if (value === "box" || value === "geometry") {
+    return value;
+  }
+  if (typeof value === "object") {
+    const type = value.type;
+    if (type === "box") {
+      return "Box";
+    }
+    if (type === "sphere") {
+      return "Sphere";
+    }
+    if (typeof value.raycast === "function") {
+      return "custom";
+    }
+    return "Geometry3D";
+  }
+  return "custom";
 }
 function pointHasAxis(point, axis) {
   return typeof point[axis] === "number";
@@ -39031,6 +39072,19 @@ function mapsForNode(node) {
         )
       )
     );
+    if (isNode3D(node) && allow("hitVolume") && "hitVolume" in node) {
+      strings.push({
+        key: "hitVolume",
+        get: () => hitVolumeSelectValue(node.hitVolume),
+        set: (value) => {
+          if (value === "default") {
+            node.hitVolume = null;
+          } else if (value === "box" || value === "geometry") {
+            node.hitVolume = value;
+          }
+        }
+      });
+    }
     if (allow("cursor")) {
       strings.push({
         key: "cursor",
@@ -46566,12 +46620,110 @@ function attachHighlightTransformDrag(host) {
     cancel: cancelDrag
   };
 }
+const BOX_EDGE_INDICES = [
+  [0, 1],
+  [1, 2],
+  [2, 3],
+  [3, 0],
+  [4, 5],
+  [5, 6],
+  [6, 7],
+  [7, 4],
+  [0, 4],
+  [1, 5],
+  [2, 6],
+  [3, 7]
+];
 function transformLocalToWorld(elements, x2, y2, z) {
   return {
     x: elements[0] * x2 + elements[4] * y2 + elements[8] * z + elements[12],
     y: elements[1] * x2 + elements[5] * y2 + elements[9] * z + elements[13],
     z: elements[2] * x2 + elements[6] * y2 + elements[10] * z + elements[14]
   };
+}
+function readVec3Corner(value) {
+  if (!value || typeof value !== "object") {
+    return null;
+  }
+  const point = value;
+  const x2 = asFiniteNumber$1(point.x);
+  const y2 = asFiniteNumber$1(point.y);
+  const z = asFiniteNumber$1(point.z);
+  if (x2 === null || y2 === null || z === null) {
+    return null;
+  }
+  return { x: x2, y: y2, z };
+}
+function readLocalBounds3D(node) {
+  if (typeof node.getLocalBounds !== "function") {
+    return null;
+  }
+  try {
+    const bounds = node.getLocalBounds();
+    if (!bounds || typeof bounds !== "object") {
+      return null;
+    }
+    const min = readVec3Corner(bounds.min);
+    const max = readVec3Corner(bounds.max);
+    if (!min || !max) {
+      return null;
+    }
+    if (max.x < min.x || max.y < min.y || max.z < min.z) {
+      return null;
+    }
+    return { min, max };
+  } catch {
+    return null;
+  }
+}
+function localBoundsWorldCorners(node) {
+  const bounds = readLocalBounds3D(node);
+  const elements = readMatrix4Elements(node);
+  if (!bounds || !elements) {
+    return null;
+  }
+  const { min, max } = bounds;
+  return [
+    transformLocalToWorld(elements, min.x, min.y, min.z),
+    transformLocalToWorld(elements, max.x, min.y, min.z),
+    transformLocalToWorld(elements, max.x, max.y, min.z),
+    transformLocalToWorld(elements, min.x, max.y, min.z),
+    transformLocalToWorld(elements, min.x, min.y, max.z),
+    transformLocalToWorld(elements, max.x, min.y, max.z),
+    transformLocalToWorld(elements, max.x, max.y, max.z),
+    transformLocalToWorld(elements, min.x, max.y, max.z)
+  ];
+}
+function localBoundsScreenEdges(node, view, scaleX, scaleY) {
+  const corners = localBoundsWorldCorners(node);
+  if (!corners) {
+    return [];
+  }
+  const screens = corners.map((corner) => {
+    const screen = projectWorldPoint(view, corner);
+    if (!screen) {
+      return null;
+    }
+    return {
+      x: screen.x * scaleX,
+      y: screen.y * scaleY
+    };
+  });
+  const edges = [];
+  for (const [a2, b2] of BOX_EDGE_INDICES) {
+    const from = screens[a2];
+    const to = screens[b2];
+    if (!from || !to) {
+      continue;
+    }
+    edges.push({
+      x1: from.x,
+      y1: from.y,
+      x2: to.x,
+      y2: to.y
+    });
+  }
+  return edges;
 }
 function projectWorldPoint(view, world) {
   if (typeof view.worldToScreen !== "function") {
@@ -46764,6 +46916,20 @@ function createGizmoDom() {
     overflow: "visible",
     pointerEvents: "none"
   });
+  const boundsLines = [];
+  for (let i2 = 0; i2 < 12; i2++) {
+    const line = svgEl("line");
+    Object.assign(line.style, {
+      stroke: "#38bdf8",
+      strokeWidth: "1.5",
+      fill: "none",
+      pointerEvents: "none",
+      display: "none"
+    });
+    line.setAttribute("stroke-dasharray", "4 3");
+    boundsLines.push(line);
+    svg.appendChild(line);
+  }
   const axisLines = {
     x: svgEl("line"),
     y: svgEl("line"),
@@ -46871,6 +47037,7 @@ function createGizmoDom() {
     svg,
     modeBar,
     modeButtons,
+    boundsLines,
     axisLines,
     axisHits,
     axisArrows,
@@ -47039,10 +47206,37 @@ function gizmoWorldLength(view, axes, originScreen, scaleX, scaleY) {
   );
   return pxPerUnit > 1e-4 ? AXIS_SCREEN_PX / pxPerUnit : 1;
 }
+function paintBoundsWireframe(dom, node, view, scaleX, scaleY) {
+  const stroke = highlightStroke();
+  const edges = localBoundsScreenEdges(node, view, scaleX, scaleY);
+  for (let i2 = 0; i2 < dom.boundsLines.length; i2++) {
+    const line = dom.boundsLines[i2];
+    const edge = edges[i2];
+    if (!line) {
+      continue;
+    }
+    if (!edge) {
+      line.style.display = "none";
+      continue;
+    }
+    line.setAttribute("x1", String(edge.x1));
+    line.setAttribute("y1", String(edge.y1));
+    line.setAttribute("x2", String(edge.x2));
+    line.setAttribute("y2", String(edge.y2));
+    line.style.stroke = stroke;
+    line.style.display = "block";
+  }
+}
+function hideBoundsWireframe(dom) {
+  for (const line of dom.boundsLines) {
+    line.style.display = "none";
+  }
+}
 function paintGizmoLayout(input) {
-  const { dom, view, axes, rect, scaleX, scaleY, mode } = input;
+  const { dom, node, view, axes, rect, scaleX, scaleY, mode } = input;
   const originScreen = projectWorldPoint(view, axes.origin);
   if (!originScreen) {
+    hideBoundsWireframe(dom);
     setGizmoVisible(dom, false);
     return;
   }
@@ -47056,6 +47250,7 @@ function paintGizmoLayout(input) {
   dom.root.style.height = `${rect.height}px`;
   dom.svg.setAttribute("width", String(rect.width));
   dom.svg.setAttribute("height", String(rect.height));
+  paintBoundsWireframe(dom, node, view, scaleX, scaleY);
   const ox = originScreen.x * scaleX;
   const oy = originScreen.y * scaleY;
   dom.center.setAttribute("cx", String(ox));
@@ -47458,6 +47653,9 @@ function installGizmo3D(resolveNode) {
     setModeButtonsActive(dom, mode);
   }
   function hide() {
+    for (const line of dom.boundsLines) {
+      line.style.display = "none";
+    }
     setGizmoVisible(dom, false);
   }
   const drag = createGizmoDrag({
@@ -47489,6 +47687,7 @@ function installGizmo3D(resolveNode) {
     }
     paintGizmoLayout({
       dom,
+      node,
       view,
       axes,
       rect: next.rect,
@@ -75342,13 +75541,13 @@ const backendLoaders = [{
     type: ExtensionType.WebGLLoader,
     name: "pixijs-3d"
   },
-  load: () => __vitePreload(() => import("./init-TPymi50x.js"), true ? __vite__mapDeps([13,14,10,8]) : void 0)
+  load: () => __vitePreload(() => import("./init-DY_B3_yH.js"), true ? __vite__mapDeps([13,14,10,8]) : void 0)
 }, {
   extension: {
     type: ExtensionType.WebGPULoader,
     name: "pixijs-3d"
   },
-  load: () => __vitePreload(() => import("./init-Y5kpzMow.js"), true ? __vite__mapDeps([15,14,10,8]) : void 0)
+  load: () => __vitePreload(() => import("./init-C_ZAJB99.js"), true ? __vite__mapDeps([15,14,10,8]) : void 0)
 }];
 addUniformParsers();
 extensions.add(...backendLoaders);

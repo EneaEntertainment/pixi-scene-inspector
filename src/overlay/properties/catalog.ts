@@ -14,6 +14,7 @@ import {
     FONT_STYLE_OPTIONS,
     FONT_VARIANT_OPTIONS,
     FONT_WEIGHT_OPTIONS,
+    HIT_VOLUME_OPTIONS,
     STROKE_JOIN_OPTIONS,
     TEXT_BASELINE_OPTIONS,
     WHITE_SPACE_OPTIONS,
@@ -264,6 +265,12 @@ const OBJECT_CATALOG_SECTIONS: Array<CatalogSectionSpec> = [
                 key     : 'eventMode',
                 label   : 'eventMode',
                 options : EVENT_MODE_OPTIONS,
+            },
+            {
+                kind    : 'select',
+                key     : 'hitVolume',
+                label   : 'hitVolume',
+                options : HIT_VOLUME_OPTIONS,
             },
             {
                 kind       : 'select',

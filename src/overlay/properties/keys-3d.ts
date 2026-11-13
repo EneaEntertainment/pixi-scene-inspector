@@ -11,6 +11,7 @@ export type ThreeDBooleanPropertyKey =
     | 'orbit.autoUpdate';
 
 export type ThreeDStringPropertyKey =
+    | 'hitVolume'
     | 'light.color'
     | 'light.shadow.cascades'
     | 'light.shadow.update'
