@@ -158,10 +158,7 @@ export function constructorNameCandidates(name: string): Array<string>
     return candidates;
 }
 
-export function matchKnownTypeName(
-    name: string,
-    known: ReadonlySet<string>,
-): string
+export function matchKnownTypeName(name: string, known: ReadonlySet<string>): string
 {
     const candidates = constructorNameCandidates(name);
 

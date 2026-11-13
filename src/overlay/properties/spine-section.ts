@@ -13,9 +13,13 @@ import {
     spineStop,
 } from '../../page-ops/spine';
 import { typeNameOf } from '../../page-ops/types';
-import { createFieldLabel, createFieldRoot, FIELD_CONTROL_FLEX } from '../fields/chrome';
+import { createFieldLabel, createFieldRoot } from '../fields/chrome';
 import { createSection } from '../fields/section';
-import { BUTTON_BG, LOOP_BG } from './constants';
+import {
+    ANIMATION_SELECT_STYLE,
+    createAnimationTransport,
+    fillSelectOptions,
+} from './animation-chrome';
 
 import type { PixiNode } from '../../page-ops/pixi-node';
 
@@ -25,147 +29,35 @@ export type SpineSection = {
     destroy: () => void;
 };
 
-const SELECT_STYLE: Record<string, string> = {
-    flex         : FIELD_CONTROL_FLEX,
-    minWidth     : '0',
-    height       : '22px',
-    margin       : '0',
-    padding      : '0 4px',
-    border       : '0',
-    borderRadius : '3px',
-    outline      : 'none',
-    background   : '#2a2a2a',
-    color        : '#e5e5e5',
-    font         : 'inherit',
-    fontSize     : '12px',
-    boxSizing    : 'border-box',
-    cursor       : 'pointer',
-};
-
-function iconSvg(body: string): string
-{
-    return `<svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true">${body}</svg>`;
-}
-
-function playIcon(): string
-{
-    return iconSvg('<path fill="currentColor" d="M5.2 3.1v9.8l8.1-4.9z"/>');
-}
-
-function pauseIcon(): string
-{
-    return iconSvg('<path fill="currentColor" d="M4.1 3.1h2.5v9.8H4.1zm5.3 0h2.5v9.8H9.4z"/>');
-}
-
-function stopIcon(): string
-{
-    return iconSvg('<rect x="4.1" y="4.1" width="7.8" height="7.8" rx="0.6" fill="currentColor"/>');
-}
-
-function loopIcon(): string
-{
-    return iconSvg(
-        '<path fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"'
-        + ' stroke-linejoin="round"'
-        + ' d="M11.5 2.4 14 4.4 11.5 6.4M2 7V6.4a2 2 0 0 1 2-2H14'
-        + 'M4.5 13.6 2 11.6 4.5 9.6M14 9v.6a2 2 0 0 1-2 2H2"/>',
-    );
-}
-
-function createIconButton(label: string, icon: string): HTMLButtonElement
-{
-    const button = document.createElement('button');
-
-    button.type = 'button';
-    button.innerHTML = icon;
-
-    button.setAttribute('aria-label', label);
-
-    Object.assign(button.style, {
-        display        : 'flex',
-        alignItems     : 'center',
-        justifyContent : 'center',
-        width          : '28px',
-        height         : '24px',
-        margin         : '0',
-        padding        : '0',
-        border         : '0',
-        borderRadius   : '4px',
-        appearance     : 'none',
-        background     : BUTTON_BG,
-        color          : '#ffffff',
-        cursor         : 'pointer',
-        outline        : 'none',
-        flexShrink     : '0',
-        boxSizing      : 'border-box',
-    });
-
-    button.addEventListener('click', (event) =>
-    {
-        event.preventDefault();
-        event.stopPropagation();
-        button.blur();
-    });
-
-    return button;
-}
-
-function sameNames(left: Array<string>, right: Array<string>): boolean
-{
-    if (left.length !== right.length)
-    {
-        return false;
-    }
-
-    for (let i = 0; i < left.length; i++)
-    {
-        if (left[i] !== right[i])
-        {
-            return false;
-        }
-    }
-
-    return true;
-}
-
 export function createSpineSection(): SpineSection
 {
     const ui = createSection('Animation', true);
+    const transport = createAnimationTransport();
 
     const skinRow = createFieldRoot();
     const skinLabel = createFieldLabel('skin');
     const skinSelect = document.createElement('select');
 
-    Object.assign(skinSelect.style, SELECT_STYLE);
+    Object.assign(skinSelect.style, ANIMATION_SELECT_STYLE);
 
     skinRow.style.display = 'none';
 
     skinSelect.setAttribute('aria-label', 'skin');
-    skinRow.append(skinLabel, skinSelect);
 
-    const selectRow = createFieldRoot();
-    const label = createFieldLabel('animation');
-    const select = document.createElement('select');
+    skinSelect.addEventListener('keydown', (event) =>
+    {
+        if (event.key !== 'Escape')
+        {
+            return;
+        }
 
-    Object.assign(select.style, SELECT_STYLE);
-
-    select.setAttribute('aria-label', 'animation');
-
-    const controls = document.createElement('div');
-
-    Object.assign(controls.style, {
-        display        : 'flex',
-        justifyContent : 'center',
-        gap            : '6px',
+        event.preventDefault();
+        skinSelect.blur();
     });
 
-    const playBtn = createIconButton('Play animation', playIcon());
-    const stopBtn = createIconButton('Stop animation', stopIcon());
-    const loopBtn = createIconButton('Loop animation', loopIcon());
+    skinRow.append(skinLabel, skinSelect);
 
-    controls.append(playBtn, stopBtn, loopBtn);
-    selectRow.append(label, select);
-    ui.body.append(skinRow, selectRow, controls);
+    ui.body.append(skinRow, transport.row, transport.controls);
 
     ui.root.style.display = 'none';
 
@@ -178,19 +70,10 @@ export function createSpineSection(): SpineSection
     let paused = false;
     let loop = false;
     let loopSynced = false;
-    let shownPause = false;
 
     function renderControls()
     {
-        if (shownPause !== playing)
-        {
-            shownPause = playing;
-            playBtn.innerHTML = playing ? pauseIcon() : playIcon();
-        }
-
-        playBtn.setAttribute('aria-label', playing ? 'Pause animation' : 'Play animation');
-        loopBtn.style.background = loop ? LOOP_BG : BUTTON_BG;
-        loopBtn.setAttribute('aria-pressed', loop ? 'true' : 'false');
+        transport.renderControls({ playing, loop });
     }
 
     function onPlaybackComplete()
@@ -216,43 +99,6 @@ export function createSpineSection(): SpineSection
         renderControls();
     }
 
-    function fillSelect(
-        selectEl: HTMLSelectElement,
-        names: Array<string>,
-        current: string,
-        knownNames: Array<string>,
-        assignKnown: (next: Array<string>) => void,
-    )
-    {
-        if (sameNames(names, knownNames))
-        {
-            if (selectEl.value !== current && document.activeElement !== selectEl)
-            {
-                selectEl.value = current;
-            }
-
-            return;
-        }
-
-        assignKnown(names.slice());
-        selectEl.replaceChildren();
-
-        for (const name of names)
-        {
-            const option = document.createElement('option');
-
-            option.value = name;
-            option.textContent = name;
-
-            selectEl.appendChild(option);
-        }
-
-        if (document.activeElement !== selectEl)
-        {
-            selectEl.value = current;
-        }
-    }
-
     function setOptions(names: Array<string>)
     {
         if (!names.includes(selected))
@@ -260,7 +106,7 @@ export function createSpineSection(): SpineSection
             selected = names[0] ?? '';
         }
 
-        fillSelect(select, names, selected, optionNames, (next) =>
+        fillSelectOptions(transport.select, names, selected, optionNames, (next) =>
         {
             optionNames = next;
         });
@@ -289,7 +135,7 @@ export function createSpineSection(): SpineSection
             selectedSkin = names[0] ?? '';
         }
 
-        fillSelect(skinSelect, names, selectedSkin, skinOptionNames, (next) =>
+        fillSelectOptions(skinSelect, names, selectedSkin, skinOptionNames, (next) =>
         {
             skinOptionNames = next;
         });
@@ -354,7 +200,7 @@ export function createSpineSection(): SpineSection
 
         const info = spinePlaybackInfo(node);
         const skinNames = spineSkinNames(node);
-        const editingAnimation = document.activeElement === select;
+        const editingAnimation = document.activeElement === transport.select;
         const editingSkin = document.activeElement === skinSelect;
 
         if (!editingAnimation)
@@ -411,15 +257,15 @@ export function createSpineSection(): SpineSection
         skinSelect.blur();
     });
 
-    select.addEventListener('change', () =>
+    transport.select.addEventListener('change', () =>
     {
-        selected = select.value;
+        selected = transport.select.value;
 
         playSelected();
-        select.blur();
+        transport.select.blur();
     });
 
-    playBtn.addEventListener('click', () =>
+    transport.playBtn.addEventListener('click', () =>
     {
         if (!boundNode)
         {
@@ -449,7 +295,7 @@ export function createSpineSection(): SpineSection
         playSelected();
     });
 
-    stopBtn.addEventListener('click', () =>
+    transport.stopBtn.addEventListener('click', () =>
     {
         if (!boundNode)
         {
@@ -464,7 +310,7 @@ export function createSpineSection(): SpineSection
         renderControls();
     });
 
-    loopBtn.addEventListener('click', () =>
+    transport.loopBtn.addEventListener('click', () =>
     {
         loop = !loop;
 

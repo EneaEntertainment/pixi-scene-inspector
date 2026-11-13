@@ -29,10 +29,7 @@ export type NumberDragHandle = {
     destroy: () => void;
 };
 
-export function attachNumberDrag(
-    dragLayer: HTMLElement,
-    binding: NumberDragBinding,
-): NumberDragHandle
+export function attachNumberDrag(dragLayer: HTMLElement, binding: NumberDragBinding): NumberDragHandle
 {
     let startY = 0;
     let startValue = 0;

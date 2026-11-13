@@ -314,11 +314,7 @@ export function createPropertiesPanel(options: CreatePropertiesPanelOptions): Pr
         options.onShellRightChange(chrome.shellInsetPx(), notify);
     }
 
-    function onViewportResize(
-        nextViewportW: number,
-        nextViewportH: number,
-        nextTreeH: number,
-    )
+    function onViewportResize(nextViewportW: number, nextViewportH: number, nextTreeH: number)
     {
         treeH = nextTreeH;
 

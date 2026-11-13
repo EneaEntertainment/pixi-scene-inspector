@@ -4,6 +4,7 @@ export type TreeNodeData = {
     label: string;
     typeName: string;
     visible: boolean;
+    hideBlocked: boolean;
     children: Array<TreeNodeData>;
 };
 
@@ -61,8 +62,6 @@ export function mountPixiSceneInspector(
 
 export function dockPixiSceneInspector(options?: DockPixiSceneInspectorOptions): MountedPixiSceneInspector;
 
-export function togglePixiSceneInspector(
-    options?: DockPixiSceneInspectorOptions,
-): MountedPixiSceneInspector | null;
+export function togglePixiSceneInspector(options?: DockPixiSceneInspectorOptions): MountedPixiSceneInspector | null;
 
 export function installPixiSceneInspectorHotkey(options?: DockPixiSceneInspectorOptions): boolean;

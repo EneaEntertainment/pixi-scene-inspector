@@ -1,10 +1,13 @@
 import { highlightTransformGesture } from '../../gesture-active';
 import { highlightFill, highlightFillDrag, highlightStroke, highlightStrokeDrag } from '../../highlight-colors';
+import { isNode3D } from '../../page-ops/node-3d';
 import { snapToStep } from '../fields/number-drag';
-import { readTransformNumber, writeTransformNumber } from '../properties/transform-apply';
+import { writeTransformNumber } from '../properties/transform-apply';
 import { ANGLE_STEP, POSITION_STEP, SCALE_STEP } from './constants';
 import { readWorldTransform } from './geometry';
 import { localToScreen, normalize2, project, worldDeltaToParentLocal } from './math';
+import { scaleRatioAlongAxis } from './scale-ratio';
+import { restoreNodeSnapshots, snapshotNodesKeys } from './transform-snapshot';
 
 import type { PixiNode } from '../../page-ops/pixi-node';
 import type { NumberPropertyKey } from '../properties/node';
@@ -59,44 +62,6 @@ function scaleTipLocal(mode: 'scaleX' | 'scaleY' | 'scaleUniform', width: number
     }
 
     return { x: width, y: height };
-}
-
-function snapshotKeys(nodes: Array<PixiNode>, keys: Array<NumberPropertyKey>): Array<NodeSnapshot>
-{
-    const out: Array<NodeSnapshot> = [];
-
-    for (const node of nodes)
-    {
-        const values = new Map<NumberPropertyKey, number>();
-
-        for (const key of keys)
-        {
-            const value = readTransformNumber(node, key);
-
-            if (typeof value === 'number')
-            {
-                values.set(key, value);
-            }
-        }
-
-        if (values.size > 0)
-        {
-            out.push({ node, values });
-        }
-    }
-
-    return out;
-}
-
-function restoreSnapshots(snapshots: Array<NodeSnapshot>)
-{
-    for (const entry of snapshots)
-    {
-        for (const [key, value] of entry.values)
-        {
-            writeTransformNumber(entry.node, key, value);
-        }
-    }
 }
 
 export function attachHighlightTransformDrag(host: HighlightDragHost): HighlightDragController
@@ -170,7 +135,7 @@ export function attachHighlightTransformDrag(host: HighlightDragHost): Highlight
             return;
         }
 
-        restoreSnapshots(dragSnapshots);
+        restoreNodeSnapshots(dragSnapshots);
         endDrag();
     }
 
@@ -318,15 +283,25 @@ export function attachHighlightTransformDrag(host: HighlightDragHost): Highlight
         }
 
         const dist = project(clientX, clientY, guide.origin.x, guide.origin.y, guide.axis);
-        const ratio = dist / dragStartDist;
-
-        if (!Number.isFinite(ratio))
-        {
-            return;
-        }
 
         for (const entry of dragSnapshots)
         {
+            const senseStart = mode === 'scaleY'
+                ? entry.values.get('scale.y')
+                : entry.values.get('scale.x');
+            const ratio = scaleRatioAlongAxis(
+                dist,
+                dragStartDist,
+                guide.axis.x,
+                guide.axis.y,
+                typeof senseStart === 'number' ? senseStart : 1,
+            );
+
+            if (!Number.isFinite(ratio))
+            {
+                continue;
+            }
+
             if (mode === 'scaleX' || mode === 'scaleUniform')
             {
                 const start = entry.values.get('scale.x');
@@ -494,12 +469,12 @@ export function attachHighlightTransformDrag(host: HighlightDragHost): Highlight
 
         const nodes = resolveNodes();
 
-        if (nodes.length === 0)
+        if (nodes.length === 0 || nodes.some((node) => isNode3D(node)))
         {
             return;
         }
 
-        const snapshots = snapshotKeys(nodes, keysForDragMode(mode));
+        const snapshots = snapshotNodesKeys(nodes, keysForDragMode(mode));
 
         if (snapshots.length === 0)
         {

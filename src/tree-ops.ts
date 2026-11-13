@@ -85,10 +85,7 @@ function collectTreeUids(node: TreeNodeData, into: Set<number> = new Set()): Set
     return into;
 }
 
-export function collectIdToUid(
-    node: TreeNodeData,
-    into: Map<string, number> = new Map(),
-): Map<string, number>
+export function collectIdToUid(node: TreeNodeData, into: Map<string, number> = new Map()): Map<string, number>
 {
     into.set(node.id, node.uid);
 
@@ -100,10 +97,7 @@ export function collectIdToUid(
     return into;
 }
 
-export function collectUidToId(
-    node: TreeNodeData,
-    into: Map<number, string> = new Map(),
-): Map<number, string>
+export function collectUidToId(node: TreeNodeData, into: Map<number, string> = new Map()): Map<number, string>
 {
     into.set(node.uid, node.id);
 
@@ -131,11 +125,7 @@ export function remapIdByUid(
     return nextUidToId.get(uid) ?? null;
 }
 
-export function remapIdsByUid(
-    ids: ReadonlySet<string>,
-    prevTree: TreeNodeData,
-    nextTree: TreeNodeData,
-): Set<string>
+export function remapIdsByUid(ids: ReadonlySet<string>, prevTree: TreeNodeData, nextTree: TreeNodeData): Set<string>
 {
     const prevIdToUid = collectIdToUid(prevTree);
     const nextUidToId = collectUidToId(nextTree);
@@ -252,11 +242,12 @@ export function filterTreeByName(root: TreeNodeData, query: string): TreeNodeDat
         }
 
         return {
-            id       : node.id,
-            uid      : node.uid,
-            label    : node.label,
-            typeName : node.typeName,
-            visible  : node.visible,
+            id          : node.id,
+            uid         : node.uid,
+            label       : node.label,
+            typeName    : node.typeName,
+            visible     : node.visible,
+            hideBlocked : node.hideBlocked,
             children,
             filterMatch,
         };

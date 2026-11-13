@@ -1,9 +1,18 @@
 import { isNodeAlive } from '../../page-ops/pixi-node';
+import { isAimable3D, isCamera3D } from '../../page-ops/props-3d';
 import { resolveAliveNodesByIds } from '../../page-ops/resolve-selection';
 import { clearSelectionIds } from '../../page-ops/selection-ids';
 import { typeNameOf } from '../../page-ops/types';
 import { openExportDialog } from '../export';
-import { OBJECT_FORM_SECTIONS, TEXT_FORM_SECTIONS } from './catalog';
+import { createAim3DSection } from './aim-3d-section';
+import {
+    CAMERA_FORM_SECTIONS,
+    LIGHT_FORM_SECTIONS,
+    MATERIAL_FORM_SECTIONS,
+    OBJECT_FORM_SECTIONS,
+    TEXT_FORM_SECTIONS,
+    VIEW_FORM_SECTIONS,
+} from './catalog';
 import {
     createBooleanField,
     createColorField,
@@ -12,8 +21,10 @@ import {
     createSection,
     createSelectField,
     createTextField,
+    createTextureField,
 } from './fields';
 import { isTextNumberKey, resolveBooleanMap, resolveNumberMap, resolveStringMap } from './keys';
+import { createModel3DSection } from './model-3d-section';
 import { mapsForNode } from './node';
 import { createSpineSection } from './spine-section';
 import { createPropertiesTabs } from './tabs';
@@ -28,7 +39,7 @@ import type { NumberCommitInfo } from '../fields/number';
 import type { PropertyExportSectionId, SectionSpec } from './catalog';
 import type { FieldBooleanKey, FieldNumberKey, FieldStringKey } from './keys';
 import type { NodePropertyMaps, NumberPropertyKey } from './node';
-import type { PropertiesTabId } from './tabs';
+import type { OptionalPropertiesTabId, PropertiesTabId } from './tabs';
 import type { FillColorStop, TextFillPropertyKey, TextPropertyMaps } from './text';
 
 const POLL_MS = 200;
@@ -119,38 +130,6 @@ export function createPropertiesForm(selection: SelectionChannel): PropertiesFor
         background         : '#303030',
     });
 
-    const objectPane = document.createElement('div');
-
-    Object.assign(objectPane.style, {
-        display       : 'flex',
-        flexDirection : 'column',
-        gap           : '6px',
-    });
-
-    objectPane.setAttribute('role', 'tabpanel');
-    objectPane.setAttribute('aria-label', 'Object Properties');
-
-    const textPane = document.createElement('div');
-
-    Object.assign(textPane.style, {
-        display       : 'none',
-        flexDirection : 'column',
-        gap           : '6px',
-    });
-
-    textPane.setAttribute('role', 'tabpanel');
-    textPane.setAttribute('aria-label', 'Text Properties');
-
-    function showTab(id: PropertiesTabId)
-    {
-        const showObject = id === 'object';
-
-        objectPane.style.display = showObject ? 'flex' : 'none';
-        textPane.style.display = showObject ? 'none' : 'flex';
-    }
-
-    const tabs = createPropertiesTabs('object', showTab);
-
     type BuiltSection = {
         id: PropertyExportSectionId;
         root: HTMLElement;
@@ -168,8 +147,49 @@ export function createPropertiesForm(selection: SelectionChannel): PropertiesFor
         ) => void;
     };
 
-    const builtObject: Array<BuiltSection> = [];
-    const builtText: Array<BuiltSection> = [];
+    type TabHost = {
+        id: PropertiesTabId;
+        pane: HTMLElement;
+        built: Array<BuiltSection>;
+    };
+
+    function createTabPane(label: string, visible: boolean): HTMLElement
+    {
+        const pane = document.createElement('div');
+
+        Object.assign(pane.style, {
+            display       : visible ? 'flex' : 'none',
+            flexDirection : 'column',
+            gap           : '6px',
+        });
+
+        pane.setAttribute('role', 'tabpanel');
+        pane.setAttribute('aria-label', label);
+
+        return pane;
+    }
+
+    const hosts: Array<TabHost> = [
+        { id: 'object', pane: createTabPane('Object Properties', true), built: [] },
+        { id: 'text', pane: createTabPane('Text Properties', false), built: [] },
+        { id: 'material', pane: createTabPane('Material Properties', false), built: [] },
+        { id: 'light', pane: createTabPane('Light Properties', false), built: [] },
+        { id: 'camera', pane: createTabPane('Camera Properties', false), built: [] },
+        { id: 'view', pane: createTabPane('View Properties', false), built: [] },
+    ];
+
+    const hostById = new Map<PropertiesTabId, TabHost>(hosts.map((host) => [host.id, host]));
+
+    function showTab(id: PropertiesTabId)
+    {
+        for (const host of hosts)
+        {
+            host.pane.style.display = host.id === id ? 'flex' : 'none';
+        }
+    }
+
+    const tabs = createPropertiesTabs('object', showTab);
+
     let objectMaps: NodePropertyMaps = { numbers: [], booleans: [], strings: [] };
     let textMaps: TextPropertyMaps = emptyTextMaps();
     let activeExportDialog: ExportDialog | null = null;
@@ -233,6 +253,42 @@ export function createPropertiesForm(selection: SelectionChannel): PropertiesFor
                 ids  : selectedId ? [selectedId] : [],
             });
         }
+    }
+
+    function applyTextureString(key: FieldStringKey, value: string): string | null
+    {
+        const node = selectedNode();
+
+        if (!isNodeAlive(node))
+        {
+            return null;
+        }
+
+        const mapping = resolveStringMap(currentExportMaps(), key);
+
+        if (!mapping)
+        {
+            return null;
+        }
+
+        const before = mapping.get() ?? '';
+        const trimmed = value.trim();
+
+        if (trimmed === before)
+        {
+            return before;
+        }
+
+        mapping.set(trimmed);
+
+        const after = mapping.get() ?? '';
+
+        if (after === before)
+        {
+            return null;
+        }
+
+        return after;
     }
 
     function applyFillStops(key: TextFillPropertyKey, value: Array<FillColorStop>)
@@ -341,6 +397,18 @@ export function createPropertiesForm(selection: SelectionChannel): PropertiesFor
 
                 ui.body.appendChild(field.root);
             }
+            else if (fieldSpec.kind === 'texture')
+            {
+                const field = createTextureField(fieldSpec, applyTextureString);
+
+                fields.push(bindField(
+                    field,
+                    (maps) => !!resolveStringMap(maps, field.key),
+                    (maps) => resolveStringMap(maps, field.key)?.get(),
+                ));
+
+                ui.body.appendChild(field.root);
+            }
             else if (fieldSpec.kind === 'fillStops')
             {
                 const field = createFillStopsField(fieldSpec, applyFillStops);
@@ -419,32 +487,68 @@ export function createPropertiesForm(selection: SelectionChannel): PropertiesFor
     }
 
     const spineSection = createSpineSection();
+    const model3dSection = createModel3DSection();
+    const aim3dSection = createAim3DSection();
 
     const textureSection = createTextureSection(() =>
     {
         openSectionExport('texture', 'Texture');
     });
 
-    for (const section of OBJECT_FORM_SECTIONS)
-    {
-        buildSection(section, objectPane, builtObject);
+    const objectHost = hostById.get('object')!;
+    const textHost = hostById.get('text')!;
+    const materialHost = hostById.get('material')!;
+    const lightHost = hostById.get('light')!;
+    const cameraHost = hostById.get('camera')!;
+    const viewHost = hostById.get('view')!;
 
-        if (section.id === 'identity')
+    function buildTabSections(host: TabHost, sections: Array<SectionSpec>)
+    {
+        for (const section of sections)
         {
-            objectPane.appendChild(spineSection.root);
-            objectPane.appendChild(textureSection.root);
+            buildSection(section, host.pane, host.built);
         }
     }
 
-    for (const section of TEXT_FORM_SECTIONS)
+    buildTabSections(objectHost, OBJECT_FORM_SECTIONS);
+
+    const identitySection = objectHost.built.find((section) => section.id === 'identity');
+
+    if (identitySection)
     {
-        buildSection(section, textPane, builtText);
+        identitySection.root.after(spineSection.root, model3dSection.root, textureSection.root);
     }
 
-    scrollElement.appendChild(objectPane);
-    scrollElement.appendChild(textPane);
+    buildTabSections(textHost, TEXT_FORM_SECTIONS);
+    buildTabSections(materialHost, MATERIAL_FORM_SECTIONS);
+    buildTabSections(lightHost, LIGHT_FORM_SECTIONS);
+    buildTabSections(cameraHost, CAMERA_FORM_SECTIONS);
+    buildTabSections(viewHost, VIEW_FORM_SECTIONS);
+
+    for (const host of hosts)
+    {
+        scrollElement.appendChild(host.pane);
+    }
+
     element.appendChild(tabs.root);
     element.appendChild(scrollElement);
+
+    function placeAimSection(node: PixiNode | null)
+    {
+        if (!node || !isAimable3D(node))
+        {
+            aim3dSection.root.remove();
+
+            return;
+        }
+
+        const host = isCamera3D(node) ? cameraHost.pane : lightHost.pane;
+
+        if (aim3dSection.root.parentElement !== host)
+        {
+            host.appendChild(aim3dSection.root);
+        }
+    }
 
     function selectedNode(): PixiNode | null
     {
@@ -536,6 +640,75 @@ export function createPropertiesForm(selection: SelectionChannel): PropertiesFor
         return { numbers, booleans: [], strings: [] };
     }
 
+    function mapsHavePrefix(maps: NodePropertyMaps, prefix: string): boolean
+    {
+        for (const entry of maps.numbers)
+        {
+            if (entry.key.startsWith(prefix))
+            {
+                return true;
+            }
+        }
+
+        for (const entry of maps.booleans)
+        {
+            if (entry.key.startsWith(prefix))
+            {
+                return true;
+            }
+        }
+
+        for (const entry of maps.strings)
+        {
+            if (entry.key.startsWith(prefix))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    function hideBuiltSections(sections: Array<BuiltSection>)
+    {
+        for (const section of sections)
+        {
+            section.root.style.display = 'none';
+        }
+    }
+
+    function syncBuiltSections(
+        sections: Array<BuiltSection>,
+        nextObject: NodePropertyMaps,
+        nextText: TextPropertyMaps,
+        multi: boolean,
+    )
+    {
+        for (const section of sections)
+        {
+            section.syncVisibility(nextObject, nextText, multi);
+            section.syncValues(nextObject, nextText);
+        }
+    }
+
+    function setOptionalTabsAvailable(flags: Record<OptionalPropertiesTabId, boolean>)
+    {
+        for (const id of Object.keys(flags) as Array<OptionalPropertiesTabId>)
+        {
+            tabs.setAvailable(id, flags[id]);
+        }
+    }
+
+    function setHostVisibility(id: PropertiesTabId, visible: boolean)
+    {
+        const host = hostById.get(id);
+
+        if (host)
+        {
+            host.pane.style.visibility = visible ? 'visible' : 'hidden';
+        }
+    }
+
     function syncFromNode()
     {
         try
@@ -547,25 +720,34 @@ export function createPropertiesForm(selection: SelectionChannel): PropertiesFor
                 objectMaps = multiObjectMaps(nodes);
                 textMaps = emptyTextMaps();
 
-                tabs.setTextAvailable(false);
+                setOptionalTabsAvailable({
+                    text     : false,
+                    material : false,
+                    light    : false,
+                    camera   : false,
+                    view     : false,
+                });
                 tabs.setActive('object');
                 showTab('object');
 
-                objectPane.style.visibility = nodes.length > 0 ? 'visible' : 'hidden';
-                textPane.style.visibility = 'hidden';
+                setHostVisibility('object', nodes.length > 0);
+                setHostVisibility('text', false);
+                setHostVisibility('material', false);
+                setHostVisibility('light', false);
+                setHostVisibility('camera', false);
+                setHostVisibility('view', false);
 
-                for (const section of builtObject)
-                {
-                    section.syncVisibility(objectMaps, textMaps, true);
-                    section.syncValues(objectMaps, textMaps);
-                }
-
-                for (const section of builtText)
-                {
-                    section.root.style.display = 'none';
-                }
+                syncBuiltSections(objectHost.built, objectMaps, textMaps, true);
+                hideBuiltSections(textHost.built);
+                hideBuiltSections(materialHost.built);
+                hideBuiltSections(lightHost.built);
+                hideBuiltSections(cameraHost.built);
+                hideBuiltSections(viewHost.built);
 
                 spineSection.sync(null);
+                model3dSection.sync(null);
+                aim3dSection.sync(null);
+                placeAimSection(null);
                 textureSection.sync(null, true);
 
                 return;
@@ -588,37 +770,54 @@ export function createPropertiesForm(selection: SelectionChannel): PropertiesFor
                 || textMaps.strings.length > 0
             );
 
-            objectPane.style.visibility = hasObject ? 'visible' : 'hidden';
-            textPane.style.visibility = hasText ? 'visible' : 'hidden';
+            const hasMaterial = !!node && mapsHavePrefix(objectMaps, 'material.');
+            const hasLight = !!node && mapsHavePrefix(objectMaps, 'light.');
+            const hasCamera = !!node && (
+                mapsHavePrefix(objectMaps, 'camera.')
+                || mapsHavePrefix(objectMaps, 'orbit.')
+            );
+            const hasView = !!node && mapsHavePrefix(objectMaps, 'view3d.');
 
-            tabs.setTextAvailable(hasText);
+            setHostVisibility('object', hasObject);
+            setHostVisibility('text', hasText);
+            setHostVisibility('material', hasMaterial);
+            setHostVisibility('light', hasLight);
+            setHostVisibility('camera', hasCamera);
+            setHostVisibility('view', hasView);
 
-            if (hasObject)
+            setOptionalTabsAvailable({
+                text     : hasText,
+                material : hasMaterial,
+                light    : hasLight,
+                camera   : hasCamera,
+                view     : hasView,
+            });
+
+            const hostFlags: Array<{ host: TabHost; available: boolean }> = [
+                { host: objectHost, available: hasObject },
+                { host: textHost, available: hasText },
+                { host: materialHost, available: hasMaterial },
+                { host: lightHost, available: hasLight },
+                { host: cameraHost, available: hasCamera },
+                { host: viewHost, available: hasView },
+            ];
+
+            for (const entry of hostFlags)
             {
-                for (const section of builtObject)
+                if (entry.available)
                 {
-                    section.syncVisibility(objectMaps, textMaps, false);
-                    section.syncValues(objectMaps, textMaps);
+                    syncBuiltSections(entry.host.built, objectMaps, textMaps, false);
                 }
-            }
-
-            if (hasText)
-            {
-                for (const section of builtText)
+                else
                 {
-                    section.syncVisibility(objectMaps, textMaps, false);
-                    section.syncValues(objectMaps, textMaps);
-                }
-            }
-            else
-            {
-                for (const section of builtText)
-                {
-                    section.root.style.display = 'none';
+                    hideBuiltSections(entry.host.built);
                 }
             }
 
             spineSection.sync(node);
+            model3dSection.sync(node);
+            placeAimSection(node);
+            aim3dSection.sync(node);
             textureSection.sync(node);
         }
         catch
@@ -627,11 +826,24 @@ export function createPropertiesForm(selection: SelectionChannel): PropertiesFor
 
             textMaps = emptyTextMaps();
 
-            objectPane.style.visibility = 'hidden';
-            textPane.style.visibility = 'hidden';
+            setHostVisibility('object', false);
+            setHostVisibility('text', false);
+            setHostVisibility('material', false);
+            setHostVisibility('light', false);
+            setHostVisibility('camera', false);
+            setHostVisibility('view', false);
 
-            tabs.setTextAvailable(false);
+            setOptionalTabsAvailable({
+                text     : false,
+                material : false,
+                light    : false,
+                camera   : false,
+                view     : false,
+            });
             spineSection.sync(null);
+            model3dSection.sync(null);
+            aim3dSection.sync(null);
+            placeAimSection(null);
             textureSection.sync(null);
         }
     }
@@ -674,13 +886,18 @@ export function createPropertiesForm(selection: SelectionChannel): PropertiesFor
             unsubscribeSelection();
             tabs.destroy();
             spineSection.destroy();
+            model3dSection.destroy();
+            aim3dSection.destroy();
             textureSection.destroy();
 
-            for (const section of [...builtObject, ...builtText])
+            for (const host of hosts)
             {
-                for (const field of section.fields)
+                for (const section of host.built)
                 {
-                    field.destroy();
+                    for (const field of section.fields)
+                    {
+                        field.destroy();
+                    }
                 }
             }
 

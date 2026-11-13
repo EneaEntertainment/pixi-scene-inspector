@@ -6,3 +6,6 @@ export const ROTATE_STALK = 18;
 export const POSITION_STEP = 1;
 export const ANGLE_STEP = 1;
 export const SCALE_STEP = 0.01;
+export const POSITION_STEP_3D = 0.01;
+export const ANGLE_STEP_3D = 1;
+export const SCALE_STEP_3D = 0.01;

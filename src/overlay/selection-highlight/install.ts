@@ -5,6 +5,7 @@ import {
     readHighlightGuidesAttr,
     subscribeHighlightGuides,
 } from '../../highlight-guides';
+import { isNode3D } from '../../page-ops/node-3d';
 import { resolveLiveSelectionNodes } from '../../page-ops/resolve-selection';
 import { readHighlightEnabled } from '../shell/settings';
 import { ANCHOR_SIZE, EMPTY_SIZE } from './constants';
@@ -18,6 +19,7 @@ import {
     readWorldTransform,
     worldCorners,
 } from './geometry';
+import { installGizmo3D } from './gizmo-3d';
 import {
     applyHighlightPaint,
     createOverlayRoot,
@@ -28,11 +30,9 @@ import {
 } from './overlay-dom';
 
 import type { PageGlobals, PixiNode } from '../../page-ops/pixi-node';
-import type { BoxPaint, MatrixLike, SelectionHighlight } from './types';
+import type { BoxPaint, LocalBounds, MatrixLike, SelectionHighlight } from './types';
 
-export function installSelectionHighlight(
-    win: PageGlobals = globalThis as PageGlobals,
-): SelectionHighlight
+export function installSelectionHighlight(win: PageGlobals = globalThis as PageGlobals): SelectionHighlight
 {
     const overlay = createOverlayRoot();
     const { root, box, outline, pivotMark, anchorMark } = overlay;
@@ -84,6 +84,30 @@ export function installSelectionHighlight(
         },
     });
 
+    const gizmo = installGizmo3D(() =>
+    {
+        if (!enabled)
+        {
+            return null;
+        }
+
+        const nodes = resolveLiveSelectionNodes(win);
+
+        if (nodes.length !== 1)
+        {
+            return null;
+        }
+
+        const node = nodes[0];
+
+        if (!node || !isNode3D(node))
+        {
+            return null;
+        }
+
+        return node;
+    });
+
     function hide()
     {
         root.style.display = 'none';
@@ -110,6 +134,7 @@ export function installSelectionHighlight(
         frame = 0;
 
         hide();
+        gizmo.sync(null);
     }
 
     function publishPaint(
@@ -119,6 +144,7 @@ export function installSelectionHighlight(
         rect: DOMRect,
         scaleX: number,
         scaleY: number,
+        interactive = true,
     )
     {
         const transform = `matrix(${matrix.a}, ${matrix.b}, ${matrix.c}, ${matrix.d}, ${matrix.tx}, ${matrix.ty})`;
@@ -136,7 +162,7 @@ export function installSelectionHighlight(
         outline.setAttribute('height', String(height));
         outline.setAttribute('transform', transform);
 
-        setHandlesVisible(overlay, true);
+        setHandlesVisible(overlay, interactive);
 
         paint = {
             width,
@@ -150,8 +176,30 @@ export function installSelectionHighlight(
             canvasScaleY : scaleY,
         };
 
-        layoutHandles(overlay, paint);
+        if (interactive)
+        {
+            layoutHandles(overlay, paint);
+        }
+
         syncGuidesVisibility();
+    }
+
+    function paintAxisAlignedGlobal(bounds: LocalBounds, scaleX: number, scaleY: number, rect: DOMRect, interactive: boolean)
+    {
+        const left = bounds.minX * scaleX;
+        const top = bounds.minY * scaleY;
+        const width = Math.max(EMPTY_SIZE, (bounds.maxX - bounds.minX) * scaleX);
+        const height = Math.max(EMPTY_SIZE, (bounds.maxY - bounds.minY) * scaleY);
+
+        publishPaint(
+            width,
+            height,
+            { a: 1, b: 0, c: 0, d: 1, tx: left, ty: top },
+            rect,
+            scaleX,
+            scaleY,
+            interactive,
+        );
     }
 
     function paintSingle(node: PixiNode, scaleX: number, scaleY: number, rect: DOMRect)
@@ -221,70 +269,79 @@ export function installSelectionHighlight(
         }
     }
 
+    function appendNodeGlobalCorners(
+        node: PixiNode,
+        into: { minX: number; minY: number; maxX: number; maxY: number; any: boolean },
+    )
+    {
+        const matrix = readWorldTransform(node);
+        const bounds = readLocalBounds(node);
+
+        if (!matrix || !bounds)
+        {
+            return;
+        }
+
+        let local = bounds;
+        const localWidth = bounds.maxX - bounds.minX;
+        const localHeight = bounds.maxY - bounds.minY;
+
+        if (!(localWidth > 0) || !(localHeight > 0))
+        {
+            const cx = (bounds.minX + bounds.maxX) / 2;
+            const cy = (bounds.minY + bounds.maxY) / 2;
+
+            local = {
+                minX : cx - (EMPTY_SIZE / 2),
+                minY : cy - (EMPTY_SIZE / 2),
+                maxX : cx + (EMPTY_SIZE / 2),
+                maxY : cy + (EMPTY_SIZE / 2),
+            };
+        }
+
+        for (const corner of worldCorners(local, matrix))
+        {
+            into.any = true;
+            into.minX = Math.min(into.minX, corner.x);
+            into.minY = Math.min(into.minY, corner.y);
+            into.maxX = Math.max(into.maxX, corner.x);
+            into.maxY = Math.max(into.maxY, corner.y);
+        }
+    }
+
     function paintUnion(nodes: Array<PixiNode>, scaleX: number, scaleY: number, rect: DOMRect)
     {
-        let minX = Number.POSITIVE_INFINITY;
-        let minY = Number.POSITIVE_INFINITY;
-        let maxX = Number.NEGATIVE_INFINITY;
-        let maxY = Number.NEGATIVE_INFINITY;
-        let any = false;
+        const into = {
+            minX : Number.POSITIVE_INFINITY,
+            minY : Number.POSITIVE_INFINITY,
+            maxX : Number.NEGATIVE_INFINITY,
+            maxY : Number.NEGATIVE_INFINITY,
+            any  : false,
+        };
 
         for (const node of nodes)
         {
-            const matrix = readWorldTransform(node);
-            const bounds = readLocalBounds(node);
-
-            if (!matrix || !bounds)
-            {
-                continue;
-            }
-
-            let local = bounds;
-            const localWidth = bounds.maxX - bounds.minX;
-            const localHeight = bounds.maxY - bounds.minY;
-
-            if (!(localWidth > 0) || !(localHeight > 0))
-            {
-                const cx = (bounds.minX + bounds.maxX) / 2;
-                const cy = (bounds.minY + bounds.maxY) / 2;
-
-                local = {
-                    minX : cx - (EMPTY_SIZE / 2),
-                    minY : cy - (EMPTY_SIZE / 2),
-                    maxX : cx + (EMPTY_SIZE / 2),
-                    maxY : cy + (EMPTY_SIZE / 2),
-                };
-            }
-
-            for (const corner of worldCorners(local, matrix))
-            {
-                any = true;
-                minX = Math.min(minX, corner.x);
-                minY = Math.min(minY, corner.y);
-                maxX = Math.max(maxX, corner.x);
-                maxY = Math.max(maxY, corner.y);
-            }
+            appendNodeGlobalCorners(node, into);
         }
 
-        if (!any)
+        if (!into.any)
         {
             hide();
 
             return;
         }
 
-        const left = minX * scaleX;
-        const top = minY * scaleY;
-        const width = Math.max(EMPTY_SIZE, (maxX - minX) * scaleX);
-        const height = Math.max(EMPTY_SIZE, (maxY - minY) * scaleY);
-
-        publishPaint(
-            width,
-            height,
-            { a: 1, b: 0, c: 0, d: 1, tx: left, ty: top },
-            rect,
+        paintAxisAlignedGlobal(
+            {
+                minX : into.minX,
+                minY : into.minY,
+                maxX : into.maxX,
+                maxY : into.maxY,
+            },
             scaleX,
             scaleY,
+            rect,
+            true,
         );
 
         pivotMark.style.display = 'none';
@@ -299,6 +356,7 @@ export function installSelectionHighlight(
             frame = 0;
 
             hide();
+            gizmo.sync(null);
 
             return;
         }
@@ -310,6 +368,7 @@ export function installSelectionHighlight(
         if (!canvas)
         {
             hide();
+            gizmo.sync(null);
 
             return;
         }
@@ -319,6 +378,7 @@ export function installSelectionHighlight(
         if (!(rect.width > 0) || !(rect.height > 0))
         {
             hide();
+            gizmo.sync(null);
 
             return;
         }
@@ -326,18 +386,23 @@ export function installSelectionHighlight(
         const screen = readScreenSize(win, canvas);
         const scaleX = rect.width / screen.width;
         const scaleY = rect.height / screen.height;
+        const metrics = { rect, scaleX, scaleY };
         const nodes = resolveLiveSelectionNodes(win);
 
-        if (nodes.length > 1)
+        gizmo.sync(metrics);
+
+        const highlightNodes = nodes.filter((node) => !isNode3D(node));
+
+        if (highlightNodes.length > 1)
         {
-            paintUnion(nodes, scaleX, scaleY, rect);
+            paintUnion(highlightNodes, scaleX, scaleY, rect);
 
             return;
         }
 
-        if (nodes.length === 1 && nodes[0])
+        if (highlightNodes.length === 1 && highlightNodes[0])
         {
-            paintSingle(nodes[0], scaleX, scaleY, rect);
+            paintSingle(highlightNodes[0], scaleX, scaleY, rect);
 
             return;
         }
@@ -370,6 +435,7 @@ export function installSelectionHighlight(
             else
             {
                 drag.cancel();
+                gizmo.cancel();
                 stop();
             }
         },
@@ -381,6 +447,8 @@ export function installSelectionHighlight(
             unsubscribeColors();
             unsubscribeGuides();
             drag.cancel();
+            gizmo.cancel();
+            gizmo.destroy();
             stop();
             root.remove();
         },

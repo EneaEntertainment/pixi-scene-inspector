@@ -1,0 +1,9 @@
+Fox.glb
+  Fox by PixelMannen (CC0)
+  Rigging and animation by tomkranis (CC BY 4.0)
+  glTF conversion by @AsoboStudio and @scurest (CC BY 4.0)
+  Source: KhronosGroup/glTF-Sample-Assets
+
+CesiumMan (glTF)
+  CesiumMan by Cesium (CC BY 4.0)
+  Source: KhronosGroup/glTF-Sample-Assets

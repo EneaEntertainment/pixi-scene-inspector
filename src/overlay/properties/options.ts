@@ -128,3 +128,68 @@ export const STROKE_JOIN_OPTIONS: Array<SelectOption> = [
     { value: 'round', label: 'round' },
     { value: 'bevel', label: 'bevel' },
 ];
+
+export const CAMERA_MODE_OPTIONS: Array<SelectOption> = [
+    { value: 'perspective', label: 'perspective' },
+    { value: 'orthographic', label: 'orthographic' },
+];
+
+export const TONE_MAPPING_OPTIONS: Array<SelectOption> = [
+    { value: 'none', label: 'none' },
+    { value: 'aces', label: 'aces' },
+    { value: 'reinhard', label: 'reinhard' },
+    { value: 'uncharted2', label: 'uncharted2' },
+];
+
+export const SHADOW_QUALITY_OPTIONS: Array<SelectOption> = [
+    { value: 'low', label: 'low' },
+    { value: 'medium', label: 'medium' },
+    { value: 'high', label: 'high' },
+    { value: 'ultra', label: 'ultra' },
+];
+
+export const SHADOW_FILTER_OPTIONS: Array<SelectOption> = [
+    { value: 'hard', label: 'hard' },
+    { value: 'pcf', label: 'pcf' },
+    { value: 'pcf-high', label: 'pcf-high' },
+];
+
+export const FOG_TYPE_OPTIONS: Array<SelectOption> = [
+    { value: 'linear', label: 'linear' },
+    { value: 'exponential', label: 'exponential' },
+    { value: 'exp2', label: 'exp2' },
+];
+
+export const BILLBOARD_MODE_OPTIONS: Array<SelectOption> = [
+    { value: 'none', label: 'none' },
+    { value: 'spherical', label: 'spherical' },
+    { value: 'cylindrical', label: 'cylindrical' },
+];
+
+export const ALPHA_MODE_OPTIONS: Array<SelectOption> = [
+    { value: 'opaque', label: 'opaque' },
+    { value: 'mask', label: 'mask' },
+    { value: 'blend', label: 'blend' },
+];
+
+export const CULL_MODE_OPTIONS: Array<SelectOption> = [
+    { value: 'off', label: 'off' },
+    { value: 'cpu', label: 'cpu' },
+    { value: 'gpu', label: 'gpu' },
+];
+
+export const SHADOW_CASCADE_OPTIONS: Array<SelectOption> = [
+    { value: 'off', label: 'off' },
+    { value: '1', label: '1' },
+    { value: '2', label: '2' },
+    { value: '3', label: '3' },
+    { value: '4', label: '4' },
+];
+
+export const SHADOW_UPDATE_OPTIONS: Array<SelectOption> = [
+    { value: '1', label: 'every frame' },
+    { value: '2', label: 'every 2nd' },
+    { value: '4', label: 'every 4th' },
+    { value: '8', label: 'every 8th' },
+    { value: 'manual', label: 'manual' },
+];

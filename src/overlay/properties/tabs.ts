@@ -1,6 +1,21 @@
-import { objectTabIconSvg, textTabIconSvg } from '../shell/panel-icons';
+import {
+    cameraTabIconSvg,
+    lightTabIconSvg,
+    materialTabIconSvg,
+    objectTabIconSvg,
+    textTabIconSvg,
+    viewTabIconSvg,
+} from '../shell/panel-icons';
 
-export type PropertiesTabId = 'object' | 'text';
+export type PropertiesTabId =
+    | 'object'
+    | 'text'
+    | 'material'
+    | 'light'
+    | 'camera'
+    | 'view';
+
+export type OptionalPropertiesTabId = Exclude<PropertiesTabId, 'object'>;
 
 type PropertiesTabSpec = {
     id: PropertiesTabId;
@@ -12,7 +27,7 @@ type PropertiesTabs = {
     root: HTMLElement;
     active: () => PropertiesTabId;
     setActive: (id: PropertiesTabId) => void;
-    setTextAvailable: (available: boolean) => void;
+    setAvailable: (id: OptionalPropertiesTabId, available: boolean) => void;
     destroy: () => void;
 };
 
@@ -27,7 +42,40 @@ const TABS: Array<PropertiesTabSpec> = [
         label    : 'Text Properties',
         iconHtml : textTabIconSvg(),
     },
+    {
+        id       : 'material',
+        label    : 'Material Properties',
+        iconHtml : materialTabIconSvg(),
+    },
+    {
+        id       : 'light',
+        label    : 'Light Properties',
+        iconHtml : lightTabIconSvg(),
+    },
+    {
+        id       : 'camera',
+        label    : 'Camera Properties',
+        iconHtml : cameraTabIconSvg(),
+    },
+    {
+        id       : 'view',
+        label    : 'View Properties',
+        iconHtml : viewTabIconSvg(),
+    },
 ];
+
+const OPTIONAL_TAB_IDS: Array<OptionalPropertiesTabId> = [
+    'text',
+    'material',
+    'light',
+    'camera',
+    'view',
+];
+
+function isOptionalTab(id: PropertiesTabId): id is OptionalPropertiesTabId
+{
+    return id !== 'object';
+}
 
 export function createPropertiesTabs(initial: PropertiesTabId, onChange: (id: PropertiesTabId) => void): PropertiesTabs
 {
@@ -52,12 +100,24 @@ export function createPropertiesTabs(initial: PropertiesTabId, onChange: (id: Pr
     root.setAttribute('aria-label', 'Property tabs');
 
     let active: PropertiesTabId = initial;
-    let textAvailable = true;
+    const available = new Map<OptionalPropertiesTabId, boolean>(
+        OPTIONAL_TAB_IDS.map((id) => [id, true]),
+    );
     const buttons = new Map<PropertiesTabId, HTMLButtonElement>();
+
+    function tabAvailable(id: PropertiesTabId): boolean
+    {
+        if (!isOptionalTab(id))
+        {
+            return true;
+        }
+
+        return available.get(id) === true;
+    }
 
     function tabOpacity(id: PropertiesTabId, isActive: boolean): string
     {
-        if (id === 'text' && !textAvailable)
+        if (isOptionalTab(id) && !tabAvailable(id))
         {
             return '0.28';
         }
@@ -69,23 +129,23 @@ export function createPropertiesTabs(initial: PropertiesTabId, onChange: (id: Pr
     {
         for (const [id, button] of buttons)
         {
-            const isActive = id === active;
-            const available = id !== 'text' || textAvailable;
+            const isActive = active === id;
+            const enabled = tabAvailable(id);
 
             button.setAttribute('aria-selected', isActive ? 'true' : 'false');
-            button.setAttribute('aria-disabled', available ? 'false' : 'true');
+            button.setAttribute('aria-disabled', enabled ? 'false' : 'true');
 
-            button.tabIndex = available ? 0 : -1;
+            button.tabIndex = enabled ? 0 : -1;
             button.style.background = isActive ? '#303030' : 'transparent';
             button.style.borderBottomColor = isActive ? '#303030' : 'transparent';
             button.style.opacity = tabOpacity(id, isActive);
-            button.style.cursor = available ? 'pointer' : 'default';
+            button.style.cursor = enabled ? 'pointer' : 'default';
         }
     }
 
     function setActive(id: PropertiesTabId)
     {
-        if (id === 'text' && !textAvailable)
+        if (!tabAvailable(id))
         {
             return;
         }
@@ -101,16 +161,16 @@ export function createPropertiesTabs(initial: PropertiesTabId, onChange: (id: Pr
         onChange(id);
     }
 
-    function setTextAvailable(available: boolean)
+    function setAvailable(id: OptionalPropertiesTabId, next: boolean)
     {
-        if (textAvailable === available)
+        if (available.get(id) === next)
         {
             return;
         }
 
-        textAvailable = available;
+        available.set(id, next);
 
-        if (!available && active === 'text')
+        if (!next && active === id)
         {
             active = 'object';
 
@@ -127,7 +187,7 @@ export function createPropertiesTabs(initial: PropertiesTabId, onChange: (id: Pr
     {
         button.addEventListener('mouseenter', () =>
         {
-            if (tab.id === 'text' && !textAvailable)
+            if (!tabAvailable(tab.id))
             {
                 return;
             }
@@ -149,7 +209,7 @@ export function createPropertiesTabs(initial: PropertiesTabId, onChange: (id: Pr
 
         button.addEventListener('focus', () =>
         {
-            if (tab.id === 'text' && !textAvailable)
+            if (!tabAvailable(tab.id))
             {
                 return;
             }
@@ -213,7 +273,7 @@ export function createPropertiesTabs(initial: PropertiesTabId, onChange: (id: Pr
         root,
         active  : () => active,
         setActive,
-        setTextAvailable,
+        setAvailable,
         destroy : () =>
         {
             root.remove();

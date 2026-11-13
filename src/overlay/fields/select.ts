@@ -83,11 +83,23 @@ export function createSelectField(spec: SelectFieldSpec, onCommit: (key: FieldSt
         current = select.value;
 
         onCommit(spec.key, current);
+        select.blur();
 
         queueMicrotask(() =>
         {
             busy = false;
         });
+    });
+
+    select.addEventListener('keydown', (event) =>
+    {
+        if (event.key !== 'Escape')
+        {
+            return;
+        }
+
+        event.preventDefault();
+        select.blur();
     });
 
     return {

@@ -1,4 +1,4 @@
-import { w as warn, g as getAttributeInfoFromFormat, c as STENCIL_MODES, u as unsafeEvalSupported, B as Buffer, d as BufferUsage, E as EventEmitter, e as uid } from "./index-SPjj9M5Z.js";
+import { w as warn, g as getAttributeInfoFromFormat, d as STENCIL_MODES, u as unsafeEvalSupported, B as Buffer, e as BufferUsage, f as uniformParsers } from "./index-VqzP6Yht.js";
 const textureBit = {
   name: "texture-bit",
   vertex: {
@@ -222,117 +222,6 @@ class UboSystem {
     this._syncFunctionHash = null;
   }
 }
-const uniformParsers = [
-  // uploading pixi matrix object to mat3
-  {
-    type: "mat3x3<f32>",
-    test: (data) => {
-      const value = data.value;
-      return value.a !== void 0;
-    },
-    ubo: `
-            var matrix = uv[name].toArray(true);
-            data[offset] = matrix[0];
-            data[offset + 1] = matrix[1];
-            data[offset + 2] = matrix[2];
-            data[offset + 4] = matrix[3];
-            data[offset + 5] = matrix[4];
-            data[offset + 6] = matrix[5];
-            data[offset + 8] = matrix[6];
-            data[offset + 9] = matrix[7];
-            data[offset + 10] = matrix[8];
-        `,
-    uniform: `
-            gl.uniformMatrix3fv(ud[name].location, false, uv[name].toArray(true));
-        `
-  },
-  // uploading a pixi rectangle as a vec4
-  {
-    type: "vec4<f32>",
-    test: (data) => data.type === "vec4<f32>" && data.size === 1 && data.value.width !== void 0,
-    ubo: `
-            v = uv[name];
-            data[offset] = v.x;
-            data[offset + 1] = v.y;
-            data[offset + 2] = v.width;
-            data[offset + 3] = v.height;
-        `,
-    uniform: `
-            cv = ud[name].value;
-            v = uv[name];
-            if (cv[0] !== v.x || cv[1] !== v.y || cv[2] !== v.width || cv[3] !== v.height) {
-                cv[0] = v.x;
-                cv[1] = v.y;
-                cv[2] = v.width;
-                cv[3] = v.height;
-                gl.uniform4f(ud[name].location, v.x, v.y, v.width, v.height);
-            }
-        `
-  },
-  // uploading a pixi point as a vec2
-  {
-    type: "vec2<f32>",
-    test: (data) => data.type === "vec2<f32>" && data.size === 1 && data.value.x !== void 0,
-    ubo: `
-            v = uv[name];
-            data[offset] = v.x;
-            data[offset + 1] = v.y;
-        `,
-    uniform: `
-            cv = ud[name].value;
-            v = uv[name];
-            if (cv[0] !== v.x || cv[1] !== v.y) {
-                cv[0] = v.x;
-                cv[1] = v.y;
-                gl.uniform2f(ud[name].location, v.x, v.y);
-            }
-        `
-  },
-  // uploading a pixi color as a vec4
-  {
-    type: "vec4<f32>",
-    test: (data) => data.type === "vec4<f32>" && data.size === 1 && data.value.red !== void 0,
-    ubo: `
-            v = uv[name];
-            data[offset] = v.red;
-            data[offset + 1] = v.green;
-            data[offset + 2] = v.blue;
-            data[offset + 3] = v.alpha;
-        `,
-    uniform: `
-            cv = ud[name].value;
-            v = uv[name];
-            if (cv[0] !== v.red || cv[1] !== v.green || cv[2] !== v.blue || cv[3] !== v.alpha) {
-                cv[0] = v.red;
-                cv[1] = v.green;
-                cv[2] = v.blue;
-                cv[3] = v.alpha;
-                gl.uniform4f(ud[name].location, v.red, v.green, v.blue, v.alpha);
-            }
-        `
-  },
-  // uploading a pixi color as a vec3
-  {
-    type: "vec3<f32>",
-    test: (data) => data.type === "vec3<f32>" && data.size === 1 && data.value.red !== void 0,
-    ubo: `
-            v = uv[name];
-            data[offset] = v.red;
-            data[offset + 1] = v.green;
-            data[offset + 2] = v.blue;
-        `,
-    uniform: `
-            cv = ud[name].value;
-            v = uv[name];
-            if (cv[0] !== v.red || cv[1] !== v.green || cv[2] !== v.blue) {
-                cv[0] = v.red;
-                cv[1] = v.green;
-                cv[2] = v.blue;
-                gl.uniform3f(ud[name].location, v.red, v.green, v.blue);
-            }
-        `
-  }
-];
 function compileBufferSync(uboElements, singleSettersMap, arrayGenerationFunction) {
   const funcFragments = [`
         var v = null;
@@ -475,67 +364,6 @@ const uboSyncFunctionsWGSL = {
         data[offset + 3] = v[3];
     `
 };
-class BufferResource extends EventEmitter {
-  /**
-   * Create a new Buffer Resource.
-   * @param options - The options for the buffer resource
-   * @param options.buffer - The underlying buffer that this resource is using
-   * @param options.offset - The byte offset into the buffer this resource starts at, defaulting to 0.
-   * Must be a multiple of `renderer.limits.minUniformBufferOffsetAlignment`.
-   * @param options.size - The number of bytes this resource covers.
-   * If not provided, it covers the rest of the buffer after `offset`.
-   * @param options.watch - Listen to the buffer, defaulting to true. A watched resource changes its id and
-   * emits `change` when the buffer resizes, unloads or is destroyed, so the bind groups holding it rebuild.
-   * Pass false when many resources share one buffer and every bind group holds them with
-   * `BindGroup.setResourceUnwatched`, as thousands of listeners on one buffer cost memory and time to add and
-   * remove. An unwatched resource keeps its id through those changes, so whoever owns it must
-   * replace it with a new resource once the buffer changes, or bind groups keep using the old GPU buffer.
-   */
-  constructor({ buffer, offset, size, watch = true }) {
-    super();
-    this.uid = uid("buffer");
-    this._resourceType = "bufferResource";
-    this._resourceId = uid("resource");
-    this._bufferResource = true;
-    this.destroyed = false;
-    this.buffer = buffer;
-    this.offset = offset | 0;
-    this.size = size;
-    this.watch = watch;
-    if (watch) this.buffer.on("change", this.onBufferChange, this);
-  }
-  /**
-   * The GC tracks the underlying buffer, not this resource — a GC stamp here (see
-   * BindGroup._touch) must land on the buffer, or the GC collects it while cached
-   * bind groups still reference it.
-   * @internal
-   */
-  get _gcLastUsed() {
-    return this.buffer?._gcLastUsed ?? -1;
-  }
-  set _gcLastUsed(value) {
-    if (this.buffer) this.buffer._gcLastUsed = value;
-  }
-  onBufferChange() {
-    this._resourceId = uid("resource");
-    this.emit("change", this);
-  }
-  /**
-   * Destroys this resource. Make sure the underlying buffer is not used anywhere else
-   * if you want to destroy it as well, or code will explode
-   * @param destroyBuffer - Should the underlying buffer be destroyed as well?
-   */
-  destroy(destroyBuffer = false) {
-    this.destroyed = true;
-    if (destroyBuffer) {
-      this.buffer.destroy();
-    }
-    this.emit("change", this);
-    if (this.watch) this.buffer.off("change", this.onBufferChange, this);
-    this.buffer = null;
-    this.removeAllListeners();
-  }
-}
 function getTexelRangeRects(start, end, width, height, out) {
   start = Math.max(0, start);
   end = Math.min(end, width * height);
@@ -563,13 +391,11 @@ function getTexelRangeRects(start, end, width, height, out) {
   return count;
 }
 export {
-  BufferResource as B,
   GpuStencilModesToPixi as G,
   UboSystem as U,
   uboSyncFunctionsSTD40 as a,
-  uniformParsers as b,
+  textureBitGl as b,
   compileBufferSync as c,
-  textureBitGl as d,
   ensureAttributes as e,
   getTexelRangeRects as g,
   textureBit as t,

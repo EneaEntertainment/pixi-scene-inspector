@@ -1,6 +1,7 @@
 export type PixiPoint = {
     x: number;
     y: number;
+    z?: number;
 };
 
 export type PixiTextureFrame = {
@@ -50,10 +51,14 @@ export type PixiNode = {
     alpha?: number;
     x?: number;
     y?: number;
+    z?: number;
     width?: number;
     height?: number;
-    rotation?: number;
-    angle?: number;
+    depth?: number;
+    rotation?: number | PixiPoint;
+    angle?: number | PixiPoint;
+    quaternion?: { x?: number; y?: number; z?: number; w?: number };
+    rotationDirty?: boolean;
     zIndex?: number;
     sortableChildren?: boolean;
     cullable?: boolean;
@@ -67,11 +72,16 @@ export type PixiNode = {
     scale?: PixiPoint;
     scaleX?: number;
     scaleY?: number;
+    scaleZ?: number;
     anchor?: PixiPoint;
     anchorX?: number;
     anchorY?: number;
     pivot?: PixiPoint;
+    origin?: PixiPoint;
+    _origin?: PixiPoint | null;
     skew?: PixiPoint;
+    billboardMode?: string;
+    type?: string;
     label?: unknown;
     name?: unknown;
     texture?: PixiTexture;
@@ -91,17 +101,48 @@ export type PixiNode = {
     removeChild?: (...children: Array<PixiNode>) => unknown;
     getLocalBounds?: () => unknown;
     getBounds?: (...args: Array<unknown>) => unknown;
+    toGlobal?: (position: { x: number; y: number; z?: number }, out?: unknown, skipUpdate?: boolean) => unknown;
+    toLocal?: (
+        position: { x: number; y: number; z?: number },
+        from?: unknown,
+        out?: unknown,
+        skipUpdate?: boolean,
+    ) => unknown;
+    getGlobalPosition?: (out?: unknown, skipUpdate?: boolean) => unknown;
     worldTransform?: {
-        a: number;
-        b: number;
-        c: number;
-        d: number;
-        tx: number;
-        ty: number;
+        a?: number;
+        b?: number;
+        c?: number;
+        d?: number;
+        tx?: number;
+        ty?: number;
+        elements?: ArrayLike<number>;
     };
     _view3d?: {
         root?: PixiNode;
-        camera?: (PixiNode & { parent?: PixiNode | null }) | null;
+        camera?: (PixiNode & {
+            parent?: PixiNode | null;
+            getGlobalPosition?: (out?: unknown, skipUpdate?: boolean) => unknown;
+        }) | null;
+        worldToScreen?: (
+            position: { x: number; y: number; z: number },
+            out?: { x?: number; y?: number },
+            skipUpdate?: boolean,
+        ) => { x: number; y: number } | null;
+        screenToWorld?: (
+            position: { x: number; y: number },
+            distance: number,
+            out?: unknown,
+            skipUpdate?: boolean,
+        ) => { x: number; y: number; z: number } | null;
+        screenToRay?: (
+            position: { x: number; y: number },
+            out?: unknown,
+            skipUpdate?: boolean,
+        ) => {
+            origin: { x: number; y: number; z: number };
+            direction: { x: number; y: number; z: number };
+        };
     };
 };
 

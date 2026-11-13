@@ -1,4 +1,5 @@
 import { KNOWN_NODE_TYPE_NAMES, matchKnownTypeName, NODE_TYPE_INSTANCEOF_ORDER } from '../node-type-config';
+import { isScene3D } from './node-3d';
 import { ctorName, type PageGlobals, type PixiNode } from './pixi-node';
 import { isSpineLike } from './spine';
 
@@ -65,7 +66,7 @@ export function typeNameOf(node: PixiNode | null | undefined, win: PageGlobals =
         return 'Object';
     }
 
-    if (node._view3d && node._view3d.root === node)
+    if (isScene3D(node))
     {
         return 'Scene3D';
     }

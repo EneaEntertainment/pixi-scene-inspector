@@ -57,21 +57,30 @@
     <div class="help-row">
       <dt><kbd>I</kbd></dt>
       <dd>
-        Isolate selected subtree (enter needs one node; press again to
-        exit)
+        Isolate selected subtree (enter needs one node; press again to exit)
       </dd>
     </div>
     <div class="help-row">
       <dt><kbd>H</kbd></dt>
-      <dd>Toggle visible on every selected node (not Camera3D / Scene3D)</dd>
+      <dd>
+        Toggle visible on selected nodes (blocked for Scene3D, Camera3D, camera
+        ancestors)
+      </dd>
+    </div>
+    <div class="help-row">
+      <dt><kbd>W</kbd> <kbd>E</kbd> <kbd>R</kbd></dt>
+      <dd>
+        3D gizmo mode when highlight is on and a 3D node is selected: move /
+        rotate / scale (or the mode buttons in the top-right corner)
+      </dd>
     </div>
     <div class="help-row">
       <dt>Drag</dt>
       <dd>Reparent selected node(s)</dd>
     </div>
     <div class="help-row">
-      <dt><kbd>⌥/Alt</kbd> + number scrub / arrows</dt>
-      <dd>Snap value to nearest step</dd>
+      <dt><kbd>⌥/Alt</kbd> + scrub / arrows / 3D gizmo drag</dt>
+      <dd>Snap value or transform to nearest step</dd>
     </div>
     <div class="help-row">
       <dt><kbd>Esc</kbd></dt>
@@ -83,8 +92,8 @@
     <div class="help-row">
       <dt><kbd>Shift</kbd>+<kbd>Esc</kbd></dt>
       <dd>
-        Restore selection cleared by Esc (if nothing else selected or tree
-        unchanged)
+        Restore selection cleared by Esc (if nothing else is selected and the
+        tree is unchanged)
       </dd>
     </div>
     <div class="help-row">

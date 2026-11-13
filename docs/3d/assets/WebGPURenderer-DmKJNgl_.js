@@ -1,7 +1,9 @@
-import { ad as getTextureBatchBindGroup, a as State, j as ExtensionType, ae as GCManagedHash, af as fastCopy, D as DOMAdapter, w as warn, B as Buffer, d as BufferUsage, a4 as BindGroup, c as STENCIL_MODES, ag as createIdFromString, ah as ShaderOverrides, a0 as TextureSource, Q as CLEAR, q as CanvasSource, $ as isIntegerFormat, a1 as Rectangle, z as UniformGroup, a9 as CanvasPool, r as extensions, ai as AbstractGpuGraphicsAdaptor, M as Matrix, aj as compileHighShaderGpuProgram, ak as colorBit, al as localUniformBitGroup2, am as roundPixelsBit, an as generateTextureBatchBit, S as Shader, ao as localUniformBit, T as Texture, A as AbstractRenderer, R as RendererType } from "./index-SPjj9M5Z.js";
-import { c as compileBufferSync, u as uboSyncFunctionsWGSL, U as UboSystem, B as BufferResource, G as GpuStencilModesToPixi, e as ensureAttributes, g as getTexelRangeRects, t as textureBit } from "./getTexelRangeRects-95pujm4c.js";
-import { R as RenderTargetSystem, S as SharedSystems, d as SharedRenderPipes } from "./RenderTargetSystem-JPZWF-LX.js";
-import "./Filter-bbWdas5q.js";
+import { bh as getTextureBatchBindGroup, a as State, E as ExtensionType, O as GCManagedHash, bi as fastCopy, D as DOMAdapter, w as warn, bj as WGSL_ALIGN_SIZE_DATA, bk as createUboElementsWGSL, B as Buffer, q as BufferUsage, a5 as BufferResource, a7 as BindGroup, p as STENCIL_MODES, bl as createIdFromString, ax as ShaderOverrides, f as TextureSource, aZ as CLEAR, a1 as CanvasSource, ba as isIntegerFormat, R as Rectangle, aX as UniformGroup, l as extensions, M as Matrix, bm as compileHighShaderGpuProgram, bn as colorBit, bo as roundPixelsBit, bp as generateTextureBatchBit, S as Shader, T as Texture, a2 as AbstractRenderer, a3 as RendererType } from "./index-BlFurYJo.js";
+import { c as compileBufferSync, u as uboSyncFunctionsWGSL, U as UboSystem, G as GpuStencilModesToPixi, e as ensureAttributes, g as getTexelRangeRects, l as localUniformBitGroup2, a as localUniformBit, t as textureBit } from "./getTexelRangeRects-5ULcZMYr.js";
+import { R as RenderTargetSystem, S as SharedSystems, e as SharedRenderPipes } from "./RenderTargetSystem-Be14f8lg.js";
+import { C as CanvasPool } from "./CanvasPool-CL58H7j1.js";
+import "./RenderTexture-BCDvCICf.js";
+import "./Filter-4jlvn1Z3.js";
 const tempState = State.for2d();
 class GpuBatchAdaptor {
   start(batchPipe, geometry, shader) {
@@ -851,67 +853,6 @@ GpuStencilSystem.extension = {
   ],
   name: "stencil"
 };
-const WGSL_ALIGN_SIZE_DATA = {
-  i32: { align: 4, size: 4 },
-  u32: { align: 4, size: 4 },
-  f32: { align: 4, size: 4 },
-  f16: { align: 2, size: 2 },
-  "vec2<i32>": { align: 8, size: 8 },
-  "vec2<u32>": { align: 8, size: 8 },
-  "vec2<f32>": { align: 8, size: 8 },
-  "vec2<f16>": { align: 4, size: 4 },
-  "vec3<i32>": { align: 16, size: 12 },
-  "vec3<u32>": { align: 16, size: 12 },
-  "vec3<f32>": { align: 16, size: 12 },
-  "vec3<f16>": { align: 8, size: 6 },
-  "vec4<i32>": { align: 16, size: 16 },
-  "vec4<u32>": { align: 16, size: 16 },
-  "vec4<f32>": { align: 16, size: 16 },
-  "vec4<f16>": { align: 8, size: 8 },
-  "mat2x2<f32>": { align: 8, size: 16 },
-  "mat2x2<f16>": { align: 4, size: 8 },
-  "mat3x2<f32>": { align: 8, size: 24 },
-  "mat3x2<f16>": { align: 4, size: 12 },
-  "mat4x2<f32>": { align: 8, size: 32 },
-  "mat4x2<f16>": { align: 4, size: 16 },
-  "mat2x3<f32>": { align: 16, size: 32 },
-  "mat2x3<f16>": { align: 8, size: 16 },
-  "mat3x3<f32>": { align: 16, size: 48 },
-  "mat3x3<f16>": { align: 8, size: 24 },
-  "mat4x3<f32>": { align: 16, size: 64 },
-  "mat4x3<f16>": { align: 8, size: 32 },
-  "mat2x4<f32>": { align: 16, size: 32 },
-  "mat2x4<f16>": { align: 8, size: 16 },
-  "mat3x4<f32>": { align: 16, size: 48 },
-  "mat3x4<f16>": { align: 8, size: 24 },
-  "mat4x4<f32>": { align: 16, size: 64 },
-  "mat4x4<f16>": { align: 8, size: 32 }
-};
-function createUboElementsWGSL(uniformData) {
-  const uboElements = uniformData.map((data) => ({
-    data,
-    offset: 0,
-    size: 0
-  }));
-  let offset = 0;
-  for (let i = 0; i < uboElements.length; i++) {
-    const uboElement = uboElements[i];
-    let size = WGSL_ALIGN_SIZE_DATA[uboElement.data.type].size;
-    const align = WGSL_ALIGN_SIZE_DATA[uboElement.data.type].align;
-    if (!WGSL_ALIGN_SIZE_DATA[uboElement.data.type]) {
-      throw new Error(`[Pixi.js] WebGPU UniformBuffer: Unknown type ${uboElement.data.type}`);
-    }
-    if (uboElement.data.size > 1) {
-      size = Math.max(size, align) * uboElement.data.size;
-    }
-    offset = Math.ceil(offset / align) * align;
-    uboElement.size = size;
-    uboElement.offset = offset;
-    offset += size;
-  }
-  offset = Math.ceil(offset / 16) * 16;
-  return { uboElements, size: offset };
-}
 function generateArraySyncWGSL(uboElement, offsetToAdd) {
   const { size, align } = WGSL_ALIGN_SIZE_DATA[uboElement.data.type];
   const remainder = (Math.max(size, align) - size) / 4;
@@ -3098,6 +3039,78 @@ _GpuTextureSystem.extension = {
 _GpuTextureSystem.uploadExtensions = /* @__PURE__ */ Object.create(null);
 let GpuTextureSystem = _GpuTextureSystem;
 extensions.handleByMap(ExtensionType.TextureUploaderWebGPU, GpuTextureSystem.uploadExtensions);
+class AbstractGpuGraphicsAdaptor {
+  constructor() {
+    this._maxTextures = 0;
+  }
+  /**
+   * Returns the shader used when the context has no custom shader.
+   * @param _renderData - The render data of the context
+   */
+  _getShader(_renderData) {
+    return this.shader;
+  }
+  execute(graphicsPipe, renderable) {
+    const context = renderable.context;
+    const renderer = graphicsPipe.renderer;
+    const renderData = this._getRenderData(renderer, context);
+    const { batcher, instructions } = renderData;
+    const shader = context.customShader || this._getShader(renderData);
+    const encoder = renderer.encoder;
+    encoder.setGeometry(batcher.geometry, shader.gpuProgram);
+    const globalUniformsBindGroup = renderer.globalUniforms.bindGroup;
+    encoder.setBindGroup(0, globalUniformsBindGroup, shader.gpuProgram);
+    const localBindGroup = renderer.renderPipes.uniformBatch.getUniformBindGroup(shader.resources.localUniforms, true);
+    encoder.setBindGroup(2, localBindGroup, shader.gpuProgram);
+    const layout = shader.gpuProgram.layout;
+    for (let i = 3; i < layout.length; i++) {
+      const bindGroup = shader.groups[i];
+      if (!layout[i] || !bindGroup) continue;
+      for (const key in bindGroup.resources) {
+        const resource = bindGroup.resources[key];
+        if (resource?.isUniformGroup) {
+          renderer.ubo.updateUniformGroup(resource);
+        }
+      }
+      encoder.setBindGroup(i, bindGroup, shader.gpuProgram);
+    }
+    const batches = instructions.instructions;
+    let topology = null;
+    for (let i = 0; i < instructions.instructionSize; i++) {
+      const batch = batches[i];
+      if (batch.topology !== topology) {
+        topology = batch.topology;
+        encoder.setPipelineFromGeometryProgramAndState(
+          batcher.geometry,
+          shader.gpuProgram,
+          graphicsPipe.state,
+          batch.topology,
+          shader._overrides
+        );
+      }
+      shader.groups[1] = batch.bindGroup;
+      if (!batch.gpuBindGroup) {
+        const textureBatch = batch.textures;
+        batch.bindGroup = getTextureBatchBindGroup(
+          textureBatch.textures,
+          textureBatch.count,
+          this._maxTextures
+        );
+        batch.gpuBindGroup = renderer.bindGroup.getBindGroup(
+          batch.bindGroup,
+          shader.gpuProgram,
+          1
+        );
+      }
+      encoder.setBindGroup(1, batch.bindGroup, shader.gpuProgram);
+      encoder.renderPassEncoder.drawIndexed(batch.size, 1, batch.start);
+    }
+  }
+  destroy() {
+    this.shader.destroy();
+    this.shader = null;
+  }
+}
 class GpuGraphicsAdaptor extends AbstractGpuGraphicsAdaptor {
   contextChange(renderer) {
     const localUniforms = new UniformGroup({

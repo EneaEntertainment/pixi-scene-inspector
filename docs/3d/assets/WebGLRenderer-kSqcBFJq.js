@@ -1,7 +1,10 @@
-import { a as State, j as ExtensionType, ae as GCManagedHash, d as BufferUsage, w as warn, D as DOMAdapter, g as getAttributeInfoFromFormat, b as GlProgram, S as Shader, T as Texture, ap as Geometry, a0 as TextureSource, aq as checkMaxIfStatementsInShader, c as STENCIL_MODES, a1 as Rectangle, q as CanvasSource, Q as CLEAR, $ as isIntegerFormat, E as EventEmitter, e as uid, z as UniformGroup, ar as STATE_BITS, as as isSafari, r as extensions, at as AbstractGlGraphicsAdaptor, M as Matrix, au as compileHighShaderGlProgram, av as colorBitGl, aw as localUniformBitGl, ax as roundPixelsBitGl, ay as generateTextureBatchBitGl, az as getBatchSamplersUniformGroup, A as AbstractRenderer, R as RendererType } from "./index-SPjj9M5Z.js";
-import { e as ensureAttributes, G as GpuStencilModesToPixi, c as compileBufferSync, a as uboSyncFunctionsSTD40, U as UboSystem, B as BufferResource, b as uniformParsers, g as getTexelRangeRects, d as textureBitGl } from "./getTexelRangeRects-95pujm4c.js";
-import { R as RenderTargetSystem, S as SharedSystems, d as SharedRenderPipes } from "./RenderTargetSystem-JPZWF-LX.js";
-import "./Filter-bbWdas5q.js";
+import { a as State, E as ExtensionType, O as GCManagedHash, q as BufferUsage, w as warn, D as DOMAdapter, o as getAttributeInfoFromFormat, b as GlProgram, S as Shader, T as Texture, bQ as Geometry, f as TextureSource, bT as checkMaxIfStatementsInShader, p as STENCIL_MODES, R as Rectangle, a1 as CanvasSource, aZ as CLEAR, ba as isIntegerFormat, aX as UniformGroup, a5 as BufferResource, bU as TextureView, s as uniformParsers, bV as STATE_BITS, l as extensions, M as Matrix, bW as compileHighShaderGlProgram, bX as colorBitGl, bY as roundPixelsBitGl, bZ as generateTextureBatchBitGl, b_ as getBatchSamplersUniformGroup, a2 as AbstractRenderer, a3 as RendererType } from "./index-BlFurYJo.js";
+import { e as ensureAttributes, G as GpuStencilModesToPixi, c as compileBufferSync, b as uboSyncFunctionsSTD40, U as UboSystem, g as getTexelRangeRects, d as localUniformBitGl, f as textureBitGl } from "./getTexelRangeRects-5ULcZMYr.js";
+import { R as RenderTargetSystem, S as SharedSystems, e as SharedRenderPipes } from "./RenderTargetSystem-Be14f8lg.js";
+import { i as isSafari } from "./isSafari-B31r88pP.js";
+import "./RenderTexture-BCDvCICf.js";
+import "./Filter-4jlvn1Z3.js";
+import "./CanvasPool-CL58H7j1.js";
 class GlBatchAdaptor {
   constructor() {
     this._tempState = State.for2d();
@@ -1990,42 +1993,6 @@ GlRenderTargetSystem.extension = {
   type: [ExtensionType.WebGLSystem],
   name: "renderTarget"
 };
-class TextureView extends EventEmitter {
-  /**
-   * @param source - The texture source to view.
-   * @param viewDescriptor - The WebGPU texture view descriptor.
-   */
-  constructor(source, viewDescriptor) {
-    super();
-    this._resourceType = "textureView";
-    this._resourceId = uid("resource");
-    this.source = source;
-    this.viewDescriptor = viewDescriptor;
-    this._onChange = this._onChange.bind(this);
-    this._onDestroy = this._onDestroy.bind(this);
-    this.source.on("change", this._onChange);
-    this.source.on("destroy", this._onDestroy);
-  }
-  _onChange() {
-    this.emit("change", this);
-  }
-  _onDestroy() {
-    this.destroy();
-  }
-  /** Returns whether the underlying source is destroyed. */
-  get destroyed() {
-    return this.source.destroyed;
-  }
-  /** Destroys the view and cleans up event listeners. */
-  destroy() {
-    if (this.source) {
-      this.source.off("change", this._onChange);
-      this.source.off("destroy", this._onDestroy);
-    }
-    this.emit("destroy", this);
-    this.removeAllListeners();
-  }
-}
 function invert(layout) {
   const names = {};
   for (const name in layout) names[layout[name]] = name;
@@ -4205,6 +4172,41 @@ _GlTextureSystem.extension = {
 _GlTextureSystem.uploadExtensions = /* @__PURE__ */ Object.create(null);
 let GlTextureSystem = _GlTextureSystem;
 extensions.handleByMap(ExtensionType.TextureUploaderWebGL, GlTextureSystem.uploadExtensions);
+class AbstractGlGraphicsAdaptor {
+  /**
+   * Returns the shader used when the context has no custom shader.
+   * @param _renderData - The render data of the context
+   */
+  _getShader(_renderData) {
+    return this.shader;
+  }
+  execute(graphicsPipe, renderable) {
+    const context = renderable.context;
+    const renderer = graphicsPipe.renderer;
+    const renderData = this._getRenderData(renderer, context);
+    const { batcher, instructions } = renderData;
+    const shader = context.customShader || this._getShader(renderData);
+    shader.groups[0] = renderer.globalUniforms.bindGroup;
+    renderer.state.set(graphicsPipe.state);
+    renderer.shader.bind(shader);
+    renderer.geometry.bind(batcher.geometry, shader.glProgram);
+    const batches = instructions.instructions;
+    for (let i = 0; i < instructions.instructionSize; i++) {
+      const batch = batches[i];
+      if (batch.size) {
+        for (let j = 0; j < batch.textures.count; j++) {
+          renderer.texture.bind(batch.textures.textures[j], j);
+        }
+        renderer.texture.unbindIntegerTextures(batch.textures.count);
+        renderer.geometry.draw(batch.topology, batch.size, batch.start);
+      }
+    }
+  }
+  destroy() {
+    this.shader.destroy(true);
+    this.shader = null;
+  }
+}
 class GlGraphicsAdaptor extends AbstractGlGraphicsAdaptor {
   contextChange(renderer) {
     const uniforms = new UniformGroup({

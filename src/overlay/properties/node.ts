@@ -1,67 +1,28 @@
+import { isNode3D } from '../../page-ops/node-3d';
 import { isNodeAlive, type PageGlobals, type PixiNode, type PixiPoint } from '../../page-ops/pixi-node';
+import { classifyNode } from '../../page-ops/props-3d';
 import { isParticleNode } from '../../page-ops/root';
+import {
+    readEffectiveEulerRadians,
+    setEulerAxisRadians,
+} from '../../page-ops/rotation-3d';
 import { nodeHasTexture, nodeTextureName, setNodeTextureByName } from '../../page-ops/texture';
 import { isPixi8 } from '../../page-ops/types';
+import { isHideBlocked } from '../../page-ops/visibility';
 import { colorToString, parseColorString } from '../text/colors';
+import {
+    directBoolean,
+    directNumber,
+    directString,
+    type PropertyMapping,
+    takeMaps,
+} from './map-helpers';
+import { appendThreeDPropertyMaps } from './maps-3d';
+import { shouldMapProp } from './prop-policy';
 
-type PropertyKey =
-    | 'position.x'
-    | 'position.y'
-    | 'width'
-    | 'height'
-    | 'rotation'
-    | 'angle'
-    | 'scale.x'
-    | 'scale.y'
-    | 'anchor.x'
-    | 'anchor.y'
-    | 'pivot.x'
-    | 'pivot.y'
-    | 'skew.x'
-    | 'skew.y'
-    | 'alpha'
-    | 'visible'
-    | 'sortableChildren'
-    | 'zIndex'
-    | 'cullable'
-    | 'blendMode'
-    | 'eventMode'
-    | 'cursor'
-    | 'interactive'
-    | 'buttonMode'
-    | 'interactiveChildren'
-    | 'label'
-    | 'name'
-    | 'texture'
-    | 'tint';
+import type { BooleanPropertyKey, NumberPropertyKey, StringPropertyKey } from './property-keys';
 
-export type BooleanPropertyKey =
-    | 'visible'
-    | 'sortableChildren'
-    | 'cullable'
-    | 'interactive'
-    | 'buttonMode'
-    | 'interactiveChildren';
-
-export type StringPropertyKey =
-    | 'eventMode'
-    | 'cursor'
-    | 'blendMode'
-    | 'label'
-    | 'name'
-    | 'texture'
-    | 'tint';
-
-export type NumberPropertyKey = Exclude<
-    PropertyKey,
-    BooleanPropertyKey | StringPropertyKey
->;
-
-type PropertyMapping<T> = {
-    key: PropertyKey;
-    get: () => T | undefined;
-    set: (value: T) => void;
-};
+export type { BooleanPropertyKey, NumberPropertyKey, StringPropertyKey } from './property-keys';
 
 function isPoint(value: unknown): value is PixiPoint
 {
@@ -73,46 +34,9 @@ function isPoint(value: unknown): value is PixiPoint
     );
 }
 
-function directNumber(
-    key: NumberPropertyKey,
-    get: () => number | undefined,
-    set: (value: number) => void,
-): Array<PropertyMapping<number>>
+function pointHasAxis(point: PixiPoint, axis: 'x' | 'y' | 'z'): boolean
 {
-    if (typeof get() !== 'number')
-    {
-        return [];
-    }
-
-    return [{ key, get, set }];
-}
-
-function directBoolean(
-    key: BooleanPropertyKey,
-    get: () => boolean | undefined,
-    set: (value: boolean) => void,
-): Array<PropertyMapping<boolean>>
-{
-    if (typeof get() !== 'boolean')
-    {
-        return [];
-    }
-
-    return [{ key, get, set }];
-}
-
-function directString(
-    key: StringPropertyKey,
-    get: () => string | undefined,
-    set: (value: string) => void,
-): Array<PropertyMapping<string>>
-{
-    if (typeof get() !== 'string')
-    {
-        return [];
-    }
-
-    return [{ key, get, set }];
+    return typeof point[axis] === 'number';
 }
 
 const BLEND_MODE_FROM_V7: Array<string | undefined> = [
@@ -305,8 +229,8 @@ function blendModeMaps(node: PixiNode): Array<PropertyMapping<string>>
 
 function pointAxis(
     node: PixiNode,
-    nested: 'position' | 'scale' | 'anchor' | 'pivot' | 'skew',
-    axis: 'x' | 'y',
+    nested: 'position' | 'scale' | 'anchor' | 'pivot' | 'skew' | 'rotation' | 'angle',
+    axis: 'x' | 'y' | 'z',
     key: NumberPropertyKey,
     fallbackGet?: () => number | undefined,
     fallbackSet?: (value: number) => void,
@@ -314,13 +238,13 @@ function pointAxis(
 {
     const point = node[nested];
 
-    if (isPoint(point))
+    if (isPoint(point) && pointHasAxis(point, axis))
     {
         return [
             {
                 key,
 
-                get: () => point[axis],
+                get: () => point[axis] as number,
 
                 set: (value) =>
                 {
@@ -344,6 +268,81 @@ function pointAxis(
     return [];
 }
 
+function eulerAxis(
+    node: PixiNode,
+    nested: 'rotation' | 'angle',
+    axis: 'x' | 'y' | 'z',
+    key: NumberPropertyKey,
+): Array<PropertyMapping<number>>
+{
+    if (!isNode3D(node))
+    {
+        return pointAxis(node, nested, axis, key);
+    }
+
+    const point = node[nested];
+
+    if (!isPoint(point) || !pointHasAxis(point, axis))
+    {
+        return [];
+    }
+
+    const asDegrees = nested === 'angle';
+
+    return [
+        {
+            key,
+
+            get: () =>
+            {
+                const euler = readEffectiveEulerRadians(node);
+
+                if (!euler)
+                {
+                    return point[axis] as number;
+                }
+
+                const radians = euler[axis];
+
+                return asDegrees ? radians * (180 / Math.PI) : radians;
+            },
+
+            set: (value) =>
+            {
+                const radians = asDegrees ? value * (Math.PI / 180) : value;
+
+                if (!setEulerAxisRadians(node, axis, radians))
+                {
+                    point[axis] = value;
+                }
+            },
+        },
+    ];
+}
+
+function originAxis(node: PixiNode, axis: 'x' | 'y' | 'z', key: NumberPropertyKey): Array<PropertyMapping<number>>
+{
+    const origin = node._origin;
+
+    if (!isPoint(origin) || !pointHasAxis(origin, axis))
+    {
+        return [];
+    }
+
+    return [
+        {
+            key,
+
+            get: () => origin[axis] as number,
+
+            set: (value) =>
+            {
+                origin[axis] = value;
+            },
+        },
+    ];
+}
+
 export type NodePropertyMaps = {
     numbers: Array<PropertyMapping<number>>;
     booleans: Array<PropertyMapping<boolean>>;
@@ -357,13 +356,16 @@ export function mapsForNode(node: PixiNode | null | undefined): NodePropertyMaps
         return { numbers: [], booleans: [], strings: [] };
     }
 
+    const kind = classifyNode(node);
+    const allow = (key: string) => shouldMapProp(kind, key, node);
+
     const numbers: Array<PropertyMapping<number>> = [];
     const booleans: Array<PropertyMapping<boolean>> = [];
     const strings: Array<PropertyMapping<string>> = [];
 
-    strings.push(...identityStringMaps(node));
+    strings.push(...takeMaps(allow, identityStringMaps(node)));
 
-    if (nodeHasTexture(node))
+    if (allow('texture') && nodeHasTexture(node))
     {
         strings.push({
             key: 'texture',
@@ -378,150 +380,242 @@ export function mapsForNode(node: PixiNode | null | undefined): NodePropertyMaps
     }
 
     numbers.push(
-        ...pointAxis(
-            node,
-            'position',
-            'x',
-            'position.x',
-            () => node.x,
-            (value) =>
-            {
-                node.x = value;
-            },
+        ...takeMaps(
+            allow,
+            pointAxis(
+                node,
+                'position',
+                'x',
+                'position.x',
+                () => node.x,
+                (value) =>
+                {
+                    node.x = value;
+                },
+            ),
         ),
     );
 
     numbers.push(
-        ...pointAxis(
-            node,
-            'position',
-            'y',
-            'position.y',
-            () => node.y,
-            (value) =>
-            {
-                node.y = value;
-            },
+        ...takeMaps(
+            allow,
+            pointAxis(
+                node,
+                'position',
+                'y',
+                'position.y',
+                () => node.y,
+                (value) =>
+                {
+                    node.y = value;
+                },
+            ),
         ),
     );
 
     numbers.push(
-        ...directNumber(
-            'width',
-            () => node.width,
-            (value) =>
-            {
-                node.width = value;
-            },
+        ...takeMaps(
+            allow,
+            pointAxis(
+                node,
+                'position',
+                'z',
+                'position.z',
+                () => node.z,
+                (value) =>
+                {
+                    node.z = value;
+                },
+            ),
         ),
     );
 
     numbers.push(
-        ...directNumber(
-            'height',
-            () => node.height,
-            (value) =>
-            {
-                node.height = value;
-            },
+        ...takeMaps(
+            allow,
+            directNumber(
+                'width',
+                () => node.width,
+                (value) =>
+                {
+                    node.width = value;
+                },
+            ),
         ),
     );
 
     numbers.push(
-        ...directNumber(
-            'rotation',
-            () => node.rotation,
-            (value) =>
-            {
-                node.rotation = value;
-            },
+        ...takeMaps(
+            allow,
+            directNumber(
+                'height',
+                () => node.height,
+                (value) =>
+                {
+                    node.height = value;
+                },
+            ),
         ),
     );
 
     numbers.push(
-        ...directNumber(
-            'angle',
-            () => node.angle,
-            (value) =>
-            {
-                node.angle = value;
-            },
+        ...takeMaps(
+            allow,
+            directNumber(
+                'depth',
+                () => node.depth,
+                (value) =>
+                {
+                    node.depth = value;
+                },
+            ),
         ),
     );
 
     numbers.push(
-        ...pointAxis(
-            node,
-            'scale',
-            'x',
-            'scale.x',
-            () => node.scaleX,
-            (value) =>
-            {
-                node.scaleX = value;
-            },
+        ...takeMaps(
+            allow,
+            directNumber(
+                'rotation',
+                () => (typeof node.rotation === 'number' ? node.rotation : undefined),
+                (value) =>
+                {
+                    node.rotation = value;
+                },
+            ),
+        ),
+    );
+
+    numbers.push(...takeMaps(allow, eulerAxis(node, 'rotation', 'x', 'rotation.x')));
+    numbers.push(...takeMaps(allow, eulerAxis(node, 'rotation', 'y', 'rotation.y')));
+    numbers.push(...takeMaps(allow, eulerAxis(node, 'rotation', 'z', 'rotation.z')));
+
+    numbers.push(
+        ...takeMaps(
+            allow,
+            directNumber(
+                'angle',
+                () => (typeof node.angle === 'number' ? node.angle : undefined),
+                (value) =>
+                {
+                    node.angle = value;
+                },
+            ),
+        ),
+    );
+
+    numbers.push(...takeMaps(allow, eulerAxis(node, 'angle', 'x', 'angle.x')));
+    numbers.push(...takeMaps(allow, eulerAxis(node, 'angle', 'y', 'angle.y')));
+    numbers.push(...takeMaps(allow, eulerAxis(node, 'angle', 'z', 'angle.z')));
+
+    numbers.push(
+        ...takeMaps(
+            allow,
+            pointAxis(
+                node,
+                'scale',
+                'x',
+                'scale.x',
+                () => node.scaleX,
+                (value) =>
+                {
+                    node.scaleX = value;
+                },
+            ),
         ),
     );
 
     numbers.push(
-        ...pointAxis(
-            node,
-            'scale',
-            'y',
-            'scale.y',
-            () => node.scaleY,
-            (value) =>
-            {
-                node.scaleY = value;
-            },
+        ...takeMaps(
+            allow,
+            pointAxis(
+                node,
+                'scale',
+                'y',
+                'scale.y',
+                () => node.scaleY,
+                (value) =>
+                {
+                    node.scaleY = value;
+                },
+            ),
         ),
     );
 
     numbers.push(
-        ...pointAxis(
-            node,
-            'anchor',
-            'x',
-            'anchor.x',
-            () => node.anchorX,
-            (value) =>
-            {
-                node.anchorX = value;
-            },
+        ...takeMaps(
+            allow,
+            pointAxis(
+                node,
+                'scale',
+                'z',
+                'scale.z',
+                () => node.scaleZ,
+                (value) =>
+                {
+                    node.scaleZ = value;
+                },
+            ),
         ),
     );
 
     numbers.push(
-        ...pointAxis(
-            node,
-            'anchor',
-            'y',
-            'anchor.y',
-            () => node.anchorY,
-            (value) =>
-            {
-                node.anchorY = value;
-            },
+        ...takeMaps(
+            allow,
+            pointAxis(
+                node,
+                'anchor',
+                'x',
+                'anchor.x',
+                () => node.anchorX,
+                (value) =>
+                {
+                    node.anchorX = value;
+                },
+            ),
         ),
     );
-
-    numbers.push(...pointAxis(node, 'pivot', 'x', 'pivot.x'));
-    numbers.push(...pointAxis(node, 'pivot', 'y', 'pivot.y'));
-    numbers.push(...pointAxis(node, 'skew', 'x', 'skew.x'));
-    numbers.push(...pointAxis(node, 'skew', 'y', 'skew.y'));
 
     numbers.push(
-        ...directNumber(
-            'alpha',
-            () => node.alpha,
-            (value) =>
-            {
-                node.alpha = value;
-            },
+        ...takeMaps(
+            allow,
+            pointAxis(
+                node,
+                'anchor',
+                'y',
+                'anchor.y',
+                () => node.anchorY,
+                (value) =>
+                {
+                    node.anchorY = value;
+                },
+            ),
         ),
     );
 
-    if (colorToString(node.tint) !== undefined)
+    numbers.push(...takeMaps(allow, pointAxis(node, 'pivot', 'x', 'pivot.x')));
+    numbers.push(...takeMaps(allow, pointAxis(node, 'pivot', 'y', 'pivot.y')));
+    numbers.push(...takeMaps(allow, originAxis(node, 'x', 'origin.x')));
+    numbers.push(...takeMaps(allow, originAxis(node, 'y', 'origin.y')));
+    numbers.push(...takeMaps(allow, originAxis(node, 'z', 'origin.z')));
+    numbers.push(...takeMaps(allow, pointAxis(node, 'skew', 'x', 'skew.x')));
+    numbers.push(...takeMaps(allow, pointAxis(node, 'skew', 'y', 'skew.y')));
+
+    numbers.push(
+        ...takeMaps(
+            allow,
+            directNumber(
+                'alpha',
+                () => node.alpha,
+                (value) =>
+                {
+                    node.alpha = value;
+                },
+            ),
+        ),
+    );
+
+    if (allow('tint') && colorToString(node.tint) !== undefined)
     {
         strings.push({
             key: 'tint',
@@ -542,116 +636,150 @@ export function mapsForNode(node: PixiNode | null | undefined): NodePropertyMaps
         });
     }
 
-    booleans.push(
-        ...directBoolean(
-            'visible',
-            () => node.visible,
-            (value) =>
-            {
-                node.visible = value;
-            },
-        ),
-    );
+    if (allow('visible'))
+    {
+        booleans.push(
+            ...directBoolean(
+                'visible',
+                () => node.visible,
+                (value) =>
+                {
+                    if (!value && isHideBlocked(node))
+                    {
+                        return;
+                    }
+
+                    node.visible = value;
+                },
+            ),
+        );
+    }
 
     booleans.push(
-        ...directBoolean(
-            'sortableChildren',
-            () => node.sortableChildren,
-            (value) =>
-            {
-                node.sortableChildren = value;
-            },
+        ...takeMaps(
+            allow,
+            directBoolean(
+                'sortableChildren',
+                () => node.sortableChildren,
+                (value) =>
+                {
+                    node.sortableChildren = value;
+                },
+            ),
         ),
     );
 
     numbers.push(
-        ...directNumber(
-            'zIndex',
-            () => node.zIndex,
-            (value) =>
-            {
-                node.zIndex = value;
-            },
+        ...takeMaps(
+            allow,
+            directNumber(
+                'zIndex',
+                () => node.zIndex,
+                (value) =>
+                {
+                    node.zIndex = value;
+                },
+            ),
         ),
     );
 
     booleans.push(
-        ...directBoolean(
-            'cullable',
-            () => node.cullable,
-            (value) =>
-            {
-                node.cullable = value;
-            },
+        ...takeMaps(
+            allow,
+            directBoolean(
+                'cullable',
+                () => node.cullable,
+                (value) =>
+                {
+                    node.cullable = value;
+                },
+            ),
         ),
     );
 
-    strings.push(...blendModeMaps(node));
+    strings.push(...takeMaps(allow, blendModeMaps(node)));
 
     booleans.push(
-        ...directBoolean(
-            'interactiveChildren',
-            () => node.interactiveChildren,
-            (value) =>
-            {
-                node.interactiveChildren = value;
-            },
+        ...takeMaps(
+            allow,
+            directBoolean(
+                'interactiveChildren',
+                () => node.interactiveChildren,
+                (value) =>
+                {
+                    node.interactiveChildren = value;
+                },
+            ),
         ),
     );
 
     if (typeof node.eventMode === 'string')
     {
         strings.push(
-            ...directString(
-                'eventMode',
-                () => node.eventMode,
-                (value) =>
-                {
-                    node.eventMode = value;
-                },
+            ...takeMaps(
+                allow,
+                directString(
+                    'eventMode',
+                    () => node.eventMode,
+                    (value) =>
+                    {
+                        node.eventMode = value;
+                    },
+                ),
             ),
         );
 
-        strings.push({
-            key: 'cursor',
+        if (allow('cursor'))
+        {
+            strings.push({
+                key: 'cursor',
 
-            get: () =>
-            {
-                const cursor = node.cursor;
+                get: () =>
+                {
+                    const cursor = node.cursor;
 
-                return typeof cursor === 'string' ? cursor : '';
-            },
+                    return typeof cursor === 'string' ? cursor : '';
+                },
 
-            set: (value) =>
-            {
-                node.cursor = value === '' ? undefined : value;
-            },
-        });
+                set: (value) =>
+                {
+                    node.cursor = value === '' ? undefined : value;
+                },
+            });
+        }
     }
     else
     {
         booleans.push(
-            ...directBoolean(
-                'interactive',
-                () => node.interactive,
-                (value) =>
-                {
-                    node.interactive = value;
-                },
+            ...takeMaps(
+                allow,
+                directBoolean(
+                    'interactive',
+                    () => node.interactive,
+                    (value) =>
+                    {
+                        node.interactive = value;
+                    },
+                ),
             ),
         );
 
         booleans.push(
-            ...directBoolean(
-                'buttonMode',
-                () => node.buttonMode,
-                (value) =>
-                {
-                    node.buttonMode = value;
-                },
+            ...takeMaps(
+                allow,
+                directBoolean(
+                    'buttonMode',
+                    () => node.buttonMode,
+                    (value) =>
+                    {
+                        node.buttonMode = value;
+                    },
+                ),
             ),
         );
     }
+
+    appendThreeDPropertyMaps(node, allow, numbers, booleans, strings);
 
     return { numbers, booleans, strings };
 }

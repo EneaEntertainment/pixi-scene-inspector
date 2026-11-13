@@ -1,5 +1,7 @@
-import { y as TextureMatrix, z as UniformGroup, M as Matrix, G as GpuProgram, b as GlProgram, w as warn, T as Texture, a as State, H as DefaultBatcher, j as ExtensionType, r as extensions, I as BigPool, J as getGlobalBounds, K as Bounds, L as TexturePool, R as RendererType, N as FilterEffect, O as Sprite, c as STENCIL_MODES, Q as CLEAR, V as BatchableSprite, W as RenderGroup, X as multiplyColors, Y as UPDATE_VISIBLE, Z as UPDATE_COLOR, _ as UPDATE_BLEND, x as Container, C as Color, D as DOMAdapter, $ as isIntegerFormat, a0 as TextureSource, a1 as Rectangle, a2 as getLocalBounds, P as Point, a3 as color32BitToUniform, a4 as BindGroup, t as Ticker, a5 as VERSION, a6 as deprecation, E as EventEmitter, e as uid$1, q as CanvasSource, a7 as GlobalResourceRegistry, a8 as v8_0_0, a9 as CanvasPool, aa as RendererInitHook, ab as SystemRunner, ac as v8_21_0 } from "./index-SPjj9M5Z.js";
-import { F as Filter } from "./Filter-bbWdas5q.js";
+import { a_ as TextureMatrix, aX as UniformGroup, M as Matrix, G as GpuProgram, b as GlProgram, w as warn, T as Texture, a as State, a$ as DefaultBatcher, E as ExtensionType, l as extensions, Q as BigPool, b0 as getGlobalBounds, b1 as Bounds, b2 as TexturePool, a3 as RendererType, b3 as FilterEffect, b4 as Sprite, p as STENCIL_MODES, aZ as CLEAR, b5 as RenderGroup, b6 as multiplyColors, b7 as UPDATE_VISIBLE, b8 as UPDATE_COLOR, b9 as UPDATE_BLEND, m as Container, C as Color, D as DOMAdapter, ba as isIntegerFormat, R as Rectangle, bb as getLocalBounds, bc as Point, a7 as BindGroup, h as Ticker, bd as VERSION, d as deprecation, a1 as CanvasSource, e as GlobalResourceRegistry, J as v8_0_0, be as RenderTarget, bf as RendererInitHook, bg as SystemRunner, v as v8_21_0, f as TextureSource } from "./index-BlFurYJo.js";
+import { c as clearList, R as RenderTexture } from "./RenderTexture-BCDvCICf.js";
+import { F as Filter } from "./Filter-4jlvn1Z3.js";
+import { C as CanvasPool } from "./CanvasPool-CL58H7j1.js";
 var fragment = "in vec2 vMaskCoord;\nin vec2 vTextureCoord;\n\nuniform sampler2D uTexture;\nuniform sampler2D uMaskTexture;\n\nuniform float uAlpha;\nuniform vec4 uMaskClamp;\nuniform float uInverse;\nuniform float uChannel;\n\nout vec4 finalColor;\n\nvoid main(void)\n{\n    float clip = step(3.5,\n        step(uMaskClamp.x, vMaskCoord.x) +\n        step(uMaskClamp.y, vMaskCoord.y) +\n        step(vMaskCoord.x, uMaskClamp.z) +\n        step(vMaskCoord.y, uMaskClamp.w));\n\n    // TODO look into why this is needed\n    float npmAlpha = uAlpha;\n    vec4 original = texture(uTexture, vTextureCoord);\n    vec4 masky = texture(uMaskTexture, vMaskCoord);\n\n    float a;\n    if (uChannel == 1.0) {\n        a = masky.a * npmAlpha * clip;\n    } else {\n        float alphaMul = 1.0 - npmAlpha * (1.0 - masky.a);\n        a = alphaMul * masky.r * npmAlpha * clip;\n    }\n\n    if (uInverse == 1.0) {\n        a = 1.0 - a;\n    }\n\n    finalColor = original * a;\n}\n";
 var vertex = "in vec2 aPosition;\n\nout vec2 vTextureCoord;\nout vec2 vMaskCoord;\n\n\nuniform vec4 uInputSize;\nuniform vec4 uOutputFrame;\nuniform vec4 uOutputTexture;\nuniform mat3 uFilterMatrix;\n\nvec4 filterVertexPosition(  vec2 aPosition )\n{\n    vec2 position = aPosition * uOutputFrame.zw + uOutputFrame.xy;\n       \n    position.x = position.x * (2.0 / uOutputTexture.x) - 1.0;\n    position.y = position.y * (2.0*uOutputTexture.z / uOutputTexture.y) - uOutputTexture.z;\n\n    return vec4(position, 0.0, 1.0);\n}\n\nvec2 filterTextureCoord(  vec2 aPosition )\n{\n    return aPosition * (uOutputFrame.zw * uInputSize.zw);\n}\n\nvec2 getFilterCoord( vec2 aPosition )\n{\n    return  ( uFilterMatrix * vec3( filterTextureCoord(aPosition), 1.0)  ).xy;\n}   \n\nvoid main(void)\n{\n    gl_Position = filterVertexPosition(aPosition);\n    vTextureCoord = filterTextureCoord(aPosition);\n    vMaskCoord = getFilterCoord(aPosition);\n}\n";
 var source = "struct GlobalFilterUniforms {\n  uInputSize:vec4<f32>,\n  uInputPixel:vec4<f32>,\n  uInputClamp:vec4<f32>,\n  uOutputFrame:vec4<f32>,\n  uGlobalFrame:vec4<f32>,\n  uOutputTexture:vec4<f32>,\n};\n\nstruct MaskUniforms {\n  uFilterMatrix:mat3x3<f32>,\n  uMaskClamp:vec4<f32>,\n  uAlpha:f32,\n  uInverse:f32,\n  uChannel:f32,\n};\n\n@group(0) @binding(0) var<uniform> gfu: GlobalFilterUniforms;\n@group(0) @binding(1) var uTexture: texture_2d<f32>;\n@group(0) @binding(2) var uSampler : sampler;\n\n@group(1) @binding(0) var<uniform> filterUniforms : MaskUniforms;\n@group(1) @binding(1) var uMaskTexture: texture_2d<f32>;\n\nstruct VSOutput {\n    @builtin(position) position: vec4<f32>,\n    @location(0) uv : vec2<f32>,\n    @location(1) filterUv : vec2<f32>,\n};\n\nfn filterVertexPosition(aPosition:vec2<f32>) -> vec4<f32>\n{\n    var position = aPosition * gfu.uOutputFrame.zw + gfu.uOutputFrame.xy;\n\n    position.x = position.x * (2.0 / gfu.uOutputTexture.x) - 1.0;\n    position.y = position.y * (2.0*gfu.uOutputTexture.z / gfu.uOutputTexture.y) - gfu.uOutputTexture.z;\n\n    return vec4(position, 0.0, 1.0);\n}\n\nfn filterTextureCoord( aPosition:vec2<f32> ) -> vec2<f32>\n{\n    return aPosition * (gfu.uOutputFrame.zw * gfu.uInputSize.zw);\n}\n\nfn globalTextureCoord( aPosition:vec2<f32> ) -> vec2<f32>\n{\n  return  (aPosition.xy / gfu.uGlobalFrame.zw) + (gfu.uGlobalFrame.xy / gfu.uGlobalFrame.zw);\n}\n\nfn getFilterCoord(aPosition:vec2<f32> ) -> vec2<f32>\n{\n  return ( filterUniforms.uFilterMatrix * vec3( filterTextureCoord(aPosition), 1.0)  ).xy;\n}\n\nfn getSize() -> vec2<f32>\n{\n  return gfu.uGlobalFrame.zw;\n}\n\n@vertex\nfn mainVertex(\n  @location(0) aPosition : vec2<f32>,\n) -> VSOutput {\n  return VSOutput(\n   filterVertexPosition(aPosition),\n   filterTextureCoord(aPosition),\n   getFilterCoord(aPosition)\n  );\n}\n\n@fragment\nfn mainFragment(\n  @location(0) uv: vec2<f32>,\n  @location(1) filterUv: vec2<f32>,\n  @builtin(position) position: vec4<f32>\n) -> @location(0) vec4<f32> {\n\n    var maskClamp = filterUniforms.uMaskClamp;\n    var uAlpha = filterUniforms.uAlpha;\n\n    var clip = step(3.5,\n      step(maskClamp.x, filterUv.x) +\n      step(maskClamp.y, filterUv.y) +\n      step(filterUv.x, maskClamp.z) +\n      step(filterUv.y, maskClamp.w));\n\n    var mask = textureSample(uMaskTexture, uSampler, filterUv);\n    var source = textureSample(uTexture, uSampler, uv);\n\n    var a: f32;\n    if (filterUniforms.uChannel == 1.0) {\n        a = mask.a * uAlpha * clip;\n    } else {\n        var alphaMul = 1.0 - uAlpha * (1.0 - mask.a);\n        a = alphaMul * mask.r * uAlpha * clip;\n    }\n\n    if (filterUniforms.uInverse == 1.0) {\n        a = 1.0 - a;\n    }\n\n    return source * a;\n}\n";
@@ -94,6 +96,42 @@ class MaskFilter extends Filter {
   destroy(destroyPrograms = false) {
     this._textureMatrix.destroy();
     super.destroy(destroyPrograms);
+  }
+}
+function color32BitToUniform(abgr, out, offset) {
+  const alpha = (abgr >> 24 & 255) / 255;
+  out[offset++] = (abgr & 255) / 255 * alpha;
+  out[offset++] = (abgr >> 8 & 255) / 255 * alpha;
+  out[offset++] = (abgr >> 16 & 255) / 255 * alpha;
+  out[offset++] = alpha;
+}
+class BatchableSprite {
+  constructor() {
+    this.batcherName = "default";
+    this.topology = "triangle-list";
+    this.attributeSize = 4;
+    this.indexSize = 6;
+    this.packAsQuad = true;
+    this.roundPixels = 0;
+    this._attributeStart = 0;
+    this._batcher = null;
+    this._batch = null;
+  }
+  get blendMode() {
+    return this.renderable.groupBlendMode;
+  }
+  get color() {
+    return this.renderable.groupColorAlpha;
+  }
+  reset() {
+    this.renderable = null;
+    this.texture = null;
+    this._batcher = null;
+    this._batch = null;
+    this.bounds = null;
+  }
+  destroy() {
+    this.reset();
   }
 }
 const _BatcherPipe = class _BatcherPipe2 {
@@ -873,16 +911,6 @@ BlendModePipe.extension = {
   ],
   name: "blendMode"
 };
-function clearList(list, index) {
-  index || (index = 0);
-  for (let j = index; j < list.length; j++) {
-    if (list[j]) {
-      list[j] = null;
-    } else {
-      break;
-    }
-  }
-}
 const tempContainer = new Container();
 const UPDATE_BLEND_COLOR_VISIBLE = UPDATE_VISIBLE | UPDATE_COLOR | UPDATE_BLEND;
 function updateRenderGroupTransforms(renderGroup, updateChildRenderGroups = false) {
@@ -1599,36 +1627,6 @@ _ExtractSystem.defaultImageOptions = {
   quality: 1
 };
 let ExtractSystem = _ExtractSystem;
-class RenderTexture extends Texture {
-  /**
-   * Creates a RenderTexture. Pass `dynamic: true` in options to allow resizing after creation.
-   * @param options - Options for the RenderTexture, including width, height, textureOptions, and dynamic.
-   * @returns A new RenderTexture instance.
-   * @example
-   * const textureOptions = { defaultAnchor: { x: 0.5, y: 0.5 } };
-   * const rt = RenderTexture.create({ width: 100, height: 100, dynamic: true, textureOptions });
-   * rt.resize(500, 500);
-   */
-  static create(options) {
-    const { dynamic, textureOptions, ...rest } = options;
-    return new RenderTexture({
-      ...textureOptions,
-      source: new TextureSource(rest),
-      dynamic: dynamic ?? false
-    });
-  }
-  /**
-   * Resizes the render texture.
-   * @param width - The new width of the render texture.
-   * @param height - The new height of the render texture.
-   * @param resolution - The new resolution of the render texture.
-   * @returns This texture.
-   */
-  resize(width, height, resolution) {
-    this.source.resize(width, height, resolution);
-    return this;
-  }
-}
 const tempRect = new Rectangle();
 const tempBounds = new Bounds();
 const noColor = [0, 0, 0, 0];
@@ -2531,231 +2529,6 @@ _TextureGCSystem.defaultOptions = {
   textureGCCheckCountMax: 600
 };
 let TextureGCSystem = _TextureGCSystem;
-const _RenderTarget = class _RenderTarget2 extends EventEmitter {
-  /**
-   * @param options - Options for creating a render target, or a WebGPU-flavored descriptor.
-   */
-  constructor(options = {}) {
-    super();
-    this.uid = uid$1("renderTarget");
-    this.colorAttachments = [];
-    this.dirtyId = 0;
-    this.isRoot = false;
-    this._size = new Float32Array(2);
-    this._managedColorTextures = false;
-    this._managedDepthStencilTexture = false;
-    this._depth = false;
-    this._stencil = false;
-    this._colorTextures = null;
-    const descriptor = "colorAttachments" in options ? options : this._normalizeOptions(options);
-    this.isRoot = descriptor.isRoot ?? false;
-    this.label = descriptor.label;
-    this.colorAttachments = descriptor.colorAttachments;
-    this.depthStencilAttachment = descriptor.depthStencilAttachment;
-    if (this.depthStencilAttachment) {
-      const format = this.depthStencilAttachment.texture.format;
-      this._depth || (this._depth = format.includes("depth"));
-      this._stencil || (this._stencil = format.includes("stencil"));
-    }
-    if (this.colorAttachments.length === 0 && !this.depthStencilAttachment) {
-      throw new Error("[RenderTarget] no color textures or depth textures were provided. Provide a depthStencilTexture or set depth/stencil to true when using colorTextures: 0.");
-    }
-    if (this.colorAttachments.length > 0) {
-      const colorSource = this.colorTexture;
-      this.resize(colorSource.width, colorSource.height, colorSource._resolution);
-    }
-    if (this.sizeSource) {
-      this.sizeSource.on("resize", this.onSourceResize, this);
-    }
-  }
-  _normalizeOptions(options) {
-    const opts = { ..._RenderTarget2.defaultOptions, ...options };
-    const colorAttachments = [];
-    let depthStencilAttachment;
-    if (typeof opts.colorTextures === "number") {
-      if (opts.colorTextures > 0) {
-        this._managedColorTextures = true;
-        for (let i = 0; i < opts.colorTextures; i++) {
-          colorAttachments.push({
-            texture: new TextureSource({
-              width: opts.width,
-              height: opts.height,
-              resolution: opts.resolution,
-              antialias: opts.antialias
-            }),
-            storeOp: "store"
-          });
-        }
-      }
-    } else {
-      opts.colorTextures.forEach((texture) => {
-        colorAttachments.push({
-          texture: texture.source,
-          storeOp: "store"
-        });
-      });
-    }
-    const wantsDepthStencilTexture = opts.depthStencilTexture === true;
-    this._depth = !!(opts.depth || wantsDepthStencilTexture);
-    this._stencil = !!(opts.stencil || wantsDepthStencilTexture);
-    if (opts.depthStencilTexture instanceof Texture || opts.depthStencilTexture instanceof TextureSource) {
-      if (opts.isRoot) {
-        throw new Error("[RenderTarget] cannot attach a depth-stencil texture to the screen — the canvas owns its own depth/stencil buffers. Render to a texture target instead.");
-      }
-      depthStencilAttachment = {
-        texture: opts.depthStencilTexture.source
-      };
-    } else if (wantsDepthStencilTexture && !opts.isRoot || (opts.stencil || opts.depth) && colorAttachments.length === 0) {
-      depthStencilAttachment = this._createDepthStencilTexture(opts.width, opts.height, opts.resolution);
-    }
-    return {
-      colorAttachments,
-      depthStencilAttachment,
-      isRoot: opts.isRoot,
-      label: opts.label
-    };
-  }
-  get size() {
-    const _size = this._size;
-    _size[0] = this.pixelWidth;
-    _size[1] = this.pixelHeight;
-    return _size;
-  }
-  get width() {
-    return this.sizeSource.width;
-  }
-  get height() {
-    return this.sizeSource.height;
-  }
-  get pixelWidth() {
-    return this.sizeSource.pixelWidth;
-  }
-  get pixelHeight() {
-    return this.sizeSource.pixelHeight;
-  }
-  get resolution() {
-    return this.sizeSource._resolution;
-  }
-  /**
-   * An array of textures that can be written to by the GPU - mostly this has one texture in Pixi, but you could
-   * write to multiple if required! (eg deferred lighting).
-   * This is a backwards-compatible getter that extracts the textures from `colorAttachments`.
-   */
-  get colorTextures() {
-    this._colorTextures || (this._colorTextures = this.colorAttachments.map((a) => a.texture));
-    return this._colorTextures;
-  }
-  /**
-   * The texture the depth and stencil buffers write to. On an antialiased target shaders can't
-   * read it as a normal depth texture, see {@link RenderTargetOptions.depthStencilTexture}.
-   */
-  get depthStencilTexture() {
-    return this.depthStencilAttachment?.texture ?? null;
-  }
-  /** Whether this target provides a depth buffer — requested via options or implied by its attachment's format. */
-  get depth() {
-    return this._depth;
-  }
-  /** Whether this target provides a stencil buffer — requested via options or implied by its attachment's format. */
-  get stencil() {
-    return this._stencil;
-  }
-  get colorTexture() {
-    return this.colorAttachments[0]?.texture;
-  }
-  /**
-   * The texture that drives size, resolution, and resize events.
-   * For standard targets this is `colorAttachments[0].texture`;
-   * for depth-only targets it is `depthStencilAttachment.texture`.
-   */
-  get sizeSource() {
-    return this.colorAttachments[0]?.texture ?? this.depthStencilAttachment?.texture;
-  }
-  onSourceResize(source2) {
-    this.resize(source2.width, source2.height, source2._resolution, true);
-  }
-  /**
-   * This will ensure a depthStencil texture is created for this render target.
-   * Most likely called by the mask system to make sure we have stencil buffer added.
-   * @internal
-   */
-  ensureDepthStencilTexture() {
-    this._createDepthStencilTexture(this.sizeSource.width, this.sizeSource.height, this.sizeSource._resolution);
-    this._depth = true;
-    this._stencil = true;
-  }
-  resize(width, height, resolution = this.resolution, skipColorTexture = false) {
-    this.dirtyId++;
-    this.colorAttachments.forEach((colorAttachment, i) => {
-      if (skipColorTexture && i === 0) return;
-      colorAttachment.texture.resize(width, height, resolution);
-    });
-    if (this.depthStencilAttachment) {
-      if (skipColorTexture && this.colorAttachments.length === 0) return;
-      this.depthStencilAttachment.texture.resize(width, height, resolution);
-    }
-  }
-  destroy() {
-    if (!this.colorAttachments && !this.depthStencilAttachment) return;
-    this.emit("destroy", this);
-    this.sizeSource.off("resize", this.onSourceResize, this);
-    if (this._managedColorTextures) {
-      this.colorAttachments.forEach((attachment) => {
-        attachment.texture.destroy();
-      });
-    }
-    if (this.depthStencilAttachment) {
-      if (this._managedDepthStencilTexture) this.depthStencilAttachment.texture.destroy();
-      delete this.depthStencilAttachment;
-    }
-    this.colorAttachments = null;
-    this._colorTextures = null;
-    this.removeAllListeners();
-  }
-  /**
-   * The single recipe for internally-created depth-stencil textures.
-   * @param width
-   * @param height
-   * @param resolution
-   */
-  _createDepthStencilTexture(width, height, resolution) {
-    if (this.depthStencilAttachment) return this.depthStencilAttachment;
-    const texture = new TextureSource({
-      width,
-      height,
-      resolution,
-      format: "depth24plus-stencil8",
-      autoGenerateMipmaps: false,
-      antialias: false,
-      mipLevelCount: 1
-      // sampleCount: handled by the render target system..
-    });
-    texture.resize(width, height, resolution);
-    this._managedDepthStencilTexture = true;
-    this.depthStencilAttachment = { texture };
-    return this.depthStencilAttachment;
-  }
-};
-_RenderTarget.defaultOptions = {
-  /** the width of the RenderTarget */
-  width: 0,
-  /** the height of the RenderTarget */
-  height: 0,
-  /** the resolution of the RenderTarget */
-  resolution: 1,
-  /** an array of textures, or a number indicating how many color textures there should be */
-  colorTextures: 1,
-  /** should this render target have a stencil buffer? */
-  stencil: false,
-  /** should this render target have a depth buffer? */
-  depth: false,
-  /** should this render target be antialiased? */
-  antialias: false,
-  // save on perf by default!
-  /** is this a root element, true if this is gl context owners render target */
-  isRoot: false
-};
-let RenderTarget = _RenderTarget;
 const canvasCache = /* @__PURE__ */ new Map();
 GlobalResourceRegistry.register(canvasCache);
 function getCanvasTexture(canvas, options) {
@@ -3491,6 +3264,7 @@ export {
   SharedSystems as S,
   BatcherPipe as a,
   SpritePipe as b,
-  RenderGroupPipe as c,
-  SharedRenderPipes as d
+  color32BitToUniform as c,
+  RenderGroupPipe as d,
+  SharedRenderPipes as e
 };

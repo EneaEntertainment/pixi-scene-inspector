@@ -2,10 +2,7 @@ import { isAncestorId } from './tree-ops';
 
 import type { TreeNodeData } from './types';
 
-export function sortIdsByTreeOrder(
-    root: TreeNodeData,
-    ids: ReadonlyArray<string>,
-): Array<string>
+export function sortIdsByTreeOrder(root: TreeNodeData, ids: ReadonlyArray<string>): Array<string>
 {
     const want = new Set(ids);
     const ordered: Array<string> = [];

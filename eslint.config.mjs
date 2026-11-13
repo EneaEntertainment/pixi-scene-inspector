@@ -126,6 +126,13 @@ export default tseslint.config(
             '@typescript-eslint/explicit-member-accessibility': 'off',
             '@typescript-eslint/prefer-readonly': 'off',
             '@typescript-eslint/naming-convention': 'off',
+            'brace-style': 'off',
+            indent: 'off',
+            quotes: 'off',
+            'operator-linebreak': 'off',
+            'newline-after-var': 'off',
+            'no-confusing-arrow': 'off',
+            'no-mixed-operators/no-mixed-operators': 'off',
         },
     },
 );

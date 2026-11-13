@@ -37,6 +37,11 @@ export type ColorFieldSpec = {
     label: string;
 };
 
+export type TextureFieldSpec = {
+    key: FieldStringKey;
+    label: string;
+};
+
 export type FillStopsFieldSpec = {
     key: TextFillPropertyKey;
     label: string;
@@ -79,6 +84,15 @@ export type TextField = {
 };
 
 export type ColorField = {
+    key: FieldStringKey;
+    root: HTMLElement;
+
+    setDisplay: (value: string | undefined) => void;
+    isBusy: () => boolean;
+    destroy: () => void;
+};
+
+export type TextureField = {
     key: FieldStringKey;
     root: HTMLElement;
 

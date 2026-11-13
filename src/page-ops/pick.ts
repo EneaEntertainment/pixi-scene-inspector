@@ -4,7 +4,9 @@ import {
     readScreenSize,
     readWorldTransform,
     worldCorners,
-} from '../overlay/selection-highlight/geometry';
+} from './geometry';
+import { isNode3D, isView3D } from './node-3d';
+import { pick3DNodesAt } from './pick-3d';
 import { childrenOf, findRoot, pathOf, resolveByPath } from './root';
 
 import type { PageGlobals, PixiNode } from './pixi-node';
@@ -19,9 +21,29 @@ type PickOptions = {
     rootPathId?: string | null;
 };
 
+function quadHasArea(corners: Array<IPoint>): boolean
+{
+    let area2 = 0;
+
+    for (let i = 0; i < 4; i++)
+    {
+        const a = corners[i];
+        const b = corners[(i + 1) % 4];
+
+        if (!a || !b)
+        {
+            return false;
+        }
+
+        area2 += (a.x * b.y) - (b.x * a.y);
+    }
+
+    return Math.abs(area2) > 1e-6;
+}
+
 function pointInQuad(point: IPoint, corners: Array<IPoint>): boolean
 {
-    if (corners.length < 4)
+    if (corners.length < 4 || !quadHasArea(corners))
     {
         return false;
     }
@@ -60,6 +82,43 @@ function pointInQuad(point: IPoint, corners: Array<IPoint>): boolean
     return true;
 }
 
+function boundsContainPoint(node: PixiNode, point: IPoint): boolean
+{
+    if (typeof node.getBounds !== 'function')
+    {
+        return false;
+    }
+
+    try
+    {
+        const bounds = node.getBounds() as {
+            containsPoint?: (x: number, y: number) => boolean;
+            contains?: (x: number, y: number) => boolean;
+        } | null | undefined;
+
+        if (!bounds || typeof bounds !== 'object')
+        {
+            return false;
+        }
+
+        if (typeof bounds.containsPoint === 'function')
+        {
+            return bounds.containsPoint(point.x, point.y) === true;
+        }
+
+        if (typeof bounds.contains === 'function')
+        {
+            return bounds.contains(point.x, point.y) === true;
+        }
+    }
+    catch
+    {
+        return false;
+    }
+
+    return false;
+}
+
 function nodeContainsPoint(node: PixiNode, point: IPoint): boolean
 {
     const contains = (node as PixiNode & { containsPoint?: (value: IPoint) => boolean; }).containsPoint;
@@ -79,32 +138,9 @@ function nodeContainsPoint(node: PixiNode, point: IPoint): boolean
         }
     }
 
-    if (typeof node.getBounds === 'function')
+    if (boundsContainPoint(node, point))
     {
-        try
-        {
-            const bounds = node.getBounds() as {
-                containsPoint?: (x: number, y: number) => boolean;
-                contains?: (x: number, y: number) => boolean;
-            } | null | undefined;
-
-            if (bounds && typeof bounds === 'object')
-            {
-                if (typeof bounds.containsPoint === 'function')
-                {
-                    return bounds.containsPoint(point.x, point.y) === true;
-                }
-
-                if (typeof bounds.contains === 'function')
-                {
-                    return bounds.contains(point.x, point.y) === true;
-                }
-            }
-        }
-        catch
-        {
-            void 0;
-        }
+        return true;
     }
 
     const matrix = readWorldTransform(node);
@@ -121,6 +157,28 @@ function nodeContainsPoint(node: PixiNode, point: IPoint): boolean
 function collectHits(point: IPoint, node: PixiNode, includeHidden: boolean, out: Array<PixiNode>)
 {
     if (!includeHidden && node.visible === false)
+    {
+        return;
+    }
+
+    if (isView3D(node))
+    {
+        const hits3d = pick3DNodesAt(node, point, includeHidden);
+
+        for (const hit of hits3d)
+        {
+            out.push(hit);
+        }
+
+        if (hits3d.length === 0 && boundsContainPoint(node, point))
+        {
+            out.push(node);
+        }
+
+        return;
+    }
+
+    if (isNode3D(node))
     {
         return;
     }

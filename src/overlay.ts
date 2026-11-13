@@ -5,8 +5,8 @@ export {
     type MountPixiSceneInspectorOptions,
 } from './overlay/mount';
 export {
-    type DockPixiSceneInspectorOptions,
     dockPixiSceneInspector,
+    type DockPixiSceneInspectorOptions,
     installPixiSceneInspectorHotkey,
     togglePixiSceneInspector,
 } from './overlay/shell/dock';

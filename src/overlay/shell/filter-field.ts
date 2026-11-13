@@ -1,4 +1,6 @@
 const CLEAR_COLOR = '#ffe066';
+const BORDER_IDLE = '1px solid #555';
+const BORDER_FOCUS = `1px solid ${CLEAR_COLOR}`;
 
 export type FilterField = {
     root: HTMLElement;
@@ -47,7 +49,7 @@ export function createFilterField(options: FilterFieldOptions): FilterField
         height       : options.height ?? '26px',
         margin       : '0',
         padding      : '2px 24px 2px 8px',
-        border       : '1px solid #555',
+        border       : BORDER_IDLE,
         borderRadius : '4px',
         outline      : 'none',
         background   : '#222',
@@ -103,6 +105,16 @@ export function createFilterField(options: FilterFieldOptions): FilterField
         syncClear();
     }
 
+    input.addEventListener('focus', () =>
+    {
+        input.style.border = BORDER_FOCUS;
+    });
+
+    input.addEventListener('blur', () =>
+    {
+        input.style.border = BORDER_IDLE;
+    });
+
     input.addEventListener('input', () =>
     {
         syncClear();
@@ -116,6 +128,16 @@ export function createFilterField(options: FilterFieldOptions): FilterField
         setValue('');
         options.onChange('');
         input.focus();
+    });
+
+    clearBtn.addEventListener('mouseenter', () =>
+    {
+        clearBtn.style.color = '#fff3a8';
+    });
+
+    clearBtn.addEventListener('mouseleave', () =>
+    {
+        clearBtn.style.color = CLEAR_COLOR;
     });
 
     root.append(input, clearBtn);

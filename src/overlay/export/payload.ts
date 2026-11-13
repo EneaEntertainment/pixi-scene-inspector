@@ -72,6 +72,7 @@ function isExportPropAvailable(maps: ExportPropertyMaps, spec: ExportPropSpec): 
         return (
             !!resolveNumberMap(maps, spec.xKey)
             || !!resolveNumberMap(maps, spec.yKey)
+            || (!!spec.zKey && !!resolveNumberMap(maps, spec.zKey))
         );
     }
 
@@ -106,12 +107,14 @@ function readPoint(
     maps: ExportPropertyMaps,
     xKey: NumberPropertyKey,
     yKey: NumberPropertyKey,
+    zKey?: NumberPropertyKey,
 ): Record<string, number> | undefined
 {
     const x = resolveNumberMap(maps, xKey)?.get();
     const y = resolveNumberMap(maps, yKey)?.get();
+    const z = zKey ? resolveNumberMap(maps, zKey)?.get() : undefined;
 
-    if (typeof x !== 'number' && typeof y !== 'number')
+    if (typeof x !== 'number' && typeof y !== 'number' && typeof z !== 'number')
     {
         return undefined;
     }
@@ -126,6 +129,11 @@ function readPoint(
     if (typeof y === 'number')
     {
         point.y = y;
+    }
+
+    if (typeof z === 'number')
+    {
+        point.z = z;
     }
 
     return point;
@@ -152,7 +160,7 @@ function collectPropValue(maps: ExportPropertyMaps, spec: ExportPropSpec): unkno
 {
     if (spec.kind === 'point')
     {
-        return readPoint(maps, spec.xKey, spec.yKey);
+        return readPoint(maps, spec.xKey, spec.yKey, spec.zKey);
     }
 
     if (spec.kind === 'number')
@@ -448,6 +456,103 @@ function exportUsesPixi8(): boolean
     return isPixi8(isNodeAlive(node) ? node : null);
 }
 
+function isPlainExportObject(value: unknown): value is Record<string, unknown>
+{
+    return !!value && typeof value === 'object' && !Array.isArray(value);
+}
+
+function mergeExportLeafIntoObject(target: Record<string, unknown>, value: unknown)
+{
+    if (typeof value === 'boolean')
+    {
+        target.enabled = value;
+
+        return;
+    }
+
+    target.value = value;
+}
+
+function assignNestedExportValue(
+    root: Record<string, unknown>,
+    path: string,
+    value: unknown,
+)
+{
+    const parts = path.split('.');
+    let cursor = root;
+
+    for (let i = 0; i < parts.length - 1; i++)
+    {
+        const key = parts[i];
+        const existing = cursor[key];
+
+        if (!isPlainExportObject(existing))
+        {
+            const next: Record<string, unknown> = {};
+
+            if (existing !== undefined)
+            {
+                mergeExportLeafIntoObject(next, existing);
+            }
+
+            cursor[key] = next;
+        }
+
+        cursor = cursor[key] as Record<string, unknown>;
+    }
+
+    const leafKey = parts[parts.length - 1];
+    const existingLeaf = cursor[leafKey];
+
+    if (isPlainExportObject(existingLeaf) && !isPlainExportObject(value))
+    {
+        mergeExportLeafIntoObject(existingLeaf, value);
+
+        return;
+    }
+
+    cursor[leafKey] = value;
+}
+
+function writeExportProp(
+    payload: Record<string, unknown>,
+    styleScratch: StyleExportScratch,
+    id: ExportPropId,
+    value: unknown,
+): boolean
+{
+    if (isStyleExportId(id))
+    {
+        collectStyleExportProp(styleScratch, id, value);
+
+        return true;
+    }
+
+    assignNestedExportValue(payload, id, value);
+
+    return false;
+}
+
+function finalizeStyleExport(
+    payload: Record<string, unknown>,
+    styleScratch: StyleExportScratch,
+    hasStyle: boolean,
+)
+{
+    if (!hasStyle)
+    {
+        return;
+    }
+
+    const style = buildStyleExportObject(styleScratch, exportUsesPixi8());
+
+    if (style)
+    {
+        payload.style = style;
+    }
+}
+
 export function buildSectionExportPayload(
     maps: ExportPropertyMaps,
     sectionId: PropertyExportSectionId,
@@ -472,27 +577,13 @@ export function buildSectionExportPayload(
             continue;
         }
 
-        if (isStyleExportId(spec.id))
+        if (writeExportProp(payload, styleScratch, spec.id, value))
         {
-            collectStyleExportProp(styleScratch, spec.id, value);
-
             hasStyle = true;
-
-            continue;
-        }
-
-        payload[spec.id] = value;
-    }
-
-    if (hasStyle)
-    {
-        const style = buildStyleExportObject(styleScratch, exportUsesPixi8());
-
-        if (style)
-        {
-            payload.style = style;
         }
     }
+
+    finalizeStyleExport(payload, styleScratch, hasStyle);
 
     return payload;
 }
@@ -527,28 +618,14 @@ export function buildNodeExportPayload(
                 continue;
             }
 
-            if (isStyleExportId(spec.id))
+            if (writeExportProp(payload, styleScratch, spec.id, value))
             {
-                collectStyleExportProp(styleScratch, spec.id, value);
-
                 hasStyle = true;
-
-                continue;
             }
-
-            payload[spec.id] = value;
         }
     }
 
-    if (hasStyle)
-    {
-        const style = buildStyleExportObject(styleScratch, exportUsesPixi8());
-
-        if (style)
-        {
-            payload.style = style;
-        }
-    }
+    finalizeStyleExport(payload, styleScratch, hasStyle);
 
     return payload;
 }
