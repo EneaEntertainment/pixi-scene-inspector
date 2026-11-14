@@ -4,6 +4,7 @@ import { readLocalAxesWorld } from '../geometry-3d';
 import { createGizmoDom, setGizmoVisible, setModeButtonsActive } from './dom';
 import { createGizmoDrag } from './drag';
 import { paintGizmoLayout } from './layout';
+import { hideAllWireframes } from './wireframe';
 
 import type { PixiNode } from '../../../page-ops/pixi-node';
 import type { CanvasMetrics, Gizmo3DController, GizmoMode } from './types';
@@ -23,11 +24,7 @@ export function installGizmo3D(resolveNode: () => PixiNode | null): Gizmo3DContr
 
     function hide()
     {
-        for (const line of dom.boundsLines)
-        {
-            line.style.display = 'none';
-        }
-
+        hideAllWireframes(dom);
         setGizmoVisible(dom, false);
     }
 
@@ -61,7 +58,14 @@ export function installGizmo3D(resolveNode: () => PixiNode | null): Gizmo3DContr
         const view = node._view3d;
         const axes = readLocalAxesWorld(node);
 
-        if (!view || !axes || view.camera === node)
+        if (!view || !axes)
+        {
+            hide();
+
+            return;
+        }
+
+        if (view.camera === node)
         {
             hide();
 

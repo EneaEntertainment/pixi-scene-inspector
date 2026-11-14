@@ -1,4 +1,4 @@
-const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/browserAll-DbL7Jc76.js","assets/webworkerAll-CKpmbQ65.js","assets/Filter-CBWjmiv7.js","assets/WebGPURenderer-YLeuqz6b.js","assets/getTexelRangeRects-BBXLpeO4.js","assets/RenderTargetSystem-DsnU5-BA.js","assets/RenderTexture-CjAmXbGz.js","assets/WebGLRenderer-0vePTR4b.js","assets/CanvasRenderer-B_xcKLW7.js","assets/init-85MnLBKt.js","assets/View3DGlobalData-DM56VRIk.js","assets/init-UmuiKJ7S.js"])))=>i.map(i=>d[i]);
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/browserAll-D0JdkP4g.js","assets/webworkerAll-BTmdYqWO.js","assets/Filter-DJ6geN72.js","assets/WebGPURenderer-BtAGdFZt.js","assets/getTexelRangeRects-CvVS5N7n.js","assets/RenderTargetSystem-ZQ9DfsOp.js","assets/RenderTexture-6tnWszKs.js","assets/WebGLRenderer-p36z6knF.js","assets/CanvasRenderer-BfYEImnq.js","assets/init-xpAuZKBO.js","assets/View3DGlobalData-BwsZ3Z5C.js","assets/init-9dj2tVSu.js"])))=>i.map(i=>d[i]);
 (function polyfill() {
   const relList = document.createElement("link").relList;
   if (relList && relList.supports && relList.supports("modulepreload")) return;
@@ -355,7 +355,7 @@ const browserExt = {
   },
   test: () => true,
   load: async () => {
-    await __vitePreload(() => import("./browserAll-DbL7Jc76.js"), true ? __vite__mapDeps([0,1,2]) : void 0);
+    await __vitePreload(() => import("./browserAll-D0JdkP4g.js"), true ? __vite__mapDeps([0,1,2]) : void 0);
   }
 };
 const webworkerExt = {
@@ -366,7 +366,7 @@ const webworkerExt = {
   },
   test: () => typeof self !== "undefined" && self.WorkerGlobalScope !== void 0,
   load: async () => {
-    await __vitePreload(() => import("./webworkerAll-CKpmbQ65.js"), true ? __vite__mapDeps([1,2]) : void 0);
+    await __vitePreload(() => import("./webworkerAll-BTmdYqWO.js"), true ? __vite__mapDeps([1,2]) : void 0);
   }
 };
 class ObservablePoint {
@@ -729,7 +729,7 @@ var eventemitter3Exports = requireEventemitter3();
 const EventEmitter = /* @__PURE__ */ getDefaultExportFromCjs(eventemitter3Exports);
 const PI_2 = Math.PI * 2;
 const RAD_TO_DEG = 180 / Math.PI;
-const DEG_TO_RAD = Math.PI / 180;
+const DEG_TO_RAD$1 = Math.PI / 180;
 class Point {
   /**
    * Creates a new `Point`
@@ -7301,7 +7301,7 @@ class Container extends EventEmitter {
     return this.rotation * RAD_TO_DEG;
   }
   set angle(value) {
-    this.rotation = value * DEG_TO_RAD;
+    this.rotation = value * DEG_TO_RAD$1;
   }
   /**
    * The center of rotation, scaling, and skewing for this display object in its local space.
@@ -13768,7 +13768,7 @@ async function autoDetectRenderer(options) {
     const rendererType = preferredOrder[i2];
     if (rendererType === "webgpu" && await isWebGPUSupported()) {
       const { WebGPURenderer } = await __vitePreload(async () => {
-        const { WebGPURenderer: WebGPURenderer2 } = await import("./WebGPURenderer-YLeuqz6b.js");
+        const { WebGPURenderer: WebGPURenderer2 } = await import("./WebGPURenderer-BtAGdFZt.js");
         return { WebGPURenderer: WebGPURenderer2 };
       }, true ? __vite__mapDeps([3,4,5,6,2]) : void 0);
       RendererClass = WebGPURenderer;
@@ -13778,7 +13778,7 @@ async function autoDetectRenderer(options) {
       options.failIfMajorPerformanceCaveat ?? AbstractRenderer.defaultOptions.failIfMajorPerformanceCaveat
     )) {
       const { WebGLRenderer } = await __vitePreload(async () => {
-        const { WebGLRenderer: WebGLRenderer2 } = await import("./WebGLRenderer-0vePTR4b.js");
+        const { WebGLRenderer: WebGLRenderer2 } = await import("./WebGLRenderer-p36z6knF.js");
         return { WebGLRenderer: WebGLRenderer2 };
       }, true ? __vite__mapDeps([7,4,5,6,2]) : void 0);
       RendererClass = WebGLRenderer;
@@ -13786,7 +13786,7 @@ async function autoDetectRenderer(options) {
       break;
     } else if (rendererType === "canvas") {
       const { CanvasRenderer } = await __vitePreload(async () => {
-        const { CanvasRenderer: CanvasRenderer2 } = await import("./CanvasRenderer-B_xcKLW7.js");
+        const { CanvasRenderer: CanvasRenderer2 } = await import("./CanvasRenderer-BfYEImnq.js");
         return { CanvasRenderer: CanvasRenderer2 };
       }, true ? __vite__mapDeps([8,5,6,2]) : void 0);
       RendererClass = CanvasRenderer;
@@ -63230,20 +63230,6 @@ function attachHighlightTransformDrag(host) {
     cancel: cancelDrag
   };
 }
-const BOX_EDGE_INDICES = [
-  [0, 1],
-  [1, 2],
-  [2, 3],
-  [3, 0],
-  [4, 5],
-  [5, 6],
-  [6, 7],
-  [7, 4],
-  [0, 4],
-  [1, 5],
-  [2, 6],
-  [3, 7]
-];
 function transformLocalToWorld(elements, x2, y2, z) {
   return {
     x: elements[0] * x2 + elements[4] * y2 + elements[8] * z + elements[12],
@@ -63303,37 +63289,6 @@ function localBoundsWorldCorners(node) {
     transformLocalToWorld(elements, max.x, max.y, max.z),
     transformLocalToWorld(elements, min.x, max.y, max.z)
   ];
-}
-function localBoundsScreenEdges(node, view, scaleX, scaleY) {
-  const corners = localBoundsWorldCorners(node);
-  if (!corners) {
-    return [];
-  }
-  const screens = corners.map((corner) => {
-    const screen = projectWorldPoint(view, corner);
-    if (!screen) {
-      return null;
-    }
-    return {
-      x: screen.x * scaleX,
-      y: screen.y * scaleY
-    };
-  });
-  const edges = [];
-  for (const [a2, b2] of BOX_EDGE_INDICES) {
-    const from = screens[a2];
-    const to = screens[b2];
-    if (!from || !to) {
-      continue;
-    }
-    edges.push({
-      x1: from.x,
-      y1: from.y,
-      x2: to.x,
-      y2: to.y
-    });
-  }
-  return edges;
 }
 function projectWorldPoint(view, world) {
   if (typeof view.worldToScreen !== "function") {
@@ -63488,6 +63443,27 @@ const AXIS_COLORS = {
   y: "#22c55e",
   z: "#3b82f6"
 };
+const HELPER_LINE_STYLE = {
+  stroke: "#38bdf8",
+  strokeWidth: "1.25",
+  fill: "none",
+  pointerEvents: "none",
+  display: "none"
+};
+function createHelperLine() {
+  const line = svgEl("line");
+  Object.assign(line.style, HELPER_LINE_STYLE);
+  line.setAttribute("stroke-dasharray", "5 4");
+  return line;
+}
+function ensureHelperLines(dom, count2) {
+  while (dom.helperLines.length < count2) {
+    const line = createHelperLine();
+    dom.helperLines.push(line);
+    dom.helperGroup.appendChild(line);
+  }
+  return dom.helperLines;
+}
 function svgEl(name) {
   return document.createElementNS("http://www.w3.org/2000/svg", name);
 }
@@ -63540,6 +63516,9 @@ function createGizmoDom() {
     boundsLines.push(line);
     svg.appendChild(line);
   }
+  const helperGroup = svgEl("g");
+  const helperLines = [];
+  svg.appendChild(helperGroup);
   const axisLines = {
     x: svgEl("line"),
     y: svgEl("line"),
@@ -63648,6 +63627,8 @@ function createGizmoDom() {
     modeBar,
     modeButtons,
     boundsLines,
+    helperLines,
+    helperGroup,
     axisLines,
     axisHits,
     axisArrows,
@@ -63694,6 +63675,15 @@ function normalize3(v2) {
   }
   return { x: v2.x / len, y: v2.y / len, z: v2.z / len };
 }
+function planeBasis(axis) {
+  const ref = Math.abs(axis.y) < 0.9 ? { x: 0, y: 1, z: 0 } : { x: 1, y: 0, z: 0 };
+  const u2 = normalize3(cross3(axis, ref));
+  const v2 = u2 ? normalize3(cross3(axis, u2)) : null;
+  if (!u2 || !v2) {
+    return null;
+  }
+  return { u: u2, v: v2 };
+}
 function rayPlaneIntersection(ray, planePoint, planeNormal) {
   const denom = ray.direction.x * planeNormal.x + ray.direction.y * planeNormal.y + ray.direction.z * planeNormal.z;
   if (!(Math.abs(denom) > 1e-8)) {
@@ -63708,6 +63698,521 @@ function rayPlaneIntersection(ray, planePoint, planeNormal) {
     y: ray.origin.y + ray.direction.y * t2,
     z: ray.origin.z + ray.direction.z * t2
   };
+}
+const SCREEN_PAD_FACTOR = 1;
+const BOX_EDGE_INDICES = [
+  [0, 1],
+  [1, 2],
+  [2, 3],
+  [3, 0],
+  [4, 5],
+  [5, 6],
+  [6, 7],
+  [7, 4],
+  [0, 4],
+  [1, 5],
+  [2, 6],
+  [3, 7]
+];
+function localBoundsScreenEdges(node, view, scaleX, scaleY) {
+  const corners = localBoundsWorldCorners(node);
+  if (!corners) {
+    return [];
+  }
+  const edges = [];
+  for (const [ai, bi] of BOX_EDGE_INDICES) {
+    const a2 = corners[ai];
+    const b2 = corners[bi];
+    if (!a2 || !b2) {
+      continue;
+    }
+    const screen = projectWorldEdge(view, a2, b2, scaleX, scaleY);
+    if (screen) {
+      edges.push(screen);
+    }
+  }
+  return edges;
+}
+function cameraSpaceZ(point, origin, axisZ) {
+  return (point.x - origin.x) * axisZ.x + (point.y - origin.y) * axisZ.y + (point.z - origin.z) * axisZ.z;
+}
+function lerpWorld(a2, b2, t2) {
+  return {
+    x: a2.x + (b2.x - a2.x) * t2,
+    y: a2.y + (b2.y - a2.y) * t2,
+    z: a2.z + (b2.z - a2.z) * t2
+  };
+}
+function viewFrontClipZ(camera) {
+  const near = asFiniteNumber$1(camera.near);
+  const safeNear = Math.max(near ?? 0.1, 1e-3);
+  return -(safeNear * 1.05);
+}
+function originFromMatrixElements(elements) {
+  return {
+    x: elements[12],
+    y: elements[13],
+    z: elements[14]
+  };
+}
+function readViewCameraAxes(camera) {
+  const withTransform = camera;
+  if (typeof withTransform.getGlobalTransform === "function") {
+    try {
+      const matrix2 = withTransform.getGlobalTransform(void 0, false);
+      const elements = matrix2?.elements;
+      if (elements && elements.length >= 16) {
+        let origin = null;
+        if (typeof withTransform.getGlobalPosition === "function") {
+          const world = withTransform.getGlobalPosition(void 0, false);
+          const x2 = asFiniteNumber$1(world?.x);
+          const y2 = asFiniteNumber$1(world?.y);
+          const z = asFiniteNumber$1(world?.z);
+          if (x2 !== null && y2 !== null && z !== null) {
+            origin = { x: x2, y: y2, z };
+          }
+        }
+        if (!origin) {
+          origin = originFromMatrixElements(elements);
+        }
+        const zx = elements[8];
+        const zy = elements[9];
+        const zz = elements[10];
+        const len = Math.hypot(zx, zy, zz);
+        if (len > 1e-8) {
+          return {
+            origin,
+            z: { x: zx / len, y: zy / len, z: zz / len }
+          };
+        }
+      }
+    } catch {
+    }
+  }
+  const axes = readLocalAxesWorld(camera);
+  return axes ? { origin: axes.origin, z: axes.z } : null;
+}
+function clipWorldEdgeToViewFront(view, a2, b2) {
+  const camera = view.camera;
+  if (!camera) {
+    return { a: a2, b: b2 };
+  }
+  const axes = readViewCameraAxes(camera);
+  if (!axes) {
+    return { a: a2, b: b2 };
+  }
+  const frontZ = viewFrontClipZ(camera);
+  const za = cameraSpaceZ(a2, axes.origin, axes.z);
+  const zb = cameraSpaceZ(b2, axes.origin, axes.z);
+  const aFront = za < frontZ;
+  const bFront = zb < frontZ;
+  if (aFront && bFront) {
+    return { a: a2, b: b2 };
+  }
+  if (!aFront && !bFront) {
+    return null;
+  }
+  const denom = zb - za;
+  if (!(Math.abs(denom) > 1e-12)) {
+    return null;
+  }
+  const t2 = (frontZ - za) / denom;
+  const clipped = lerpWorld(a2, b2, t2);
+  return aFront ? { a: a2, b: clipped } : { a: clipped, b: b2 };
+}
+function readViewSize(view) {
+  const sized = view;
+  const width = asFiniteNumber$1(sized.width);
+  const height = asFiniteNumber$1(sized.height);
+  return {
+    width: width !== null && width > 1 ? width : 1920,
+    height: height !== null && height > 1 ? height : 1080
+  };
+}
+function clipScreenLine(x1, y1, x2, y2, minX, minY, maxX, maxY) {
+  if (!Number.isFinite(x1) || !Number.isFinite(y1) || !Number.isFinite(x2) || !Number.isFinite(y2)) {
+    return null;
+  }
+  let t0 = 0;
+  let t1 = 1;
+  const dx = x2 - x1;
+  const dy = y2 - y1;
+  const edges = [
+    [-dx, x1 - minX],
+    [dx, maxX - x1],
+    [-dy, y1 - minY],
+    [dy, maxY - y1]
+  ];
+  for (const [p2, q2] of edges) {
+    if (!(Math.abs(p2) > 1e-12)) {
+      if (q2 < 0) {
+        return null;
+      }
+      continue;
+    }
+    const r2 = q2 / p2;
+    if (p2 < 0) {
+      if (r2 > t1) {
+        return null;
+      }
+      if (r2 > t0) {
+        t0 = r2;
+      }
+    } else {
+      if (r2 < t0) {
+        return null;
+      }
+      if (r2 < t1) {
+        t1 = r2;
+      }
+    }
+  }
+  return {
+    x1: x1 + dx * t0,
+    y1: y1 + dy * t0,
+    x2: x1 + dx * t1,
+    y2: y1 + dy * t1
+  };
+}
+function projectWorldEdge(view, a2, b2, scaleX = 1, scaleY = 1) {
+  const clipped = clipWorldEdgeToViewFront(view, a2, b2);
+  if (!clipped) {
+    return null;
+  }
+  const from = projectWorldPoint(view, clipped.a);
+  const to = projectWorldPoint(view, clipped.b);
+  if (!from || !to) {
+    return null;
+  }
+  const { width, height } = readViewSize(view);
+  const pad = Math.max(width, height) * SCREEN_PAD_FACTOR;
+  const screen = clipScreenLine(
+    from.x,
+    from.y,
+    to.x,
+    to.y,
+    -pad,
+    -pad,
+    width + pad,
+    height + pad
+  );
+  if (!screen) {
+    return null;
+  }
+  return {
+    x1: screen.x1 * scaleX,
+    y1: screen.y1 * scaleY,
+    x2: screen.x2 * scaleX,
+    y2: screen.y2 * scaleY
+  };
+}
+const DEG_TO_RAD = Math.PI / 180;
+const CAMERA_BODY = 0.18;
+const CAMERA_LENS = 0.12;
+const DIR_ARROW_LEN = 1.6;
+const DIR_ARROW_HEAD = 0.28;
+const DIR_CROSS = 0.35;
+const POINT_CROSS = 0.25;
+const SPOT_FALLBACK_RANGE = 4;
+const RING_SEGMENTS$1 = 24;
+const CONE_SPOKES = 8;
+function pushEdge(edges, a2, b2) {
+  edges.push({ a: a2, b: b2 });
+}
+function pushBox(edges, center, right, up, forward, hx, hy, hz) {
+  const corner = (sx, sy, sz) => addScaled(
+    addScaled(addScaled(center, right, sx * hx), up, sy * hy),
+    forward,
+    sz * hz
+  );
+  const c000 = corner(-1, -1, -1);
+  const c100 = corner(1, -1, -1);
+  const c110 = corner(1, 1, -1);
+  const c010 = corner(-1, 1, -1);
+  const c001 = corner(-1, -1, 1);
+  const c101 = corner(1, -1, 1);
+  const c111 = corner(1, 1, 1);
+  const c011 = corner(-1, 1, 1);
+  pushEdge(edges, c000, c100);
+  pushEdge(edges, c100, c110);
+  pushEdge(edges, c110, c010);
+  pushEdge(edges, c010, c000);
+  pushEdge(edges, c001, c101);
+  pushEdge(edges, c101, c111);
+  pushEdge(edges, c111, c011);
+  pushEdge(edges, c011, c001);
+  pushEdge(edges, c000, c001);
+  pushEdge(edges, c100, c101);
+  pushEdge(edges, c110, c111);
+  pushEdge(edges, c010, c011);
+}
+function pushRect(edges, center, right, up, halfW, halfH) {
+  const c00 = addScaled(addScaled(center, right, -halfW), up, -halfH);
+  const c10 = addScaled(addScaled(center, right, halfW), up, -halfH);
+  const c11 = addScaled(addScaled(center, right, halfW), up, halfH);
+  const c01 = addScaled(addScaled(center, right, -halfW), up, halfH);
+  pushEdge(edges, c00, c10);
+  pushEdge(edges, c10, c11);
+  pushEdge(edges, c11, c01);
+  pushEdge(edges, c01, c00);
+  return { c00, c10, c11, c01 };
+}
+function pushRing(edges, center, u2, v2, radius, segments) {
+  let prev = null;
+  for (let i2 = 0; i2 <= segments; i2++) {
+    const t2 = i2 / segments * Math.PI * 2;
+    const point = addScaled(
+      addScaled(center, u2, Math.cos(t2) * radius),
+      v2,
+      Math.sin(t2) * radius
+    );
+    if (prev) {
+      pushEdge(edges, prev, point);
+    }
+    prev = point;
+  }
+}
+function lookAxes(axes) {
+  return {
+    forward: { x: -axes.z.x, y: -axes.z.y, z: -axes.z.z },
+    right: axes.x,
+    up: axes.y
+  };
+}
+function readAspect(view, fallback) {
+  const sized = view;
+  const width = asFiniteNumber$1(sized.width);
+  const height = asFiniteNumber$1(sized.height);
+  if (width !== null && height !== null && height > 1e-6) {
+    return width / height;
+  }
+  return fallback > 1e-6 ? fallback : 16 / 9;
+}
+function cameraWorldEdges(node, view, axes, aspectHint) {
+  const camera = readCamera3D(node);
+  if (!camera) {
+    return null;
+  }
+  const edges = [];
+  const { origin } = axes;
+  const { forward, right, up } = lookAxes(axes);
+  const aspect = readAspect(view, aspectHint);
+  const near = Math.max(asFiniteNumber$1(camera.near) ?? 0.1, 1e-4);
+  const far = Math.max(asFiniteNumber$1(camera.far) ?? 100, near + 1e-3);
+  const zoom = Math.max(asFiniteNumber$1(camera.zoom) ?? 1, 1e-4);
+  const mode = typeof camera.mode === "string" ? camera.mode : "perspective";
+  let nearHalfW;
+  let nearHalfH;
+  let farHalfW;
+  let farHalfH;
+  if (mode === "orthographic") {
+    const halfW = Math.max((asFiniteNumber$1(camera.orthographicSize) ?? 5) / zoom, 1e-4);
+    const halfH = halfW / aspect;
+    nearHalfW = halfW;
+    nearHalfH = halfH;
+    farHalfW = halfW;
+    farHalfH = halfH;
+  } else {
+    const fovDeg = asFiniteNumber$1(camera.fov) ?? 60;
+    const fovRad = Math.max(Math.min(fovDeg, 179), 1) * DEG_TO_RAD;
+    const halfFov = Math.atan(Math.tan(fovRad / 2) / zoom);
+    const nearHalfHRaw = Math.tan(halfFov) * near;
+    const farHalfHRaw = Math.tan(halfFov) * far;
+    nearHalfH = nearHalfHRaw;
+    nearHalfW = nearHalfHRaw * aspect;
+    farHalfH = farHalfHRaw;
+    farHalfW = farHalfHRaw * aspect;
+  }
+  const bodyHalf = CAMERA_BODY * 0.5;
+  pushBox(edges, origin, right, up, forward, bodyHalf, bodyHalf * 0.7, bodyHalf * 0.6);
+  const lensOffset = bodyHalf * 0.6 + CAMERA_LENS * 0.35;
+  const lensCenter = addScaled(origin, forward, lensOffset);
+  const lensRect = pushRect(edges, lensCenter, right, up, bodyHalf * 0.45, bodyHalf * 0.35);
+  pushEdge(edges, addScaled(origin, forward, bodyHalf * 0.6), lensRect.c00);
+  pushEdge(edges, addScaled(origin, forward, bodyHalf * 0.6), lensRect.c10);
+  pushEdge(edges, addScaled(origin, forward, bodyHalf * 0.6), lensRect.c11);
+  pushEdge(edges, addScaled(origin, forward, bodyHalf * 0.6), lensRect.c01);
+  const nearCenter = addScaled(origin, forward, near);
+  const farCenter = addScaled(origin, forward, far);
+  const nearCorners = pushRect(edges, nearCenter, right, up, nearHalfW, nearHalfH);
+  const farCorners = pushRect(edges, farCenter, right, up, farHalfW, farHalfH);
+  pushEdge(edges, nearCorners.c00, farCorners.c00);
+  pushEdge(edges, nearCorners.c10, farCorners.c10);
+  pushEdge(edges, nearCorners.c11, farCorners.c11);
+  pushEdge(edges, nearCorners.c01, farCorners.c01);
+  return edges;
+}
+function directionalWorldEdges(axes) {
+  const edges = [];
+  const { origin } = axes;
+  const { forward, right, up } = lookAxes(axes);
+  const tip = addScaled(origin, forward, DIR_ARROW_LEN);
+  pushEdge(edges, origin, tip);
+  pushEdge(edges, tip, addScaled(addScaled(tip, forward, -DIR_ARROW_HEAD), right, DIR_ARROW_HEAD * 0.45));
+  pushEdge(edges, tip, addScaled(addScaled(tip, forward, -DIR_ARROW_HEAD), right, -DIR_ARROW_HEAD * 0.45));
+  pushEdge(edges, tip, addScaled(addScaled(tip, forward, -DIR_ARROW_HEAD), up, DIR_ARROW_HEAD * 0.45));
+  pushEdge(edges, tip, addScaled(addScaled(tip, forward, -DIR_ARROW_HEAD), up, -DIR_ARROW_HEAD * 0.45));
+  pushEdge(edges, addScaled(origin, right, -DIR_CROSS), addScaled(origin, right, DIR_CROSS));
+  pushEdge(edges, addScaled(origin, up, -DIR_CROSS), addScaled(origin, up, DIR_CROSS));
+  return edges;
+}
+function pointWorldEdges(axes, range) {
+  const edges = [];
+  const { origin, x: x2, y: y2, z } = axes;
+  pushEdge(edges, addScaled(origin, x2, -POINT_CROSS), addScaled(origin, x2, POINT_CROSS));
+  pushEdge(edges, addScaled(origin, y2, -POINT_CROSS), addScaled(origin, y2, POINT_CROSS));
+  pushEdge(edges, addScaled(origin, z, -POINT_CROSS), addScaled(origin, z, POINT_CROSS));
+  if (!(range > 1e-4)) {
+    return edges;
+  }
+  pushRing(edges, origin, x2, y2, range, RING_SEGMENTS$1);
+  pushRing(edges, origin, x2, z, range, RING_SEGMENTS$1);
+  pushRing(edges, origin, y2, z, range, RING_SEGMENTS$1);
+  return edges;
+}
+function spotWorldEdges(axes, coneAngleDeg, range) {
+  const edges = [];
+  const { origin } = axes;
+  const { forward, right, up } = lookAxes(axes);
+  const length2 = range > 1e-4 ? range : SPOT_FALLBACK_RANGE;
+  const angle = Math.max(Math.min(coneAngleDeg, 89.5), 0.5) * DEG_TO_RAD;
+  const radius = Math.tan(angle) * length2;
+  const base = addScaled(origin, forward, length2);
+  const basis = planeBasis(forward) ?? { u: right, v: up };
+  pushRing(edges, base, basis.u, basis.v, radius, RING_SEGMENTS$1);
+  for (let i2 = 0; i2 < CONE_SPOKES; i2++) {
+    const t2 = i2 / CONE_SPOKES * Math.PI * 2;
+    const rim = addScaled(
+      addScaled(base, basis.u, Math.cos(t2) * radius),
+      basis.v,
+      Math.sin(t2) * radius
+    );
+    pushEdge(edges, origin, rim);
+  }
+  pushEdge(edges, origin, base);
+  return edges;
+}
+function helperWorldEdges(node, view, axes, aspectHint) {
+  if (isCamera3D(node)) {
+    return cameraWorldEdges(node, view, axes, aspectHint);
+  }
+  if (!isLight3D(node)) {
+    return null;
+  }
+  const subtype = lightSubtype(node);
+  const light = readLight3D(node);
+  const range = asFiniteNumber$1(light?.range) ?? 0;
+  if (subtype === "directional") {
+    return directionalWorldEdges(axes);
+  }
+  if (subtype === "point") {
+    return pointWorldEdges(axes, range);
+  }
+  if (subtype === "spot") {
+    const coneAngle = asFiniteNumber$1(light?.coneAngle) ?? 60;
+    return spotWorldEdges(axes, coneAngle, range);
+  }
+  return null;
+}
+const HELPER_EDGE_MISS_LIMIT = 3;
+const helperEdgeMisses = /* @__PURE__ */ new WeakMap();
+function paintBoundsWireframe(dom, node, view, scaleX, scaleY) {
+  const stroke = highlightStroke();
+  const edges = localBoundsScreenEdges(node, view, scaleX, scaleY);
+  for (let i2 = 0; i2 < dom.boundsLines.length; i2++) {
+    const line = dom.boundsLines[i2];
+    const edge = edges[i2];
+    if (!line) {
+      continue;
+    }
+    if (!edge) {
+      line.style.display = "none";
+      continue;
+    }
+    line.setAttribute("x1", String(edge.x1));
+    line.setAttribute("y1", String(edge.y1));
+    line.setAttribute("x2", String(edge.x2));
+    line.setAttribute("y2", String(edge.y2));
+    line.style.stroke = stroke;
+    line.style.display = "block";
+  }
+}
+function hideBoundsWireframe(dom) {
+  for (const line of dom.boundsLines) {
+    line.style.display = "none";
+  }
+}
+function hideHelperWireframe(dom) {
+  for (const line of dom.helperLines) {
+    line.style.display = "none";
+  }
+}
+function hideAllWireframes(dom) {
+  hideBoundsWireframe(dom);
+  hideHelperWireframe(dom);
+}
+function hideTransformHandles(dom) {
+  dom.center.style.display = "none";
+  dom.uniformHit.style.display = "none";
+  dom.modeBar.style.display = "none";
+  ["x", "y", "z"].forEach((axis) => {
+    dom.axisLines[axis].style.display = "none";
+    dom.axisHits[axis].style.display = "none";
+    dom.axisArrows[axis].style.display = "none";
+    dom.axisTips[axis].style.display = "none";
+    dom.rotateRings[axis].style.display = "none";
+    dom.rotateHits[axis].style.display = "none";
+  });
+}
+function paintHelperEdges(dom, edges, view, scaleX, scaleY) {
+  const stroke = highlightStroke();
+  const lines = ensureHelperLines(dom, edges.length);
+  let visible = false;
+  for (let i2 = 0; i2 < lines.length; i2++) {
+    const line = lines[i2];
+    const edge = edges[i2];
+    if (!line) {
+      continue;
+    }
+    if (!edge) {
+      helperEdgeMisses.delete(line);
+      line.style.display = "none";
+      continue;
+    }
+    const screen = projectWorldEdge(view, edge.a, edge.b, scaleX, scaleY);
+    if (screen) {
+      helperEdgeMisses.set(line, 0);
+      line.setAttribute("x1", String(screen.x1));
+      line.setAttribute("y1", String(screen.y1));
+      line.setAttribute("x2", String(screen.x2));
+      line.setAttribute("y2", String(screen.y2));
+      line.style.stroke = stroke;
+      line.style.display = "block";
+      visible = true;
+      continue;
+    }
+    const misses = (helperEdgeMisses.get(line) ?? 0) + 1;
+    helperEdgeMisses.set(line, misses);
+    if (line.style.display === "block" && misses < HELPER_EDGE_MISS_LIMIT) {
+      visible = true;
+      continue;
+    }
+    line.style.display = "none";
+  }
+  return visible;
+}
+function paintNodeWireframe(dom, node, view, axes, scaleX, scaleY, aspectHint) {
+  const helperEdges = helperWorldEdges(node, view, axes, aspectHint);
+  if (helperEdges) {
+    hideBoundsWireframe(dom);
+    return {
+      mode: "helper",
+      visible: paintHelperEdges(dom, helperEdges, view, scaleX, scaleY)
+    };
+  }
+  hideHelperWireframe(dom);
+  paintBoundsWireframe(dom, node, view, scaleX, scaleY);
+  return { mode: "bounds", visible: true };
 }
 const AXIS_SCREEN_PX = 72;
 const ARROW_LENGTH_PX = 10;
@@ -63747,15 +64252,6 @@ function arrowPolygonPoints(ox, oy, tx, ty) {
     baseX,
     baseY
   };
-}
-function planeBasis(axis) {
-  const ref = Math.abs(axis.y) < 0.9 ? { x: 0, y: 1, z: 0 } : { x: 1, y: 0, z: 0 };
-  const u2 = normalize3(cross3(axis, ref));
-  const v2 = u2 ? normalize3(cross3(axis, u2)) : null;
-  if (!u2 || !v2) {
-    return null;
-  }
-  return { u: u2, v: v2 };
 }
 function ringPoints(origin, axis, radius, view, scaleX, scaleY) {
   const basis = planeBasis(axis);
@@ -63816,53 +64312,39 @@ function gizmoWorldLength(view, axes, originScreen, scaleX, scaleY) {
   );
   return pxPerUnit > 1e-4 ? AXIS_SCREEN_PX / pxPerUnit : 1;
 }
-function paintBoundsWireframe(dom, node, view, scaleX, scaleY) {
-  const stroke = highlightStroke();
-  const edges = localBoundsScreenEdges(node, view, scaleX, scaleY);
-  for (let i2 = 0; i2 < dom.boundsLines.length; i2++) {
-    const line = dom.boundsLines[i2];
-    const edge = edges[i2];
-    if (!line) {
-      continue;
-    }
-    if (!edge) {
-      line.style.display = "none";
-      continue;
-    }
-    line.setAttribute("x1", String(edge.x1));
-    line.setAttribute("y1", String(edge.y1));
-    line.setAttribute("x2", String(edge.x2));
-    line.setAttribute("y2", String(edge.y2));
-    line.style.stroke = stroke;
-    line.style.display = "block";
-  }
-}
-function hideBoundsWireframe(dom) {
-  for (const line of dom.boundsLines) {
-    line.style.display = "none";
-  }
-}
-function paintGizmoLayout(input) {
-  const { dom, node, view, axes, rect, scaleX, scaleY, mode } = input;
-  const originScreen = projectWorldPoint(view, axes.origin);
-  if (!originScreen) {
-    hideBoundsWireframe(dom);
-    setGizmoVisible(dom, false);
-    return;
-  }
-  const worldLen = gizmoWorldLength(view, axes, originScreen, scaleX, scaleY);
-  const ringRadius = worldLen * 0.85;
-  mountModeBar(dom.modeBar);
-  setGizmoVisible(dom, true);
+function layoutGizmoRoot(dom, rect) {
   dom.root.style.left = `${rect.left}px`;
   dom.root.style.top = `${rect.top}px`;
   dom.root.style.width = `${rect.width}px`;
   dom.root.style.height = `${rect.height}px`;
   dom.svg.setAttribute("width", String(rect.width));
   dom.svg.setAttribute("height", String(rect.height));
-  paintBoundsWireframe(dom, node, view, scaleX, scaleY);
+}
+function paintGizmoLayout(input) {
+  const { dom, node, view, axes, rect, scaleX, scaleY, mode } = input;
+  const originScreen = projectWorldPoint(view, axes.origin);
+  const aspectHint = rect.height > 1e-6 ? rect.width / rect.height : 16 / 9;
+  if (!originScreen) {
+    layoutGizmoRoot(dom, rect);
+    hideTransformHandles(dom);
+    const wire = paintNodeWireframe(dom, node, view, axes, scaleX, scaleY, aspectHint);
+    if (wire.mode === "helper" && wire.visible) {
+      dom.root.style.display = "block";
+    } else {
+      hideAllWireframes(dom);
+      setGizmoVisible(dom, false);
+    }
+    return;
+  }
+  const worldLen = gizmoWorldLength(view, axes, originScreen, scaleX, scaleY);
+  const ringRadius = worldLen * 0.85;
+  mountModeBar(dom.modeBar);
+  setGizmoVisible(dom, true);
+  layoutGizmoRoot(dom, rect);
+  paintNodeWireframe(dom, node, view, axes, scaleX, scaleY, aspectHint);
   const ox = originScreen.x * scaleX;
   const oy = originScreen.y * scaleY;
+  dom.center.style.display = "block";
   dom.center.setAttribute("cx", String(ox));
   dom.center.setAttribute("cy", String(oy));
   dom.uniformHit.setAttribute("cx", String(ox));
@@ -64263,9 +64745,7 @@ function installGizmo3D(resolveNode) {
     setModeButtonsActive(dom, mode);
   }
   function hide() {
-    for (const line of dom.boundsLines) {
-      line.style.display = "none";
-    }
+    hideAllWireframes(dom);
     setGizmoVisible(dom, false);
   }
   const drag = createGizmoDrag({
@@ -64287,7 +64767,11 @@ function installGizmo3D(resolveNode) {
     }
     const view = node._view3d;
     const axes = readLocalAxesWorld(node);
-    if (!view || !axes || view.camera === node) {
+    if (!view || !axes) {
+      hide();
+      return;
+    }
+    if (view.camera === node) {
       hide();
       return;
     }
@@ -85157,22 +85641,22 @@ var EulerDegrees = class {
     return this._radians._x * RAD_TO_DEG;
   }
   set x(value) {
-    this._radians.x = value * DEG_TO_RAD;
+    this._radians.x = value * DEG_TO_RAD$1;
   }
   get y() {
     return this._radians._y * RAD_TO_DEG;
   }
   set y(value) {
-    this._radians.y = value * DEG_TO_RAD;
+    this._radians.y = value * DEG_TO_RAD$1;
   }
   get z() {
     return this._radians._z * RAD_TO_DEG;
   }
   set z(value) {
-    this._radians.z = value * DEG_TO_RAD;
+    this._radians.z = value * DEG_TO_RAD$1;
   }
   set(x2 = 0, y2 = x2, z = x2) {
-    this._radians.set(x2 * DEG_TO_RAD, y2 * DEG_TO_RAD, z * DEG_TO_RAD);
+    this._radians.set(x2 * DEG_TO_RAD$1, y2 * DEG_TO_RAD$1, z * DEG_TO_RAD$1);
     return this;
   }
   copyFrom(p2) {
@@ -86239,7 +86723,7 @@ var Container3D = class extends EventEmitter {
   * @param value - The new Euler angles, in degrees
   */
   set angle(value) {
-    this._rotation.set(value.x * DEG_TO_RAD, value.y * DEG_TO_RAD, value.z * DEG_TO_RAD);
+    this._rotation.set(value.x * DEG_TO_RAD$1, value.y * DEG_TO_RAD$1, value.z * DEG_TO_RAD$1);
     if (!this.rotationDirty) this._onUpdate(this._rotation);
   }
   /**
@@ -98697,7 +99181,7 @@ function updateSpotShadowMatrices(spotLight, inverseLightMatrix, lightProjection
   const range = spotLight.range || 1e3;
   const near = 1;
   const far = range;
-  lightProjectionMatrix.makePerspective(spotLight.coneAngle * 2 * DEG_TO_RAD, 1, near, far);
+  lightProjectionMatrix.makePerspective(spotLight.coneAngle * 2 * DEG_TO_RAD$1, 1, near, far);
   if (applyWebGPUZRangeFix) {
     const te = lightProjectionMatrix.elements;
     te[10] = far / (near - far);
@@ -98741,7 +99225,7 @@ const writeLight = (light, buffer, offset) => {
     buffer[offset + 7] = rangeSquared(spot.range);
     buffer[offset + 15] = radiusToFourth(spot.radius);
     writeNormalizedDirection(buffer, offset, elements);
-    const coneAngle = spot.coneAngle * DEG_TO_RAD;
+    const coneAngle = spot.coneAngle * DEG_TO_RAD$1;
     buffer[offset + 11] = Math.cos(coneAngle);
     buffer[offset + 12] = Math.cos(coneAngle * (1 - spot.penumbra));
   }
@@ -105441,7 +105925,7 @@ var Camera3D = class Camera3D2 extends Container3D {
   }
   /** @internal */
   _tanHalfFovY() {
-    return Math.tan(this.fov * DEG_TO_RAD / 2) / this.zoom;
+    return Math.tan(this.fov * DEG_TO_RAD$1 / 2) / this.zoom;
   }
 };
 var Light = class extends Container3D {
@@ -109345,13 +109829,13 @@ const backendLoaders = [{
     type: ExtensionType.WebGLLoader,
     name: "pixijs-3d"
   },
-  load: () => __vitePreload(() => import("./init-85MnLBKt.js"), true ? __vite__mapDeps([9,10,6]) : void 0)
+  load: () => __vitePreload(() => import("./init-xpAuZKBO.js"), true ? __vite__mapDeps([9,10,6]) : void 0)
 }, {
   extension: {
     type: ExtensionType.WebGPULoader,
     name: "pixijs-3d"
   },
-  load: () => __vitePreload(() => import("./init-UmuiKJ7S.js"), true ? __vite__mapDeps([11,10,6]) : void 0)
+  load: () => __vitePreload(() => import("./init-9dj2tVSu.js"), true ? __vite__mapDeps([11,10,6]) : void 0)
 }];
 addUniformParsers();
 extensions.add(...backendLoaders);

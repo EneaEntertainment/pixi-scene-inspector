@@ -14,6 +14,8 @@ export type GizmoDom = {
     modeBar: HTMLDivElement;
     modeButtons: Record<GizmoMode, HTMLButtonElement>;
     boundsLines: Array<SVGLineElement>;
+    helperLines: Array<SVGLineElement>;
+    helperGroup: SVGGElement;
     axisLines: Record<'x' | 'y' | 'z', SVGLineElement>;
     axisHits: Record<'x' | 'y' | 'z', SVGLineElement>;
     axisArrows: Record<'x' | 'y' | 'z', SVGPolygonElement>;
@@ -23,6 +25,37 @@ export type GizmoDom = {
     uniformHit: SVGCircleElement;
     center: SVGCircleElement;
 };
+
+const HELPER_LINE_STYLE: Record<string, string> = {
+    stroke        : '#38bdf8',
+    strokeWidth   : '1.25',
+    fill          : 'none',
+    pointerEvents : 'none',
+    display       : 'none',
+};
+
+function createHelperLine(): SVGLineElement
+{
+    const line = svgEl('line');
+
+    Object.assign(line.style, HELPER_LINE_STYLE);
+    line.setAttribute('stroke-dasharray', '5 4');
+
+    return line;
+}
+
+export function ensureHelperLines(dom: GizmoDom, count: number): Array<SVGLineElement>
+{
+    while (dom.helperLines.length < count)
+    {
+        const line = createHelperLine();
+
+        dom.helperLines.push(line);
+        dom.helperGroup.appendChild(line);
+    }
+
+    return dom.helperLines;
+}
 
 function svgEl<K extends keyof SVGElementTagNameMap>(name: K): SVGElementTagNameMap[K]
 {
@@ -90,6 +123,11 @@ export function createGizmoDom(): GizmoDom
         boundsLines.push(line);
         svg.appendChild(line);
     }
+
+    const helperGroup = svgEl('g');
+    const helperLines: Array<SVGLineElement> = [];
+
+    svg.appendChild(helperGroup);
 
     const axisLines = {
         x : svgEl('line'),
@@ -218,6 +256,8 @@ export function createGizmoDom(): GizmoDom
         modeBar,
         modeButtons,
         boundsLines,
+        helperLines,
+        helperGroup,
         axisLines,
         axisHits,
         axisArrows,

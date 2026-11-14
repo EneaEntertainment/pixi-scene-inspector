@@ -1,11 +1,13 @@
 import { Assets, Cache, Matrix } from 'pixi.js';
 import {
+    Camera3D,
     CubeGeometry,
     DirectionalLight,
     Material3D,
     Mesh3D,
     Model3D,
     PlaneGeometry,
+    SpotLight,
     View3D,
 } from '@pixi/3d';
 import { OrbitCamera } from '@pixi/3d/extras';
@@ -90,6 +92,29 @@ export async function buildThreeDDemoScene(app: Application): Promise<ThreeDDemo
     sun.position.set(-3, 6, 4);
     sun.lookAt({ x: 0, y: 0, z: 0 });
 
+    const lamp = new SpotLight({
+        color      : 0x88ccff,
+        intensity  : 8,
+        range      : 12,
+        coneAngle  : 28,
+        penumbra   : 0.2,
+        castShadow : false,
+        label      : 'SpotLamp',
+    });
+
+    lamp.position.set(2.5, 4.5, 3);
+    lamp.lookAt({ x: 0.4, y: 0, z: -0.5 });
+
+    const previewCamera = new Camera3D({
+        fov   : 40,
+        near  : 0.2,
+        far   : 18,
+        label : 'PreviewCamera',
+    });
+
+    previewCamera.position.set(-5.5, 3.2, 4.5);
+    previewCamera.lookAt({ x: 0, y: 0.8, z: -0.5 });
+
     const floor = new Mesh3D({
         geometry : new PlaneGeometry({ width: 60, height: 60 }),
         material : new Material3D({
@@ -121,7 +146,7 @@ export async function buildThreeDDemoScene(app: Application): Promise<ThreeDDemo
 
     const materials = buildMaterialShowcase();
 
-    view.root.addChild(floor, sun, marker, materials);
+    view.root.addChild(floor, sun, lamp, previewCamera, marker, materials);
 
     const [cesiumSource, foxSource] = await Promise.all([
         Assets.load<Scene3DSource>(CESIUM_URL),

@@ -17,9 +17,9 @@ import {
     screenToWorldAtDistance,
     worldToParentLocal3D,
 } from '../geometry-3d';
-import { addScaled, cross3, dot3, normalize3, rayPlaneIntersection, sub3 } from '../math-3d';
+import { addScaled, cross3, dot3, normalize3, planeBasis, rayPlaneIntersection, sub3 } from '../math-3d';
 import { restoreNodeKeys, snapshotNodeKeys } from '../transform-snapshot';
-import { AXIS_SCREEN_PX, planeBasis } from './layout';
+import { AXIS_SCREEN_PX } from './layout';
 import { scaleKey } from './property-keys';
 
 import type { PixiNode } from '../../../page-ops/pixi-node';

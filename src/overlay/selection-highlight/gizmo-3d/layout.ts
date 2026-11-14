@@ -1,14 +1,18 @@
-import { highlightStroke } from '../../../highlight-colors';
 import {
     cameraDistanceToWorld,
-    localBoundsScreenEdges,
     projectWorldPoint,
     screenToWorldAtDistance,
 } from '../geometry-3d';
-import { addScaled, cross3, normalize3 } from '../math-3d';
+import { addScaled, planeBasis } from '../math-3d';
 import { setGizmoVisible } from './dom';
+import {
+    hideAllWireframes,
+    hideTransformHandles,
+    paintNodeWireframe,
+} from './wireframe';
 
 import type { PixiNode } from '../../../page-ops/pixi-node';
+import type { AxesWorld } from '../geometry-3d';
 import type { Vec3 } from '../math-3d';
 import type { GizmoDom } from './dom';
 import type { GizmoAxis, GizmoMode } from './types';
@@ -18,13 +22,6 @@ const ARROW_LENGTH_PX = 10;
 const ARROW_HALF_WIDTH_PX = 5;
 const RING_SEGMENTS = 48;
 const SHELL_ID = 'pixi-scene-inspector-shell';
-
-type AxesWorld = {
-    origin: Vec3;
-    x: Vec3;
-    y: Vec3;
-    z: Vec3;
-};
 
 function mountModeBar(modeBar: HTMLDivElement)
 {
@@ -71,20 +68,6 @@ function arrowPolygonPoints(ox: number, oy: number, tx: number, ty: number): { p
         baseX,
         baseY,
     };
-}
-
-export function planeBasis(axis: Vec3): { u: Vec3; v: Vec3 } | null
-{
-    const ref = Math.abs(axis.y) < 0.9 ? { x: 0, y: 1, z: 0 } : { x: 1, y: 0, z: 0 };
-    const u = normalize3(cross3(axis, ref));
-    const v = u ? normalize3(cross3(axis, u)) : null;
-
-    if (!u || !v)
-    {
-        return null;
-    }
-
-    return { u, v };
 }
 
 function ringPoints(
@@ -203,60 +186,38 @@ export type GizmoLayoutInput = {
     mode: GizmoMode;
 };
 
-function paintBoundsWireframe(
-    dom: GizmoDom,
-    node: PixiNode,
-    view: NonNullable<PixiNode['_view3d']>,
-    scaleX: number,
-    scaleY: number,
-)
+function layoutGizmoRoot(dom: GizmoDom, rect: DOMRect)
 {
-    const stroke = highlightStroke();
-    const edges = localBoundsScreenEdges(node, view, scaleX, scaleY);
-
-    for (let i = 0; i < dom.boundsLines.length; i++)
-    {
-        const line = dom.boundsLines[i];
-        const edge = edges[i];
-
-        if (!line)
-        {
-            continue;
-        }
-
-        if (!edge)
-        {
-            line.style.display = 'none';
-
-            continue;
-        }
-
-        line.setAttribute('x1', String(edge.x1));
-        line.setAttribute('y1', String(edge.y1));
-        line.setAttribute('x2', String(edge.x2));
-        line.setAttribute('y2', String(edge.y2));
-        line.style.stroke = stroke;
-        line.style.display = 'block';
-    }
-}
-
-function hideBoundsWireframe(dom: GizmoDom)
-{
-    for (const line of dom.boundsLines)
-    {
-        line.style.display = 'none';
-    }
+    dom.root.style.left = `${rect.left}px`;
+    dom.root.style.top = `${rect.top}px`;
+    dom.root.style.width = `${rect.width}px`;
+    dom.root.style.height = `${rect.height}px`;
+    dom.svg.setAttribute('width', String(rect.width));
+    dom.svg.setAttribute('height', String(rect.height));
 }
 
 export function paintGizmoLayout(input: GizmoLayoutInput)
 {
     const { dom, node, view, axes, rect, scaleX, scaleY, mode } = input;
     const originScreen = projectWorldPoint(view, axes.origin);
+    const aspectHint = rect.height > 1e-6 ? rect.width / rect.height : 16 / 9;
 
     if (!originScreen)
     {
-        hideBoundsWireframe(dom);
-        setGizmoVisible(dom, false);
+        layoutGizmoRoot(dom, rect);
+        hideTransformHandles(dom);
+
+        const wire = paintNodeWireframe(dom, node, view, axes, scaleX, scaleY, aspectHint);
+
+        if (wire.mode === 'helper' && wire.visible)
+        {
+            dom.root.style.display = 'block';
+        }
+        else
+        {
+            hideAllWireframes(dom);
+            setGizmoVisible(dom, false);
+        }
 
         return;
     }
@@ -266,18 +227,13 @@ export function paintGizmoLayout(input: GizmoLayoutInput)
 
     mountModeBar(dom.modeBar);
     setGizmoVisible(dom, true);
-    dom.root.style.left = `${rect.left}px`;
-    dom.root.style.top = `${rect.top}px`;
-    dom.root.style.width = `${rect.width}px`;
-    dom.root.style.height = `${rect.height}px`;
-    dom.svg.setAttribute('width', String(rect.width));
-    dom.svg.setAttribute('height', String(rect.height));
-
-    paintBoundsWireframe(dom, node, view, scaleX, scaleY);
+    layoutGizmoRoot(dom, rect);
+    paintNodeWireframe(dom, node, view, axes, scaleX, scaleY, aspectHint);
 
     const ox = originScreen.x * scaleX;
     const oy = originScreen.y * scaleY;
 
+    dom.center.style.display = 'block';
     dom.center.setAttribute('cx', String(ox));
     dom.center.setAttribute('cy', String(oy));
     dom.uniformHit.setAttribute('cx', String(ox));

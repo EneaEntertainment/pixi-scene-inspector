@@ -44,6 +44,20 @@ export function normalize3(v: Vec3): Vec3 | null
     return { x: v.x / len, y: v.y / len, z: v.z / len };
 }
 
+export function planeBasis(axis: Vec3): { u: Vec3; v: Vec3 } | null
+{
+    const ref = Math.abs(axis.y) < 0.9 ? { x: 0, y: 1, z: 0 } : { x: 1, y: 0, z: 0 };
+    const u = normalize3(cross3(axis, ref));
+    const v = u ? normalize3(cross3(axis, u)) : null;
+
+    if (!u || !v)
+    {
+        return null;
+    }
+
+    return { u, v };
+}
+
 export function rayPlaneIntersection(
     ray: { origin: Vec3; direction: Vec3 },
     planePoint: Vec3,
