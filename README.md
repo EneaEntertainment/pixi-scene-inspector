@@ -1,6 +1,9 @@
 # Pixi Scene Inspector
 
-![Pixi Scene Inspector](pixi-scene-inspector.jpg)
+<p>
+  <img src="pixi-scene-inspector.jpg" alt="Pixi Scene Inspector" width="49%" />
+  <img src="pixi-scene-inspector-2.jpg" alt="Pixi Scene Inspector" width="49%" />
+</p>
 
 [Live demo](https://eneaentertainment.github.io/pixi-scene-inspector/) · [PixiJS 3D demo](https://eneaentertainment.github.io/pixi-scene-inspector/3d/)
 
