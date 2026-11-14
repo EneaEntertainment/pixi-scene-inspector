@@ -1,4 +1,4 @@
-import { w as warn, o as getAttributeInfoFromFormat, p as STENCIL_MODES, u as unsafeEvalSupported, B as Buffer, q as BufferUsage, s as uniformParsers } from "./index-CAUPkiH8.js";
+import { w as warn, o as getAttributeInfoFromFormat, p as STENCIL_MODES, u as unsafeEvalSupported, B as Buffer, q as BufferUsage, s as uniformParsers } from "./index-DEYM-59I.js";
 const localUniformBit = {
   name: "local-uniform-bit",
   vertex: {
