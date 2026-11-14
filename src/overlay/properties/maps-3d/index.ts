@@ -16,7 +16,7 @@ export function appendThreeDPropertyMaps(
     numbers: Array<PropertyMapping<number>>,
     booleans: Array<PropertyMapping<boolean>>,
     strings: Array<PropertyMapping<string>>,
-): void
+)
 {
     const ctx: AppendMapsContext = { allow, numbers, booleans, strings };
 

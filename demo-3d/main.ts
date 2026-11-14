@@ -29,12 +29,13 @@ async function main()
     const app = new Application();
 
     await app.init({
-        resizeTo    : gameRoot,
-        background  : '#1a1a2e',
-        antialias   : true,
-        preference  : 'webgl',
-        resolution  : Math.min(window.devicePixelRatio, 2),
-        autoDensity : true,
+        resizeTo      : gameRoot,
+        background    : '#1a1a2e',
+        antialias     : true,
+        preference    : 'webgl',
+        useBackBuffer : true,
+        resolution    : Math.min(window.devicePixelRatio, 2),
+        autoDensity   : true,
     });
 
     gameRoot.appendChild(app.canvas);

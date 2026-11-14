@@ -1,4 +1,4 @@
-const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/browserAll-DOq3AR1S.js","assets/webworkerAll-CZgURTkS.js","assets/Filter-BUyq2mUU.js","assets/WebGPURenderer-C4Lm5JQF.js","assets/getTexelRangeRects-Bx_jofY_.js","assets/RenderTargetSystem-CYI6XoSC.js","assets/RenderTexture-D5dnTd1m.js","assets/WebGLRenderer-DVCUBOJU.js","assets/CanvasRenderer-DpHFQoxc.js","assets/init-BAA_JNv6.js","assets/View3DGlobalData-DN0EjZtg.js","assets/init-CIwh8CRo.js"])))=>i.map(i=>d[i]);
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/browserAll-DbL7Jc76.js","assets/webworkerAll-CKpmbQ65.js","assets/Filter-CBWjmiv7.js","assets/WebGPURenderer-YLeuqz6b.js","assets/getTexelRangeRects-BBXLpeO4.js","assets/RenderTargetSystem-DsnU5-BA.js","assets/RenderTexture-CjAmXbGz.js","assets/WebGLRenderer-0vePTR4b.js","assets/CanvasRenderer-B_xcKLW7.js","assets/init-85MnLBKt.js","assets/View3DGlobalData-DM56VRIk.js","assets/init-UmuiKJ7S.js"])))=>i.map(i=>d[i]);
 (function polyfill() {
   const relList = document.createElement("link").relList;
   if (relList && relList.supports && relList.supports("modulepreload")) return;
@@ -355,7 +355,7 @@ const browserExt = {
   },
   test: () => true,
   load: async () => {
-    await __vitePreload(() => import("./browserAll-DOq3AR1S.js"), true ? __vite__mapDeps([0,1,2]) : void 0);
+    await __vitePreload(() => import("./browserAll-DbL7Jc76.js"), true ? __vite__mapDeps([0,1,2]) : void 0);
   }
 };
 const webworkerExt = {
@@ -366,7 +366,7 @@ const webworkerExt = {
   },
   test: () => typeof self !== "undefined" && self.WorkerGlobalScope !== void 0,
   load: async () => {
-    await __vitePreload(() => import("./webworkerAll-CZgURTkS.js"), true ? __vite__mapDeps([1,2]) : void 0);
+    await __vitePreload(() => import("./webworkerAll-CKpmbQ65.js"), true ? __vite__mapDeps([1,2]) : void 0);
   }
 };
 class ObservablePoint {
@@ -13768,7 +13768,7 @@ async function autoDetectRenderer(options) {
     const rendererType = preferredOrder[i2];
     if (rendererType === "webgpu" && await isWebGPUSupported()) {
       const { WebGPURenderer } = await __vitePreload(async () => {
-        const { WebGPURenderer: WebGPURenderer2 } = await import("./WebGPURenderer-C4Lm5JQF.js");
+        const { WebGPURenderer: WebGPURenderer2 } = await import("./WebGPURenderer-YLeuqz6b.js");
         return { WebGPURenderer: WebGPURenderer2 };
       }, true ? __vite__mapDeps([3,4,5,6,2]) : void 0);
       RendererClass = WebGPURenderer;
@@ -13778,7 +13778,7 @@ async function autoDetectRenderer(options) {
       options.failIfMajorPerformanceCaveat ?? AbstractRenderer.defaultOptions.failIfMajorPerformanceCaveat
     )) {
       const { WebGLRenderer } = await __vitePreload(async () => {
-        const { WebGLRenderer: WebGLRenderer2 } = await import("./WebGLRenderer-DVCUBOJU.js");
+        const { WebGLRenderer: WebGLRenderer2 } = await import("./WebGLRenderer-0vePTR4b.js");
         return { WebGLRenderer: WebGLRenderer2 };
       }, true ? __vite__mapDeps([7,4,5,6,2]) : void 0);
       RendererClass = WebGLRenderer;
@@ -13786,7 +13786,7 @@ async function autoDetectRenderer(options) {
       break;
     } else if (rendererType === "canvas") {
       const { CanvasRenderer } = await __vitePreload(async () => {
-        const { CanvasRenderer: CanvasRenderer2 } = await import("./CanvasRenderer-DpHFQoxc.js");
+        const { CanvasRenderer: CanvasRenderer2 } = await import("./CanvasRenderer-B_xcKLW7.js");
         return { CanvasRenderer: CanvasRenderer2 };
       }, true ? __vite__mapDeps([8,5,6,2]) : void 0);
       RendererClass = CanvasRenderer;
@@ -48205,6 +48205,7 @@ const MATERIAL_CATALOG_SECTIONS = [
     id: "material",
     title: "Material",
     fields: [
+      { kind: "text", key: "material.label", label: "label" },
       { kind: "color", key: "material.baseColor", label: "baseColor" },
       {
         kind: "select",
@@ -48222,6 +48223,10 @@ const MATERIAL_CATALOG_SECTIONS = [
         min: 0,
         max: 1
       },
+      { kind: "boolean", key: "material.doubleSided", label: "doubleSided" },
+      { kind: "boolean", key: "material.flatShading", label: "flatShading" },
+      { kind: "boolean", key: "material.fog", label: "fog" },
+      { kind: "boolean", key: "material.vertexColors", label: "vertexColors" },
       {
         kind: "number",
         key: "material.metallic",
@@ -48263,16 +48268,28 @@ const MATERIAL_CATALOG_SECTIONS = [
         step: 0.01,
         dragAccel: 0.1,
         min: 1
-      },
-      { kind: "color", key: "material.emissive.color", label: "emissive.color" },
+      }
+    ]
+  },
+  {
+    id: "materialEmissive",
+    title: "Emissive",
+    fields: [
+      { kind: "color", key: "material.emissive.color", label: "color" },
       {
         kind: "number",
         key: "material.emissive.strength",
-        label: "emissive.strength",
+        label: "strength",
         step: 0.1,
         dragAccel: 0.5,
         min: 0
-      },
+      }
+    ]
+  },
+  {
+    id: "materialSpecular",
+    title: "Specular",
+    fields: [
       {
         kind: "number",
         key: "material.shininess",
@@ -48286,6 +48303,234 @@ const MATERIAL_CATALOG_SECTIONS = [
         kind: "number",
         key: "material.specularStrength",
         label: "specularStrength",
+        step: 0.05,
+        dragAccel: 0.25,
+        min: 0
+      },
+      {
+        kind: "number",
+        key: "material.specular.factor",
+        label: "factor",
+        step: 0.05,
+        dragAccel: 0.25,
+        min: 0,
+        max: 1
+      },
+      { kind: "color", key: "material.specular.color", label: "color" }
+    ]
+  },
+  {
+    id: "materialClearcoat",
+    title: "Clearcoat",
+    fields: [
+      {
+        kind: "number",
+        key: "material.clearcoat.factor",
+        label: "factor",
+        step: 0.05,
+        dragAccel: 0.25,
+        min: 0,
+        max: 1
+      },
+      {
+        kind: "number",
+        key: "material.clearcoat.roughness",
+        label: "roughness",
+        step: 0.05,
+        dragAccel: 0.25,
+        min: 0,
+        max: 1
+      },
+      {
+        kind: "number",
+        key: "material.clearcoat.normalScale",
+        label: "normalScale",
+        step: 0.05,
+        dragAccel: 0.25,
+        min: 0
+      }
+    ]
+  },
+  {
+    id: "materialSheen",
+    title: "Sheen",
+    fields: [
+      { kind: "color", key: "material.sheen.color", label: "color" },
+      {
+        kind: "number",
+        key: "material.sheen.roughness",
+        label: "roughness",
+        step: 0.05,
+        dragAccel: 0.25,
+        min: 0,
+        max: 1
+      }
+    ]
+  },
+  {
+    id: "materialTransmission",
+    title: "Transmission",
+    fields: [
+      {
+        kind: "number",
+        key: "material.transmission.factor",
+        label: "factor",
+        step: 0.05,
+        dragAccel: 0.25,
+        min: 0,
+        max: 1
+      },
+      {
+        kind: "number",
+        key: "material.transmission.thickness",
+        label: "thickness",
+        step: 0.05,
+        dragAccel: 0.25,
+        min: 0
+      },
+      {
+        kind: "number",
+        key: "material.transmission.attenuationDistance",
+        label: "attenuationDistance",
+        step: 0.05,
+        dragAccel: 0.25,
+        min: 0
+      },
+      {
+        kind: "color",
+        key: "material.transmission.attenuationColor",
+        label: "attenuationColor"
+      }
+    ]
+  },
+  {
+    id: "materialIridescence",
+    title: "Iridescence",
+    fields: [
+      {
+        kind: "number",
+        key: "material.iridescence.factor",
+        label: "factor",
+        step: 0.05,
+        dragAccel: 0.25,
+        min: 0,
+        max: 1
+      },
+      {
+        kind: "number",
+        key: "material.iridescence.ior",
+        label: "ior",
+        step: 0.01,
+        dragAccel: 0.1,
+        min: 1
+      },
+      {
+        kind: "number",
+        key: "material.iridescence.thicknessMinimum",
+        label: "thicknessMinimum",
+        step: 1,
+        dragAccel: 10,
+        min: 0
+      },
+      {
+        kind: "number",
+        key: "material.iridescence.thicknessMaximum",
+        label: "thicknessMaximum",
+        step: 1,
+        dragAccel: 10,
+        min: 0
+      }
+    ]
+  },
+  {
+    id: "materialAnisotropy",
+    title: "Anisotropy",
+    fields: [
+      {
+        kind: "number",
+        key: "material.anisotropy.strength",
+        label: "strength",
+        step: 0.05,
+        dragAccel: 0.25,
+        min: 0,
+        max: 1
+      },
+      {
+        kind: "number",
+        key: "material.anisotropy.rotation",
+        label: "rotation",
+        step: 0.01,
+        dragAccel: 0.1
+      }
+    ]
+  },
+  {
+    id: "materialUv",
+    title: "UV",
+    fields: [
+      {
+        kind: "number",
+        key: "material.uv.scaleX",
+        label: "scaleX",
+        step: 0.05,
+        dragAccel: 0.25
+      },
+      {
+        kind: "number",
+        key: "material.uv.scaleY",
+        label: "scaleY",
+        step: 0.05,
+        dragAccel: 0.25
+      },
+      {
+        kind: "number",
+        key: "material.uv.offsetX",
+        label: "offsetX",
+        step: 0.01,
+        dragAccel: 0.1
+      },
+      {
+        kind: "number",
+        key: "material.uv.offsetY",
+        label: "offsetY",
+        step: 0.01,
+        dragAccel: 0.1
+      }
+    ]
+  },
+  {
+    id: "materialToon",
+    title: "Toon",
+    fields: [
+      {
+        kind: "number",
+        key: "material.toon.bands",
+        label: "bands",
+        step: 1,
+        dragAccel: 1,
+        min: 1
+      },
+      {
+        kind: "number",
+        key: "material.toon.specularSize",
+        label: "specularSize",
+        step: 0.01,
+        dragAccel: 0.05,
+        min: 0,
+        max: 1
+      },
+      {
+        kind: "number",
+        key: "material.toon.rimPower",
+        label: "rimPower",
+        step: 0.1,
+        dragAccel: 0.5,
+        min: 0
+      },
+      {
+        kind: "number",
+        key: "material.toon.rimIntensity",
+        label: "rimIntensity",
         step: 0.05,
         dragAccel: 0.25,
         min: 0
@@ -48305,7 +48550,23 @@ const MATERIAL_CATALOG_SECTIONS = [
       { kind: "texture", key: "material.textures.normal", label: "normal" },
       { kind: "texture", key: "material.textures.occlusion", label: "occlusion" },
       { kind: "texture", key: "material.textures.emissive", label: "emissive" },
-      { kind: "texture", key: "material.textures.specular", label: "specular" }
+      { kind: "texture", key: "material.textures.specular", label: "specular" },
+      { kind: "texture", key: "material.textures.clearcoat", label: "clearcoat" },
+      {
+        kind: "texture",
+        key: "material.textures.clearcoatRoughness",
+        label: "clearcoatRoughness"
+      },
+      {
+        kind: "texture",
+        key: "material.textures.clearcoatNormal",
+        label: "clearcoatNormal"
+      },
+      { kind: "texture", key: "material.textures.sheen", label: "sheen" },
+      { kind: "texture", key: "material.textures.transmission", label: "transmission" },
+      { kind: "texture", key: "material.textures.thickness", label: "thickness" },
+      { kind: "texture", key: "material.textures.iridescence", label: "iridescence" },
+      { kind: "texture", key: "material.textures.anisotropy", label: "anisotropy" }
     ]
   }
 ];
@@ -48325,6 +48586,15 @@ const PROPERTY_SECTION_IDS = [
   "viewFog",
   "viewLook",
   "material",
+  "materialEmissive",
+  "materialSpecular",
+  "materialClearcoat",
+  "materialSheen",
+  "materialTransmission",
+  "materialIridescence",
+  "materialAnisotropy",
+  "materialUv",
+  "materialToon",
   "materialTextures",
   "visibility",
   "rendering",
@@ -48352,6 +48622,15 @@ const PROPERTY_SECTION_TITLES = {
   viewFog: "Fog",
   viewLook: "Look",
   material: "Material",
+  materialEmissive: "Emissive",
+  materialSpecular: "Specular",
+  materialClearcoat: "Clearcoat",
+  materialSheen: "Sheen",
+  materialTransmission: "Transmission",
+  materialIridescence: "Iridescence",
+  materialAnisotropy: "Anisotropy",
+  materialUv: "UV",
+  materialToon: "Toon",
   materialTextures: "Textures",
   visibility: "Visibility",
   rendering: "Rendering",
@@ -53577,7 +53856,15 @@ const MATERIAL_TEXTURE_SLOTS = [
   "normal",
   "occlusion",
   "emissive",
-  "specular"
+  "specular",
+  "clearcoat",
+  "clearcoatRoughness",
+  "clearcoatNormal",
+  "sheen",
+  "transmission",
+  "thickness",
+  "iridescence",
+  "anisotropy"
 ];
 function asHost(node) {
   return node;
@@ -53607,6 +53894,13 @@ function isColorSourceLike(value) {
   }
   const record = value;
   return typeof record.toNumber === "function" || typeof record.toHex === "function";
+}
+function isUvTransformLike(value) {
+  if (!value || typeof value !== "object") {
+    return false;
+  }
+  const matrix2 = value;
+  return typeof matrix2.a === "number" && typeof matrix2.b === "number" && typeof matrix2.c === "number" && typeof matrix2.d === "number" && typeof matrix2.tx === "number" && typeof matrix2.ty === "number";
 }
 function isMaterial3DLike(value) {
   if (!value || typeof value !== "object") {
@@ -53648,11 +53942,18 @@ function materialKind(material) {
   if (name === "FlatMaterial") {
     return "flat";
   }
+  if (name === "ToonMaterial") {
+    return "toon";
+  }
   if (typeof material.metallic === "number" && typeof material.roughness === "number") {
     return "pbr";
   }
   if (typeof material.shininess === "number") {
     return "phong";
+  }
+  const data = material.data;
+  if (data && typeof data.bands === "number") {
+    return "toon";
   }
   return "other";
 }
@@ -53665,6 +53966,107 @@ function readEmissive(material) {
     return null;
   }
   return emissive;
+}
+function readSpecularGroup(material) {
+  const specular = material.specular;
+  if (!specular || typeof specular !== "object") {
+    return null;
+  }
+  if (typeof specular.factor !== "number") {
+    return null;
+  }
+  return specular;
+}
+function readClearcoat(material) {
+  const clearcoat = material.clearcoat;
+  if (!clearcoat || typeof clearcoat !== "object") {
+    return null;
+  }
+  if (typeof clearcoat.factor !== "number" || typeof clearcoat.roughness !== "number") {
+    return null;
+  }
+  return clearcoat;
+}
+function readSheen(material) {
+  const sheen = material.sheen;
+  if (!sheen || typeof sheen !== "object") {
+    return null;
+  }
+  if (typeof sheen.roughness !== "number") {
+    return null;
+  }
+  return sheen;
+}
+function readTransmission(material) {
+  const transmission = material.transmission;
+  if (!transmission || typeof transmission !== "object") {
+    return null;
+  }
+  if (typeof transmission.factor !== "number" || typeof transmission.thickness !== "number") {
+    return null;
+  }
+  return transmission;
+}
+function readIridescence(material) {
+  const iridescence = material.iridescence;
+  if (!iridescence || typeof iridescence !== "object") {
+    return null;
+  }
+  if (typeof iridescence.factor !== "number" || typeof iridescence.ior !== "number") {
+    return null;
+  }
+  return iridescence;
+}
+function readAnisotropy(material) {
+  const anisotropy = material.anisotropy;
+  if (!anisotropy || typeof anisotropy !== "object") {
+    return null;
+  }
+  if (typeof anisotropy.strength !== "number" || typeof anisotropy.rotation !== "number") {
+    return null;
+  }
+  return anisotropy;
+}
+function materialSupportsUvTransform(material) {
+  const data = material.data;
+  return !!data && typeof data === "object" && "uvTransformRow0" in data;
+}
+function readUvTransform(material) {
+  const current2 = material.uvTransform;
+  if (isUvTransformLike(current2)) {
+    return current2;
+  }
+  return { a: 1, b: 0, c: 0, d: 1, tx: 0, ty: 0 };
+}
+function writeUvTransform(material, patch) {
+  if (!materialSupportsUvTransform(material)) {
+    return;
+  }
+  const current2 = readUvTransform(material);
+  material.uvTransform = {
+    a: patch.a ?? current2.a,
+    b: patch.b ?? current2.b,
+    c: patch.c ?? current2.c,
+    d: patch.d ?? current2.d,
+    tx: patch.tx ?? current2.tx,
+    ty: patch.ty ?? current2.ty
+  };
+}
+function readToonData(material) {
+  if (materialKind(material) !== "toon") {
+    return null;
+  }
+  const data = material.data;
+  if (!data || typeof data !== "object") {
+    return null;
+  }
+  return data;
+}
+function invalidateMaterialHost(node) {
+  const host = asHost(node);
+  if (typeof host.invalidate === "function") {
+    host.invalidate();
+  }
 }
 function materialHasTextureSlot(material, slot) {
   const textures = material.textures;
@@ -53719,7 +54121,15 @@ const TEXTURE_SLOT_KEYS = {
   normal: "material.textures.normal",
   occlusion: "material.textures.occlusion",
   emissive: "material.textures.emissive",
-  specular: "material.textures.specular"
+  specular: "material.textures.specular",
+  clearcoat: "material.textures.clearcoat",
+  clearcoatRoughness: "material.textures.clearcoatRoughness",
+  clearcoatNormal: "material.textures.clearcoatNormal",
+  sheen: "material.textures.sheen",
+  transmission: "material.textures.transmission",
+  thickness: "material.textures.thickness",
+  iridescence: "material.textures.iridescence",
+  anisotropy: "material.textures.anisotropy"
 };
 function appendTextureSlotMaps(material, ctx) {
   const { allow, strings } = ctx;
@@ -53737,25 +54147,48 @@ function appendTextureSlotMaps(material, ctx) {
     });
   }
 }
+function appendColorMap(ctx, key, getColor, setColor) {
+  if (!ctx.allow(key) || colorToString(getColor()) === void 0) {
+    return;
+  }
+  ctx.strings.push({
+    key,
+    get: () => colorToString(getColor()),
+    set: (value) => {
+      try {
+        setColor(parseColorString(value));
+      } catch {
+      }
+    }
+  });
+}
 function appendMaterialMaps(node, ctx) {
   const material = readMaterial3D(node);
   if (!material) {
     return;
   }
-  const { allow, numbers, strings } = ctx;
+  const { allow, numbers, strings, booleans } = ctx;
   const kind = materialKind(material);
-  if (allow("material.baseColor") && colorToString(material.baseColor) !== void 0) {
-    strings.push({
-      key: "material.baseColor",
-      get: () => colorToString(material.baseColor),
-      set: (value) => {
-        try {
-          material.baseColor = parseColorString(value);
-        } catch {
+  strings.push(
+    ...takeMaps(
+      allow,
+      directString(
+        "material.label",
+        () => typeof material.label === "string" ? material.label : void 0,
+        (value) => {
+          material.label = value;
         }
-      }
-    });
-  }
+      )
+    )
+  );
+  appendColorMap(
+    ctx,
+    "material.baseColor",
+    () => material.baseColor,
+    (value) => {
+      material.baseColor = value;
+    }
+  );
   appendTextureSlotMaps(material, ctx);
   strings.push(
     ...takeMaps(
@@ -53799,6 +54232,49 @@ function appendMaterialMaps(node, ctx) {
       )
     );
   }
+  booleans.push(
+    ...takeMaps(
+      allow,
+      directBoolean(
+        "material.doubleSided",
+        () => material.doubleSided,
+        () => void 0
+      )
+    )
+  );
+  booleans.push(
+    ...takeMaps(
+      allow,
+      directBoolean(
+        "material.flatShading",
+        () => material.flatShading,
+        () => void 0
+      )
+    )
+  );
+  booleans.push(
+    ...takeMaps(
+      allow,
+      directBoolean(
+        "material.fog",
+        () => material.fog,
+        () => void 0
+      )
+    )
+  );
+  booleans.push(
+    ...takeMaps(
+      allow,
+      directBoolean(
+        "material.vertexColors",
+        () => material.vertexColors,
+        (value) => {
+          material.vertexColors = value;
+          invalidateMaterialHost(node);
+        }
+      )
+    )
+  );
   if (kind === "pbr") {
     numbers.push(
       ...takeMaps(
@@ -53898,43 +54374,346 @@ function appendMaterialMaps(node, ctx) {
         )
       )
     );
-    if (allow("material.specularColor") && colorToString(material.specularColor) !== void 0) {
-      strings.push({
-        key: "material.specularColor",
-        get: () => colorToString(material.specularColor),
-        set: (value) => {
-          try {
-            material.specularColor = parseColorString(value);
-          } catch {
-          }
-        }
-      });
-    }
+    appendColorMap(
+      ctx,
+      "material.specularColor",
+      () => material.specularColor,
+      (value) => {
+        material.specularColor = value;
+      }
+    );
   }
   const emissive = readEmissive(material);
-  if (!emissive) {
-    return;
-  }
-  if (allow("material.emissive.color") && colorToString(emissive.color) !== void 0) {
-    strings.push({
-      key: "material.emissive.color",
-      get: () => colorToString(emissive.color),
-      set: (value) => {
-        try {
-          emissive.color = parseColorString(value);
-        } catch {
-        }
+  if (emissive) {
+    appendColorMap(
+      ctx,
+      "material.emissive.color",
+      () => emissive.color,
+      (value) => {
+        emissive.color = value;
       }
-    });
+    );
+    numbers.push(
+      ...takeMaps(
+        allow,
+        directNumber(
+          "material.emissive.strength",
+          () => emissive.strength,
+          (value) => {
+            emissive.strength = value;
+          }
+        )
+      )
+    );
+  }
+  const specular = readSpecularGroup(material);
+  if (specular) {
+    numbers.push(
+      ...takeMaps(
+        allow,
+        directNumber(
+          "material.specular.factor",
+          () => specular.factor,
+          (value) => {
+            specular.factor = value;
+          }
+        )
+      )
+    );
+    appendColorMap(
+      ctx,
+      "material.specular.color",
+      () => specular.color,
+      (value) => {
+        specular.color = value;
+      }
+    );
+  }
+  const clearcoat = readClearcoat(material);
+  if (clearcoat) {
+    numbers.push(
+      ...takeMaps(
+        allow,
+        directNumber(
+          "material.clearcoat.factor",
+          () => clearcoat.factor,
+          (value) => {
+            clearcoat.factor = value;
+          }
+        )
+      )
+    );
+    numbers.push(
+      ...takeMaps(
+        allow,
+        directNumber(
+          "material.clearcoat.roughness",
+          () => clearcoat.roughness,
+          (value) => {
+            clearcoat.roughness = value;
+          }
+        )
+      )
+    );
+    numbers.push(
+      ...takeMaps(
+        allow,
+        directNumber(
+          "material.clearcoat.normalScale",
+          () => clearcoat.normalScale,
+          (value) => {
+            clearcoat.normalScale = value;
+          }
+        )
+      )
+    );
+  }
+  const sheen = readSheen(material);
+  if (sheen) {
+    appendColorMap(
+      ctx,
+      "material.sheen.color",
+      () => sheen.color,
+      (value) => {
+        sheen.color = value;
+      }
+    );
+    numbers.push(
+      ...takeMaps(
+        allow,
+        directNumber(
+          "material.sheen.roughness",
+          () => sheen.roughness,
+          (value) => {
+            sheen.roughness = value;
+          }
+        )
+      )
+    );
+  }
+  const transmission = readTransmission(material);
+  if (transmission) {
+    numbers.push(
+      ...takeMaps(
+        allow,
+        directNumber(
+          "material.transmission.factor",
+          () => transmission.factor,
+          (value) => {
+            transmission.factor = value;
+          }
+        )
+      )
+    );
+    numbers.push(
+      ...takeMaps(
+        allow,
+        directNumber(
+          "material.transmission.thickness",
+          () => transmission.thickness,
+          (value) => {
+            transmission.thickness = value;
+          }
+        )
+      )
+    );
+    numbers.push(
+      ...takeMaps(
+        allow,
+        directNumber(
+          "material.transmission.attenuationDistance",
+          () => transmission.attenuationDistance,
+          (value) => {
+            transmission.attenuationDistance = value;
+          }
+        )
+      )
+    );
+    appendColorMap(
+      ctx,
+      "material.transmission.attenuationColor",
+      () => transmission.attenuationColor,
+      (value) => {
+        transmission.attenuationColor = value;
+      }
+    );
+  }
+  const iridescence = readIridescence(material);
+  if (iridescence) {
+    numbers.push(
+      ...takeMaps(
+        allow,
+        directNumber(
+          "material.iridescence.factor",
+          () => iridescence.factor,
+          (value) => {
+            iridescence.factor = value;
+          }
+        )
+      )
+    );
+    numbers.push(
+      ...takeMaps(
+        allow,
+        directNumber(
+          "material.iridescence.ior",
+          () => iridescence.ior,
+          (value) => {
+            iridescence.ior = value;
+          }
+        )
+      )
+    );
+    numbers.push(
+      ...takeMaps(
+        allow,
+        directNumber(
+          "material.iridescence.thicknessMinimum",
+          () => iridescence.thicknessMinimum,
+          (value) => {
+            iridescence.thicknessMinimum = value;
+          }
+        )
+      )
+    );
+    numbers.push(
+      ...takeMaps(
+        allow,
+        directNumber(
+          "material.iridescence.thicknessMaximum",
+          () => iridescence.thicknessMaximum,
+          (value) => {
+            iridescence.thicknessMaximum = value;
+          }
+        )
+      )
+    );
+  }
+  const anisotropy = readAnisotropy(material);
+  if (anisotropy) {
+    numbers.push(
+      ...takeMaps(
+        allow,
+        directNumber(
+          "material.anisotropy.strength",
+          () => anisotropy.strength,
+          (value) => {
+            anisotropy.strength = value;
+          }
+        )
+      )
+    );
+    numbers.push(
+      ...takeMaps(
+        allow,
+        directNumber(
+          "material.anisotropy.rotation",
+          () => anisotropy.rotation,
+          (value) => {
+            anisotropy.rotation = value;
+          }
+        )
+      )
+    );
+  }
+  if (materialSupportsUvTransform(material)) {
+    numbers.push(
+      ...takeMaps(
+        allow,
+        directNumber(
+          "material.uv.scaleX",
+          () => readUvTransform(material).a,
+          (value) => {
+            writeUvTransform(material, { a: value });
+          }
+        )
+      )
+    );
+    numbers.push(
+      ...takeMaps(
+        allow,
+        directNumber(
+          "material.uv.scaleY",
+          () => readUvTransform(material).d,
+          (value) => {
+            writeUvTransform(material, { d: value });
+          }
+        )
+      )
+    );
+    numbers.push(
+      ...takeMaps(
+        allow,
+        directNumber(
+          "material.uv.offsetX",
+          () => readUvTransform(material).tx,
+          (value) => {
+            writeUvTransform(material, { tx: value });
+          }
+        )
+      )
+    );
+    numbers.push(
+      ...takeMaps(
+        allow,
+        directNumber(
+          "material.uv.offsetY",
+          () => readUvTransform(material).ty,
+          (value) => {
+            writeUvTransform(material, { ty: value });
+          }
+        )
+      )
+    );
+  }
+  const toon = readToonData(material);
+  if (!toon) {
+    return;
   }
   numbers.push(
     ...takeMaps(
       allow,
       directNumber(
-        "material.emissive.strength",
-        () => emissive.strength,
+        "material.toon.bands",
+        () => toon.bands,
         (value) => {
-          emissive.strength = value;
+          toon.bands = value;
+        }
+      )
+    )
+  );
+  numbers.push(
+    ...takeMaps(
+      allow,
+      directNumber(
+        "material.toon.specularSize",
+        () => toon.specularSize,
+        (value) => {
+          toon.specularSize = value;
+        }
+      )
+    )
+  );
+  numbers.push(
+    ...takeMaps(
+      allow,
+      directNumber(
+        "material.toon.rimPower",
+        () => toon.rimPower,
+        (value) => {
+          toon.rimPower = value;
+        }
+      )
+    )
+  );
+  numbers.push(
+    ...takeMaps(
+      allow,
+      directNumber(
+        "material.toon.rimIntensity",
+        () => toon.rimIntensity,
+        (value) => {
+          toon.rimIntensity = value;
         }
       )
     )
@@ -108566,13 +109345,13 @@ const backendLoaders = [{
     type: ExtensionType.WebGLLoader,
     name: "pixijs-3d"
   },
-  load: () => __vitePreload(() => import("./init-BAA_JNv6.js"), true ? __vite__mapDeps([9,10,6]) : void 0)
+  load: () => __vitePreload(() => import("./init-85MnLBKt.js"), true ? __vite__mapDeps([9,10,6]) : void 0)
 }, {
   extension: {
     type: ExtensionType.WebGPULoader,
     name: "pixijs-3d"
   },
-  load: () => __vitePreload(() => import("./init-CIwh8CRo.js"), true ? __vite__mapDeps([11,10,6]) : void 0)
+  load: () => __vitePreload(() => import("./init-UmuiKJ7S.js"), true ? __vite__mapDeps([11,10,6]) : void 0)
 }];
 addUniformParsers();
 extensions.add(...backendLoaders);

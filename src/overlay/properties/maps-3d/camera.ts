@@ -3,7 +3,7 @@ import { type AppendMapsContext, directBoolean, directNumber, directString, take
 
 import type { PixiNode } from '../../../page-ops/pixi-node';
 
-export function appendCameraMaps(node: PixiNode, ctx: AppendMapsContext): void
+export function appendCameraMaps(node: PixiNode, ctx: AppendMapsContext)
 {
     const camera = readCamera3D(node);
 

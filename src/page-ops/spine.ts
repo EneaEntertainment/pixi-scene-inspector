@@ -144,7 +144,7 @@ function currentEntry(node: SpineNode): SpineTrackEntry | null
     return state.tracks?.[TRACK] ?? null;
 }
 
-function restoreTimeScale(playback: Playback): void
+function restoreTimeScale(playback: Playback)
 {
     if (playback.heldTimeScale === null)
     {
@@ -537,7 +537,7 @@ function entryDuration(entry: SpineTrackEntry): number
     return end - start;
 }
 
-function foldTrackTime(entry: SpineTrackEntry): void
+function foldTrackTime(entry: SpineTrackEntry)
 {
     const duration = entryDuration(entry);
     const trackTime = entry.trackTime;
@@ -560,7 +560,7 @@ function foldTrackTime(entry: SpineTrackEntry): void
     }
 }
 
-function applyEntryLoop(entry: SpineTrackEntry, loop: boolean): void
+function applyEntryLoop(entry: SpineTrackEntry, loop: boolean)
 {
     if (!loop)
     {
@@ -590,7 +590,7 @@ function applyEntryLoop(entry: SpineTrackEntry, loop: boolean): void
     entry.loop = true;
 }
 
-export function spineSetLoop(node: PixiNode, loop: boolean): void
+export function spineSetLoop(node: PixiNode, loop: boolean)
 {
     const entry = currentEntry(asSpine(node));
 
@@ -681,7 +681,7 @@ export function spineStop(node: PixiNode): boolean
     return true;
 }
 
-export function spineRelease(node: PixiNode): void
+export function spineRelease(node: PixiNode)
 {
     const playback = playbackByNode.get(node);
 

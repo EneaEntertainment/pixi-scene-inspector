@@ -42,7 +42,7 @@ function readShadow(node: PixiNode): LightShadowLike | null
     return shadow;
 }
 
-export function appendShadowMaps(node: PixiNode, ctx: AppendMapsContext): void
+export function appendShadowMaps(node: PixiNode, ctx: AppendMapsContext)
 {
     const shadow = readShadow(node);
 

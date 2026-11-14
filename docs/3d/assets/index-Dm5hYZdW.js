@@ -1,4 +1,4 @@
-const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/browserAll-CMLqFgfU.js","assets/webworkerAll-CsXTl_u4.js","assets/canvasUtils-CgDHuzZ3.js","assets/CanvasPool-Bm93tYJC.js","assets/Filter-CuFMBlkh.js","assets/WebGPURenderer-CJVW2cnF.js","assets/getTexelRangeRects-691vswo0.js","assets/RenderTargetSystem-DRWCVfk-.js","assets/RenderTexture-DnkwFqef.js","assets/WebGLRenderer-Cy7aGkOH.js","assets/isSafari-Bd5lXoPC.js","assets/CanvasRenderer-Dr25fReI.js","assets/BitmapFont-CpfLjBKH.js","assets/init-UAFdOGDi.js","assets/View3DGlobalData-CoqYNXjS.js","assets/init-vzKnMxw8.js"])))=>i.map(i=>d[i]);
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/browserAll-603ALmVp.js","assets/webworkerAll-C1pnltIT.js","assets/canvasUtils-B01mpEXU.js","assets/CanvasPool-CaY1muZ1.js","assets/Filter-C_u_a1NJ.js","assets/WebGPURenderer-CSHhGnSW.js","assets/getTexelRangeRects-C0J_Ojtk.js","assets/RenderTargetSystem-DLjFOD5h.js","assets/RenderTexture-DP9HXzFV.js","assets/WebGLRenderer-DMTRZktv.js","assets/isSafari-Dsf0SF4A.js","assets/CanvasRenderer-CFSuCNSj.js","assets/BitmapFont-BVZfqWOG.js","assets/init-BaAP2Qrc.js","assets/View3DGlobalData-_lfQ9tNq.js","assets/init-DWRsJzzm.js"])))=>i.map(i=>d[i]);
 (function polyfill() {
   const relList = document.createElement("link").relList;
   if (relList && relList.supports && relList.supports("modulepreload")) return;
@@ -355,7 +355,7 @@ const browserExt = {
   },
   test: () => true,
   load: async () => {
-    await __vitePreload(() => import("./browserAll-CMLqFgfU.js"), true ? __vite__mapDeps([0,1,2,3,4]) : void 0);
+    await __vitePreload(() => import("./browserAll-603ALmVp.js"), true ? __vite__mapDeps([0,1,2,3,4]) : void 0);
   }
 };
 const webworkerExt = {
@@ -366,7 +366,7 @@ const webworkerExt = {
   },
   test: () => typeof self !== "undefined" && self.WorkerGlobalScope !== void 0,
   load: async () => {
-    await __vitePreload(() => import("./webworkerAll-CsXTl_u4.js"), true ? __vite__mapDeps([1,2,3,4]) : void 0);
+    await __vitePreload(() => import("./webworkerAll-C1pnltIT.js"), true ? __vite__mapDeps([1,2,3,4]) : void 0);
   }
 };
 class ObservablePoint {
@@ -13768,7 +13768,7 @@ async function autoDetectRenderer(options) {
     const rendererType = preferredOrder[i2];
     if (rendererType === "webgpu" && await isWebGPUSupported()) {
       const { WebGPURenderer } = await __vitePreload(async () => {
-        const { WebGPURenderer: WebGPURenderer2 } = await import("./WebGPURenderer-CJVW2cnF.js");
+        const { WebGPURenderer: WebGPURenderer2 } = await import("./WebGPURenderer-CSHhGnSW.js");
         return { WebGPURenderer: WebGPURenderer2 };
       }, true ? __vite__mapDeps([5,6,7,8,4,3]) : void 0);
       RendererClass = WebGPURenderer;
@@ -13778,7 +13778,7 @@ async function autoDetectRenderer(options) {
       options.failIfMajorPerformanceCaveat ?? AbstractRenderer.defaultOptions.failIfMajorPerformanceCaveat
     )) {
       const { WebGLRenderer } = await __vitePreload(async () => {
-        const { WebGLRenderer: WebGLRenderer2 } = await import("./WebGLRenderer-Cy7aGkOH.js");
+        const { WebGLRenderer: WebGLRenderer2 } = await import("./WebGLRenderer-DMTRZktv.js");
         return { WebGLRenderer: WebGLRenderer2 };
       }, true ? __vite__mapDeps([9,6,7,8,4,3,10]) : void 0);
       RendererClass = WebGLRenderer;
@@ -13786,7 +13786,7 @@ async function autoDetectRenderer(options) {
       break;
     } else if (rendererType === "canvas") {
       const { CanvasRenderer } = await __vitePreload(async () => {
-        const { CanvasRenderer: CanvasRenderer2 } = await import("./CanvasRenderer-Dr25fReI.js");
+        const { CanvasRenderer: CanvasRenderer2 } = await import("./CanvasRenderer-CFSuCNSj.js");
         return { CanvasRenderer: CanvasRenderer2 };
       }, true ? __vite__mapDeps([11,7,8,4,3,2]) : void 0);
       RendererClass = CanvasRenderer;
@@ -14374,7 +14374,7 @@ const loadBitmapFont = {
     }
     const [loadedTextures, { BitmapFont }] = await Promise.all([
       loader.load(textureUrls),
-      __vitePreload(() => import("./BitmapFont-CpfLjBKH.js"), true ? __vite__mapDeps([12,3,2]) : void 0)
+      __vitePreload(() => import("./BitmapFont-BVZfqWOG.js"), true ? __vite__mapDeps([12,3,2]) : void 0)
     ]);
     const textures = textureUrls.map((url2) => loadedTextures[url2.src]);
     const bitmapFont = new BitmapFont({
@@ -32575,6 +32575,7 @@ const MATERIAL_CATALOG_SECTIONS = [
     id: "material",
     title: "Material",
     fields: [
+      { kind: "text", key: "material.label", label: "label" },
       { kind: "color", key: "material.baseColor", label: "baseColor" },
       {
         kind: "select",
@@ -32592,6 +32593,10 @@ const MATERIAL_CATALOG_SECTIONS = [
         min: 0,
         max: 1
       },
+      { kind: "boolean", key: "material.doubleSided", label: "doubleSided" },
+      { kind: "boolean", key: "material.flatShading", label: "flatShading" },
+      { kind: "boolean", key: "material.fog", label: "fog" },
+      { kind: "boolean", key: "material.vertexColors", label: "vertexColors" },
       {
         kind: "number",
         key: "material.metallic",
@@ -32633,16 +32638,28 @@ const MATERIAL_CATALOG_SECTIONS = [
         step: 0.01,
         dragAccel: 0.1,
         min: 1
-      },
-      { kind: "color", key: "material.emissive.color", label: "emissive.color" },
+      }
+    ]
+  },
+  {
+    id: "materialEmissive",
+    title: "Emissive",
+    fields: [
+      { kind: "color", key: "material.emissive.color", label: "color" },
       {
         kind: "number",
         key: "material.emissive.strength",
-        label: "emissive.strength",
+        label: "strength",
         step: 0.1,
         dragAccel: 0.5,
         min: 0
-      },
+      }
+    ]
+  },
+  {
+    id: "materialSpecular",
+    title: "Specular",
+    fields: [
       {
         kind: "number",
         key: "material.shininess",
@@ -32656,6 +32673,234 @@ const MATERIAL_CATALOG_SECTIONS = [
         kind: "number",
         key: "material.specularStrength",
         label: "specularStrength",
+        step: 0.05,
+        dragAccel: 0.25,
+        min: 0
+      },
+      {
+        kind: "number",
+        key: "material.specular.factor",
+        label: "factor",
+        step: 0.05,
+        dragAccel: 0.25,
+        min: 0,
+        max: 1
+      },
+      { kind: "color", key: "material.specular.color", label: "color" }
+    ]
+  },
+  {
+    id: "materialClearcoat",
+    title: "Clearcoat",
+    fields: [
+      {
+        kind: "number",
+        key: "material.clearcoat.factor",
+        label: "factor",
+        step: 0.05,
+        dragAccel: 0.25,
+        min: 0,
+        max: 1
+      },
+      {
+        kind: "number",
+        key: "material.clearcoat.roughness",
+        label: "roughness",
+        step: 0.05,
+        dragAccel: 0.25,
+        min: 0,
+        max: 1
+      },
+      {
+        kind: "number",
+        key: "material.clearcoat.normalScale",
+        label: "normalScale",
+        step: 0.05,
+        dragAccel: 0.25,
+        min: 0
+      }
+    ]
+  },
+  {
+    id: "materialSheen",
+    title: "Sheen",
+    fields: [
+      { kind: "color", key: "material.sheen.color", label: "color" },
+      {
+        kind: "number",
+        key: "material.sheen.roughness",
+        label: "roughness",
+        step: 0.05,
+        dragAccel: 0.25,
+        min: 0,
+        max: 1
+      }
+    ]
+  },
+  {
+    id: "materialTransmission",
+    title: "Transmission",
+    fields: [
+      {
+        kind: "number",
+        key: "material.transmission.factor",
+        label: "factor",
+        step: 0.05,
+        dragAccel: 0.25,
+        min: 0,
+        max: 1
+      },
+      {
+        kind: "number",
+        key: "material.transmission.thickness",
+        label: "thickness",
+        step: 0.05,
+        dragAccel: 0.25,
+        min: 0
+      },
+      {
+        kind: "number",
+        key: "material.transmission.attenuationDistance",
+        label: "attenuationDistance",
+        step: 0.05,
+        dragAccel: 0.25,
+        min: 0
+      },
+      {
+        kind: "color",
+        key: "material.transmission.attenuationColor",
+        label: "attenuationColor"
+      }
+    ]
+  },
+  {
+    id: "materialIridescence",
+    title: "Iridescence",
+    fields: [
+      {
+        kind: "number",
+        key: "material.iridescence.factor",
+        label: "factor",
+        step: 0.05,
+        dragAccel: 0.25,
+        min: 0,
+        max: 1
+      },
+      {
+        kind: "number",
+        key: "material.iridescence.ior",
+        label: "ior",
+        step: 0.01,
+        dragAccel: 0.1,
+        min: 1
+      },
+      {
+        kind: "number",
+        key: "material.iridescence.thicknessMinimum",
+        label: "thicknessMinimum",
+        step: 1,
+        dragAccel: 10,
+        min: 0
+      },
+      {
+        kind: "number",
+        key: "material.iridescence.thicknessMaximum",
+        label: "thicknessMaximum",
+        step: 1,
+        dragAccel: 10,
+        min: 0
+      }
+    ]
+  },
+  {
+    id: "materialAnisotropy",
+    title: "Anisotropy",
+    fields: [
+      {
+        kind: "number",
+        key: "material.anisotropy.strength",
+        label: "strength",
+        step: 0.05,
+        dragAccel: 0.25,
+        min: 0,
+        max: 1
+      },
+      {
+        kind: "number",
+        key: "material.anisotropy.rotation",
+        label: "rotation",
+        step: 0.01,
+        dragAccel: 0.1
+      }
+    ]
+  },
+  {
+    id: "materialUv",
+    title: "UV",
+    fields: [
+      {
+        kind: "number",
+        key: "material.uv.scaleX",
+        label: "scaleX",
+        step: 0.05,
+        dragAccel: 0.25
+      },
+      {
+        kind: "number",
+        key: "material.uv.scaleY",
+        label: "scaleY",
+        step: 0.05,
+        dragAccel: 0.25
+      },
+      {
+        kind: "number",
+        key: "material.uv.offsetX",
+        label: "offsetX",
+        step: 0.01,
+        dragAccel: 0.1
+      },
+      {
+        kind: "number",
+        key: "material.uv.offsetY",
+        label: "offsetY",
+        step: 0.01,
+        dragAccel: 0.1
+      }
+    ]
+  },
+  {
+    id: "materialToon",
+    title: "Toon",
+    fields: [
+      {
+        kind: "number",
+        key: "material.toon.bands",
+        label: "bands",
+        step: 1,
+        dragAccel: 1,
+        min: 1
+      },
+      {
+        kind: "number",
+        key: "material.toon.specularSize",
+        label: "specularSize",
+        step: 0.01,
+        dragAccel: 0.05,
+        min: 0,
+        max: 1
+      },
+      {
+        kind: "number",
+        key: "material.toon.rimPower",
+        label: "rimPower",
+        step: 0.1,
+        dragAccel: 0.5,
+        min: 0
+      },
+      {
+        kind: "number",
+        key: "material.toon.rimIntensity",
+        label: "rimIntensity",
         step: 0.05,
         dragAccel: 0.25,
         min: 0
@@ -32675,7 +32920,23 @@ const MATERIAL_CATALOG_SECTIONS = [
       { kind: "texture", key: "material.textures.normal", label: "normal" },
       { kind: "texture", key: "material.textures.occlusion", label: "occlusion" },
       { kind: "texture", key: "material.textures.emissive", label: "emissive" },
-      { kind: "texture", key: "material.textures.specular", label: "specular" }
+      { kind: "texture", key: "material.textures.specular", label: "specular" },
+      { kind: "texture", key: "material.textures.clearcoat", label: "clearcoat" },
+      {
+        kind: "texture",
+        key: "material.textures.clearcoatRoughness",
+        label: "clearcoatRoughness"
+      },
+      {
+        kind: "texture",
+        key: "material.textures.clearcoatNormal",
+        label: "clearcoatNormal"
+      },
+      { kind: "texture", key: "material.textures.sheen", label: "sheen" },
+      { kind: "texture", key: "material.textures.transmission", label: "transmission" },
+      { kind: "texture", key: "material.textures.thickness", label: "thickness" },
+      { kind: "texture", key: "material.textures.iridescence", label: "iridescence" },
+      { kind: "texture", key: "material.textures.anisotropy", label: "anisotropy" }
     ]
   }
 ];
@@ -32695,6 +32956,15 @@ const PROPERTY_SECTION_IDS = [
   "viewFog",
   "viewLook",
   "material",
+  "materialEmissive",
+  "materialSpecular",
+  "materialClearcoat",
+  "materialSheen",
+  "materialTransmission",
+  "materialIridescence",
+  "materialAnisotropy",
+  "materialUv",
+  "materialToon",
   "materialTextures",
   "visibility",
   "rendering",
@@ -32722,6 +32992,15 @@ const PROPERTY_SECTION_TITLES = {
   viewFog: "Fog",
   viewLook: "Look",
   material: "Material",
+  materialEmissive: "Emissive",
+  materialSpecular: "Specular",
+  materialClearcoat: "Clearcoat",
+  materialSheen: "Sheen",
+  materialTransmission: "Transmission",
+  materialIridescence: "Iridescence",
+  materialAnisotropy: "Anisotropy",
+  materialUv: "UV",
+  materialToon: "Toon",
   materialTextures: "Textures",
   visibility: "Visibility",
   rendering: "Rendering",
@@ -37947,7 +38226,15 @@ const MATERIAL_TEXTURE_SLOTS = [
   "normal",
   "occlusion",
   "emissive",
-  "specular"
+  "specular",
+  "clearcoat",
+  "clearcoatRoughness",
+  "clearcoatNormal",
+  "sheen",
+  "transmission",
+  "thickness",
+  "iridescence",
+  "anisotropy"
 ];
 function asHost(node) {
   return node;
@@ -37977,6 +38264,13 @@ function isColorSourceLike(value) {
   }
   const record = value;
   return typeof record.toNumber === "function" || typeof record.toHex === "function";
+}
+function isUvTransformLike(value) {
+  if (!value || typeof value !== "object") {
+    return false;
+  }
+  const matrix2 = value;
+  return typeof matrix2.a === "number" && typeof matrix2.b === "number" && typeof matrix2.c === "number" && typeof matrix2.d === "number" && typeof matrix2.tx === "number" && typeof matrix2.ty === "number";
 }
 function isMaterial3DLike(value) {
   if (!value || typeof value !== "object") {
@@ -38018,11 +38312,18 @@ function materialKind(material) {
   if (name === "FlatMaterial") {
     return "flat";
   }
+  if (name === "ToonMaterial") {
+    return "toon";
+  }
   if (typeof material.metallic === "number" && typeof material.roughness === "number") {
     return "pbr";
   }
   if (typeof material.shininess === "number") {
     return "phong";
+  }
+  const data = material.data;
+  if (data && typeof data.bands === "number") {
+    return "toon";
   }
   return "other";
 }
@@ -38035,6 +38336,107 @@ function readEmissive(material) {
     return null;
   }
   return emissive;
+}
+function readSpecularGroup(material) {
+  const specular = material.specular;
+  if (!specular || typeof specular !== "object") {
+    return null;
+  }
+  if (typeof specular.factor !== "number") {
+    return null;
+  }
+  return specular;
+}
+function readClearcoat(material) {
+  const clearcoat = material.clearcoat;
+  if (!clearcoat || typeof clearcoat !== "object") {
+    return null;
+  }
+  if (typeof clearcoat.factor !== "number" || typeof clearcoat.roughness !== "number") {
+    return null;
+  }
+  return clearcoat;
+}
+function readSheen(material) {
+  const sheen = material.sheen;
+  if (!sheen || typeof sheen !== "object") {
+    return null;
+  }
+  if (typeof sheen.roughness !== "number") {
+    return null;
+  }
+  return sheen;
+}
+function readTransmission(material) {
+  const transmission = material.transmission;
+  if (!transmission || typeof transmission !== "object") {
+    return null;
+  }
+  if (typeof transmission.factor !== "number" || typeof transmission.thickness !== "number") {
+    return null;
+  }
+  return transmission;
+}
+function readIridescence(material) {
+  const iridescence = material.iridescence;
+  if (!iridescence || typeof iridescence !== "object") {
+    return null;
+  }
+  if (typeof iridescence.factor !== "number" || typeof iridescence.ior !== "number") {
+    return null;
+  }
+  return iridescence;
+}
+function readAnisotropy(material) {
+  const anisotropy = material.anisotropy;
+  if (!anisotropy || typeof anisotropy !== "object") {
+    return null;
+  }
+  if (typeof anisotropy.strength !== "number" || typeof anisotropy.rotation !== "number") {
+    return null;
+  }
+  return anisotropy;
+}
+function materialSupportsUvTransform(material) {
+  const data = material.data;
+  return !!data && typeof data === "object" && "uvTransformRow0" in data;
+}
+function readUvTransform(material) {
+  const current2 = material.uvTransform;
+  if (isUvTransformLike(current2)) {
+    return current2;
+  }
+  return { a: 1, b: 0, c: 0, d: 1, tx: 0, ty: 0 };
+}
+function writeUvTransform(material, patch) {
+  if (!materialSupportsUvTransform(material)) {
+    return;
+  }
+  const current2 = readUvTransform(material);
+  material.uvTransform = {
+    a: patch.a ?? current2.a,
+    b: patch.b ?? current2.b,
+    c: patch.c ?? current2.c,
+    d: patch.d ?? current2.d,
+    tx: patch.tx ?? current2.tx,
+    ty: patch.ty ?? current2.ty
+  };
+}
+function readToonData(material) {
+  if (materialKind(material) !== "toon") {
+    return null;
+  }
+  const data = material.data;
+  if (!data || typeof data !== "object") {
+    return null;
+  }
+  return data;
+}
+function invalidateMaterialHost(node) {
+  const host = asHost(node);
+  if (typeof host.invalidate === "function") {
+    host.invalidate();
+  }
 }
 function materialHasTextureSlot(material, slot) {
   const textures = material.textures;
@@ -38089,7 +38491,15 @@ const TEXTURE_SLOT_KEYS = {
   normal: "material.textures.normal",
   occlusion: "material.textures.occlusion",
   emissive: "material.textures.emissive",
-  specular: "material.textures.specular"
+  specular: "material.textures.specular",
+  clearcoat: "material.textures.clearcoat",
+  clearcoatRoughness: "material.textures.clearcoatRoughness",
+  clearcoatNormal: "material.textures.clearcoatNormal",
+  sheen: "material.textures.sheen",
+  transmission: "material.textures.transmission",
+  thickness: "material.textures.thickness",
+  iridescence: "material.textures.iridescence",
+  anisotropy: "material.textures.anisotropy"
 };
 function appendTextureSlotMaps(material, ctx) {
   const { allow, strings } = ctx;
@@ -38107,25 +38517,48 @@ function appendTextureSlotMaps(material, ctx) {
     });
   }
 }
+function appendColorMap(ctx, key, getColor, setColor) {
+  if (!ctx.allow(key) || colorToString(getColor()) === void 0) {
+    return;
+  }
+  ctx.strings.push({
+    key,
+    get: () => colorToString(getColor()),
+    set: (value) => {
+      try {
+        setColor(parseColorString(value));
+      } catch {
+      }
+    }
+  });
+}
 function appendMaterialMaps(node, ctx) {
   const material = readMaterial3D(node);
   if (!material) {
     return;
   }
-  const { allow, numbers, strings } = ctx;
+  const { allow, numbers, strings, booleans } = ctx;
   const kind = materialKind(material);
-  if (allow("material.baseColor") && colorToString(material.baseColor) !== void 0) {
-    strings.push({
-      key: "material.baseColor",
-      get: () => colorToString(material.baseColor),
-      set: (value) => {
-        try {
-          material.baseColor = parseColorString(value);
-        } catch {
+  strings.push(
+    ...takeMaps(
+      allow,
+      directString(
+        "material.label",
+        () => typeof material.label === "string" ? material.label : void 0,
+        (value) => {
+          material.label = value;
         }
-      }
-    });
-  }
+      )
+    )
+  );
+  appendColorMap(
+    ctx,
+    "material.baseColor",
+    () => material.baseColor,
+    (value) => {
+      material.baseColor = value;
+    }
+  );
   appendTextureSlotMaps(material, ctx);
   strings.push(
     ...takeMaps(
@@ -38169,6 +38602,49 @@ function appendMaterialMaps(node, ctx) {
       )
     );
   }
+  booleans.push(
+    ...takeMaps(
+      allow,
+      directBoolean(
+        "material.doubleSided",
+        () => material.doubleSided,
+        () => void 0
+      )
+    )
+  );
+  booleans.push(
+    ...takeMaps(
+      allow,
+      directBoolean(
+        "material.flatShading",
+        () => material.flatShading,
+        () => void 0
+      )
+    )
+  );
+  booleans.push(
+    ...takeMaps(
+      allow,
+      directBoolean(
+        "material.fog",
+        () => material.fog,
+        () => void 0
+      )
+    )
+  );
+  booleans.push(
+    ...takeMaps(
+      allow,
+      directBoolean(
+        "material.vertexColors",
+        () => material.vertexColors,
+        (value) => {
+          material.vertexColors = value;
+          invalidateMaterialHost(node);
+        }
+      )
+    )
+  );
   if (kind === "pbr") {
     numbers.push(
       ...takeMaps(
@@ -38268,43 +38744,346 @@ function appendMaterialMaps(node, ctx) {
         )
       )
     );
-    if (allow("material.specularColor") && colorToString(material.specularColor) !== void 0) {
-      strings.push({
-        key: "material.specularColor",
-        get: () => colorToString(material.specularColor),
-        set: (value) => {
-          try {
-            material.specularColor = parseColorString(value);
-          } catch {
-          }
-        }
-      });
-    }
+    appendColorMap(
+      ctx,
+      "material.specularColor",
+      () => material.specularColor,
+      (value) => {
+        material.specularColor = value;
+      }
+    );
   }
   const emissive = readEmissive(material);
-  if (!emissive) {
-    return;
-  }
-  if (allow("material.emissive.color") && colorToString(emissive.color) !== void 0) {
-    strings.push({
-      key: "material.emissive.color",
-      get: () => colorToString(emissive.color),
-      set: (value) => {
-        try {
-          emissive.color = parseColorString(value);
-        } catch {
-        }
+  if (emissive) {
+    appendColorMap(
+      ctx,
+      "material.emissive.color",
+      () => emissive.color,
+      (value) => {
+        emissive.color = value;
       }
-    });
+    );
+    numbers.push(
+      ...takeMaps(
+        allow,
+        directNumber(
+          "material.emissive.strength",
+          () => emissive.strength,
+          (value) => {
+            emissive.strength = value;
+          }
+        )
+      )
+    );
+  }
+  const specular = readSpecularGroup(material);
+  if (specular) {
+    numbers.push(
+      ...takeMaps(
+        allow,
+        directNumber(
+          "material.specular.factor",
+          () => specular.factor,
+          (value) => {
+            specular.factor = value;
+          }
+        )
+      )
+    );
+    appendColorMap(
+      ctx,
+      "material.specular.color",
+      () => specular.color,
+      (value) => {
+        specular.color = value;
+      }
+    );
+  }
+  const clearcoat = readClearcoat(material);
+  if (clearcoat) {
+    numbers.push(
+      ...takeMaps(
+        allow,
+        directNumber(
+          "material.clearcoat.factor",
+          () => clearcoat.factor,
+          (value) => {
+            clearcoat.factor = value;
+          }
+        )
+      )
+    );
+    numbers.push(
+      ...takeMaps(
+        allow,
+        directNumber(
+          "material.clearcoat.roughness",
+          () => clearcoat.roughness,
+          (value) => {
+            clearcoat.roughness = value;
+          }
+        )
+      )
+    );
+    numbers.push(
+      ...takeMaps(
+        allow,
+        directNumber(
+          "material.clearcoat.normalScale",
+          () => clearcoat.normalScale,
+          (value) => {
+            clearcoat.normalScale = value;
+          }
+        )
+      )
+    );
+  }
+  const sheen = readSheen(material);
+  if (sheen) {
+    appendColorMap(
+      ctx,
+      "material.sheen.color",
+      () => sheen.color,
+      (value) => {
+        sheen.color = value;
+      }
+    );
+    numbers.push(
+      ...takeMaps(
+        allow,
+        directNumber(
+          "material.sheen.roughness",
+          () => sheen.roughness,
+          (value) => {
+            sheen.roughness = value;
+          }
+        )
+      )
+    );
+  }
+  const transmission = readTransmission(material);
+  if (transmission) {
+    numbers.push(
+      ...takeMaps(
+        allow,
+        directNumber(
+          "material.transmission.factor",
+          () => transmission.factor,
+          (value) => {
+            transmission.factor = value;
+          }
+        )
+      )
+    );
+    numbers.push(
+      ...takeMaps(
+        allow,
+        directNumber(
+          "material.transmission.thickness",
+          () => transmission.thickness,
+          (value) => {
+            transmission.thickness = value;
+          }
+        )
+      )
+    );
+    numbers.push(
+      ...takeMaps(
+        allow,
+        directNumber(
+          "material.transmission.attenuationDistance",
+          () => transmission.attenuationDistance,
+          (value) => {
+            transmission.attenuationDistance = value;
+          }
+        )
+      )
+    );
+    appendColorMap(
+      ctx,
+      "material.transmission.attenuationColor",
+      () => transmission.attenuationColor,
+      (value) => {
+        transmission.attenuationColor = value;
+      }
+    );
+  }
+  const iridescence = readIridescence(material);
+  if (iridescence) {
+    numbers.push(
+      ...takeMaps(
+        allow,
+        directNumber(
+          "material.iridescence.factor",
+          () => iridescence.factor,
+          (value) => {
+            iridescence.factor = value;
+          }
+        )
+      )
+    );
+    numbers.push(
+      ...takeMaps(
+        allow,
+        directNumber(
+          "material.iridescence.ior",
+          () => iridescence.ior,
+          (value) => {
+            iridescence.ior = value;
+          }
+        )
+      )
+    );
+    numbers.push(
+      ...takeMaps(
+        allow,
+        directNumber(
+          "material.iridescence.thicknessMinimum",
+          () => iridescence.thicknessMinimum,
+          (value) => {
+            iridescence.thicknessMinimum = value;
+          }
+        )
+      )
+    );
+    numbers.push(
+      ...takeMaps(
+        allow,
+        directNumber(
+          "material.iridescence.thicknessMaximum",
+          () => iridescence.thicknessMaximum,
+          (value) => {
+            iridescence.thicknessMaximum = value;
+          }
+        )
+      )
+    );
+  }
+  const anisotropy = readAnisotropy(material);
+  if (anisotropy) {
+    numbers.push(
+      ...takeMaps(
+        allow,
+        directNumber(
+          "material.anisotropy.strength",
+          () => anisotropy.strength,
+          (value) => {
+            anisotropy.strength = value;
+          }
+        )
+      )
+    );
+    numbers.push(
+      ...takeMaps(
+        allow,
+        directNumber(
+          "material.anisotropy.rotation",
+          () => anisotropy.rotation,
+          (value) => {
+            anisotropy.rotation = value;
+          }
+        )
+      )
+    );
+  }
+  if (materialSupportsUvTransform(material)) {
+    numbers.push(
+      ...takeMaps(
+        allow,
+        directNumber(
+          "material.uv.scaleX",
+          () => readUvTransform(material).a,
+          (value) => {
+            writeUvTransform(material, { a: value });
+          }
+        )
+      )
+    );
+    numbers.push(
+      ...takeMaps(
+        allow,
+        directNumber(
+          "material.uv.scaleY",
+          () => readUvTransform(material).d,
+          (value) => {
+            writeUvTransform(material, { d: value });
+          }
+        )
+      )
+    );
+    numbers.push(
+      ...takeMaps(
+        allow,
+        directNumber(
+          "material.uv.offsetX",
+          () => readUvTransform(material).tx,
+          (value) => {
+            writeUvTransform(material, { tx: value });
+          }
+        )
+      )
+    );
+    numbers.push(
+      ...takeMaps(
+        allow,
+        directNumber(
+          "material.uv.offsetY",
+          () => readUvTransform(material).ty,
+          (value) => {
+            writeUvTransform(material, { ty: value });
+          }
+        )
+      )
+    );
+  }
+  const toon = readToonData(material);
+  if (!toon) {
+    return;
   }
   numbers.push(
     ...takeMaps(
       allow,
       directNumber(
-        "material.emissive.strength",
-        () => emissive.strength,
+        "material.toon.bands",
+        () => toon.bands,
         (value) => {
-          emissive.strength = value;
+          toon.bands = value;
+        }
+      )
+    )
+  );
+  numbers.push(
+    ...takeMaps(
+      allow,
+      directNumber(
+        "material.toon.specularSize",
+        () => toon.specularSize,
+        (value) => {
+          toon.specularSize = value;
+        }
+      )
+    )
+  );
+  numbers.push(
+    ...takeMaps(
+      allow,
+      directNumber(
+        "material.toon.rimPower",
+        () => toon.rimPower,
+        (value) => {
+          toon.rimPower = value;
+        }
+      )
+    )
+  );
+  numbers.push(
+    ...takeMaps(
+      allow,
+      directNumber(
+        "material.toon.rimIntensity",
+        () => toon.rimIntensity,
+        (value) => {
+          toon.rimIntensity = value;
         }
       )
     )
@@ -52643,10 +53422,10 @@ var Box = class Box2 {
   * @param sphere - The sphere to test
   * @returns Whether the box and sphere overlap
   */
-  intersectsSphere(sphere) {
-    if (sphere.radius < 0) return false;
-    this.clampPoint(sphere.center, _scratchPoint);
-    return _scratchPoint.distanceToSquared(sphere.center) <= sphere.radius * sphere.radius;
+  intersectsSphere(sphere2) {
+    if (sphere2.radius < 0) return false;
+    this.clampPoint(sphere2.center, _scratchPoint);
+    return _scratchPoint.distanceToSquared(sphere2.center) <= sphere2.radius * sphere2.radius;
   }
   /**
   * Returns true when `plane` passes through this box or touches it
@@ -55377,9 +56156,9 @@ var Sphere = class Sphere2 {
   * @param sphere - The sphere to copy from
   * @returns This sphere for chaining
   */
-  copyFrom(sphere) {
-    this.center.copyFrom(sphere.center);
-    this.radius = sphere.radius;
+  copyFrom(sphere2) {
+    this.center.copyFrom(sphere2.center);
+    this.radius = sphere2.radius;
     return this;
   }
   /**
@@ -55440,8 +56219,8 @@ var Sphere = class Sphere2 {
   * @param sphere - The sphere to compare with
   * @returns Whether the center and radius match
   */
-  equals(sphere) {
-    return sphere.center.equals(this.center) && sphere.radius === this.radius;
+  equals(sphere2) {
+    return sphere2.center.equals(this.center) && sphere2.radius === this.radius;
   }
   /**
   * Returns the signed distance from `point` to the surface of this sphere (negative when inside)
@@ -55488,10 +56267,10 @@ var Sphere = class Sphere2 {
   * @param sphere - The sphere to test
   * @returns Whether the spheres overlap
   */
-  intersectsSphere(sphere) {
-    if (this.radius < 0 || sphere.radius < 0) return false;
-    const radiusSum = this.radius + sphere.radius;
-    return this.center.distanceToSquared(sphere.center) <= radiusSum * radiusSum;
+  intersectsSphere(sphere2) {
+    if (this.radius < 0 || sphere2.radius < 0) return false;
+    const radiusSum = this.radius + sphere2.radius;
+    return this.center.distanceToSquared(sphere2.center) <= radiusSum * radiusSum;
   }
   /**
   * Returns true when `plane` passes through this sphere or touches it; never for an empty sphere
@@ -58020,18 +58799,18 @@ var Mesh3D = class Mesh3D2 extends Container3D {
   * ```
   */
   get boundingSphere() {
-    const sphere = this._worldBoundsSphere ||= new Sphere();
+    const sphere2 = this._worldBoundsSphere ||= new Sphere();
     if (this._worldBoundsCacheId !== this._worldTransformId) {
       this._worldBoundsCacheId = this._worldTransformId;
       const geometry = this._geometry;
-      if (geometry.dynamic) sphere.makeEmpty();
+      if (geometry.dynamic) sphere2.makeEmpty();
       else if (this._morph && geometry._morphBoundsExpansion > 0) {
         _morphExpandedSphere.copyFrom(geometry.boundsSphere);
         _morphExpandedSphere.radius += geometry._morphBoundsExpansion;
-        _morphExpandedSphere.applyMatrix4(this.worldTransform, sphere);
-      } else geometry.boundsSphere.applyMatrix4(this.worldTransform, sphere);
+        _morphExpandedSphere.applyMatrix4(this.worldTransform, sphere2);
+      } else geometry.boundsSphere.applyMatrix4(this.worldTransform, sphere2);
     }
-    return sphere;
+    return sphere2;
   }
   /**
   * Makes the mesh rebuild its shader and draw state on the next frame
@@ -65089,20 +65868,20 @@ var Mesh3DSlot = class {
     this._batch = batch;
   }
   get boundingSphere() {
-    const sphere = this._boundingSphere ||= new Sphere();
+    const sphere2 = this._boundingSphere ||= new Sphere();
     const store = this._batch.storeBuffer;
     let spheres = store.boundingSpheres;
     let o2 = this._storeIndex * 4;
     if (!store.writesSpheres || spheres === null) {
       const geometry = this.geometry;
-      if (geometry === void 0) return sphere.makeEmpty();
+      if (geometry === void 0) return sphere2.makeEmpty();
       spheres = _sphereScratch;
       o2 = 0;
       transformBoundingSphere(spheres, 0, store.data, this._storeIndex * 24, geometry, 0);
     }
-    sphere.center.set(spheres[o2], spheres[o2 + 1], spheres[o2 + 2]);
-    sphere.radius = spheres[o2 + 3];
-    return sphere;
+    sphere2.center.set(spheres[o2], spheres[o2 + 1], spheres[o2 + 2]);
+    sphere2.radius = spheres[o2 + 3];
+    return sphere2;
   }
   destroy() {
     this._batch = null;
@@ -65748,8 +66527,8 @@ var Plane = class Plane2 {
   * @param sphere - The sphere to test
   * @returns Whether the plane passes through or touches the sphere
   */
-  intersectsSphere(sphere) {
-    return sphere.intersectsPlane(this);
+  intersectsSphere(sphere2) {
+    return sphere2.intersectsPlane(this);
   }
   /**
   * Returns true when `ray` hits this plane; same as {@link Ray#intersectsPlane}
@@ -66069,13 +66848,13 @@ var Frustum = class Frustum2 {
   * @param sphere - The sphere to test
   * @returns Whether the sphere and this frustum overlap
   */
-  intersectsSphere(sphere) {
-    if (sphere.radius < 0) return false;
+  intersectsSphere(sphere2) {
+    if (sphere2.radius < 0) return false;
     const planes = this._planes;
-    const cx = sphere.center.x;
-    const cy = sphere.center.y;
-    const cz = sphere.center.z;
-    const negRadius = -sphere.radius;
+    const cx = sphere2.center.x;
+    const cy = sphere2.center.y;
+    const cz = sphere2.center.z;
+    const negRadius = -sphere2.radius;
     for (let i2 = 0; i2 < 24; i2 += 4) if (planes[i2] * cx + planes[i2 + 1] * cy + planes[i2 + 2] * cz + planes[i2 + 3] < negRadius) return false;
     return true;
   }
@@ -69331,8 +70110,8 @@ var Ray = class Ray2 {
   * @returns The entry point (or the exit point from inside), or `null` when the ray misses
   * @see {@link Ray#intersectSphereT} For the distance to the same hit, without the point.
   */
-  intersectSphere(sphere, out2) {
-    const t2 = this.intersectSphereT(sphere);
+  intersectSphere(sphere2, out2) {
+    const t2 = this.intersectSphereT(sphere2);
     return t2 === -1 ? null : this.at(t2, out2);
   }
   /**
@@ -69358,14 +70137,14 @@ var Ray = class Ray2 {
   * @param sphere - The sphere to intersect
   * @returns The distance `t` to the hit (`>= 0`), or `-1` when the ray misses
   */
-  intersectSphereT(sphere) {
-    if (sphere.radius < 0) return -1;
-    const cx = sphere.center.x - this.origin.x;
-    const cy = sphere.center.y - this.origin.y;
-    const cz = sphere.center.z - this.origin.z;
+  intersectSphereT(sphere2) {
+    if (sphere2.radius < 0) return -1;
+    const cx = sphere2.center.x - this.origin.x;
+    const cy = sphere2.center.y - this.origin.y;
+    const cz = sphere2.center.z - this.origin.z;
     const tca = cx * this.direction.x + cy * this.direction.y + cz * this.direction.z;
     const d2 = cx * cx + cy * cy + cz * cz - tca * tca;
-    const radius2 = sphere.radius * sphere.radius;
+    const radius2 = sphere2.radius * sphere2.radius;
     if (d2 > radius2) return -1;
     const thc = Math.sqrt(radius2 - d2);
     const t0 = tca - thc;
@@ -69384,9 +70163,9 @@ var Ray = class Ray2 {
   * @param sphere - The sphere to test
   * @returns Whether the ray hits the sphere
   */
-  intersectsSphere(sphere) {
-    if (sphere.radius < 0) return false;
-    return this.distanceSqToPoint(sphere.center) <= sphere.radius * sphere.radius;
+  intersectsSphere(sphere2) {
+    if (sphere2.radius < 0) return false;
+    return this.distanceSqToPoint(sphere2.center) <= sphere2.radius * sphere2.radius;
   }
   /**
   * Intersects this ray with `plane`
@@ -71769,6 +72548,407 @@ var PlaneGeometry = class PlaneGeometry2 extends Geometry3D {
       uvs,
       indices
     });
+  }
+};
+var SphereGeometry = class SphereGeometry2 extends Geometry3D {
+  /**
+  * Defaults for every new `SphereGeometry`
+  * @example
+  * ```ts
+  * SphereGeometry.defaultOptions.widthSegments = 16;
+  * ```
+  */
+  static defaultOptions = {
+    ...Geometry3D.defaultOptions,
+    radius: 1,
+    widthSegments: 32,
+    heightSegments: 16
+  };
+  /**
+  * Creates a new `SphereGeometry`
+  * @param options - See {@link SphereGeometryOptions} for available options
+  */
+  constructor(options = {}) {
+    const resolvedOptions = {
+      ...SphereGeometry2.defaultOptions,
+      ...options
+    };
+    const { radius } = resolvedOptions;
+    const widthSegments = clampSegments(resolvedOptions.widthSegments, 3);
+    const heightSegments = clampSegments(resolvedOptions.heightSegments, 2);
+    const vertCount = (widthSegments + 1) * (heightSegments + 1);
+    const triCount = (heightSegments - 1) * widthSegments * 2;
+    const positions = new Float32Array(vertCount * 3);
+    const normals = new Float32Array(vertCount * 3);
+    const uvs = new Float32Array(vertCount * 2);
+    const indices = vertCount <= 65536 ? new Uint16Array(triCount * 3) : new Uint32Array(triCount * 3);
+    const sinPhi = new Float64Array(heightSegments + 1);
+    const cosPhi = new Float64Array(heightSegments + 1);
+    for (let y2 = 0; y2 <= heightSegments; y2++) {
+      const phi = y2 / heightSegments * Math.PI;
+      sinPhi[y2] = Math.sin(phi);
+      cosPhi[y2] = Math.cos(phi);
+    }
+    const sinTheta = new Float64Array(widthSegments + 1);
+    const cosTheta = new Float64Array(widthSegments + 1);
+    for (let x2 = 0; x2 <= widthSegments; x2++) {
+      const theta = x2 / widthSegments * Math.PI * 2;
+      sinTheta[x2] = Math.sin(theta);
+      cosTheta[x2] = Math.cos(theta);
+    }
+    let posOffset = 0;
+    let uvOffset = 0;
+    for (let y2 = 0; y2 <= heightSegments; y2++) {
+      const v2 = y2 / heightSegments;
+      const sp = sinPhi[y2];
+      const cp = cosPhi[y2];
+      for (let x2 = 0; x2 <= widthSegments; x2++) {
+        const u2 = x2 / widthSegments;
+        const st = sinTheta[x2];
+        const nx = sp * cosTheta[x2];
+        const ny = cp;
+        const nz = sp * st;
+        positions[posOffset] = nx * radius;
+        positions[posOffset + 1] = ny * radius;
+        positions[posOffset + 2] = nz * radius;
+        normals[posOffset] = nx;
+        normals[posOffset + 1] = ny;
+        normals[posOffset + 2] = nz;
+        posOffset += 3;
+        uvs[uvOffset] = u2;
+        uvs[uvOffset + 1] = v2;
+        uvOffset += 2;
+      }
+    }
+    const rowSize = widthSegments + 1;
+    let idxOffset = 0;
+    for (let y2 = 0; y2 < heightSegments; y2++) for (let x2 = 0; x2 < widthSegments; x2++) {
+      const a2 = y2 * rowSize + x2;
+      const b2 = a2 + 1;
+      const c2 = a2 + rowSize;
+      const d2 = c2 + 1;
+      if (y2 !== 0) {
+        indices[idxOffset] = a2;
+        indices[idxOffset + 1] = b2;
+        indices[idxOffset + 2] = c2;
+        idxOffset += 3;
+      }
+      if (y2 !== heightSegments - 1) {
+        indices[idxOffset] = b2;
+        indices[idxOffset + 1] = d2;
+        indices[idxOffset + 2] = c2;
+        idxOffset += 3;
+      }
+    }
+    super({
+      ...resolvedOptions,
+      positions,
+      normals,
+      uvs,
+      indices
+    });
+  }
+};
+const phongLightingBit = createLightingBit({
+  name: "phongLighting",
+  requires: [mathConstantsBit],
+  preLighting: {
+    gpu: `
+  var directLight = vec3<f32>(0.0);
+
+  let albedoOverPI = albedo * INV_PI;
+  let specScale = (shininess * 0.5 + 1.0) * INV_PI * 0.25 * specularStrength;
+`,
+    gl: `
+  vec3 directLight = vec3(0.0);
+
+  vec3 albedoOverPI = albedo * INV_PI;
+  float specScale = (shininess * 0.5 + 1.0) * INV_PI * 0.25 * specularStrength;
+`
+  },
+  perLight: {
+    gpu: `
+    let halfVector = normalize(viewDir + lightDir);
+    let nDotH = max(dot(normal, halfVector), 0.0);
+    let vDotH = max(dot(viewDir, halfVector), 0.0);
+
+    let fc5 = exp2((-5.55473 * vDotH - 6.98316) * vDotH);
+    let fresnel = specularColor + (vec3<f32>(1.0) - specularColor) * fc5;
+    let specular = fresnel * (specScale * pow(nDotH, shininess));
+
+    let irradiance = light.color * (nDotL * attenuation * shadow);
+    directLight += (albedoOverPI + specular) * irradiance;
+`,
+    gl: `
+    vec3 halfVector = normalize(viewDir + lightDir);
+    float nDotH = max(dot(normal, halfVector), 0.0);
+    float vDotH = max(dot(viewDir, halfVector), 0.0);
+
+    float fc5 = exp2((-5.55473 * vDotH - 6.98316) * vDotH);
+    vec3 fresnel = specularColor + (vec3(1.0) - specularColor) * fc5;
+    vec3 specular = fresnel * (specScale * pow(nDotH, shininess));
+
+    vec3 irradiance = light.color * (nDotL * attenuation * shadow);
+    directLight += (albedoOverPI + specular) * irradiance;
+`
+  },
+  postLighting: {
+    gpu: `
+  let ambient = global.uGlobalLightParams.xyz * albedoOverPI + sampleEnvironment(normal, 1.0) * albedo;
+  finalColor = ambient + directLight + emissive;
+`,
+    gl: `
+  vec3 ambient = uGlobalLightParams.xyz * albedoOverPI + sampleEnvironment(normal, 1.0) * albedo;
+  finalColor = ambient + directLight + emissive;
+`
+  }
+});
+const phongMaterialBit = {
+  name: "phongMaterial",
+  textures: ["baseColor", "normal"],
+  bindings: { material: {
+    baseColor: "vec4<f32>",
+    specularColor: "vec3<f32>",
+    shininess: "f32",
+    specularStrength: "f32",
+    alphaCutoff: "f32",
+    normalScale: "f32"
+  } },
+  gpu: { fragment: { material: `
+  var emissive: vec3<f32> = vec3<f32>(0.0);
+  var specularStrength = material.specularStrength;
+
+  var baseColor = material.baseColor;
+
+  var baseTex = sampleBaseColor(input.vUV);
+  let baseTexLinear = baseTex.rgb / max(baseTex.a, 0.001);
+  baseTex = vec4<f32>(pow(baseTexLinear, vec3<f32>(2.2)), baseTex.a);
+  baseColor *= baseTex;
+
+  albedo *= baseColor.rgb;
+  alpha *= baseColor.a;
+
+  let viewDir = normalize(camera.uCameraPosition.xyz - input.vPosition);
+  let specularColor = material.specularColor;
+  let shininess = max(material.shininess, 1.0);
+` } },
+  gl: { fragment: { material: `
+  vec3 emissive = vec3(0.0);
+  float specularStrength = material.specularStrength;
+
+  vec4 baseColor = material.baseColor;
+
+  vec4 baseTex = sampleBaseColor(vUV);
+  vec3 baseTexLinear = baseTex.rgb / max(baseTex.a, 0.001);
+  baseTex.rgb = pow(baseTexLinear, vec3(2.2));
+  baseColor *= baseTex;
+
+  albedo *= baseColor.rgb;
+  alpha *= baseColor.a;
+
+  vec3 viewDir = normalize(uCameraPosition.xyz - vPosition);
+  vec3 specularColor = material.specularColor;
+  float shininess = max(material.shininess, 1.0);
+` } }
+};
+const phongSpecularTextureBit = {
+  name: "phongSpecularTexture",
+  textures: ["specular"],
+  gpu: { fragment: { material: `
+  specularStrength *= sampleSpecular(input.vUV).r;
+` } },
+  gl: { fragment: { material: `
+  specularStrength *= sampleSpecular(vUV).r;
+` } }
+};
+var PhongMaterial = class extends BaseMaterial3D {
+  /**
+  * Runtime glow controls; present only when the material was built with an `emissive` group
+  * @example
+  * ```ts
+  * const lantern = new PhongMaterial({ emissive: { color: 0xffaa33 } });
+  * lantern.emissive!.strength = 3;
+  * ```
+  */
+  emissive;
+  /** Both the layout and `getPrimaryDescriptor` read it, so the two can't drift */
+  _featureBits = [];
+  _specularColorTint = 1118481;
+  constructor(options = {}) {
+    const { specularTexture, normalTexture, emissive } = options;
+    super(options);
+    const textures = {
+      baseColor: options.baseColorTexture,
+      normal: normalTexture ?? NORMAL_MAP,
+      ...options.textures
+    };
+    if (specularTexture) {
+      textures.specular = specularTexture;
+      this._featureBits.push(phongSpecularTextureBit);
+    }
+    if (emissive) {
+      textures.emissive = emissive.texture;
+      this._featureBits.push(emissiveBit);
+    }
+    this._deriveLayoutFromBits([
+      phongMaterialBit,
+      uvTransformBit,
+      ...this._featureBits,
+      ...this.extraBits
+    ], textures);
+    this.shininess = options.shininess ?? 30;
+    this.specularStrength = options.specularStrength ?? 1;
+    this.specularColor = options.specularColor ?? 1118481;
+    this.normalScale = options.normalScale ?? 1;
+    if (emissive) {
+      const props = this.emissive = new EmissivePropsClass(this);
+      props.color = emissive.color ?? 16777215;
+      props.strength = emissive.strength ?? 1;
+    }
+  }
+  /** One per environment bit; env bits declare no material fields or textures, so each fits the layout */
+  _descriptorByEnvKey = /* @__PURE__ */ Object.create(null);
+  /**
+  * The shader descriptor for a view, one per kind of environment
+  * @param view - View whose environment picks the descriptor
+  * @advanced
+  */
+  getPrimaryDescriptor(view) {
+    if (this._variantDirty) {
+      this._descriptorByEnvKey = /* @__PURE__ */ Object.create(null);
+      this._variantDirty = false;
+    }
+    const envBit = view._envBit;
+    let descriptor = this._descriptorByEnvKey[envBit.name];
+    if (descriptor) return descriptor;
+    const bits = [
+      phongMaterialBit,
+      envBit,
+      uvTransformBit
+    ];
+    for (let i2 = 0; i2 < this._featureBits.length; i2++) bits.push(this._featureBits[i2]);
+    for (let i2 = 0; i2 < this.extraBits.length; i2++) bits.push(this.extraBits[i2]);
+    bits.push(phongLightingBit);
+    if (this._alphaMode === "mask") bits.push(alphaMaskBit);
+    descriptor = new ShaderDescriptor({});
+    descriptor.update({
+      bitsGpu: bits,
+      bitsGl: bits
+    });
+    this._descriptorByEnvKey[envBit.name] = descriptor;
+    return descriptor;
+  }
+  /**
+  * The base options plus the specular values, maps and emissive group
+  * @advanced
+  */
+  _toOptions() {
+    const { emissive, textures } = this;
+    return {
+      ...super._toOptions(),
+      specularColor: this.specularColor,
+      shininess: this.shininess,
+      specularStrength: this.specularStrength,
+      normalScale: this.normalScale,
+      specularTexture: textures.specular,
+      normalTexture: textures.normal,
+      emissive: emissive && readFeatureProps(emissive)
+    };
+  }
+  /**
+  * Specular exponent: higher gives a smaller, sharper highlight
+  *
+  * Values below 1 act as 1.
+  * @example
+  * ```ts
+  * material.shininess = 80;
+  * ```
+  */
+  get shininess() {
+    return this.data.shininess;
+  }
+  /**
+  * Sets the specular exponent
+  * @param value - Specular exponent
+  */
+  set shininess(value) {
+    this.data.shininess = value;
+  }
+  /**
+  * Scales the whole highlight, Fresnel rim included; 0 removes it
+  *
+  * A specular map multiplies on top of it.
+  * @example
+  * ```ts
+  * material.specularStrength = 0.5;
+  * ```
+  */
+  get specularStrength() {
+    return this.data.specularStrength;
+  }
+  /**
+  * Sets the highlight scale
+  * @param value - Scale; 0 removes the highlight
+  */
+  set specularStrength(value) {
+    this.data.specularStrength = value;
+  }
+  /**
+  * Strength of the normal map's bumps, as glTF's `normalTextureInfo.scale`; 1 leaves the map as
+  * authored
+  * @example
+  * ```ts
+  * material.normalScale = 2;
+  * ```
+  */
+  get normalScale() {
+    return this.data.normalScale;
+  }
+  /**
+  * Sets the strength of the normal map's bumps
+  * @param value - Multiplier on the bumps
+  */
+  set normalScale(value) {
+    this.data.normalScale = value;
+  }
+  /**
+  * Specular tint (rgb); takes any {@link ColorSource} and reads back a hex number, like
+  * `Container.tint`
+  * @example
+  * ```ts
+  * material.specularColor = 'white';
+  * ```
+  */
+  get specularColor() {
+    return this._specularColorTint;
+  }
+  /**
+  * Sets the specular tint
+  * @param value - Display colour
+  */
+  set specularColor(value) {
+    const colour = Color.shared.setValue(value);
+    this._specularColorTint = colour.toNumber();
+    const packed = this.data?.specularColor;
+    if (packed) {
+      writeLinearRgb(packed, 0, colour);
+      this.update();
+    }
+  }
+  /**
+  * Frees the material for good, as {@link BaseMaterial3D#destroy} does
+  * @param options - Whether to destroy the textures too
+  * @example
+  * ```ts
+  * mesh.material.destroy();
+  * ```
+  */
+  destroy(options) {
+    if (this.destroyed) return;
+    super.destroy(options);
+    this._descriptorByEnvKey = null;
+    this._featureBits = null;
+    this.emissive = void 0;
   }
 };
 var Spherical = class Spherical2 {
@@ -75742,13 +76922,13 @@ const backendLoaders = [{
     type: ExtensionType.WebGLLoader,
     name: "pixijs-3d"
   },
-  load: () => __vitePreload(() => import("./init-UAFdOGDi.js"), true ? __vite__mapDeps([13,14,10,8]) : void 0)
+  load: () => __vitePreload(() => import("./init-BaAP2Qrc.js"), true ? __vite__mapDeps([13,14,10,8]) : void 0)
 }, {
   extension: {
     type: ExtensionType.WebGPULoader,
     name: "pixijs-3d"
   },
-  load: () => __vitePreload(() => import("./init-vzKnMxw8.js"), true ? __vite__mapDeps([15,14,10,8]) : void 0)
+  load: () => __vitePreload(() => import("./init-DWRsJzzm.js"), true ? __vite__mapDeps([15,14,10,8]) : void 0)
 }];
 addUniformParsers();
 extensions.add(...backendLoaders);
@@ -76744,6 +77924,321 @@ var OrbitCamera = class OrbitCamera2 extends EventEmitter {
     this._setZoomCursor(this.view.toGlobal(center, center, true));
   }
 };
+const toonMaterialBit = {
+  name: "toonMaterial",
+  textures: ["baseColor"],
+  bindings: { material: {
+    baseColor: "vec4<f32>",
+    bands: "f32",
+    specularSize: "f32",
+    rimPower: "f32",
+    rimIntensity: "f32",
+    alphaCutoff: "f32"
+  } },
+  gpu: { fragment: { material: `
+  var baseColor = material.baseColor;
+
+  if (HAS_UVS == 1) {
+    var baseTex = sampleBaseColor(input.vUV);
+    baseTex = vec4<f32>(baseTex.rgb / max(baseTex.a, 0.001), baseTex.a);
+    baseColor *= baseTex;
+  }
+
+  albedo *= baseColor.rgb;
+  alpha *= baseColor.a;
+
+  var viewDir = normalize(camera.uCameraPosition.xyz - input.vPosition);
+  let bands = max(material.bands, 1.0);
+  let specularSize = material.specularSize;
+  let rimPower = material.rimPower;
+  let rimIntensity = material.rimIntensity;
+` } },
+  gl: { fragment: { material: `
+  vec4 baseColor = material.baseColor;
+
+  if (HAS_UVS == 1) {
+    vec4 baseTex = sampleBaseColor(vUV);
+    baseTex.rgb /= max(baseTex.a, 0.001);
+    baseColor *= baseTex;
+  }
+
+  albedo *= baseColor.rgb;
+  alpha *= baseColor.a;
+
+  vec3 viewDir = normalize(uCameraPosition.xyz - vPosition);
+  float bands = max(material.bands, 1.0);
+  float specularSize = material.specularSize;
+  float rimPower = material.rimPower;
+  float rimIntensity = material.rimIntensity;
+` } }
+};
+const toonLightingBit = createLightingBit({
+  name: "toonLighting",
+  preLighting: {
+    gpu: `
+  var diffuseLight = vec3<f32>(0.0);
+  var specLight = vec3<f32>(0.0);
+
+  let ambientColor = global.uGlobalLightParams.xyz;
+  diffuseLight += ambientColor * 0.4;
+`,
+    gl: `
+  vec3 diffuseLight = vec3(0.0);
+  vec3 specLight = vec3(0.0);
+
+  diffuseLight += uGlobalLightParams.xyz * 0.4;
+`
+  },
+  perLight: {
+    gpu: `
+    let litAmount = nDotL * attenuation * shadow;
+
+    let quantized = floor(litAmount * bands + 0.5) / bands;
+    diffuseLight += light.color * quantized;
+
+    let halfVector = normalize(viewDir + lightDir);
+    let nDotH = max(dot(normal, halfVector), 0.0);
+    let specStep = smoothstep(1.0 - specularSize - 0.02, 1.0 - specularSize, nDotH);
+    specLight += light.color * specStep * shadow * step(0.01, litAmount);
+`,
+    gl: `
+    float litAmount = nDotL * attenuation * shadow;
+
+    float quantized = floor(litAmount * bands + 0.5) / bands;
+    diffuseLight += light.color * quantized;
+
+    vec3 halfVector = normalize(viewDir + lightDir);
+    float nDotH = max(dot(normal, halfVector), 0.0);
+    float specStep = smoothstep(1.0 - specularSize - 0.02, 1.0 - specularSize, nDotH);
+    specLight += light.color * specStep * shadow * step(0.01, litAmount);
+`
+  },
+  postLighting: {
+    gpu: `
+  let nDotV = max(dot(normal, viewDir), 0.0);
+  let rimFactor = pow(1.0 - nDotV, rimPower) * rimIntensity;
+
+  finalColor = albedo * diffuseLight + specLight * 0.5 + vec3<f32>(rimFactor);
+`,
+    gl: `
+  float nDotV = max(dot(normal, viewDir), 0.0);
+  float rimFactor = pow(1.0 - nDotV, rimPower) * rimIntensity;
+
+  finalColor = albedo * diffuseLight + specLight * 0.5 + vec3(rimFactor);
+`
+  }
+});
+var ToonMaterial = class ToonMaterial2 extends BaseMaterial3D {
+  /**
+  * Defaults for every new `ToonMaterial`; an option passed as `undefined` keeps its default
+  * @example
+  * ```ts
+  * ToonMaterial.defaultOptions.bands = 4;
+  * ```
+  */
+  static defaultOptions = {
+    bands: 3,
+    specularSize: 0.15,
+    rimPower: 3,
+    rimIntensity: 0.4,
+    outline: true
+  };
+  constructor(options = {}) {
+    const { bands, specularSize, rimPower, rimIntensity, outline, ...rest } = {
+      ...ToonMaterial2.defaultOptions,
+      ...definedProps(options)
+    };
+    const bitsGpu = [toonMaterialBit, toonLightingBit];
+    const bitsGl = [toonMaterialBit, toonLightingBit];
+    if (rest.alphaMode === "mask") {
+      bitsGpu.push(alphaMaskBit);
+      bitsGl.push(alphaMaskBit);
+    }
+    super({
+      ...rest,
+      descriptor: {
+        bitsGpu,
+        bitsGl
+      },
+      passes: {
+        outline,
+        ...rest.passes
+      }
+    });
+    this.data.bands = bands;
+    this.data.specularSize = specularSize;
+    this.data.rimPower = rimPower;
+    this.data.rimIntensity = rimIntensity;
+  }
+  /**
+  * The base options plus the band, specular and rim values, with the outline pass as `outline`
+  * @advanced
+  */
+  _toOptions() {
+    const options = super._toOptions();
+    const { outline, ...passes } = options.passes ?? {};
+    const { bands, specularSize, rimPower, rimIntensity } = this.data;
+    return {
+      ...options,
+      passes,
+      outline: !!outline,
+      bands,
+      specularSize,
+      rimPower,
+      rimIntensity
+    };
+  }
+};
+const SPHERE_RADIUS = 0.28;
+const ROW_Z = -3.6;
+const ROW_Y = SPHERE_RADIUS;
+const SPACING = 0.75;
+function sphere(label, material, index, count2) {
+  const x2 = (index - (count2 - 1) / 2) * SPACING;
+  return new Mesh3D({
+    geometry: new SphereGeometry({ radius: SPHERE_RADIUS, widthSegments: 32, heightSegments: 24 }),
+    material,
+    castShadow: true,
+    receiveShadow: true,
+    label,
+    position: { x: x2, y: ROW_Y, z: ROW_Z }
+  });
+}
+function buildMaterialShowcase() {
+  const root2 = new Container3D({ label: "Materials" });
+  const specs = [
+    {
+      label: "MatPbr",
+      material: new Material3D({
+        label: "pbr-metal",
+        baseColor: 12634324,
+        metallic: 1,
+        roughness: 0.22
+      })
+    },
+    {
+      label: "MatEmissive",
+      material: new Material3D({
+        label: "emissive",
+        baseColor: 1118481,
+        roughness: 0.6,
+        emissive: { color: 4513279, strength: 2.5 }
+      })
+    },
+    {
+      label: "MatSpecular",
+      material: new Material3D({
+        label: "specular",
+        baseColor: 9090296,
+        roughness: 0.35,
+        metallic: 0,
+        specular: { factor: 0.85, color: 16773853 }
+      })
+    },
+    {
+      label: "MatClearcoat",
+      material: new Material3D({
+        label: "clearcoat",
+        baseColor: 9182227,
+        metallic: 0.15,
+        roughness: 0.45,
+        clearcoat: { factor: 1, roughness: 0.05 }
+      })
+    },
+    {
+      label: "MatSheen",
+      material: new Material3D({
+        label: "sheen",
+        baseColor: 3869253,
+        roughness: 0.9,
+        metallic: 0,
+        sheen: { color: 14196991, roughness: 0.35 }
+      })
+    },
+    {
+      label: "MatTransmission",
+      material: new Material3D({
+        label: "transmission",
+        baseColor: 8969727,
+        roughness: 0.05,
+        metallic: 0,
+        ior: 1.45,
+        transmission: {
+          factor: 1,
+          thickness: 0.55,
+          attenuationDistance: 1.2,
+          attenuationColor: 3050327
+        }
+      })
+    },
+    {
+      label: "MatIridescence",
+      material: new Material3D({
+        label: "iridescence",
+        baseColor: 2236962,
+        metallic: 1,
+        roughness: 0.25,
+        iridescence: { factor: 1, ior: 1.3, thicknessMinimum: 100, thicknessMaximum: 600 }
+      })
+    },
+    {
+      label: "MatAnisotropy",
+      material: new Material3D({
+        label: "anisotropy",
+        baseColor: 13938487,
+        metallic: 1,
+        roughness: 0.35,
+        anisotropy: { strength: 0.85, rotation: Math.PI / 4 }
+      })
+    },
+    {
+      label: "MatUv",
+      material: new Material3D({
+        label: "uv-transform",
+        baseColor: 4906624,
+        roughness: 0.7,
+        metallic: 0,
+        uvTransform: new Matrix().scale(3, 2)
+      })
+    },
+    {
+      label: "MatPhong",
+      material: new PhongMaterial({
+        label: "phong",
+        baseColor: 3108747,
+        specularColor: 13421772,
+        shininess: 64,
+        specularStrength: 0.85,
+        emissive: { color: 1122867, strength: 0.2 }
+      })
+    },
+    {
+      label: "MatFlat",
+      material: new FlatMaterial({
+        label: "flat",
+        baseColor: 16096779,
+        alphaMode: "blend",
+        alpha: 0.85,
+        doubleSided: true
+      })
+    },
+    {
+      label: "MatToon",
+      material: new ToonMaterial({
+        label: "toon",
+        baseColor: 16032345,
+        bands: 2,
+        rimIntensity: 0.45,
+        specularSize: 0.2
+      })
+    }
+  ];
+  for (let i2 = 0; i2 < specs.length; i2++) {
+    const spec = specs[i2];
+    root2.addChild(sphere(spec.label, spec.material, i2, specs.length));
+  }
+  return root2;
+}
 const MODELS_BASE = `${"/pixi-scene-inspector/3d/"}models/`;
 const CESIUM_URL = `${MODELS_BASE}CesiumMan/CesiumMan.gltf`;
 const FOX_URL = `${MODELS_BASE}Fox.glb`;
@@ -76796,7 +78291,13 @@ async function buildThreeDDemoScene(app) {
   sun.lookAt({ x: 0, y: 0, z: 0 });
   const floor = new Mesh3D({
     geometry: new PlaneGeometry({ width: 60, height: 60 }),
-    material: new Material3D({ baseColor: 4937059, roughness: 0.92, metallic: 0 }),
+    material: new Material3D({
+      label: "floor",
+      baseColor: 4937059,
+      roughness: 0.92,
+      metallic: 0,
+      uvTransform: new Matrix().scale(8, 8)
+    }),
     castShadow: false,
     receiveShadow: true,
     label: "Floor"
@@ -76804,12 +78305,18 @@ async function buildThreeDDemoScene(app) {
   floor.rotation.x = -Math.PI / 2;
   const marker = new Mesh3D({
     geometry: new CubeGeometry({ width: 0.35, height: 0.35, depth: 0.35 }),
-    material: new Material3D({ baseColor: 14500932, roughness: 0.45 }),
+    material: new Material3D({
+      label: "marker",
+      baseColor: 14500932,
+      roughness: 0.45,
+      emissive: { color: 16737826, strength: 0.35 }
+    }),
     castShadow: true,
     label: "MarkerCube",
     position: { x: 0, y: 0.175, z: -2.2 }
   });
-  view.root.addChild(floor, sun, marker);
+  const materials = buildMaterialShowcase();
+  view.root.addChild(floor, sun, marker, materials);
   const [cesiumSource, foxSource] = await Promise.all([
     Assets.load(CESIUM_URL),
     Assets.load(FOX_URL)
@@ -76832,15 +78339,15 @@ async function buildThreeDDemoScene(app) {
   placeOnFloor(fox, FOX_HEIGHT, 1.6);
   fox.rotation.y = -Math.PI / 5;
   view.root.addChild(cesiumMan, fox);
-  view.camera.position.set(0, 2.2, 6.5);
+  view.camera.position.set(0, 2.6, 8.5);
   view.camera.far = 100;
-  view.camera.lookAt({ x: 0, y: 1, z: 0 });
+  view.camera.lookAt({ x: 0, y: 0.9, z: -1.2 });
   const orbitCamera = new OrbitCamera({
     view,
-    target: { x: 0, y: 1, z: 0 },
+    target: { x: 0, y: 0.9, z: -1.2 },
     enableDamping: true,
     minDistance: 2,
-    maxDistance: 18
+    maxDistance: 24
   });
   Object.assign(view, { orbitCamera });
   app.ticker.add((ticker) => {
@@ -76871,6 +78378,7 @@ async function main() {
     background: "#1a1a2e",
     antialias: true,
     preference: "webgl",
+    useBackBuffer: true,
     resolution: Math.min(window.devicePixelRatio, 2),
     autoDensity: true
   });

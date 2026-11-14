@@ -3,7 +3,7 @@ import { type AppendMapsContext, directBoolean, directString, takeMaps } from '.
 
 import type { PixiNode } from '../../../page-ops/pixi-node';
 
-export function appendMeshMaps(node: PixiNode, ctx: AppendMapsContext): void
+export function appendMeshMaps(node: PixiNode, ctx: AppendMapsContext)
 {
     const { allow, booleans, strings } = ctx;
     const mesh = readMeshShadow3D(node);

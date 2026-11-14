@@ -4,7 +4,7 @@ import { type AppendMapsContext, directBoolean, directNumber, takeMaps } from '.
 
 import type { PixiNode } from '../../../page-ops/pixi-node';
 
-export function appendLightMaps(node: PixiNode, ctx: AppendMapsContext): void
+export function appendLightMaps(node: PixiNode, ctx: AppendMapsContext)
 {
     const light = readLight3D(node);
 

@@ -142,7 +142,7 @@ function playingLabel(player: AnimationPlayerLike): string | undefined
     return undefined;
 }
 
-function clearCompleteHandler(playback: Playback): void
+function clearCompleteHandler(playback: Playback)
 {
     if (!playback.label)
     {
@@ -315,7 +315,7 @@ export function model3dCanResume(node: PixiNode, animationName: string): boolean
     return stateFor(playback.player, animationName) !== null;
 }
 
-function bindComplete(playback: Playback, state: AnimationStateLike, onComplete: () => void): void
+function bindComplete(playback: Playback, state: AnimationStateLike, onComplete: () => void)
 {
     playback.onComplete = onComplete;
 
@@ -463,7 +463,7 @@ export function model3dResume(node: PixiNode, loop: boolean): boolean
     return true;
 }
 
-export function model3dSetLoop(node: PixiNode, loop: boolean): void
+export function model3dSetLoop(node: PixiNode, loop: boolean)
 {
     const player = getPlayer(node);
 
@@ -562,7 +562,7 @@ export function model3dStop(node: PixiNode): boolean
     return true;
 }
 
-export function model3dRelease(node: PixiNode): void
+export function model3dRelease(node: PixiNode)
 {
     const playback = playbackByNode.get(node);
 
@@ -572,7 +572,9 @@ export function model3dRelease(node: PixiNode): void
     }
 
     clearCompleteHandler(playback);
+
     playback.label = null;
     playback.paused = false;
+
     playbackByNode.delete(node);
 }

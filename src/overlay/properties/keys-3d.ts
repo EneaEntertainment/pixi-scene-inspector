@@ -8,7 +8,11 @@ export type ThreeDBooleanPropertyKey =
     | 'mesh.receiveShadow'
     | 'orbit.autoRotate'
     | 'orbit.enableDamping'
-    | 'orbit.autoUpdate';
+    | 'orbit.autoUpdate'
+    | 'material.doubleSided'
+    | 'material.flatShading'
+    | 'material.fog'
+    | 'material.vertexColors';
 
 export type ThreeDStringPropertyKey =
     | 'hitVolume'
@@ -28,16 +32,28 @@ export type ThreeDStringPropertyKey =
     | 'view3d.background.skyColor'
     | 'view3d.background.groundColor'
     | 'billboardMode'
+    | 'material.label'
     | 'material.baseColor'
     | 'material.alphaMode'
     | 'material.emissive.color'
     | 'material.specularColor'
+    | 'material.specular.color'
+    | 'material.sheen.color'
+    | 'material.transmission.attenuationColor'
     | 'material.textures.baseColor'
     | 'material.textures.metallicRoughness'
     | 'material.textures.normal'
     | 'material.textures.occlusion'
     | 'material.textures.emissive'
-    | 'material.textures.specular';
+    | 'material.textures.specular'
+    | 'material.textures.clearcoat'
+    | 'material.textures.clearcoatRoughness'
+    | 'material.textures.clearcoatNormal'
+    | 'material.textures.sheen'
+    | 'material.textures.transmission'
+    | 'material.textures.thickness'
+    | 'material.textures.iridescence'
+    | 'material.textures.anisotropy';
 
 export type ThreeDNumberPropertyKey =
     | 'light.intensity'
@@ -71,7 +87,29 @@ export type ThreeDNumberPropertyKey =
     | 'material.ior'
     | 'material.emissive.strength'
     | 'material.shininess'
-    | 'material.specularStrength';
+    | 'material.specularStrength'
+    | 'material.specular.factor'
+    | 'material.clearcoat.factor'
+    | 'material.clearcoat.roughness'
+    | 'material.clearcoat.normalScale'
+    | 'material.sheen.roughness'
+    | 'material.transmission.factor'
+    | 'material.transmission.thickness'
+    | 'material.transmission.attenuationDistance'
+    | 'material.iridescence.factor'
+    | 'material.iridescence.ior'
+    | 'material.iridescence.thicknessMinimum'
+    | 'material.iridescence.thicknessMaximum'
+    | 'material.anisotropy.strength'
+    | 'material.anisotropy.rotation'
+    | 'material.uv.scaleX'
+    | 'material.uv.scaleY'
+    | 'material.uv.offsetX'
+    | 'material.uv.offsetY'
+    | 'material.toon.bands'
+    | 'material.toon.specularSize'
+    | 'material.toon.rimPower'
+    | 'material.toon.rimIntensity';
 
 export type ThreeDPropertyKey =
     | ThreeDBooleanPropertyKey

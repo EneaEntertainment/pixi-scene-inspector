@@ -1,4 +1,4 @@
-import { D as DOMAdapter } from "./index-DEYM-59I.js";
+import { D as DOMAdapter } from "./index-Dm5hYZdW.js";
 function isSafari() {
   const { userAgent } = DOMAdapter.get().getNavigator();
   return /^((?!chrome|android).)*safari/i.test(userAgent);

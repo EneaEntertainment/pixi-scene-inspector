@@ -20,7 +20,7 @@ const DEFAULT_FOG = {
 const DEFAULT_BACKGROUND = 0x1a1a2e;
 const CULL_MODES = new Set(['off', 'cpu', 'gpu']);
 
-export function appendView3DMaps(node: PixiNode, ctx: AppendMapsContext): void
+export function appendView3DMaps(node: PixiNode, ctx: AppendMapsContext)
 {
     const view = readView3D(node);
 

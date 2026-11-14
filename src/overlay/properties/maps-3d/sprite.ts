@@ -3,7 +3,7 @@ import { type AppendMapsContext, directNumber, takeMaps } from './helpers';
 
 import type { PixiNode } from '../../../page-ops/pixi-node';
 
-export function appendSpriteMaps(node: PixiNode, ctx: AppendMapsContext): void
+export function appendSpriteMaps(node: PixiNode, ctx: AppendMapsContext)
 {
     const sprite = readSprite3D(node);
 

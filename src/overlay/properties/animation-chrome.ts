@@ -110,7 +110,7 @@ export function fillSelectOptions(
     current: string,
     knownNames: Array<string>,
     assignKnown: (next: Array<string>) => void,
-): void
+)
 {
     if (sameOptionNames(names, knownNames))
     {

@@ -1,4 +1,4 @@
-import { Assets, Cache } from 'pixi.js';
+import { Assets, Cache, Matrix } from 'pixi.js';
 import {
     CubeGeometry,
     DirectionalLight,
@@ -9,6 +9,7 @@ import {
     View3D,
 } from '@pixi/3d';
 import { OrbitCamera } from '@pixi/3d/extras';
+import { buildMaterialShowcase } from './materials';
 
 import type { Application, Texture } from 'pixi.js';
 import type { Scene3DSource } from '@pixi/3d';
@@ -19,7 +20,7 @@ const FOX_URL = `${MODELS_BASE}Fox.glb`;
 const CESIUM_HEIGHT = 2;
 const FOX_HEIGHT = 1.1;
 
-function registerSourceTextures(prefix: string, source: Scene3DSource): void
+function registerSourceTextures(prefix: string, source: Scene3DSource)
 {
     const seen = new Set<Texture>();
     const named = new Map<Texture, string>();
@@ -49,7 +50,7 @@ function registerSourceTextures(prefix: string, source: Scene3DSource): void
     });
 }
 
-function placeOnFloor(model: Model3D, targetHeight: number, x: number): void
+function placeOnFloor(model: Model3D, targetHeight: number, x: number)
 {
     const bounds = model.getLocalBounds();
     const size = bounds.getSize();
@@ -90,8 +91,14 @@ export async function buildThreeDDemoScene(app: Application): Promise<ThreeDDemo
     sun.lookAt({ x: 0, y: 0, z: 0 });
 
     const floor = new Mesh3D({
-        geometry      : new PlaneGeometry({ width: 60, height: 60 }),
-        material      : new Material3D({ baseColor: 0x4b5563, roughness: 0.92, metallic: 0 }),
+        geometry : new PlaneGeometry({ width: 60, height: 60 }),
+        material : new Material3D({
+            label       : 'floor',
+            baseColor   : 0x4b5563,
+            roughness   : 0.92,
+            metallic    : 0,
+            uvTransform : new Matrix().scale(8, 8),
+        }),
         castShadow    : false,
         receiveShadow : true,
         label         : 'Floor',
@@ -100,14 +107,21 @@ export async function buildThreeDDemoScene(app: Application): Promise<ThreeDDemo
     floor.rotation.x = -Math.PI / 2;
 
     const marker = new Mesh3D({
-        geometry   : new CubeGeometry({ width: 0.35, height: 0.35, depth: 0.35 }),
-        material   : new Material3D({ baseColor: 0xdd4444, roughness: 0.45 }),
+        geometry : new CubeGeometry({ width: 0.35, height: 0.35, depth: 0.35 }),
+        material : new Material3D({
+            label     : 'marker',
+            baseColor : 0xdd4444,
+            roughness : 0.45,
+            emissive  : { color: 0xff6622, strength: 0.35 },
+        }),
         castShadow : true,
         label      : 'MarkerCube',
         position   : { x: 0, y: 0.175, z: -2.2 },
     });
 
-    view.root.addChild(floor, sun, marker);
+    const materials = buildMaterialShowcase();
+
+    view.root.addChild(floor, sun, marker, materials);
 
     const [cesiumSource, foxSource] = await Promise.all([
         Assets.load<Scene3DSource>(CESIUM_URL),
@@ -137,16 +151,16 @@ export async function buildThreeDDemoScene(app: Application): Promise<ThreeDDemo
 
     view.root.addChild(cesiumMan, fox);
 
-    view.camera.position.set(0, 2.2, 6.5);
+    view.camera.position.set(0, 2.6, 8.5);
     view.camera.far = 100;
-    view.camera.lookAt({ x: 0, y: 1, z: 0 });
+    view.camera.lookAt({ x: 0, y: 0.9, z: -1.2 });
 
     const orbitCamera = new OrbitCamera({
         view,
-        target        : { x: 0, y: 1, z: 0 },
+        target        : { x: 0, y: 0.9, z: -1.2 },
         enableDamping : true,
         minDistance   : 2,
-        maxDistance   : 18,
+        maxDistance   : 24,
     });
 
     Object.assign(view, { orbitCamera });

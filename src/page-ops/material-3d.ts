@@ -5,7 +5,7 @@ import type { PageGlobals, PixiNode, PixiTexture } from './pixi-node';
 
 export const MATERIAL_ALPHA_MODES = new Set(['opaque', 'mask', 'blend']);
 
-export type MaterialKind = 'pbr' | 'phong' | 'flat' | 'other';
+export type MaterialKind = 'pbr' | 'phong' | 'flat' | 'toon' | 'other';
 
 export type MaterialTextureSlot =
     | 'baseColor'
@@ -13,7 +13,15 @@ export type MaterialTextureSlot =
     | 'normal'
     | 'occlusion'
     | 'emissive'
-    | 'specular';
+    | 'specular'
+    | 'clearcoat'
+    | 'clearcoatRoughness'
+    | 'clearcoatNormal'
+    | 'sheen'
+    | 'transmission'
+    | 'thickness'
+    | 'iridescence'
+    | 'anisotropy';
 
 export const MATERIAL_TEXTURE_SLOTS: Array<MaterialTextureSlot> = [
     'baseColor',
@@ -22,6 +30,14 @@ export const MATERIAL_TEXTURE_SLOTS: Array<MaterialTextureSlot> = [
     'occlusion',
     'emissive',
     'specular',
+    'clearcoat',
+    'clearcoatRoughness',
+    'clearcoatNormal',
+    'sheen',
+    'transmission',
+    'thickness',
+    'iridescence',
+    'anisotropy',
 ];
 
 export type EmissiveLike = {
@@ -30,12 +46,74 @@ export type EmissiveLike = {
     texture?: unknown;
 };
 
+export type SpecularGroupLike = {
+    factor: number;
+    color: unknown;
+    texture?: unknown;
+};
+
+export type ClearcoatLike = {
+    factor: number;
+    roughness: number;
+    normalScale: number;
+    texture?: unknown;
+    roughnessTexture?: unknown;
+    normalTexture?: unknown;
+};
+
+export type SheenLike = {
+    color: unknown;
+    roughness: number;
+    texture?: unknown;
+};
+
+export type TransmissionLike = {
+    factor: number;
+    thickness: number;
+    attenuationDistance: number;
+    attenuationColor: unknown;
+    texture?: unknown;
+    thicknessTexture?: unknown;
+};
+
+export type IridescenceLike = {
+    factor: number;
+    ior: number;
+    thicknessMinimum: number;
+    thicknessMaximum: number;
+    texture?: unknown;
+};
+
+export type AnisotropyLike = {
+    strength: number;
+    rotation: number;
+    texture?: unknown;
+};
+
+export type UvTransformLike = {
+    a: number;
+    b: number;
+    c: number;
+    d: number;
+    tx: number;
+    ty: number;
+};
+
 type MaterialTexturesLike = {
     [slot: string]: unknown;
 };
 
+type MaterialDataLike = {
+    uvTransformRow0?: unknown;
+    bands?: number;
+    specularSize?: number;
+    rimPower?: number;
+    rimIntensity?: number;
+};
+
 export type Material3DLike = {
     destroyed?: boolean;
+    label?: unknown;
     baseColor: unknown;
     alpha: number;
     alphaMode: string;
@@ -48,13 +126,26 @@ export type Material3DLike = {
     shininess?: number;
     specularColor?: unknown;
     specularStrength?: number;
+    doubleSided?: boolean;
+    flatShading?: boolean;
+    fog?: boolean;
+    vertexColors?: boolean;
     emissive?: EmissiveLike;
+    specular?: SpecularGroupLike;
+    clearcoat?: ClearcoatLike;
+    sheen?: SheenLike;
+    transmission?: TransmissionLike;
+    iridescence?: IridescenceLike;
+    anisotropy?: AnisotropyLike;
+    uvTransform?: UvTransformLike | null;
+    data?: MaterialDataLike;
     textures?: MaterialTexturesLike;
     constructor?: { name?: string; EMPTY?: unknown };
 };
 
 type MeshMaterialHost = PixiNode & {
     material?: unknown;
+    invalidate?: () => void;
 };
 
 function asHost(node: PixiNode): MeshMaterialHost
@@ -110,6 +201,23 @@ function isColorSourceLike(value: unknown): boolean
     const record = value as Record<string, unknown>;
 
     return typeof record.toNumber === 'function' || typeof record.toHex === 'function';
+}
+
+function isUvTransformLike(value: unknown): value is UvTransformLike
+{
+    if (!value || typeof value !== 'object')
+    {
+        return false;
+    }
+
+    const matrix = value as UvTransformLike;
+
+    return typeof matrix.a === 'number'
+        && typeof matrix.b === 'number'
+        && typeof matrix.c === 'number'
+        && typeof matrix.d === 'number'
+        && typeof matrix.tx === 'number'
+        && typeof matrix.ty === 'number';
 }
 
 function isMaterial3DLike(value: unknown): value is Material3DLike
@@ -180,6 +288,11 @@ export function materialKind(material: Material3DLike): MaterialKind
         return 'flat';
     }
 
+    if (name === 'ToonMaterial')
+    {
+        return 'toon';
+    }
+
     if (typeof material.metallic === 'number' && typeof material.roughness === 'number')
     {
         return 'pbr';
@@ -188,6 +301,13 @@ export function materialKind(material: Material3DLike): MaterialKind
     if (typeof material.shininess === 'number')
     {
         return 'phong';
+    }
+
+    const data = material.data;
+
+    if (data && typeof data.bands === 'number')
+    {
+        return 'toon';
     }
 
     return 'other';
@@ -208,6 +328,173 @@ export function readEmissive(material: Material3DLike): EmissiveLike | null
     }
 
     return emissive;
+}
+
+export function readSpecularGroup(material: Material3DLike): SpecularGroupLike | null
+{
+    const specular = material.specular;
+
+    if (!specular || typeof specular !== 'object')
+    {
+        return null;
+    }
+
+    if (typeof specular.factor !== 'number')
+    {
+        return null;
+    }
+
+    return specular;
+}
+
+export function readClearcoat(material: Material3DLike): ClearcoatLike | null
+{
+    const clearcoat = material.clearcoat;
+
+    if (!clearcoat || typeof clearcoat !== 'object')
+    {
+        return null;
+    }
+
+    if (typeof clearcoat.factor !== 'number' || typeof clearcoat.roughness !== 'number')
+    {
+        return null;
+    }
+
+    return clearcoat;
+}
+
+export function readSheen(material: Material3DLike): SheenLike | null
+{
+    const sheen = material.sheen;
+
+    if (!sheen || typeof sheen !== 'object')
+    {
+        return null;
+    }
+
+    if (typeof sheen.roughness !== 'number')
+    {
+        return null;
+    }
+
+    return sheen;
+}
+
+export function readTransmission(material: Material3DLike): TransmissionLike | null
+{
+    const transmission = material.transmission;
+
+    if (!transmission || typeof transmission !== 'object')
+    {
+        return null;
+    }
+
+    if (typeof transmission.factor !== 'number' || typeof transmission.thickness !== 'number')
+    {
+        return null;
+    }
+
+    return transmission;
+}
+
+export function readIridescence(material: Material3DLike): IridescenceLike | null
+{
+    const iridescence = material.iridescence;
+
+    if (!iridescence || typeof iridescence !== 'object')
+    {
+        return null;
+    }
+
+    if (typeof iridescence.factor !== 'number' || typeof iridescence.ior !== 'number')
+    {
+        return null;
+    }
+
+    return iridescence;
+}
+
+export function readAnisotropy(material: Material3DLike): AnisotropyLike | null
+{
+    const anisotropy = material.anisotropy;
+
+    if (!anisotropy || typeof anisotropy !== 'object')
+    {
+        return null;
+    }
+
+    if (typeof anisotropy.strength !== 'number' || typeof anisotropy.rotation !== 'number')
+    {
+        return null;
+    }
+
+    return anisotropy;
+}
+
+export function materialSupportsUvTransform(material: Material3DLike): boolean
+{
+    const data = material.data;
+
+    return !!data && typeof data === 'object' && 'uvTransformRow0' in data;
+}
+
+export function readUvTransform(material: Material3DLike): UvTransformLike
+{
+    const current = material.uvTransform;
+
+    if (isUvTransformLike(current))
+    {
+        return current;
+    }
+
+    return { a: 1, b: 0, c: 0, d: 1, tx: 0, ty: 0 };
+}
+
+export function writeUvTransform(material: Material3DLike, patch: Partial<UvTransformLike>)
+{
+    if (!materialSupportsUvTransform(material))
+    {
+        return;
+    }
+
+    const current = readUvTransform(material);
+
+    material.uvTransform = {
+        a  : patch.a ?? current.a,
+        b  : patch.b ?? current.b,
+        c  : patch.c ?? current.c,
+        d  : patch.d ?? current.d,
+        tx : patch.tx ?? current.tx,
+        ty : patch.ty ?? current.ty,
+    };
+}
+
+export function readToonData(material: Material3DLike): MaterialDataLike | null
+{
+    if (materialKind(material) !== 'toon')
+    {
+        return null;
+    }
+
+    const data = material.data;
+
+    if (!data || typeof data !== 'object')
+    {
+        return null;
+    }
+
+    return data;
+}
+
+export function invalidateMaterialHost(node: PixiNode)
+{
+    const host = asHost(node);
+
+    if (typeof host.invalidate === 'function')
+    {
+        host.invalidate();
+    }
 }
 
 export function materialHasTextureSlot(material: Material3DLike, slot: MaterialTextureSlot): boolean
