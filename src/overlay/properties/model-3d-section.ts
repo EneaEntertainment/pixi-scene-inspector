@@ -6,6 +6,7 @@ import {
     model3dPlaybackInfo,
     model3dRelease,
     model3dResume,
+    model3dSetAnimationSelection,
     model3dSetLoop,
     model3dStop,
     resolveModel3DPlayerHost,
@@ -24,9 +25,9 @@ export type Model3DSection = {
     destroy: () => void;
 };
 
-export function createModel3DSection(): Model3DSection
+export function createModel3DSection(onExportClick: () => void): Model3DSection
 {
-    const ui = createSection('Animation', true);
+    const ui = createSection('Animation', true, onExportClick);
     const transport = createAnimationTransport();
 
     ui.body.append(transport.row, transport.controls);
@@ -40,6 +41,16 @@ export function createModel3DSection(): Model3DSection
     let paused = false;
     let loop = true;
     let loopSynced = false;
+
+    function rememberSelection()
+    {
+        if (!boundNode || selected === '')
+        {
+            return;
+        }
+
+        model3dSetAnimationSelection(boundNode, selected, loop);
+    }
 
     function renderControls()
     {
@@ -60,6 +71,8 @@ export function createModel3DSection(): Model3DSection
         {
             return;
         }
+
+        rememberSelection();
 
         const started = model3dPlay(boundNode, selected, loop, onPlaybackComplete);
 
@@ -161,6 +174,8 @@ export function createModel3DSection(): Model3DSection
             loopSynced = true;
         }
 
+        rememberSelection();
+
         ui.root.style.display = 'block';
 
         setOptions(names);
@@ -223,6 +238,8 @@ export function createModel3DSection(): Model3DSection
     transport.loopBtn.addEventListener('click', () =>
     {
         loop = !loop;
+
+        rememberSelection();
 
         if (boundNode)
         {

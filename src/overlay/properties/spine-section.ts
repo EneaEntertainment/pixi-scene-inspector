@@ -7,6 +7,7 @@ import {
     spinePlaybackInfo,
     spineRelease,
     spineResume,
+    spineSetAnimationSelection,
     spineSetLoop,
     spineSetSkin,
     spineSkinNames,
@@ -29,9 +30,9 @@ export type SpineSection = {
     destroy: () => void;
 };
 
-export function createSpineSection(): SpineSection
+export function createSpineSection(onExportClick: () => void): SpineSection
 {
-    const ui = createSection('Animation', true);
+    const ui = createSection('Animation', true, onExportClick);
     const transport = createAnimationTransport();
 
     const skinRow = createFieldRoot();
@@ -71,6 +72,16 @@ export function createSpineSection(): SpineSection
     let loop = false;
     let loopSynced = false;
 
+    function rememberSelection()
+    {
+        if (!boundNode || selected === '')
+        {
+            return;
+        }
+
+        spineSetAnimationSelection(boundNode, selected, loop);
+    }
+
     function renderControls()
     {
         transport.renderControls({ playing, loop });
@@ -90,6 +101,8 @@ export function createSpineSection(): SpineSection
         {
             return;
         }
+
+        rememberSelection();
 
         const started = spinePlay(boundNode, selected, loop, onPlaybackComplete);
 
@@ -238,6 +251,8 @@ export function createSpineSection(): SpineSection
             loopSynced = true;
         }
 
+        rememberSelection();
+
         ui.root.style.display = 'block';
 
         setSkinOptions(skinNames);
@@ -313,6 +328,8 @@ export function createSpineSection(): SpineSection
     transport.loopBtn.addEventListener('click', () =>
     {
         loop = !loop;
+
+        rememberSelection();
 
         if (boundNode)
         {

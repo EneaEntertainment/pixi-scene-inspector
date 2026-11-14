@@ -1,8 +1,10 @@
-import { a as State, E as ExtensionType, ba as GCManagedHash, e as BufferUsage, w as warn, D as DOMAdapter, g as getAttributeInfoFromFormat, b as GlProgram, S as Shader, T as Texture, bO as Geometry, c as TextureSource, bR as checkMaxIfStatementsInShader, d as STENCIL_MODES, aA as Rectangle, A as CanvasSource, aK as CLEAR, aZ as isIntegerFormat, aI as UniformGroup, J as BufferResource, bS as TextureView, f as uniformParsers, bT as STATE_BITS, bt as isSafari, k as extensions, bU as AbstractGlGraphicsAdaptor, M as Matrix, bV as compileHighShaderGlProgram, bW as colorBitGl, bX as localUniformBitGl, bY as roundPixelsBitGl, bZ as generateTextureBatchBitGl, b_ as getBatchSamplersUniformGroup, H as AbstractRenderer, R as RendererType } from "./index-DVREQIrz.js";
-import { e as ensureAttributes, G as GpuStencilModesToPixi, c as compileBufferSync, a as uboSyncFunctionsSTD40, U as UboSystem, g as getTexelRangeRects, b as textureBitGl } from "./getTexelRangeRects-7WQCOYue.js";
-import { R as RenderTargetSystem, S as SharedSystems, d as SharedRenderPipes } from "./RenderTargetSystem-CYmHIjHY.js";
-import "./RenderTexture-DsqSJlMc.js";
-import "./Filter-COxupEWd.js";
+import { a as State, E as ExtensionType, O as GCManagedHash, q as BufferUsage, w as warn, D as DOMAdapter, o as getAttributeInfoFromFormat, b as GlProgram, S as Shader, T as Texture, bQ as Geometry, f as TextureSource, bT as checkMaxIfStatementsInShader, p as STENCIL_MODES, R as Rectangle, a1 as CanvasSource, aZ as CLEAR, ba as isIntegerFormat, aX as UniformGroup, a5 as BufferResource, bU as TextureView, s as uniformParsers, bV as STATE_BITS, l as extensions, M as Matrix, bW as compileHighShaderGlProgram, bX as colorBitGl, bY as roundPixelsBitGl, bZ as generateTextureBatchBitGl, b_ as getBatchSamplersUniformGroup, a2 as AbstractRenderer, a3 as RendererType } from "./index-CAUPkiH8.js";
+import { e as ensureAttributes, G as GpuStencilModesToPixi, c as compileBufferSync, b as uboSyncFunctionsSTD40, U as UboSystem, g as getTexelRangeRects, d as localUniformBitGl, f as textureBitGl } from "./getTexelRangeRects-BMFYs-iG.js";
+import { R as RenderTargetSystem, S as SharedSystems, e as SharedRenderPipes } from "./RenderTargetSystem-_hCEiY-3.js";
+import { i as isSafari } from "./isSafari-BprCtkgA.js";
+import "./RenderTexture-B6CxS2Ys.js";
+import "./Filter-BUMrv9V_.js";
+import "./CanvasPool-DKckIy1O.js";
 class GlBatchAdaptor {
   constructor() {
     this._tempState = State.for2d();
@@ -4170,6 +4172,41 @@ _GlTextureSystem.extension = {
 _GlTextureSystem.uploadExtensions = /* @__PURE__ */ Object.create(null);
 let GlTextureSystem = _GlTextureSystem;
 extensions.handleByMap(ExtensionType.TextureUploaderWebGL, GlTextureSystem.uploadExtensions);
+class AbstractGlGraphicsAdaptor {
+  /**
+   * Returns the shader used when the context has no custom shader.
+   * @param _renderData - The render data of the context
+   */
+  _getShader(_renderData) {
+    return this.shader;
+  }
+  execute(graphicsPipe, renderable) {
+    const context = renderable.context;
+    const renderer = graphicsPipe.renderer;
+    const renderData = this._getRenderData(renderer, context);
+    const { batcher, instructions } = renderData;
+    const shader = context.customShader || this._getShader(renderData);
+    shader.groups[0] = renderer.globalUniforms.bindGroup;
+    renderer.state.set(graphicsPipe.state);
+    renderer.shader.bind(shader);
+    renderer.geometry.bind(batcher.geometry, shader.glProgram);
+    const batches = instructions.instructions;
+    for (let i = 0; i < instructions.instructionSize; i++) {
+      const batch = batches[i];
+      if (batch.size) {
+        for (let j = 0; j < batch.textures.count; j++) {
+          renderer.texture.bind(batch.textures.textures[j], j);
+        }
+        renderer.texture.unbindIntegerTextures(batch.textures.count);
+        renderer.geometry.draw(batch.topology, batch.size, batch.start);
+      }
+    }
+  }
+  destroy() {
+    this.shader.destroy(true);
+    this.shader = null;
+  }
+}
 class GlGraphicsAdaptor extends AbstractGlGraphicsAdaptor {
   contextChange(renderer) {
     const uniforms = new UniformGroup({

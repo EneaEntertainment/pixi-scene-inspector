@@ -1,4 +1,4 @@
-const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/browserAll-DsQdHaa0.js","assets/webworkerAll-YGFIZjvi.js","assets/Filter-COxupEWd.js","assets/WebGPURenderer-BBtXJtXH.js","assets/getTexelRangeRects-7WQCOYue.js","assets/RenderTargetSystem-CYmHIjHY.js","assets/RenderTexture-DsqSJlMc.js","assets/WebGLRenderer-BHruyCWY.js","assets/CanvasRenderer-C6rrFzXl.js","assets/init-CNdWV9AM.js","assets/View3DGlobalData-DAiChafy.js","assets/init-wQ7qJ85y.js"])))=>i.map(i=>d[i]);
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/browserAll-C2pE6bb6.js","assets/webworkerAll-BvYcndzw.js","assets/Filter-BicgjGfz.js","assets/WebGPURenderer-CUTasTAr.js","assets/getTexelRangeRects-DQ4bdwDE.js","assets/RenderTargetSystem-5JH21bFC.js","assets/RenderTexture-Dieh1Zxa.js","assets/WebGLRenderer-DTYxCyb3.js","assets/CanvasRenderer-DvmSulDw.js","assets/init-BUK6Y16z.js","assets/View3DGlobalData-BmIMRcLe.js","assets/init-DdKc-Tv7.js"])))=>i.map(i=>d[i]);
 (function polyfill() {
   const relList = document.createElement("link").relList;
   if (relList && relList.supports && relList.supports("modulepreload")) return;
@@ -355,7 +355,7 @@ const browserExt = {
   },
   test: () => true,
   load: async () => {
-    await __vitePreload(() => import("./browserAll-DsQdHaa0.js"), true ? __vite__mapDeps([0,1,2]) : void 0);
+    await __vitePreload(() => import("./browserAll-C2pE6bb6.js"), true ? __vite__mapDeps([0,1,2]) : void 0);
   }
 };
 const webworkerExt = {
@@ -366,7 +366,7 @@ const webworkerExt = {
   },
   test: () => typeof self !== "undefined" && self.WorkerGlobalScope !== void 0,
   load: async () => {
-    await __vitePreload(() => import("./webworkerAll-YGFIZjvi.js"), true ? __vite__mapDeps([1,2]) : void 0);
+    await __vitePreload(() => import("./webworkerAll-BvYcndzw.js"), true ? __vite__mapDeps([1,2]) : void 0);
   }
 };
 class ObservablePoint {
@@ -13768,7 +13768,7 @@ async function autoDetectRenderer(options) {
     const rendererType = preferredOrder[i2];
     if (rendererType === "webgpu" && await isWebGPUSupported()) {
       const { WebGPURenderer } = await __vitePreload(async () => {
-        const { WebGPURenderer: WebGPURenderer2 } = await import("./WebGPURenderer-BBtXJtXH.js");
+        const { WebGPURenderer: WebGPURenderer2 } = await import("./WebGPURenderer-CUTasTAr.js");
         return { WebGPURenderer: WebGPURenderer2 };
       }, true ? __vite__mapDeps([3,4,5,6,2]) : void 0);
       RendererClass = WebGPURenderer;
@@ -13778,7 +13778,7 @@ async function autoDetectRenderer(options) {
       options.failIfMajorPerformanceCaveat ?? AbstractRenderer.defaultOptions.failIfMajorPerformanceCaveat
     )) {
       const { WebGLRenderer } = await __vitePreload(async () => {
-        const { WebGLRenderer: WebGLRenderer2 } = await import("./WebGLRenderer-BHruyCWY.js");
+        const { WebGLRenderer: WebGLRenderer2 } = await import("./WebGLRenderer-DTYxCyb3.js");
         return { WebGLRenderer: WebGLRenderer2 };
       }, true ? __vite__mapDeps([7,4,5,6,2]) : void 0);
       RendererClass = WebGLRenderer;
@@ -13786,7 +13786,7 @@ async function autoDetectRenderer(options) {
       break;
     } else if (rendererType === "canvas") {
       const { CanvasRenderer } = await __vitePreload(async () => {
-        const { CanvasRenderer: CanvasRenderer2 } = await import("./CanvasRenderer-C6rrFzXl.js");
+        const { CanvasRenderer: CanvasRenderer2 } = await import("./CanvasRenderer-DvmSulDw.js");
         return { CanvasRenderer: CanvasRenderer2 };
       }, true ? __vite__mapDeps([8,5,6,2]) : void 0);
       RendererClass = CanvasRenderer;
@@ -46500,6 +46500,7 @@ function ctorName(node) {
 }
 const TRACK = 0;
 const playbackByNode$1 = /* @__PURE__ */ new WeakMap();
+const selectionByNode$1 = /* @__PURE__ */ new WeakMap();
 function asSpine(node) {
   return node;
 }
@@ -46586,6 +46587,24 @@ function ensurePlayback$1(node) {
 }
 function spineAnimationNames(node) {
   return namedList(asSpine(node), (data) => data?.animations);
+}
+function spineSetAnimationSelection(node, name, loop) {
+  if (name === "") {
+    selectionByNode$1.delete(node);
+    return;
+  }
+  selectionByNode$1.set(node, { name, loop });
+}
+function spineAnimationSelection(node) {
+  const selection = selectionByNode$1.get(node);
+  if (!selection) {
+    return void 0;
+  }
+  const names = spineAnimationNames(node);
+  if (!names.includes(selection.name)) {
+    return void 0;
+  }
+  return selection;
 }
 function spineSkinNames(node) {
   return namedList(asSpine(node), (data) => data?.skins);
@@ -48292,6 +48311,7 @@ const MATERIAL_CATALOG_SECTIONS = [
 ];
 const PROPERTY_SECTION_IDS = [
   "identity",
+  "animation",
   "texture",
   "transform",
   "mesh",
@@ -48318,6 +48338,7 @@ const PROPERTY_SECTION_IDS = [
 ];
 const PROPERTY_SECTION_TITLES = {
   identity: "Identity",
+  animation: "Animation",
   texture: "Texture",
   transform: "Transform",
   mesh: "Mesh",
@@ -48754,6 +48775,9 @@ const VIEW_FORM_SECTIONS = formSectionsFromCatalog(VIEW_CATALOG_SECTIONS);
 const TEXTURE_EXPORT_PROPS = [
   { kind: "string", id: "texture", key: "texture" }
 ];
+const ANIMATION_EXPORT_PROPS = [
+  { kind: "animation", id: "animation" }
+];
 const EXPORT_PROPS_BY_SECTION = {
   ...exportPropsFromCatalog([
     ...OBJECT_CATALOG_SECTIONS,
@@ -48763,7 +48787,8 @@ const EXPORT_PROPS_BY_SECTION = {
     ...MATERIAL_CATALOG_SECTIONS,
     ...TEXT_CATALOG_SECTIONS
   ]),
-  texture: TEXTURE_EXPORT_PROPS
+  texture: TEXTURE_EXPORT_PROPS,
+  animation: ANIMATION_EXPORT_PROPS
 };
 function exportPropsForSection(sectionId) {
   return EXPORT_PROPS_BY_SECTION[sectionId];
@@ -51830,6 +51855,329 @@ function createDialogCloseButton(onClose) {
   });
   return closeBtn;
 }
+const playbackByNode = /* @__PURE__ */ new WeakMap();
+const selectionByNode = /* @__PURE__ */ new WeakMap();
+function asModel(node) {
+  return node;
+}
+function isPlayerLike(value) {
+  if (!value || typeof value !== "object") {
+    return false;
+  }
+  const player = value;
+  return typeof player.play === "function" && typeof player.stop === "function" && typeof player.getState === "function" && Array.isArray(player.animationLabels);
+}
+function isModel3DPlayerLike(node) {
+  return isPlayerLike(asModel(node).player);
+}
+function resolveModel3DPlayerHost(node) {
+  if (!node) {
+    return null;
+  }
+  if (isModel3DPlayerLike(node) && model3dAnimationNames(node).length > 0) {
+    return node;
+  }
+  return null;
+}
+function getPlayer(node) {
+  const player = asModel(node).player;
+  return isPlayerLike(player) ? player : null;
+}
+function stateFor(player, label) {
+  if (label === "") {
+    return null;
+  }
+  if (typeof player.getAnimation === "function" && player.getAnimation(label) === void 0) {
+    return null;
+  }
+  try {
+    return player.getState(label);
+  } catch {
+    return null;
+  }
+}
+function playingLabel(player) {
+  const labels = player.animationLabels;
+  for (let i2 = 0; i2 < labels.length; i2++) {
+    const label = labels[i2];
+    if (!label) {
+      continue;
+    }
+    const state2 = stateFor(player, label);
+    if (state2?.playing) {
+      return label;
+    }
+  }
+  return void 0;
+}
+function clearCompleteHandler(playback) {
+  if (!playback.label) {
+    playback.onComplete = null;
+    return;
+  }
+  const state2 = stateFor(playback.player, playback.label);
+  if (state2 && state2.onComplete) {
+    state2.onComplete = null;
+  }
+  playback.onComplete = null;
+}
+function ensurePlayback(node) {
+  const player = getPlayer(node);
+  if (!player) {
+    return null;
+  }
+  const existing = playbackByNode.get(node);
+  if (existing?.player === player) {
+    return existing;
+  }
+  if (existing) {
+    clearCompleteHandler(existing);
+    playbackByNode.delete(node);
+  }
+  const playback = {
+    player,
+    label: null,
+    onComplete: null,
+    paused: false
+  };
+  playbackByNode.set(node, playback);
+  return playback;
+}
+function model3dSetAnimationSelection(node, name, loop) {
+  if (name === "") {
+    selectionByNode.delete(node);
+    return;
+  }
+  selectionByNode.set(node, { name, loop });
+}
+function model3dAnimationSelection(node) {
+  const selection = selectionByNode.get(node);
+  if (!selection) {
+    return void 0;
+  }
+  const names = model3dAnimationNames(node);
+  if (!names.includes(selection.name)) {
+    return void 0;
+  }
+  return selection;
+}
+function model3dAnimationNames(node) {
+  const player = getPlayer(node);
+  if (!player) {
+    return [];
+  }
+  const names = [];
+  for (let i2 = 0; i2 < player.animationLabels.length; i2++) {
+    const label = player.animationLabels[i2];
+    if (typeof label === "string" && label !== "") {
+      names.push(label);
+    }
+  }
+  return names;
+}
+function model3dPlaybackInfo(node) {
+  const player = getPlayer(node);
+  if (!player) {
+    return {
+      animationName: void 0,
+      playing: false,
+      paused: false,
+      loop: false
+    };
+  }
+  const playback = playbackByNode.get(node);
+  const active = playingLabel(player);
+  const animationName = active ?? (playback?.label && stateFor(player, playback.label) ? playback.label : void 0) ?? void 0;
+  if (!animationName) {
+    return {
+      animationName: void 0,
+      playing: false,
+      paused: false,
+      loop: false
+    };
+  }
+  const state2 = stateFor(player, animationName);
+  if (!state2) {
+    return {
+      animationName: void 0,
+      playing: false,
+      paused: false,
+      loop: false
+    };
+  }
+  const playing = state2.playing;
+  const paused = !playing && !!playback && playback.paused && playback.label === animationName;
+  return {
+    animationName,
+    playing,
+    paused,
+    loop: !!state2.loop
+  };
+}
+function model3dCanResume(node, animationName) {
+  const playback = playbackByNode.get(node);
+  if (!playback || !playback.paused || playback.label !== animationName) {
+    return false;
+  }
+  return stateFor(playback.player, animationName) !== null;
+}
+function bindComplete(playback, state2, onComplete) {
+  playback.onComplete = onComplete;
+  state2.onComplete = () => {
+    if (playback.onComplete !== onComplete) {
+      return;
+    }
+    playback.paused = false;
+    playback.onComplete = null;
+    state2.onComplete = null;
+    onComplete();
+  };
+}
+function model3dPlay(node, animationName, loop, onComplete) {
+  const playback = ensurePlayback(node);
+  if (!playback || animationName === "") {
+    return false;
+  }
+  const state2 = stateFor(playback.player, animationName);
+  if (!state2) {
+    return false;
+  }
+  clearCompleteHandler(playback);
+  try {
+    playback.player.stop();
+    state2.weight = 1;
+    state2.loop = loop;
+    if (loop) {
+      state2.onComplete = null;
+    } else {
+      bindComplete(playback, state2, onComplete);
+    }
+    state2.gotoAndPlay(0);
+  } catch {
+    playback.label = null;
+    playback.paused = false;
+    playback.onComplete = null;
+    return false;
+  }
+  playback.label = animationName;
+  playback.paused = false;
+  return true;
+}
+function model3dPause(node) {
+  const playback = ensurePlayback(node);
+  if (!playback) {
+    return false;
+  }
+  const label = playingLabel(playback.player) ?? playback.label;
+  if (!label) {
+    return false;
+  }
+  const state2 = stateFor(playback.player, label);
+  if (!state2?.playing) {
+    return false;
+  }
+  try {
+    state2.stop();
+  } catch {
+    return false;
+  }
+  playback.label = label;
+  playback.paused = true;
+  return true;
+}
+function model3dResume(node, loop) {
+  const playback = ensurePlayback(node);
+  if (!playback || !playback.label || !playback.paused) {
+    return false;
+  }
+  const state2 = stateFor(playback.player, playback.label);
+  if (!state2) {
+    return false;
+  }
+  try {
+    state2.loop = loop;
+    if (loop) {
+      state2.onComplete = null;
+      playback.onComplete = null;
+    } else if (playback.onComplete) {
+      bindComplete(playback, state2, playback.onComplete);
+    }
+    state2.play();
+  } catch {
+    return false;
+  }
+  playback.paused = false;
+  return true;
+}
+function model3dSetLoop(node, loop) {
+  const player = getPlayer(node);
+  if (!player) {
+    return;
+  }
+  const playback = playbackByNode.get(node);
+  const label = playingLabel(player) ?? playback?.label;
+  if (!label) {
+    return;
+  }
+  const state2 = stateFor(player, label);
+  if (!state2) {
+    return;
+  }
+  try {
+    state2.loop = loop;
+    if (loop) {
+      state2.onComplete = null;
+      if (playback) {
+        playback.onComplete = null;
+      }
+    }
+  } catch {
+  }
+  if (playback) {
+    playback.label = label;
+  }
+}
+function model3dStop(node) {
+  const playback = ensurePlayback(node);
+  if (!playback) {
+    return false;
+  }
+  const label = playingLabel(playback.player) ?? playback.label;
+  if (!label) {
+    clearCompleteHandler(playback);
+    playback.label = null;
+    playback.paused = false;
+    return false;
+  }
+  const state2 = stateFor(playback.player, label);
+  if (!state2) {
+    clearCompleteHandler(playback);
+    playback.label = null;
+    playback.paused = false;
+    return false;
+  }
+  clearCompleteHandler(playback);
+  try {
+    playback.player.stop();
+    state2.weight = 1;
+    state2.gotoAndStop(0);
+  } catch {
+    return false;
+  }
+  playback.label = label;
+  playback.paused = true;
+  return true;
+}
+function model3dRelease(node) {
+  const playback = playbackByNode.get(node);
+  if (!playback) {
+    return;
+  }
+  clearCompleteHandler(playback);
+  playback.label = null;
+  playback.paused = false;
+  playbackByNode.delete(node);
+}
 function readQuaternion(node) {
   const quaternion = node.quaternion;
   if (!quaternion || typeof quaternion !== "object") {
@@ -54390,6 +54738,123 @@ function originAxis(node, axis, key) {
     }
   ];
 }
+function appendAnimationMaps(node, allow, strings, booleans) {
+  if (isSpineLike(node)) {
+    const names2 = spineAnimationNames(node);
+    if (names2.length === 0) {
+      return;
+    }
+    if (allow("animation.name")) {
+      strings.push({
+        key: "animation.name",
+        get: () => {
+          const selection = spineAnimationSelection(node);
+          if (selection) {
+            return selection.name;
+          }
+          const info = spinePlaybackInfo(node);
+          if (info.animationName && names2.includes(info.animationName)) {
+            return info.animationName;
+          }
+          return names2[0];
+        },
+        set: (value) => {
+          if (!names2.includes(value)) {
+            return;
+          }
+          const info = spinePlaybackInfo(node);
+          const selection = spineAnimationSelection(node);
+          const loop = selection?.loop ?? (info.animationName ? info.loop : false);
+          spineSetAnimationSelection(node, value, loop);
+          spinePlay(node, value, loop, () => {
+          });
+        }
+      });
+    }
+    if (allow("animation.loop")) {
+      booleans.push({
+        key: "animation.loop",
+        get: () => {
+          const selection = spineAnimationSelection(node);
+          if (selection) {
+            return selection.loop;
+          }
+          const info = spinePlaybackInfo(node);
+          return info.animationName ? info.loop : false;
+        },
+        set: (value) => {
+          const info = spinePlaybackInfo(node);
+          const selection = spineAnimationSelection(node);
+          const name = selection?.name ?? (info.animationName && names2.includes(info.animationName) ? info.animationName : names2[0]);
+          if (!name) {
+            return;
+          }
+          spineSetAnimationSelection(node, name, value);
+          spineSetLoop(node, value);
+        }
+      });
+    }
+    return;
+  }
+  const host = resolveModel3DPlayerHost(node);
+  if (!host) {
+    return;
+  }
+  const names = model3dAnimationNames(host);
+  if (names.length === 0) {
+    return;
+  }
+  if (allow("animation.name")) {
+    strings.push({
+      key: "animation.name",
+      get: () => {
+        const selection = model3dAnimationSelection(host);
+        if (selection) {
+          return selection.name;
+        }
+        const info = model3dPlaybackInfo(host);
+        if (info.animationName && names.includes(info.animationName)) {
+          return info.animationName;
+        }
+        return names[0];
+      },
+      set: (value) => {
+        if (!names.includes(value)) {
+          return;
+        }
+        const info = model3dPlaybackInfo(host);
+        const selection = model3dAnimationSelection(host);
+        const loop = selection?.loop ?? (info.animationName ? info.loop : true);
+        model3dSetAnimationSelection(host, value, loop);
+        model3dPlay(host, value, loop, () => {
+        });
+      }
+    });
+  }
+  if (allow("animation.loop")) {
+    booleans.push({
+      key: "animation.loop",
+      get: () => {
+        const selection = model3dAnimationSelection(host);
+        if (selection) {
+          return selection.loop;
+        }
+        const info = model3dPlaybackInfo(host);
+        return info.animationName ? info.loop : true;
+      },
+      set: (value) => {
+        const info = model3dPlaybackInfo(host);
+        const selection = model3dAnimationSelection(host);
+        const name = selection?.name ?? (info.animationName && names.includes(info.animationName) ? info.animationName : names[0]);
+        if (!name) {
+          return;
+        }
+        model3dSetAnimationSelection(host, name, value);
+        model3dSetLoop(host, value);
+      }
+    });
+  }
+}
 function mapsForNode(node) {
   if (!isNodeAlive(node)) {
     return { numbers: [], booleans: [], strings: [] };
@@ -54409,6 +54874,7 @@ function mapsForNode(node) {
       }
     });
   }
+  appendAnimationMaps(node, allow, strings, booleans);
   numbers.push(
     ...takeMaps(
       allow,
@@ -56074,6 +56540,9 @@ function isExportPropAvailable(maps, spec) {
   if (spec.kind === "fill") {
     return !!maps.text.fillStops && maps.text.fillStops.key === spec.key;
   }
+  if (spec.kind === "animation") {
+    return !!resolveStringMap(maps, "animation.name");
+  }
   return !!resolveStringMap(maps, spec.key);
 }
 function availableExportPropsForSection(sectionId, maps) {
@@ -56108,6 +56577,17 @@ function collectBlendModeExportValue(maps) {
   }
   return resolveStringMap(maps, "blendMode")?.get();
 }
+function collectAnimationExportValue(maps) {
+  const name = resolveStringMap(maps, "animation.name")?.get();
+  if (typeof name !== "string" || name === "") {
+    return void 0;
+  }
+  const loop = resolveBooleanMap(maps, "animation.loop")?.get();
+  return {
+    name,
+    loop: typeof loop === "boolean" ? loop : false
+  };
+}
 function collectPropValue(maps, spec) {
   if (spec.kind === "point") {
     return readPoint(maps, spec.xKey, spec.yKey, spec.zKey);
@@ -56120,6 +56600,9 @@ function collectPropValue(maps, spec) {
   }
   if (spec.kind === "fill") {
     return collectFillExportValue(maps);
+  }
+  if (spec.kind === "animation") {
+    return collectAnimationExportValue(maps);
   }
   if (spec.key === "blendMode") {
     return collectBlendModeExportValue(maps);
@@ -59572,310 +60055,6 @@ function createTextureField(spec, onCommit) {
     }
   };
 }
-const playbackByNode = /* @__PURE__ */ new WeakMap();
-function asModel(node) {
-  return node;
-}
-function isPlayerLike(value) {
-  if (!value || typeof value !== "object") {
-    return false;
-  }
-  const player = value;
-  return typeof player.play === "function" && typeof player.stop === "function" && typeof player.getState === "function" && Array.isArray(player.animationLabels);
-}
-function isModel3DPlayerLike(node) {
-  return isPlayerLike(asModel(node).player);
-}
-function resolveModel3DPlayerHost(node) {
-  if (!node) {
-    return null;
-  }
-  if (isModel3DPlayerLike(node) && model3dAnimationNames(node).length > 0) {
-    return node;
-  }
-  return null;
-}
-function getPlayer(node) {
-  const player = asModel(node).player;
-  return isPlayerLike(player) ? player : null;
-}
-function stateFor(player, label) {
-  if (label === "") {
-    return null;
-  }
-  if (typeof player.getAnimation === "function" && player.getAnimation(label) === void 0) {
-    return null;
-  }
-  try {
-    return player.getState(label);
-  } catch {
-    return null;
-  }
-}
-function playingLabel(player) {
-  const labels = player.animationLabels;
-  for (let i2 = 0; i2 < labels.length; i2++) {
-    const label = labels[i2];
-    if (!label) {
-      continue;
-    }
-    const state2 = stateFor(player, label);
-    if (state2?.playing) {
-      return label;
-    }
-  }
-  return void 0;
-}
-function clearCompleteHandler(playback) {
-  if (!playback.label) {
-    playback.onComplete = null;
-    return;
-  }
-  const state2 = stateFor(playback.player, playback.label);
-  if (state2 && state2.onComplete) {
-    state2.onComplete = null;
-  }
-  playback.onComplete = null;
-}
-function ensurePlayback(node) {
-  const player = getPlayer(node);
-  if (!player) {
-    return null;
-  }
-  const existing = playbackByNode.get(node);
-  if (existing?.player === player) {
-    return existing;
-  }
-  if (existing) {
-    clearCompleteHandler(existing);
-    playbackByNode.delete(node);
-  }
-  const playback = {
-    player,
-    label: null,
-    onComplete: null,
-    paused: false
-  };
-  playbackByNode.set(node, playback);
-  return playback;
-}
-function model3dAnimationNames(node) {
-  const player = getPlayer(node);
-  if (!player) {
-    return [];
-  }
-  const names = [];
-  for (let i2 = 0; i2 < player.animationLabels.length; i2++) {
-    const label = player.animationLabels[i2];
-    if (typeof label === "string" && label !== "") {
-      names.push(label);
-    }
-  }
-  return names;
-}
-function model3dPlaybackInfo(node) {
-  const player = getPlayer(node);
-  if (!player) {
-    return {
-      animationName: void 0,
-      playing: false,
-      paused: false,
-      loop: false
-    };
-  }
-  const playback = playbackByNode.get(node);
-  const active = playingLabel(player);
-  const animationName = active ?? (playback?.label && stateFor(player, playback.label) ? playback.label : void 0) ?? void 0;
-  if (!animationName) {
-    return {
-      animationName: void 0,
-      playing: false,
-      paused: false,
-      loop: false
-    };
-  }
-  const state2 = stateFor(player, animationName);
-  if (!state2) {
-    return {
-      animationName: void 0,
-      playing: false,
-      paused: false,
-      loop: false
-    };
-  }
-  const playing = state2.playing;
-  const paused = !playing && !!playback && playback.paused && playback.label === animationName;
-  return {
-    animationName,
-    playing,
-    paused,
-    loop: !!state2.loop
-  };
-}
-function model3dCanResume(node, animationName) {
-  const playback = playbackByNode.get(node);
-  if (!playback || !playback.paused || playback.label !== animationName) {
-    return false;
-  }
-  return stateFor(playback.player, animationName) !== null;
-}
-function bindComplete(playback, state2, onComplete) {
-  playback.onComplete = onComplete;
-  state2.onComplete = () => {
-    if (playback.onComplete !== onComplete) {
-      return;
-    }
-    playback.paused = false;
-    playback.onComplete = null;
-    state2.onComplete = null;
-    onComplete();
-  };
-}
-function model3dPlay(node, animationName, loop, onComplete) {
-  const playback = ensurePlayback(node);
-  if (!playback || animationName === "") {
-    return false;
-  }
-  const state2 = stateFor(playback.player, animationName);
-  if (!state2) {
-    return false;
-  }
-  clearCompleteHandler(playback);
-  try {
-    playback.player.stop();
-    state2.weight = 1;
-    state2.loop = loop;
-    if (loop) {
-      state2.onComplete = null;
-    } else {
-      bindComplete(playback, state2, onComplete);
-    }
-    state2.gotoAndPlay(0);
-  } catch {
-    playback.label = null;
-    playback.paused = false;
-    playback.onComplete = null;
-    return false;
-  }
-  playback.label = animationName;
-  playback.paused = false;
-  return true;
-}
-function model3dPause(node) {
-  const playback = ensurePlayback(node);
-  if (!playback) {
-    return false;
-  }
-  const label = playingLabel(playback.player) ?? playback.label;
-  if (!label) {
-    return false;
-  }
-  const state2 = stateFor(playback.player, label);
-  if (!state2?.playing) {
-    return false;
-  }
-  try {
-    state2.stop();
-  } catch {
-    return false;
-  }
-  playback.label = label;
-  playback.paused = true;
-  return true;
-}
-function model3dResume(node, loop) {
-  const playback = ensurePlayback(node);
-  if (!playback || !playback.label || !playback.paused) {
-    return false;
-  }
-  const state2 = stateFor(playback.player, playback.label);
-  if (!state2) {
-    return false;
-  }
-  try {
-    state2.loop = loop;
-    if (loop) {
-      state2.onComplete = null;
-      playback.onComplete = null;
-    } else if (playback.onComplete) {
-      bindComplete(playback, state2, playback.onComplete);
-    }
-    state2.play();
-  } catch {
-    return false;
-  }
-  playback.paused = false;
-  return true;
-}
-function model3dSetLoop(node, loop) {
-  const player = getPlayer(node);
-  if (!player) {
-    return;
-  }
-  const playback = playbackByNode.get(node);
-  const label = playingLabel(player) ?? playback?.label;
-  if (!label) {
-    return;
-  }
-  const state2 = stateFor(player, label);
-  if (!state2) {
-    return;
-  }
-  try {
-    state2.loop = loop;
-    if (loop) {
-      state2.onComplete = null;
-      if (playback) {
-        playback.onComplete = null;
-      }
-    }
-  } catch {
-  }
-  if (playback) {
-    playback.label = label;
-  }
-}
-function model3dStop(node) {
-  const playback = ensurePlayback(node);
-  if (!playback) {
-    return false;
-  }
-  const label = playingLabel(playback.player) ?? playback.label;
-  if (!label) {
-    clearCompleteHandler(playback);
-    playback.label = null;
-    playback.paused = false;
-    return false;
-  }
-  const state2 = stateFor(playback.player, label);
-  if (!state2) {
-    clearCompleteHandler(playback);
-    playback.label = null;
-    playback.paused = false;
-    return false;
-  }
-  clearCompleteHandler(playback);
-  try {
-    playback.player.stop();
-    state2.weight = 1;
-    state2.gotoAndStop(0);
-  } catch {
-    return false;
-  }
-  playback.label = label;
-  playback.paused = true;
-  return true;
-}
-function model3dRelease(node) {
-  const playback = playbackByNode.get(node);
-  if (!playback) {
-    return;
-  }
-  clearCompleteHandler(playback);
-  playback.label = null;
-  playback.paused = false;
-  playbackByNode.delete(node);
-}
 const ANIMATION_SELECT_STYLE = {
   flex: FIELD_CONTROL_FLEX,
   minWidth: "0",
@@ -60016,8 +60195,8 @@ function createAnimationTransport() {
     renderControls
   };
 }
-function createModel3DSection() {
-  const ui = createSection("Animation", true);
+function createModel3DSection(onExportClick) {
+  const ui = createSection("Animation", true, onExportClick);
   const transport = createAnimationTransport();
   ui.body.append(transport.row, transport.controls);
   ui.root.style.display = "none";
@@ -60028,6 +60207,12 @@ function createModel3DSection() {
   let paused = false;
   let loop = true;
   let loopSynced = false;
+  function rememberSelection() {
+    if (!boundNode || selected === "") {
+      return;
+    }
+    model3dSetAnimationSelection(boundNode, selected, loop);
+  }
   function renderControls() {
     transport.renderControls({ playing, loop });
   }
@@ -60040,6 +60225,7 @@ function createModel3DSection() {
     if (!boundNode) {
       return;
     }
+    rememberSelection();
     const started = model3dPlay(boundNode, selected, loop, onPlaybackComplete);
     playing = started;
     paused = false;
@@ -60104,6 +60290,7 @@ function createModel3DSection() {
       loop = info.animationName ? info.loop : true;
       loopSynced = true;
     }
+    rememberSelection();
     ui.root.style.display = "block";
     setOptions(names);
     renderControls();
@@ -60142,6 +60329,7 @@ function createModel3DSection() {
   });
   transport.loopBtn.addEventListener("click", () => {
     loop = !loop;
+    rememberSelection();
     if (boundNode) {
       model3dSetLoop(boundNode, loop);
     }
@@ -60163,8 +60351,8 @@ function createModel3DSection() {
     }
   };
 }
-function createSpineSection() {
-  const ui = createSection("Animation", true);
+function createSpineSection(onExportClick) {
+  const ui = createSection("Animation", true, onExportClick);
   const transport = createAnimationTransport();
   const skinRow = createFieldRoot();
   const skinLabel = createFieldLabel("skin");
@@ -60191,6 +60379,12 @@ function createSpineSection() {
   let paused = false;
   let loop = false;
   let loopSynced = false;
+  function rememberSelection() {
+    if (!boundNode || selected === "") {
+      return;
+    }
+    spineSetAnimationSelection(boundNode, selected, loop);
+  }
   function renderControls() {
     transport.renderControls({ playing, loop });
   }
@@ -60203,6 +60397,7 @@ function createSpineSection() {
     if (!boundNode) {
       return;
     }
+    rememberSelection();
     const started = spinePlay(boundNode, selected, loop, onPlaybackComplete);
     playing = started;
     paused = false;
@@ -60297,6 +60492,7 @@ function createSpineSection() {
       loop = info.animationName ? info.loop : false;
       loopSynced = true;
     }
+    rememberSelection();
     ui.root.style.display = "block";
     setSkinOptions(skinNames);
     setOptions(names);
@@ -60343,6 +60539,7 @@ function createSpineSection() {
   });
   transport.loopBtn.addEventListener("click", () => {
     loop = !loop;
+    rememberSelection();
     if (boundNode) {
       spineSetLoop(boundNode, loop);
     }
@@ -61046,8 +61243,12 @@ function createPropertiesForm(selection) {
     target.push(builtSection);
     pane.appendChild(ui.root);
   }
-  const spineSection = createSpineSection();
-  const model3dSection = createModel3DSection();
+  const spineSection = createSpineSection(() => {
+    openSectionExport("animation", "Animation");
+  });
+  const model3dSection = createModel3DSection(() => {
+    openSectionExport("animation", "Animation");
+  });
   const aim3dSection = createAim3DSection();
   const textureSection = createTextureSection(() => {
     openSectionExport("texture", "Texture");
@@ -108365,13 +108566,13 @@ const backendLoaders = [{
     type: ExtensionType.WebGLLoader,
     name: "pixijs-3d"
   },
-  load: () => __vitePreload(() => import("./init-CNdWV9AM.js"), true ? __vite__mapDeps([9,10,6]) : void 0)
+  load: () => __vitePreload(() => import("./init-BUK6Y16z.js"), true ? __vite__mapDeps([9,10,6]) : void 0)
 }, {
   extension: {
     type: ExtensionType.WebGPULoader,
     name: "pixijs-3d"
   },
-  load: () => __vitePreload(() => import("./init-wQ7qJ85y.js"), true ? __vite__mapDeps([11,10,6]) : void 0)
+  load: () => __vitePreload(() => import("./init-DdKc-Tv7.js"), true ? __vite__mapDeps([11,10,6]) : void 0)
 }];
 addUniformParsers();
 extensions.add(...backendLoaders);

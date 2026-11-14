@@ -91,6 +91,11 @@ function isExportPropAvailable(maps: ExportPropertyMaps, spec: ExportPropSpec): 
         return !!maps.text.fillStops && maps.text.fillStops.key === spec.key;
     }
 
+    if (spec.kind === 'animation')
+    {
+        return !!resolveStringMap(maps, 'animation.name');
+    }
+
     return !!resolveStringMap(maps, spec.key);
 }
 
@@ -156,6 +161,23 @@ function collectBlendModeExportValue(maps: ExportPropertyMaps): string | number 
     return resolveStringMap(maps, 'blendMode')?.get();
 }
 
+function collectAnimationExportValue(maps: ExportPropertyMaps): { name: string; loop: boolean } | undefined
+{
+    const name = resolveStringMap(maps, 'animation.name')?.get();
+
+    if (typeof name !== 'string' || name === '')
+    {
+        return undefined;
+    }
+
+    const loop = resolveBooleanMap(maps, 'animation.loop')?.get();
+
+    return {
+        name,
+        loop: typeof loop === 'boolean' ? loop : false,
+    };
+}
+
 function collectPropValue(maps: ExportPropertyMaps, spec: ExportPropSpec): unknown
 {
     if (spec.kind === 'point')
@@ -176,6 +198,11 @@ function collectPropValue(maps: ExportPropertyMaps, spec: ExportPropSpec): unkno
     if (spec.kind === 'fill')
     {
         return collectFillExportValue(maps);
+    }
+
+    if (spec.kind === 'animation')
+    {
+        return collectAnimationExportValue(maps);
     }
 
     if (spec.key === 'blendMode')

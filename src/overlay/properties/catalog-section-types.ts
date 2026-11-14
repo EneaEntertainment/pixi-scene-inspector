@@ -11,6 +11,7 @@ import type { NumberPropertyKey } from './property-keys';
 
 export type PropertyExportSectionId =
     | 'identity'
+    | 'animation'
     | 'texture'
     | 'transform'
     | 'mesh'

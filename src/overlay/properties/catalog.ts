@@ -41,6 +41,7 @@ export type {
 
 export const PROPERTY_SECTION_IDS: Array<PropertyExportSectionId> = [
     'identity',
+    'animation',
     'texture',
     'transform',
     'mesh',
@@ -68,6 +69,7 @@ export const PROPERTY_SECTION_IDS: Array<PropertyExportSectionId> = [
 
 export const PROPERTY_SECTION_TITLES: Record<PropertyExportSectionId, string> = {
     identity         : 'Identity',
+    animation        : 'Animation',
     texture          : 'Texture',
     transform        : 'Transform',
     mesh             : 'Mesh',
@@ -127,12 +129,18 @@ type FillExportSpec = {
     key: TextFillPropertyKey;
 };
 
+type AnimationExportSpec = {
+    kind: 'animation';
+    id: 'animation';
+};
+
 export type ExportPropSpec =
     | PointExportSpec
     | NumberExportSpec
     | BooleanExportSpec
     | StringExportSpec
-    | FillExportSpec;
+    | FillExportSpec
+    | AnimationExportSpec;
 
 const OBJECT_CATALOG_SECTIONS: Array<CatalogSectionSpec> = [
     {
@@ -589,6 +597,10 @@ const TEXTURE_EXPORT_PROPS: Array<ExportPropSpec> = [
     { kind: 'string', id: 'texture', key: 'texture' },
 ];
 
+const ANIMATION_EXPORT_PROPS: Array<ExportPropSpec> = [
+    { kind: 'animation', id: 'animation' },
+];
+
 const EXPORT_PROPS_BY_SECTION: Record<
     PropertyExportSectionId,
     Array<ExportPropSpec>
@@ -601,7 +613,8 @@ const EXPORT_PROPS_BY_SECTION: Record<
         ...MATERIAL_CATALOG_SECTIONS,
         ...TEXT_CATALOG_SECTIONS,
     ]),
-    texture: TEXTURE_EXPORT_PROPS,
+    texture   : TEXTURE_EXPORT_PROPS,
+    animation : ANIMATION_EXPORT_PROPS,
 };
 
 export function exportPropsForSection(sectionId: PropertyExportSectionId): Array<ExportPropSpec>

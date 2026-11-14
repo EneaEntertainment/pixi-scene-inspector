@@ -1,3 +1,12 @@
+import {
+    model3dAnimationNames,
+    model3dAnimationSelection,
+    model3dPlay,
+    model3dPlaybackInfo,
+    model3dSetAnimationSelection,
+    model3dSetLoop,
+    resolveModel3DPlayerHost,
+} from '../../page-ops/model-3d';
 import { isNode3D } from '../../page-ops/node-3d';
 import { isNodeAlive, type PageGlobals, type PixiNode, type PixiPoint } from '../../page-ops/pixi-node';
 import { classifyNode } from '../../page-ops/props-3d';
@@ -6,6 +15,15 @@ import {
     readEffectiveEulerRadians,
     setEulerAxisRadians,
 } from '../../page-ops/rotation-3d';
+import {
+    isSpineLike,
+    spineAnimationNames,
+    spineAnimationSelection,
+    spinePlay,
+    spinePlaybackInfo,
+    spineSetAnimationSelection,
+    spineSetLoop,
+} from '../../page-ops/spine';
 import { nodeHasTexture, nodeTextureName, setNodeTextureByName } from '../../page-ops/texture';
 import { isPixi8 } from '../../page-ops/types';
 import { isHideBlocked } from '../../page-ops/visibility';
@@ -386,6 +404,208 @@ export type NodePropertyMaps = {
     strings: Array<PropertyMapping<string>>;
 };
 
+function appendAnimationMaps(
+    node: PixiNode,
+    allow: (key: string) => boolean,
+    strings: Array<PropertyMapping<string>>,
+    booleans: Array<PropertyMapping<boolean>>,
+)
+{
+    if (isSpineLike(node))
+    {
+        const names = spineAnimationNames(node);
+
+        if (names.length === 0)
+        {
+            return;
+        }
+
+        if (allow('animation.name'))
+        {
+            strings.push({
+                key: 'animation.name',
+
+                get: () =>
+                {
+                    const selection = spineAnimationSelection(node);
+
+                    if (selection)
+                    {
+                        return selection.name;
+                    }
+
+                    const info = spinePlaybackInfo(node);
+
+                    if (info.animationName && names.includes(info.animationName))
+                    {
+                        return info.animationName;
+                    }
+
+                    return names[0];
+                },
+
+                set: (value) =>
+                {
+                    if (!names.includes(value))
+                    {
+                        return;
+                    }
+
+                    const info = spinePlaybackInfo(node);
+                    const selection = spineAnimationSelection(node);
+                    const loop = selection?.loop ?? (info.animationName ? info.loop : false);
+
+                    spineSetAnimationSelection(node, value, loop);
+
+                    spinePlay(node, value, loop, () =>
+                    {
+                        void 0;
+                    });
+                },
+            });
+        }
+
+        if (allow('animation.loop'))
+        {
+            booleans.push({
+                key: 'animation.loop',
+
+                get: () =>
+                {
+                    const selection = spineAnimationSelection(node);
+
+                    if (selection)
+                    {
+                        return selection.loop;
+                    }
+
+                    const info = spinePlaybackInfo(node);
+
+                    return info.animationName ? info.loop : false;
+                },
+
+                set: (value) =>
+                {
+                    const info = spinePlaybackInfo(node);
+                    const selection = spineAnimationSelection(node);
+                    const name = selection?.name
+                        ?? (info.animationName && names.includes(info.animationName)
+                            ? info.animationName
+                            : names[0]);
+
+                    if (!name)
+                    {
+                        return;
+                    }
+
+                    spineSetAnimationSelection(node, name, value);
+                    spineSetLoop(node, value);
+                },
+            });
+        }
+
+        return;
+    }
+
+    const host = resolveModel3DPlayerHost(node);
+
+    if (!host)
+    {
+        return;
+    }
+
+    const names = model3dAnimationNames(host);
+
+    if (names.length === 0)
+    {
+        return;
+    }
+
+    if (allow('animation.name'))
+    {
+        strings.push({
+            key: 'animation.name',
+
+            get: () =>
+            {
+                const selection = model3dAnimationSelection(host);
+
+                if (selection)
+                {
+                    return selection.name;
+                }
+
+                const info = model3dPlaybackInfo(host);
+
+                if (info.animationName && names.includes(info.animationName))
+                {
+                    return info.animationName;
+                }
+
+                return names[0];
+            },
+
+            set: (value) =>
+            {
+                if (!names.includes(value))
+                {
+                    return;
+                }
+
+                const info = model3dPlaybackInfo(host);
+                const selection = model3dAnimationSelection(host);
+                const loop = selection?.loop ?? (info.animationName ? info.loop : true);
+
+                model3dSetAnimationSelection(host, value, loop);
+                model3dPlay(host, value, loop, () =>
+                {
+                    void 0;
+                });
+            },
+        });
+    }
+
+    if (allow('animation.loop'))
+    {
+        booleans.push({
+            key: 'animation.loop',
+
+            get: () =>
+            {
+                const selection = model3dAnimationSelection(host);
+
+                if (selection)
+                {
+                    return selection.loop;
+                }
+
+                const info = model3dPlaybackInfo(host);
+
+                return info.animationName ? info.loop : true;
+            },
+
+            set: (value) =>
+            {
+                const info = model3dPlaybackInfo(host);
+                const selection = model3dAnimationSelection(host);
+
+                const name = selection?.name
+                    ?? (info.animationName && names.includes(info.animationName)
+                        ? info.animationName
+                        : names[0]);
+
+                if (!name)
+                {
+                    return;
+                }
+
+                model3dSetAnimationSelection(host, name, value);
+                model3dSetLoop(host, value);
+            },
+        });
+    }
+}
+
 export function mapsForNode(node: PixiNode | null | undefined): NodePropertyMaps
 {
     if (!isNodeAlive(node))
@@ -415,6 +635,8 @@ export function mapsForNode(node: PixiNode | null | undefined): NodePropertyMaps
             },
         });
     }
+
+    appendAnimationMaps(node, allow, strings, booleans);
 
     numbers.push(
         ...takeMaps(

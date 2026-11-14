@@ -39,7 +39,13 @@ export type Model3DPlaybackInfo = {
     loop: boolean;
 };
 
+export type Model3DAnimationSelection = {
+    name: string;
+    loop: boolean;
+};
+
 const playbackByNode = new WeakMap<PixiNode, Playback>();
+const selectionByNode = new WeakMap<PixiNode, Model3DAnimationSelection>();
 
 function asModel(node: PixiNode): Model3DNode
 {
@@ -187,6 +193,37 @@ function ensurePlayback(node: PixiNode): Playback | null
     playbackByNode.set(node, playback);
 
     return playback;
+}
+
+export function model3dSetAnimationSelection(node: PixiNode, name: string, loop: boolean)
+{
+    if (name === '')
+    {
+        selectionByNode.delete(node);
+
+        return;
+    }
+
+    selectionByNode.set(node, { name, loop });
+}
+
+export function model3dAnimationSelection(node: PixiNode): Model3DAnimationSelection | undefined
+{
+    const selection = selectionByNode.get(node);
+
+    if (!selection)
+    {
+        return undefined;
+    }
+
+    const names = model3dAnimationNames(node);
+
+    if (!names.includes(selection.name))
+    {
+        return undefined;
+    }
+
+    return selection;
 }
 
 export function model3dAnimationNames(node: PixiNode): Array<string>

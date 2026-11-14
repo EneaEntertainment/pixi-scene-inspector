@@ -486,8 +486,16 @@ export function createPropertiesForm(selection: SelectionChannel): PropertiesFor
         pane.appendChild(ui.root);
     }
 
-    const spineSection = createSpineSection();
-    const model3dSection = createModel3DSection();
+    const spineSection = createSpineSection(() =>
+    {
+        openSectionExport('animation', 'Animation');
+    });
+
+    const model3dSection = createModel3DSection(() =>
+    {
+        openSectionExport('animation', 'Animation');
+    });
+
     const aim3dSection = createAim3DSection();
 
     const textureSection = createTextureSection(() =>

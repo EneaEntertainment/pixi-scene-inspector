@@ -1,4 +1,76 @@
-import { w as warn, g as getAttributeInfoFromFormat, d as STENCIL_MODES, u as unsafeEvalSupported, B as Buffer, e as BufferUsage, f as uniformParsers } from "./index-DVREQIrz.js";
+import { w as warn, o as getAttributeInfoFromFormat, p as STENCIL_MODES, u as unsafeEvalSupported, B as Buffer, q as BufferUsage, s as uniformParsers } from "./index-CAUPkiH8.js";
+const localUniformBit = {
+  name: "local-uniform-bit",
+  vertex: {
+    header: (
+      /* wgsl */
+      `
+
+            struct LocalUniforms {
+                uTransformMatrix:mat3x3<f32>,
+                uColor:vec4<f32>,
+                uRound:f32,
+            }
+
+            @group(1) @binding(0) var<uniform> localUniforms : LocalUniforms;
+        `
+    ),
+    main: (
+      /* wgsl */
+      `
+            vColor *= localUniforms.uColor;
+            modelMatrix *= localUniforms.uTransformMatrix;
+        `
+    ),
+    end: (
+      /* wgsl */
+      `
+            if(localUniforms.uRound == 1)
+            {
+                vPosition = vec4(roundPixels(vPosition.xy, globalUniforms.uResolution), vPosition.zw);
+            }
+        `
+    )
+  }
+};
+const localUniformBitGroup2 = {
+  ...localUniformBit,
+  vertex: {
+    ...localUniformBit.vertex,
+    // replace the group!
+    header: localUniformBit.vertex.header.replace("group(1)", "group(2)")
+  }
+};
+const localUniformBitGl = {
+  name: "local-uniform-bit",
+  vertex: {
+    header: (
+      /* glsl */
+      `
+
+            uniform mat3 uTransformMatrix;
+            uniform vec4 uColor;
+            uniform float uRound;
+        `
+    ),
+    main: (
+      /* glsl */
+      `
+            vColor *= uColor;
+            modelMatrix = uTransformMatrix;
+        `
+    ),
+    end: (
+      /* glsl */
+      `
+            if(uRound == 1.)
+            {
+                gl_Position.xy = roundPixels(gl_Position.xy, uResolution);
+            }
+        `
+    )
+  }
+};
 const textureBit = {
   name: "texture-bit",
   vertex: {
@@ -393,11 +465,14 @@ function getTexelRangeRects(start, end, width, height, out) {
 export {
   GpuStencilModesToPixi as G,
   UboSystem as U,
-  uboSyncFunctionsSTD40 as a,
-  textureBitGl as b,
+  localUniformBit as a,
+  uboSyncFunctionsSTD40 as b,
   compileBufferSync as c,
+  localUniformBitGl as d,
   ensureAttributes as e,
+  textureBitGl as f,
   getTexelRangeRects as g,
+  localUniformBitGroup2 as l,
   textureBit as t,
   uboSyncFunctionsWGSL as u
 };

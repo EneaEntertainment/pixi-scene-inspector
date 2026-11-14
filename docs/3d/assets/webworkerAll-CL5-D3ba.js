@@ -1,5 +1,7 @@
-import { M as Matrix, l as canvasUtils, b5 as CanvasPool, b$ as getPo2TextureFromSource, aP as Bounds, E as ExtensionType, G as GpuProgram, b as GlProgram, aI as UniformGroup, N as BindGroup, aQ as TexturePool, T as Texture, bO as Geometry, R as RendererType, w as warn, k as extensions } from "./index-DVREQIrz.js";
-import { F as Filter } from "./Filter-COxupEWd.js";
+import { M as Matrix, b1 as Bounds, b2 as TexturePool, E as ExtensionType, G as GpuProgram, b as GlProgram, aX as UniformGroup, a7 as BindGroup, T as Texture, bQ as Geometry, a3 as RendererType, w as warn, l as extensions } from "./index-CAUPkiH8.js";
+import { c as canvasUtils } from "./canvasUtils-Dg9bFg1-.js";
+import { C as CanvasPool } from "./CanvasPool-DKckIy1O.js";
+import { F as Filter } from "./Filter-BUMrv9V_.js";
 const tempProjectionMatrix = new Matrix();
 function getGlobalRenderableBounds(renderables, bounds) {
   bounds.clear();
@@ -21,6 +23,29 @@ function getGlobalRenderableBounds(renderables, bounds) {
   }
   bounds.matrix = actualMatrix;
   return bounds;
+}
+const tempBounds = new Bounds();
+function getPo2TextureFromSource(image, width, height, resolution, autoGenerateMipmaps = false, scaleMode) {
+  const bounds = tempBounds;
+  bounds.minX = 0;
+  bounds.minY = 0;
+  bounds.maxX = image.width / resolution | 0;
+  bounds.maxY = image.height / resolution | 0;
+  const texture = TexturePool.getOptimalTexture({
+    width: bounds.width,
+    height: bounds.height,
+    resolution,
+    autoGenerateMipmaps,
+    scaleMode
+  });
+  texture.source.uploadMethodId = "image";
+  texture.source.resource = image;
+  texture.source.alphaMode = "premultiply-alpha-on-upload";
+  texture.frame.width = width / resolution;
+  texture.frame.height = height / resolution;
+  texture.source.emit("update", texture.source);
+  texture.updateUvs();
+  return texture;
 }
 function isCanvasFilterCapable(filter) {
   return typeof filter.getCanvasFilterString === "function";

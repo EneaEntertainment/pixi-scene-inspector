@@ -46,7 +46,9 @@ type CorePropertyKey =
     | 'label'
     | 'name'
     | 'texture'
-    | 'tint';
+    | 'tint'
+    | 'animation.name'
+    | 'animation.loop';
 
 export type PropertyKey = CorePropertyKey | ThreeDPropertyKey;
 
@@ -57,6 +59,7 @@ export type BooleanPropertyKey =
     | 'interactive'
     | 'buttonMode'
     | 'interactiveChildren'
+    | 'animation.loop'
     | ThreeDBooleanPropertyKey;
 
 export type StringPropertyKey =
@@ -67,6 +70,7 @@ export type StringPropertyKey =
     | 'name'
     | 'texture'
     | 'tint'
+    | 'animation.name'
     | ThreeDStringPropertyKey;
 
 export type NumberPropertyKey =

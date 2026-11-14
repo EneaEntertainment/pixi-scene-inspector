@@ -66,8 +66,14 @@ export type SpinePlaybackInfo = {
     loop: boolean;
 };
 
+export type SpineAnimationSelection = {
+    name: string;
+    loop: boolean;
+};
+
 const TRACK = 0;
 const playbackByNode = new WeakMap<PixiNode, Playback>();
+const selectionByNode = new WeakMap<PixiNode, SpineAnimationSelection>();
 
 function asSpine(node: PixiNode): SpineNode
 {
@@ -220,6 +226,37 @@ function ensurePlayback(node: SpineNode): Playback | null
 export function spineAnimationNames(node: PixiNode): Array<string>
 {
     return namedList(asSpine(node), (data) => data?.animations);
+}
+
+export function spineSetAnimationSelection(node: PixiNode, name: string, loop: boolean)
+{
+    if (name === '')
+    {
+        selectionByNode.delete(node);
+
+        return;
+    }
+
+    selectionByNode.set(node, { name, loop });
+}
+
+export function spineAnimationSelection(node: PixiNode): SpineAnimationSelection | undefined
+{
+    const selection = selectionByNode.get(node);
+
+    if (!selection)
+    {
+        return undefined;
+    }
+
+    const names = spineAnimationNames(node);
+
+    if (!names.includes(selection.name))
+    {
+        return undefined;
+    }
+
+    return selection;
 }
 
 export function spineSkinNames(node: PixiNode): Array<string>
