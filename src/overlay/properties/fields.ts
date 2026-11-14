@@ -12,6 +12,8 @@ export type {
     SelectOption,
     TextField,
     TextFieldSpec,
+    TextureField,
+    TextureFieldSpec,
 } from '../fields';
 export {
     createBooleanField,
@@ -21,5 +23,6 @@ export {
     createSection,
     createSelectField,
     createTextField,
+    createTextureField,
 } from '../fields';
 export type { FieldBooleanKey, FieldNumberKey, FieldStringKey } from './keys';

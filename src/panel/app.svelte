@@ -15,11 +15,21 @@
   import { onDestroy, onMount } from "svelte";
   import { layoutTree } from "../layout";
   import {
+    DEFAULT_LIVE_REFRESH_INTERVAL_SEC,
+    readLiveRefreshIntervalAttr,
+    subscribeLiveRefreshInterval,
+  } from "../live-refresh";
+  import {
     remapIdListByUid,
     resolveMarqueeSelection,
     sortIdsByTreeOrder,
     toggleSelectedId,
   } from "../multi-select";
+  import { installClickToSelect } from "../overlay/click-to-select";
+  import {
+    readHighlightEnabled,
+    writeHighlightEnabled,
+  } from "../overlay/shell/settings";
   import {
     createSelectionChannel,
     type SelectionChannel,
@@ -54,16 +64,7 @@
     seedExpandedRoot,
   } from "./panel-session";
   import SceneTree from "./scene-tree.svelte";
-  import {
-    DEFAULT_LIVE_REFRESH_INTERVAL_SEC,
-    readLiveRefreshIntervalAttr,
-    subscribeLiveRefreshInterval,
-  } from "../live-refresh";
-  import { installClickToSelect } from "../overlay/click-to-select";
-  import {
-    readHighlightEnabled,
-    writeHighlightEnabled,
-  } from "../overlay/shell/settings";
+
   import type { PixiTreeHost } from "../host";
   import type {
     LaidOutNode,

@@ -1,4 +1,4 @@
-import { isHideBlockedTypeName } from '../node-type-config';
+import { canEditVisibleState } from '../page-ops/visibility';
 import { findTreeNode, isAncestorId, parentIdOf, remapIdsByUid } from '../tree-ops';
 
 import type { TreeNodeData } from '../types';
@@ -16,11 +16,7 @@ function isParticleHostTypeName(typeName: string): boolean
     );
 }
 
-export function canReparent(
-    tree: TreeNodeData,
-    sourceId: string,
-    parentId: string,
-): boolean
+export function canReparent(tree: TreeNodeData, sourceId: string, parentId: string): boolean
 {
     if (sourceId === tree.id)
     {
@@ -53,16 +49,9 @@ export function canReparent(
     return true;
 }
 
-export function canToggleTreeNodeVisible(
-    node: Pick<TreeNodeData, 'typeName' | 'visible'>,
-): boolean
+export function canToggleTreeNodeVisible(node: Pick<TreeNodeData, 'visible' | 'hideBlocked'>): boolean
 {
-    if (!node.visible)
-    {
-        return true;
-    }
-
-    return !isHideBlockedTypeName(node.typeName);
+    return canEditVisibleState(node.visible, node.hideBlocked);
 }
 
 export function seedExpandedRoot(rootId: string): Set<string>
@@ -90,11 +79,7 @@ export function expandedIdsAfterMove(
     return nextExpanded;
 }
 
-export function ensureMovedParentExpanded(
-    expandedIds: Set<string>,
-    nextTree: TreeNodeData,
-    movedId: string,
-): Set<string>
+export function ensureMovedParentExpanded(expandedIds: Set<string>, nextTree: TreeNodeData, movedId: string): Set<string>
 {
     const nextExpanded = new Set(expandedIds);
     const newParentId = parentIdOf(movedId);

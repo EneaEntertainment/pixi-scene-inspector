@@ -17,7 +17,7 @@ export { hasExposedTextureCache } from './cache';
 export { nodeHasTexture } from './is-texture';
 export { paintTexturePreview } from './preview';
 
-function textureNameOf(texture: PixiTexture | null | undefined, win: PageGlobals = globalThis as PageGlobals): string
+export function textureNameOf(texture: PixiTexture | null | undefined, win: PageGlobals = globalThis as PageGlobals): string
 {
     if (!texture)
     {
@@ -64,7 +64,7 @@ export function listCachedTextures(win: PageGlobals = globalThis as PageGlobals)
     return entries;
 }
 
-function resolveTextureByName(name: string, win: PageGlobals = globalThis as PageGlobals): PixiTexture | undefined
+export function resolveTextureByName(name: string, win: PageGlobals = globalThis as PageGlobals): PixiTexture | undefined
 {
     const key = name.trim();
 

@@ -4,10 +4,7 @@ import { clearSelectionIds, setSelectionIds } from './selection-ids';
 
 import type { PageGlobals } from './pixi-node';
 
-export function selectNodes(
-    pathIds: Array<string>,
-    win: PageGlobals = globalThis as PageGlobals,
-): boolean
+export function selectNodes(pathIds: Array<string>, win: PageGlobals = globalThis as PageGlobals): boolean
 {
     if (pathIds.length === 0)
     {

@@ -1,3 +1,5 @@
+import { isScene3D } from './node-3d';
+
 import type { PageGlobals, PixiNode } from './pixi-node';
 
 type RootFound = {
@@ -166,6 +168,7 @@ export function childrenOf(node: PixiNode | null | undefined): Array<PixiNode>
     if (
         root3d
     && root3d !== node
+    && isScene3D(root3d)
     && Array.isArray(root3d.children)
     && kids.indexOf(root3d) < 0
     )

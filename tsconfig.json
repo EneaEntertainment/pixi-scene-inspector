@@ -17,6 +17,8 @@
     "src/**/*.svelte",
     "demo/**/*.ts",
     "demo/**/*.svelte",
+    "demo-3d/**/*.ts",
+    "demo-3d/**/*.svelte",
     "svelte.config.js"
   ]
 }

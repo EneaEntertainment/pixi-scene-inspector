@@ -4,6 +4,7 @@ export type TreeNodeData = {
     label: string;
     typeName: string;
     visible: boolean;
+    hideBlocked: boolean;
     children: Array<TreeNodeData>;
     filterMatch?: boolean;
 };

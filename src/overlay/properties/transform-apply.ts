@@ -6,10 +6,18 @@ import type { NumberPropertyKey } from './node';
 export const MULTI_TRANSFORM_KEYS = new Set<NumberPropertyKey>([
     'position.x',
     'position.y',
+    'position.z',
     'scale.x',
     'scale.y',
+    'scale.z',
     'rotation',
+    'rotation.x',
+    'rotation.y',
+    'rotation.z',
     'angle',
+    'angle.x',
+    'angle.y',
+    'angle.z',
 ]);
 
 export type TransformNumberCommitInfo = {

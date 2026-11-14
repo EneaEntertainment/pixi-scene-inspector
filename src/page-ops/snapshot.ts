@@ -1,5 +1,6 @@
 import { childrenOf, findRoot } from './root';
 import { customLabelOf, isPixi8, typeNameOf } from './types';
+import { isHideBlocked } from './visibility';
 
 import type { SnapshotResult, TreeNodeData } from '../types';
 import type { PageGlobals, PixiNode } from './pixi-node';
@@ -38,24 +39,26 @@ export function takeSnapshot(win: PageGlobals = globalThis as PageGlobals): Snap
         if (count > MAX_NODES || depth > MAX_DEPTH)
         {
             return {
-                id       : path.join('.'),
+                id          : path.join('.'),
                 uid,
-                label    : '',
-                typeName : 'Object',
-                visible  : true,
-                children : [],
+                label       : '',
+                typeName    : 'Object',
+                visible     : true,
+                hideBlocked : false,
+                children    : [],
             };
         }
 
         const kids = childrenOf(node);
 
         return {
-            id       : path.join('.') || '0',
+            id          : path.join('.') || '0',
             uid,
-            label    : customLabelOf(node, useLabel, win),
-            typeName : typeNameOf(node, win),
-            visible  : node.visible !== false,
-            children : kids.map((child, i) =>
+            label       : customLabelOf(node, useLabel, win),
+            typeName    : typeNameOf(node, win),
+            visible     : node.visible !== false,
+            hideBlocked : isHideBlocked(node),
+            children    : kids.map((child, i) =>
                 walk(child, [...path, i], depth + 1, useLabel),
             ),
         };

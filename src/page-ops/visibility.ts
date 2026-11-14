@@ -1,4 +1,5 @@
 import { isHideBlockedTypeName } from '../node-type-config';
+import { isScene3D } from './node-3d';
 import { ctorName, type PageGlobals, type PixiNode } from './pixi-node';
 import { resolveByPath } from './root';
 
@@ -23,21 +24,21 @@ function typeNameBlocked(node: PixiNode): boolean
     return Boolean(ctor && isHideBlockedTypeName(ctor));
 }
 
-function isHideBlocked(node: PixiNode): boolean
+export function isHideBlocked(node: PixiNode): boolean
 {
     if (typeNameBlocked(node))
     {
         return true;
     }
 
-    const view = node._view3d;
-
-    if (view && view.root === node)
+    if (isScene3D(node))
     {
         return true;
     }
 
-    if (view && view.camera)
+    const view = node._view3d;
+
+    if (view?.camera)
     {
         let cur: PixiNode | null | undefined = view.camera;
 
@@ -55,6 +56,21 @@ function isHideBlocked(node: PixiNode): boolean
     return false;
 }
 
+export function canEditVisibleState(visible: boolean | undefined, hideBlocked: boolean): boolean
+{
+    if (visible !== true)
+    {
+        return true;
+    }
+
+    return !hideBlocked;
+}
+
+export function canMapVisibleProp(node: PixiNode): boolean
+{
+    return canEditVisibleState(node.visible, isHideBlocked(node));
+}
+
 export function toggleNodeVisible(pathId: string, win: PageGlobals = globalThis as PageGlobals): boolean
 {
     const node = resolveByPath(pathId, win);
@@ -64,7 +80,7 @@ export function toggleNodeVisible(pathId: string, win: PageGlobals = globalThis 
         return false;
     }
 
-    if (node.visible && isHideBlocked(node))
+    if (!canEditVisibleState(node.visible, isHideBlocked(node)))
     {
         return false;
     }

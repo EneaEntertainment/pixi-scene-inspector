@@ -1,4 +1,11 @@
 import {
+    CAMERA_CATALOG_SECTIONS,
+    LIGHT_CATALOG_SECTIONS,
+    MATERIAL_CATALOG_SECTIONS,
+    MESH_CATALOG_SECTIONS,
+    VIEW_CATALOG_SECTIONS,
+} from './catalog-3d';
+import {
     ALIGN_OPTIONS,
     BLEND_MODE_OPTIONS,
     CURSOR_OPTIONS,
@@ -7,41 +14,57 @@ import {
     FONT_STYLE_OPTIONS,
     FONT_VARIANT_OPTIONS,
     FONT_WEIGHT_OPTIONS,
+    HIT_VOLUME_OPTIONS,
     STROKE_JOIN_OPTIONS,
     TEXT_BASELINE_OPTIONS,
     WHITE_SPACE_OPTIONS,
 } from './options';
 
+import type { NumberFieldSpec } from '../fields';
 import type {
-    BooleanFieldSpec,
-    ColorFieldSpec,
-    FillStopsFieldSpec,
-    NumberFieldSpec,
-    SelectFieldSpec,
-    TextFieldSpec,
-} from '../fields';
+    CatalogFieldSpec,
+    CatalogSectionSpec,
+    PointCatalogFieldSpec,
+    PropertyExportSectionId,
+    SectionFieldSpec,
+    SectionSpec,
+} from './catalog-section-types';
 import type { FieldBooleanKey, FieldNumberKey, FieldStringKey } from './keys';
-import type { NumberPropertyKey } from './node';
+import type { NumberPropertyKey } from './property-keys';
 import type { TextFillPropertyKey } from './text';
 
-export type PropertyExportSectionId =
-    | 'identity'
-    | 'texture'
-    | 'transform'
-    | 'visibility'
-    | 'rendering'
-    | 'interactivity'
-    | 'textContent'
-    | 'textFont'
-    | 'textFill'
-    | 'textLayout'
-    | 'textStroke'
-    | 'textDropShadow';
+export type {
+    PropertyExportSectionId,
+    SectionFieldSpec,
+    SectionSpec,
+} from './catalog-section-types';
 
 export const PROPERTY_SECTION_IDS: Array<PropertyExportSectionId> = [
     'identity',
+    'animation',
     'texture',
     'transform',
+    'mesh',
+    'light',
+    'lightShadow',
+    'camera',
+    'orbit',
+    'viewViewport',
+    'viewEnvironment',
+    'viewShadows',
+    'viewFog',
+    'viewLook',
+    'material',
+    'materialEmissive',
+    'materialSpecular',
+    'materialClearcoat',
+    'materialSheen',
+    'materialTransmission',
+    'materialIridescence',
+    'materialAnisotropy',
+    'materialUv',
+    'materialToon',
+    'materialTextures',
     'visibility',
     'rendering',
     'interactivity',
@@ -54,52 +77,40 @@ export const PROPERTY_SECTION_IDS: Array<PropertyExportSectionId> = [
 ];
 
 export const PROPERTY_SECTION_TITLES: Record<PropertyExportSectionId, string> = {
-    identity       : 'Identity',
-    texture        : 'Texture',
-    transform      : 'Transform',
-    visibility     : 'Visibility',
-    rendering      : 'Rendering',
-    interactivity  : 'Interactivity',
-    textContent    : 'Content',
-    textFont       : 'Font',
-    textFill       : 'Fill',
-    textLayout     : 'Layout',
-    textStroke     : 'Stroke',
-    textDropShadow : 'Drop Shadow',
-};
-
-export type SectionFieldSpec =
-    | ({ kind: 'number' } & NumberFieldSpec)
-    | ({ kind: 'boolean' } & BooleanFieldSpec)
-    | ({ kind: 'select' } & SelectFieldSpec)
-    | ({ kind: 'text' } & TextFieldSpec)
-    | ({ kind: 'color' } & ColorFieldSpec)
-    | ({ kind: 'fillStops' } & FillStopsFieldSpec);
-
-export type SectionSpec = {
-    id: PropertyExportSectionId;
-    title: string;
-    fields: Array<SectionFieldSpec>;
-};
-
-type PointCatalogFieldSpec = {
-    kind: 'point';
-    id: string;
-    xKey: NumberPropertyKey;
-    yKey: NumberPropertyKey;
-    label: string;
-    step: number;
-    dragAccel?: number;
-    min?: number;
-    max?: number;
-};
-
-type CatalogFieldSpec = SectionFieldSpec | PointCatalogFieldSpec;
-
-type CatalogSectionSpec = {
-    id: PropertyExportSectionId;
-    title: string;
-    fields: Array<CatalogFieldSpec>;
+    identity             : 'Identity',
+    animation            : 'Animation',
+    texture              : 'Texture',
+    transform            : 'Transform',
+    mesh                 : 'Mesh',
+    light                : 'Light',
+    lightShadow          : 'Shadow',
+    camera               : 'Camera',
+    orbit                : 'Orbit',
+    viewViewport         : 'Viewport',
+    viewEnvironment      : 'Environment',
+    viewShadows          : 'Shadows',
+    viewFog              : 'Fog',
+    viewLook             : 'Look',
+    material             : 'Material',
+    materialEmissive     : 'Emissive',
+    materialSpecular     : 'Specular',
+    materialClearcoat    : 'Clearcoat',
+    materialSheen        : 'Sheen',
+    materialTransmission : 'Transmission',
+    materialIridescence  : 'Iridescence',
+    materialAnisotropy   : 'Anisotropy',
+    materialUv           : 'UV',
+    materialToon         : 'Toon',
+    materialTextures     : 'Textures',
+    visibility           : 'Visibility',
+    rendering            : 'Rendering',
+    interactivity        : 'Interactivity',
+    textContent          : 'Content',
+    textFont             : 'Font',
+    textFill             : 'Fill',
+    textLayout           : 'Layout',
+    textStroke           : 'Stroke',
+    textDropShadow       : 'Drop Shadow',
 };
 
 type ExportPropId = string;
@@ -109,6 +120,7 @@ type PointExportSpec = {
     id: ExportPropId;
     xKey: NumberPropertyKey;
     yKey: NumberPropertyKey;
+    zKey?: NumberPropertyKey;
 };
 
 type NumberExportSpec = {
@@ -135,12 +147,18 @@ type FillExportSpec = {
     key: TextFillPropertyKey;
 };
 
+type AnimationExportSpec = {
+    kind: 'animation';
+    id: 'animation';
+};
+
 export type ExportPropSpec =
     | PointExportSpec
     | NumberExportSpec
     | BooleanExportSpec
     | StringExportSpec
-    | FillExportSpec;
+    | FillExportSpec
+    | AnimationExportSpec;
 
 const OBJECT_CATALOG_SECTIONS: Array<CatalogSectionSpec> = [
     {
@@ -160,19 +178,42 @@ const OBJECT_CATALOG_SECTIONS: Array<CatalogSectionSpec> = [
                 id        : 'position',
                 xKey      : 'position.x',
                 yKey      : 'position.y',
+                zKey      : 'position.z',
                 label     : 'position',
                 step      : 1,
                 dragAccel : 5,
             },
             { kind: 'number', key: 'width', label: 'width', step: 1, dragAccel: 2 },
             { kind: 'number', key: 'height', label: 'height', step: 1, dragAccel: 2 },
+            { kind: 'number', key: 'depth', label: 'depth', step: 1, dragAccel: 2 },
             { kind: 'number', key: 'rotation', label: 'rotation', step: 0.025, dragAccel: 0.25 },
+            {
+                kind      : 'point',
+                id        : 'rotationEuler',
+                xKey      : 'rotation.x',
+                yKey      : 'rotation.y',
+                zKey      : 'rotation.z',
+                label     : 'rotation',
+                step      : 0.025,
+                dragAccel : 0.25,
+            },
             { kind: 'number', key: 'angle', label: 'angle', step: 1, dragAccel: 1 },
+            {
+                kind      : 'point',
+                id        : 'angleEuler',
+                xKey      : 'angle.x',
+                yKey      : 'angle.y',
+                zKey      : 'angle.z',
+                label     : 'angle',
+                step      : 1,
+                dragAccel : 1,
+            },
             {
                 kind      : 'point',
                 id        : 'scale',
                 xKey      : 'scale.x',
                 yKey      : 'scale.y',
+                zKey      : 'scale.z',
                 label     : 'scale',
                 step      : 0.01,
                 dragAccel : 0.1,
@@ -197,6 +238,16 @@ const OBJECT_CATALOG_SECTIONS: Array<CatalogSectionSpec> = [
             },
             {
                 kind      : 'point',
+                id        : 'origin',
+                xKey      : 'origin.x',
+                yKey      : 'origin.y',
+                zKey      : 'origin.z',
+                label     : 'origin',
+                step      : 1,
+                dragAccel : 2,
+            },
+            {
+                kind      : 'point',
                 id        : 'skew',
                 xKey      : 'skew.x',
                 yKey      : 'skew.y',
@@ -206,6 +257,7 @@ const OBJECT_CATALOG_SECTIONS: Array<CatalogSectionSpec> = [
             },
         ],
     },
+    ...MESH_CATALOG_SECTIONS,
     {
         id     : 'visibility',
         title  : 'Visibility',
@@ -239,6 +291,12 @@ const OBJECT_CATALOG_SECTIONS: Array<CatalogSectionSpec> = [
                 key     : 'eventMode',
                 label   : 'eventMode',
                 options : EVENT_MODE_OPTIONS,
+            },
+            {
+                kind    : 'select',
+                key     : 'hitVolume',
+                label   : 'hitVolume',
+                options : HIT_VOLUME_OPTIONS,
             },
             {
                 kind       : 'select',
@@ -438,11 +496,7 @@ const TEXT_CATALOG_SECTIONS: Array<CatalogSectionSpec> = [
     },
 ];
 
-function expandPointAxis(
-    key: NumberPropertyKey,
-    label: string,
-    field: PointCatalogFieldSpec,
-): SectionFieldSpec
+function expandPointAxis(key: NumberPropertyKey, label: string, field: PointCatalogFieldSpec): SectionFieldSpec
 {
     const result: { kind: 'number' } & NumberFieldSpec = {
         kind : 'number',
@@ -473,10 +527,17 @@ function expandCatalogFieldToForm(field: CatalogFieldSpec): Array<SectionFieldSp
 {
     if (field.kind === 'point')
     {
-        return [
+        const axes = [
             expandPointAxis(field.xKey, `${field.label}.x`, field),
             expandPointAxis(field.yKey, `${field.label}.y`, field),
         ];
+
+        if (field.zKey)
+        {
+            axes.push(expandPointAxis(field.zKey, `${field.label}.z`, field));
+        }
+
+        return axes;
     }
 
     return [field];
@@ -486,12 +547,19 @@ function catalogFieldToExport(field: CatalogFieldSpec): ExportPropSpec
 {
     if (field.kind === 'point')
     {
-        return {
+        const spec: PointExportSpec = {
             kind : 'point',
             id   : field.id,
             xKey : field.xKey,
             yKey : field.yKey,
         };
+
+        if (field.zKey)
+        {
+            spec.zKey = field.zKey;
+        }
+
+        return spec;
     }
 
     if (field.kind === 'number')
@@ -537,10 +605,18 @@ function exportPropsFromCatalog(sections: Array<CatalogSectionSpec>): Record<
 }
 
 export const OBJECT_FORM_SECTIONS: Array<SectionSpec> = formSectionsFromCatalog(OBJECT_CATALOG_SECTIONS);
+export const MATERIAL_FORM_SECTIONS: Array<SectionSpec> = formSectionsFromCatalog(MATERIAL_CATALOG_SECTIONS);
 export const TEXT_FORM_SECTIONS: Array<SectionSpec> = formSectionsFromCatalog(TEXT_CATALOG_SECTIONS);
+export const LIGHT_FORM_SECTIONS: Array<SectionSpec> = formSectionsFromCatalog(LIGHT_CATALOG_SECTIONS);
+export const CAMERA_FORM_SECTIONS: Array<SectionSpec> = formSectionsFromCatalog(CAMERA_CATALOG_SECTIONS);
+export const VIEW_FORM_SECTIONS: Array<SectionSpec> = formSectionsFromCatalog(VIEW_CATALOG_SECTIONS);
 
 const TEXTURE_EXPORT_PROPS: Array<ExportPropSpec> = [
     { kind: 'string', id: 'texture', key: 'texture' },
+];
+
+const ANIMATION_EXPORT_PROPS: Array<ExportPropSpec> = [
+    { kind: 'animation', id: 'animation' },
 ];
 
 const EXPORT_PROPS_BY_SECTION: Record<
@@ -549,9 +625,14 @@ const EXPORT_PROPS_BY_SECTION: Record<
 > = {
     ...exportPropsFromCatalog([
         ...OBJECT_CATALOG_SECTIONS,
+        ...LIGHT_CATALOG_SECTIONS,
+        ...CAMERA_CATALOG_SECTIONS,
+        ...VIEW_CATALOG_SECTIONS,
+        ...MATERIAL_CATALOG_SECTIONS,
         ...TEXT_CATALOG_SECTIONS,
     ]),
-    texture: TEXTURE_EXPORT_PROPS,
+    texture   : TEXTURE_EXPORT_PROPS,
+    animation : ANIMATION_EXPORT_PROPS,
 };
 
 export function exportPropsForSection(sectionId: PropertyExportSectionId): Array<ExportPropSpec>

@@ -413,10 +413,7 @@ function pointsForGradientType(
     };
 }
 
-function gradientTypeFromPoints(
-    start: { x: number; y: number },
-    end: { x: number; y: number },
-): FillGradientType
+function gradientTypeFromPoints(start: { x: number; y: number }, end: { x: number; y: number }): FillGradientType
 {
     return Math.abs(end.x - start.x) >= Math.abs(end.y - start.y)
         ? 'horizontal'
@@ -525,11 +522,7 @@ function createLinearFillGradient(
     return gradient;
 }
 
-function applyLinearGradientType(
-    gradient: GradientMutable,
-    type: FillGradientType,
-    fontSize: number,
-)
+function applyLinearGradientType(gradient: GradientMutable, type: FillGradientType, fontSize: number)
 {
     const textureSpace = gradient.textureSpace === 'global' ? 'global' : 'local';
     const { start, end } = pointsForGradientType(type, textureSpace, fontSize);
@@ -812,11 +805,7 @@ export function readFillGradientType(style: StyleRecord, pixi8: boolean): FillGr
     return normalizeFillGradientType(style.fillGradientType) ?? 'vertical';
 }
 
-export function writeFillGradientType(
-    style: StyleRecord,
-    value: FillGradientType,
-    pixi8: boolean,
-)
+export function writeFillGradientType(style: StyleRecord, value: FillGradientType, pixi8: boolean)
 {
     const type = value === 'horizontal' ? 'horizontal' : 'vertical';
     const stops = readFillStops(style);

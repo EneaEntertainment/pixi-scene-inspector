@@ -330,11 +330,7 @@ function findInRecordCache(
     return findInCacheEntries(Object.entries(cache), name, caches, exact);
 }
 
-function findInMapCache(
-    map: Map<unknown, unknown>,
-    name: string,
-    caches: ResolvedTextureCaches,
-): PixiTexture | undefined
+function findInMapCache(map: Map<unknown, unknown>, name: string, caches: ResolvedTextureCaches): PixiTexture | undefined
 {
     const exactValue = map.has(name) ? map.get(name) : undefined;
     const exact = isPixiTexture(exactValue) ? exactValue : undefined;

@@ -181,11 +181,7 @@ export function createNumberField(spec: NumberFieldSpec, onCommit: NumberCommitH
         input.value = value === undefined ? '' : formatNumber(value);
     }
 
-    function commit(
-        next: number,
-        source: NumberCommitInfo['source'],
-        previous: number | undefined = current,
-    )
+    function commit(next: number, source: NumberCommitInfo['source'], previous: number | undefined = current)
     {
         const clamped = clampNumber(next, spec.min, spec.max);
 

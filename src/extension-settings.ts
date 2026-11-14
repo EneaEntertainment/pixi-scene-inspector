@@ -128,9 +128,7 @@ export async function writeLiveRefreshInterval(seconds: number): Promise<number>
     return next;
 }
 
-export async function writeHighlightGuides(
-    settings: HighlightGuidesSettings,
-): Promise<HighlightGuidesSettings>
+export async function writeHighlightGuides(settings: HighlightGuidesSettings): Promise<HighlightGuidesSettings>
 {
     const next = normalizeHighlightGuides(settings);
 

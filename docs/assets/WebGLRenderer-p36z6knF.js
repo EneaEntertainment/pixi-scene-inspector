@@ -1,7 +1,8 @@
-import { a as State, j as ExtensionType, ae as GCManagedHash, d as BufferUsage, w as warn, D as DOMAdapter, g as getAttributeInfoFromFormat, b as GlProgram, S as Shader, T as Texture, ap as Geometry, a0 as TextureSource, aq as checkMaxIfStatementsInShader, c as STENCIL_MODES, a1 as Rectangle, q as CanvasSource, Q as CLEAR, $ as isIntegerFormat, E as EventEmitter, e as uid, z as UniformGroup, ar as STATE_BITS, as as isSafari, r as extensions, at as AbstractGlGraphicsAdaptor, M as Matrix, au as compileHighShaderGlProgram, av as colorBitGl, aw as localUniformBitGl, ax as roundPixelsBitGl, ay as generateTextureBatchBitGl, az as getBatchSamplersUniformGroup, A as AbstractRenderer, R as RendererType } from "./index-SPjj9M5Z.js";
-import { e as ensureAttributes, G as GpuStencilModesToPixi, c as compileBufferSync, a as uboSyncFunctionsSTD40, U as UboSystem, B as BufferResource, b as uniformParsers, g as getTexelRangeRects, d as textureBitGl } from "./getTexelRangeRects-95pujm4c.js";
-import { R as RenderTargetSystem, S as SharedSystems, d as SharedRenderPipes } from "./RenderTargetSystem-JPZWF-LX.js";
-import "./Filter-bbWdas5q.js";
+import { a as State, E as ExtensionType, ba as GCManagedHash, e as BufferUsage, w as warn, D as DOMAdapter, g as getAttributeInfoFromFormat, b as GlProgram, S as Shader, T as Texture, bO as Geometry, c as TextureSource, bR as checkMaxIfStatementsInShader, d as STENCIL_MODES, aA as Rectangle, A as CanvasSource, aK as CLEAR, aZ as isIntegerFormat, aI as UniformGroup, J as BufferResource, bS as TextureView, f as uniformParsers, bT as STATE_BITS, bt as isSafari, k as extensions, bU as AbstractGlGraphicsAdaptor, M as Matrix, bV as compileHighShaderGlProgram, bW as colorBitGl, bX as localUniformBitGl, bY as roundPixelsBitGl, bZ as generateTextureBatchBitGl, b_ as getBatchSamplersUniformGroup, H as AbstractRenderer, R as RendererType } from "./index-CA2LzB3k.js";
+import { e as ensureAttributes, G as GpuStencilModesToPixi, c as compileBufferSync, a as uboSyncFunctionsSTD40, U as UboSystem, g as getTexelRangeRects, b as textureBitGl } from "./getTexelRangeRects-CvVS5N7n.js";
+import { R as RenderTargetSystem, S as SharedSystems, d as SharedRenderPipes } from "./RenderTargetSystem-ZQ9DfsOp.js";
+import "./RenderTexture-6tnWszKs.js";
+import "./Filter-DJ6geN72.js";
 class GlBatchAdaptor {
   constructor() {
     this._tempState = State.for2d();
@@ -1990,42 +1991,6 @@ GlRenderTargetSystem.extension = {
   type: [ExtensionType.WebGLSystem],
   name: "renderTarget"
 };
-class TextureView extends EventEmitter {
-  /**
-   * @param source - The texture source to view.
-   * @param viewDescriptor - The WebGPU texture view descriptor.
-   */
-  constructor(source, viewDescriptor) {
-    super();
-    this._resourceType = "textureView";
-    this._resourceId = uid("resource");
-    this.source = source;
-    this.viewDescriptor = viewDescriptor;
-    this._onChange = this._onChange.bind(this);
-    this._onDestroy = this._onDestroy.bind(this);
-    this.source.on("change", this._onChange);
-    this.source.on("destroy", this._onDestroy);
-  }
-  _onChange() {
-    this.emit("change", this);
-  }
-  _onDestroy() {
-    this.destroy();
-  }
-  /** Returns whether the underlying source is destroyed. */
-  get destroyed() {
-    return this.source.destroyed;
-  }
-  /** Destroys the view and cleans up event listeners. */
-  destroy() {
-    if (this.source) {
-      this.source.off("change", this._onChange);
-      this.source.off("destroy", this._onDestroy);
-    }
-    this.emit("destroy", this);
-    this.removeAllListeners();
-  }
-}
 function invert(layout) {
   const names = {};
   for (const name in layout) names[layout[name]] = name;

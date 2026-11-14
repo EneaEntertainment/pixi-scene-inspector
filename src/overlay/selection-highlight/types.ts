@@ -1,21 +1,8 @@
+import type { LocalBounds, MatrixLike } from '../../page-ops/geometry';
 import type { PixiNode } from '../../page-ops/pixi-node';
 import type { NumberPropertyKey } from '../properties/node';
 
-export type MatrixLike = {
-    a: number;
-    b: number;
-    c: number;
-    d: number;
-    tx: number;
-    ty: number;
-};
-
-export type LocalBounds = {
-    minX: number;
-    minY: number;
-    maxX: number;
-    maxY: number;
-};
+export type { LocalBounds, MatrixLike };
 
 export type BoxPaint = {
     width: number;

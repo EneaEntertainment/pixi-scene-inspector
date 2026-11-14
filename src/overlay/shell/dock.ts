@@ -303,9 +303,7 @@ export function dockPixiSceneInspector(options?: DockPixiSceneInspectorOptions):
 
 let toggleLock = false;
 
-export function togglePixiSceneInspector(
-    options?: DockPixiSceneInspectorOptions,
-): MountedPixiSceneInspector | null
+export function togglePixiSceneInspector(options?: DockPixiSceneInspectorOptions): MountedPixiSceneInspector | null
 {
     if (toggleLock)
     {

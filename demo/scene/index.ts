@@ -7,6 +7,7 @@ import { buildSpecialSection } from './special';
 import { buildSpineSection } from './spine';
 import { buildSpritesSection } from './sprites';
 import { buildTextSection } from './text';
+import { buildThreeDSection } from './three-d';
 
 import type { DemoTextures } from '../textures';
 
@@ -34,6 +35,8 @@ export async function buildDemoScene(textures: DemoTextures): Promise<Container>
         buildSpecialSection(textures),
 
         await buildSpineSection(),
+
+        buildThreeDSection(),
     ];
 
     for (let i = 0; i < sections.length; i++)

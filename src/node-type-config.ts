@@ -50,14 +50,14 @@ const NODE_TYPE_STYLES: Array<NodeTypeStyle> = [
     { name: 'SimplePlane', short: 'SIMP_PLANE', color: '#970e83' },
     { name: 'SimpleRope', short: 'SIMP_ROPE', color: '#970e83' },
 
-    { name: 'View3D', short: 'VIEW_3D', color: '#0f766e' },
-    { name: 'Scene3D', short: 'SCENE_3D', color: '#0f766e' },
-    { name: 'Container3D', short: 'CONT_3D', color: '#0f766e' },
-    { name: 'Model3D', short: 'MODEL_3D', color: '#0f766e' },
-    { name: 'Mesh3D', short: 'MESH_3D', color: '#0d9488' },
-    { name: 'Sprite3D', short: 'SPR_3D', color: '#0d9488' },
-    { name: 'BatchedMesh3D', short: 'BATCH_3D', color: '#0d9488' },
-    { name: 'ParticleContainer3D', short: 'PART_3D', color: '#0d9488' },
+    { name: 'View3D', short: 'VIEW_3D', color: '#c41e1e' },
+    { name: 'Scene3D', short: 'SCENE_3D', color: '#c41e1e' },
+    { name: 'Container3D', short: 'CONT_3D', color: '#c41e1e' },
+    { name: 'Model3D', short: 'MODEL_3D', color: '#c41e1e' },
+    { name: 'Mesh3D', short: 'MESH_3D', color: '#970e83' },
+    { name: 'Sprite3D', short: 'SPR_3D', color: '#1a7a1a' },
+    { name: 'BatchedMesh3D', short: 'BATCH_3D', color: '#970e83' },
+    { name: 'ParticleContainer3D', short: 'PART_3D', color: '#c41e1e' },
     { name: 'Camera3D', short: 'CAM_3D', color: '#14b8a6' },
     { name: 'DirectionalLight', short: 'DIR_LIGHT', color: '#f59e0b' },
     { name: 'PointLight', short: 'PT_LIGHT', color: '#f59e0b' },
@@ -158,10 +158,7 @@ export function constructorNameCandidates(name: string): Array<string>
     return candidates;
 }
 
-export function matchKnownTypeName(
-    name: string,
-    known: ReadonlySet<string>,
-): string
+export function matchKnownTypeName(name: string, known: ReadonlySet<string>): string
 {
     const candidates = constructorNameCandidates(name);
 

@@ -66,8 +66,14 @@ export type SpinePlaybackInfo = {
     loop: boolean;
 };
 
+export type SpineAnimationSelection = {
+    name: string;
+    loop: boolean;
+};
+
 const TRACK = 0;
 const playbackByNode = new WeakMap<PixiNode, Playback>();
+const selectionByNode = new WeakMap<PixiNode, SpineAnimationSelection>();
 
 function asSpine(node: PixiNode): SpineNode
 {
@@ -138,7 +144,7 @@ function currentEntry(node: SpineNode): SpineTrackEntry | null
     return state.tracks?.[TRACK] ?? null;
 }
 
-function restoreTimeScale(playback: Playback): void
+function restoreTimeScale(playback: Playback)
 {
     if (playback.heldTimeScale === null)
     {
@@ -220,6 +226,37 @@ function ensurePlayback(node: SpineNode): Playback | null
 export function spineAnimationNames(node: PixiNode): Array<string>
 {
     return namedList(asSpine(node), (data) => data?.animations);
+}
+
+export function spineSetAnimationSelection(node: PixiNode, name: string, loop: boolean)
+{
+    if (name === '')
+    {
+        selectionByNode.delete(node);
+
+        return;
+    }
+
+    selectionByNode.set(node, { name, loop });
+}
+
+export function spineAnimationSelection(node: PixiNode): SpineAnimationSelection | undefined
+{
+    const selection = selectionByNode.get(node);
+
+    if (!selection)
+    {
+        return undefined;
+    }
+
+    const names = spineAnimationNames(node);
+
+    if (!names.includes(selection.name))
+    {
+        return undefined;
+    }
+
+    return selection;
 }
 
 export function spineSkinNames(node: PixiNode): Array<string>
@@ -500,7 +537,7 @@ function entryDuration(entry: SpineTrackEntry): number
     return end - start;
 }
 
-function foldTrackTime(entry: SpineTrackEntry): void
+function foldTrackTime(entry: SpineTrackEntry)
 {
     const duration = entryDuration(entry);
     const trackTime = entry.trackTime;
@@ -523,7 +560,7 @@ function foldTrackTime(entry: SpineTrackEntry): void
     }
 }
 
-function applyEntryLoop(entry: SpineTrackEntry, loop: boolean): void
+function applyEntryLoop(entry: SpineTrackEntry, loop: boolean)
 {
     if (!loop)
     {
@@ -553,7 +590,7 @@ function applyEntryLoop(entry: SpineTrackEntry, loop: boolean): void
     entry.loop = true;
 }
 
-export function spineSetLoop(node: PixiNode, loop: boolean): void
+export function spineSetLoop(node: PixiNode, loop: boolean)
 {
     const entry = currentEntry(asSpine(node));
 
@@ -644,7 +681,7 @@ export function spineStop(node: PixiNode): boolean
     return true;
 }
 
-export function spineRelease(node: PixiNode): void
+export function spineRelease(node: PixiNode)
 {
     const playback = playbackByNode.get(node);
 

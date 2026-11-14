@@ -1,6 +1,6 @@
+import { findPixiCanvas } from '../page-ops/geometry';
 import { pickPathIdAt } from '../page-ops/pick';
 import { DEFAULT_PICK_INCLUDE_HIDDEN, readPickIncludeHiddenAttr, subscribePickIncludeHidden } from '../pick-settings';
-import { findPixiCanvas } from './selection-highlight/geometry';
 
 import type { PageGlobals } from '../page-ops/pixi-node';
 
