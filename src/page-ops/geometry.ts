@@ -140,6 +140,19 @@ export function readScreenSize(win: PageGlobals, canvas: HTMLCanvasElement): { w
     }
 
     const renderer = win.__PIXI_RENDERER__ || app?.renderer;
+    const rendererScreenW = asFiniteNumber(renderer?.screen?.width);
+    const rendererScreenH = asFiniteNumber(renderer?.screen?.height);
+
+    if (
+        rendererScreenW !== null
+        && rendererScreenH !== null
+        && rendererScreenW > 0
+        && rendererScreenH > 0
+    )
+    {
+        return { width: rendererScreenW, height: rendererScreenH };
+    }
+
     const resolution = asFiniteNumber(renderer?.resolution) ?? 1;
     const rendererW = asFiniteNumber(renderer?.width);
     const rendererH = asFiniteNumber(renderer?.height);
@@ -152,10 +165,19 @@ export function readScreenSize(win: PageGlobals, canvas: HTMLCanvasElement): { w
         && rendererH > 0
     )
     {
-        return {
-            width  : rendererW / resolution,
-            height : rendererH / resolution,
-        };
+        const bufferW = canvas.width;
+        const widthLooksLikeBuffer = bufferW > 0
+            && Math.abs(bufferW - rendererW) <= Math.abs(bufferW - (rendererW * resolution));
+
+        if (widthLooksLikeBuffer)
+        {
+            return {
+                width  : rendererW / resolution,
+                height : rendererH / resolution,
+            };
+        }
+
+        return { width: rendererW, height: rendererH };
     }
 
     const cssW = canvas.clientWidth || canvas.getBoundingClientRect().width;
