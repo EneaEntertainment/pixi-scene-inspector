@@ -1,4 +1,4 @@
-const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/browserAll-PtWVP5g8.js","assets/webworkerAll-B4V5zBzi.js","assets/canvasUtils-BRRno8MS.js","assets/CanvasPool-C7ZCwH3V.js","assets/Filter-BgTUin-L.js","assets/WebGPURenderer-cnzGBe6H.js","assets/getTexelRangeRects-B4dez8mD.js","assets/RenderTargetSystem-C8tZnRM7.js","assets/RenderTexture-BjFCyTKa.js","assets/WebGLRenderer-xvUHj3mg.js","assets/isSafari-DfZkt_YS.js","assets/CanvasRenderer-QwYBH47x.js","assets/BitmapFont-CkbIMLp_.js","assets/init-CXld6rdr.js","assets/View3DGlobalData-CidUk8mp.js","assets/init-BpUXFmFn.js"])))=>i.map(i=>d[i]);
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/browserAll-tBd8EEPA.js","assets/webworkerAll-BvX0k5w7.js","assets/canvasUtils-BMIUzsqn.js","assets/CanvasPool-C6ItLbSe.js","assets/Filter-BRjlL2du.js","assets/WebGPURenderer-D-JkrNBg.js","assets/getTexelRangeRects-BNVfvKyj.js","assets/RenderTargetSystem-DysSrY3B.js","assets/RenderTexture-BB9lKeWF.js","assets/WebGLRenderer-DF-E4uHB.js","assets/isSafari-CAyhWy9y.js","assets/CanvasRenderer-Czoz5t6p.js","assets/BitmapFont-CyDMm1w7.js","assets/init-y3ZHnCv1.js","assets/View3DGlobalData-mP9k2GqV.js","assets/init-D3EaZw1A.js"])))=>i.map(i=>d[i]);
 (function polyfill() {
   const relList = document.createElement("link").relList;
   if (relList && relList.supports && relList.supports("modulepreload")) return;
@@ -355,7 +355,7 @@ const browserExt = {
   },
   test: () => true,
   load: async () => {
-    await __vitePreload(() => import("./browserAll-PtWVP5g8.js"), true ? __vite__mapDeps([0,1,2,3,4]) : void 0);
+    await __vitePreload(() => import("./browserAll-tBd8EEPA.js"), true ? __vite__mapDeps([0,1,2,3,4]) : void 0);
   }
 };
 const webworkerExt = {
@@ -366,7 +366,7 @@ const webworkerExt = {
   },
   test: () => typeof self !== "undefined" && self.WorkerGlobalScope !== void 0,
   load: async () => {
-    await __vitePreload(() => import("./webworkerAll-B4V5zBzi.js"), true ? __vite__mapDeps([1,2,3,4]) : void 0);
+    await __vitePreload(() => import("./webworkerAll-BvX0k5w7.js"), true ? __vite__mapDeps([1,2,3,4]) : void 0);
   }
 };
 class ObservablePoint {
@@ -13768,7 +13768,7 @@ async function autoDetectRenderer(options) {
     const rendererType = preferredOrder[i2];
     if (rendererType === "webgpu" && await isWebGPUSupported()) {
       const { WebGPURenderer } = await __vitePreload(async () => {
-        const { WebGPURenderer: WebGPURenderer2 } = await import("./WebGPURenderer-cnzGBe6H.js");
+        const { WebGPURenderer: WebGPURenderer2 } = await import("./WebGPURenderer-D-JkrNBg.js");
         return { WebGPURenderer: WebGPURenderer2 };
       }, true ? __vite__mapDeps([5,6,7,8,4,3]) : void 0);
       RendererClass = WebGPURenderer;
@@ -13778,7 +13778,7 @@ async function autoDetectRenderer(options) {
       options.failIfMajorPerformanceCaveat ?? AbstractRenderer.defaultOptions.failIfMajorPerformanceCaveat
     )) {
       const { WebGLRenderer } = await __vitePreload(async () => {
-        const { WebGLRenderer: WebGLRenderer2 } = await import("./WebGLRenderer-xvUHj3mg.js");
+        const { WebGLRenderer: WebGLRenderer2 } = await import("./WebGLRenderer-DF-E4uHB.js");
         return { WebGLRenderer: WebGLRenderer2 };
       }, true ? __vite__mapDeps([9,6,7,8,4,3,10]) : void 0);
       RendererClass = WebGLRenderer;
@@ -13786,7 +13786,7 @@ async function autoDetectRenderer(options) {
       break;
     } else if (rendererType === "canvas") {
       const { CanvasRenderer } = await __vitePreload(async () => {
-        const { CanvasRenderer: CanvasRenderer2 } = await import("./CanvasRenderer-QwYBH47x.js");
+        const { CanvasRenderer: CanvasRenderer2 } = await import("./CanvasRenderer-Czoz5t6p.js");
         return { CanvasRenderer: CanvasRenderer2 };
       }, true ? __vite__mapDeps([11,7,8,4,3,2]) : void 0);
       RendererClass = CanvasRenderer;
@@ -14374,7 +14374,7 @@ const loadBitmapFont = {
     }
     const [loadedTextures, { BitmapFont }] = await Promise.all([
       loader.load(textureUrls),
-      __vitePreload(() => import("./BitmapFont-CkbIMLp_.js"), true ? __vite__mapDeps([12,3,2]) : void 0)
+      __vitePreload(() => import("./BitmapFont-CyDMm1w7.js"), true ? __vite__mapDeps([12,3,2]) : void 0)
     ]);
     const textures = textureUrls.map((url2) => loadedTextures[url2.src]);
     const bitmapFont = new BitmapFont({
@@ -31708,14 +31708,24 @@ function readScreenSize(win, canvas) {
     return { width: screenW, height: screenH };
   }
   const renderer = win.__PIXI_RENDERER__ || app?.renderer;
+  const rendererScreenW = asFiniteNumber$1(renderer?.screen?.width);
+  const rendererScreenH = asFiniteNumber$1(renderer?.screen?.height);
+  if (rendererScreenW !== null && rendererScreenH !== null && rendererScreenW > 0 && rendererScreenH > 0) {
+    return { width: rendererScreenW, height: rendererScreenH };
+  }
   const resolution = asFiniteNumber$1(renderer?.resolution) ?? 1;
   const rendererW = asFiniteNumber$1(renderer?.width);
   const rendererH = asFiniteNumber$1(renderer?.height);
   if (rendererW !== null && rendererH !== null && resolution > 0 && rendererW > 0 && rendererH > 0) {
-    return {
-      width: rendererW / resolution,
-      height: rendererH / resolution
-    };
+    const bufferW = canvas.width;
+    const widthLooksLikeBuffer = bufferW > 0 && Math.abs(bufferW - rendererW) <= Math.abs(bufferW - rendererW * resolution);
+    if (widthLooksLikeBuffer) {
+      return {
+        width: rendererW / resolution,
+        height: rendererH / resolution
+      };
+    }
+    return { width: rendererW, height: rendererH };
   }
   const cssW = canvas.clientWidth || canvas.getBoundingClientRect().width;
   const cssH = canvas.clientHeight || canvas.getBoundingClientRect().height;
@@ -34035,7 +34045,7 @@ function Panel_bar($$anchor, $$props) {
   var header = root_2$3();
   var div = child(header);
   var span = sibling(child(div));
-  span.textContent = "1.2.0";
+  span.textContent = "1.2.1";
   var div_1 = sibling(div, 2);
   var text = only_child(div_1, true);
   var button = sibling(div_1, 2);
@@ -77406,13 +77416,13 @@ const backendLoaders = [{
     type: ExtensionType.WebGLLoader,
     name: "pixijs-3d"
   },
-  load: () => __vitePreload(() => import("./init-CXld6rdr.js"), true ? __vite__mapDeps([13,14,10,8]) : void 0)
+  load: () => __vitePreload(() => import("./init-y3ZHnCv1.js"), true ? __vite__mapDeps([13,14,10,8]) : void 0)
 }, {
   extension: {
     type: ExtensionType.WebGPULoader,
     name: "pixijs-3d"
   },
-  load: () => __vitePreload(() => import("./init-BpUXFmFn.js"), true ? __vite__mapDeps([15,14,10,8]) : void 0)
+  load: () => __vitePreload(() => import("./init-D3EaZw1A.js"), true ? __vite__mapDeps([15,14,10,8]) : void 0)
 }];
 addUniformParsers();
 extensions.add(...backendLoaders);

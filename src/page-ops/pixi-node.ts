@@ -160,6 +160,10 @@ export type PixiRendererHandle = {
     width?: number;
     height?: number;
     resolution?: number;
+    screen?: {
+        width?: number;
+        height?: number;
+    };
 
     extract?: {
         canvas?: (target: unknown) => unknown;
