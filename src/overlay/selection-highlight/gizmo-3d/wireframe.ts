@@ -2,6 +2,7 @@ import { highlightStroke } from '../../../highlight-colors';
 import { localBoundsScreenEdges, projectWorldEdge } from '../project-edge-3d';
 import { ensureHelperLines } from './dom';
 import { helperWorldEdges } from './helpers-3d';
+import { GIZMO_PLANE_IDS } from './planes';
 
 import type { PixiNode } from '../../../page-ops/pixi-node';
 import type { AxesWorld } from '../geometry-3d';
@@ -84,6 +85,11 @@ export function hideTransformHandles(dom: GizmoDom)
         dom.axisTips[axis].style.display = 'none';
         dom.rotateRings[axis].style.display = 'none';
         dom.rotateHits[axis].style.display = 'none';
+    });
+
+    GIZMO_PLANE_IDS.forEach((plane) =>
+    {
+        dom.planeHandles[plane].style.display = 'none';
     });
 }
 

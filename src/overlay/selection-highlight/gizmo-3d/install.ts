@@ -4,6 +4,7 @@ import { readLocalAxesWorld } from '../geometry-3d';
 import { createGizmoDom, setGizmoVisible, setModeButtonsActive } from './dom';
 import { createGizmoDrag } from './drag';
 import { paintGizmoLayout } from './layout';
+import { GIZMO_PLANE_IDS } from './planes';
 import { hideAllWireframes } from './wireframe';
 
 import type { PixiNode } from '../../../page-ops/pixi-node';
@@ -125,6 +126,14 @@ export function installGizmo3D(resolveNode: () => PixiNode | null): Gizmo3DContr
         dom.axisArrows[axis].addEventListener('pointerdown', start);
         dom.axisTips[axis].addEventListener('pointerdown', start);
         dom.rotateHits[axis].addEventListener('pointerdown', start);
+    });
+
+    GIZMO_PLANE_IDS.forEach((plane) =>
+    {
+        dom.planeHandles[plane].addEventListener('pointerdown', (event) =>
+        {
+            drag.beginAxisDrag(plane, event);
+        });
     });
 
     dom.uniformHit.addEventListener('pointerdown', (event) => drag.beginAxisDrag('uniform', event));

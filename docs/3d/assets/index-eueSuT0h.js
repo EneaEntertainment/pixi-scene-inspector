@@ -1,4 +1,4 @@
-const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/browserAll-tBd8EEPA.js","assets/webworkerAll-BvX0k5w7.js","assets/canvasUtils-BMIUzsqn.js","assets/CanvasPool-C6ItLbSe.js","assets/Filter-BRjlL2du.js","assets/WebGPURenderer-D-JkrNBg.js","assets/getTexelRangeRects-BNVfvKyj.js","assets/RenderTargetSystem-DysSrY3B.js","assets/RenderTexture-BB9lKeWF.js","assets/WebGLRenderer-DF-E4uHB.js","assets/isSafari-CAyhWy9y.js","assets/CanvasRenderer-Czoz5t6p.js","assets/BitmapFont-CyDMm1w7.js","assets/init-y3ZHnCv1.js","assets/View3DGlobalData-mP9k2GqV.js","assets/init-D3EaZw1A.js"])))=>i.map(i=>d[i]);
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/browserAll-BZHt2Lh5.js","assets/webworkerAll-BN2GEhac.js","assets/canvasUtils-4B_FKT8J.js","assets/CanvasPool-DtLR6WxX.js","assets/Filter-BAUydW6w.js","assets/WebGPURenderer-C3K8wAMw.js","assets/getTexelRangeRects-B110zw5e.js","assets/RenderTargetSystem-DrKiYNRw.js","assets/RenderTexture-CD2JBLQ-.js","assets/WebGLRenderer-TX5l-NEV.js","assets/isSafari-v8oDa0JT.js","assets/CanvasRenderer-vFvuZ4Mv.js","assets/BitmapFont-CxxLpqOT.js","assets/init-B96M69wv.js","assets/View3DGlobalData-ZElXGYJS.js","assets/init-CizOsRxD.js"])))=>i.map(i=>d[i]);
 (function polyfill() {
   const relList = document.createElement("link").relList;
   if (relList && relList.supports && relList.supports("modulepreload")) return;
@@ -355,7 +355,7 @@ const browserExt = {
   },
   test: () => true,
   load: async () => {
-    await __vitePreload(() => import("./browserAll-tBd8EEPA.js"), true ? __vite__mapDeps([0,1,2,3,4]) : void 0);
+    await __vitePreload(() => import("./browserAll-BZHt2Lh5.js"), true ? __vite__mapDeps([0,1,2,3,4]) : void 0);
   }
 };
 const webworkerExt = {
@@ -366,7 +366,7 @@ const webworkerExt = {
   },
   test: () => typeof self !== "undefined" && self.WorkerGlobalScope !== void 0,
   load: async () => {
-    await __vitePreload(() => import("./webworkerAll-BvX0k5w7.js"), true ? __vite__mapDeps([1,2,3,4]) : void 0);
+    await __vitePreload(() => import("./webworkerAll-BN2GEhac.js"), true ? __vite__mapDeps([1,2,3,4]) : void 0);
   }
 };
 class ObservablePoint {
@@ -13768,7 +13768,7 @@ async function autoDetectRenderer(options) {
     const rendererType = preferredOrder[i2];
     if (rendererType === "webgpu" && await isWebGPUSupported()) {
       const { WebGPURenderer } = await __vitePreload(async () => {
-        const { WebGPURenderer: WebGPURenderer2 } = await import("./WebGPURenderer-D-JkrNBg.js");
+        const { WebGPURenderer: WebGPURenderer2 } = await import("./WebGPURenderer-C3K8wAMw.js");
         return { WebGPURenderer: WebGPURenderer2 };
       }, true ? __vite__mapDeps([5,6,7,8,4,3]) : void 0);
       RendererClass = WebGPURenderer;
@@ -13778,7 +13778,7 @@ async function autoDetectRenderer(options) {
       options.failIfMajorPerformanceCaveat ?? AbstractRenderer.defaultOptions.failIfMajorPerformanceCaveat
     )) {
       const { WebGLRenderer } = await __vitePreload(async () => {
-        const { WebGLRenderer: WebGLRenderer2 } = await import("./WebGLRenderer-DF-E4uHB.js");
+        const { WebGLRenderer: WebGLRenderer2 } = await import("./WebGLRenderer-TX5l-NEV.js");
         return { WebGLRenderer: WebGLRenderer2 };
       }, true ? __vite__mapDeps([9,6,7,8,4,3,10]) : void 0);
       RendererClass = WebGLRenderer;
@@ -13786,7 +13786,7 @@ async function autoDetectRenderer(options) {
       break;
     } else if (rendererType === "canvas") {
       const { CanvasRenderer } = await __vitePreload(async () => {
-        const { CanvasRenderer: CanvasRenderer2 } = await import("./CanvasRenderer-Czoz5t6p.js");
+        const { CanvasRenderer: CanvasRenderer2 } = await import("./CanvasRenderer-vFvuZ4Mv.js");
         return { CanvasRenderer: CanvasRenderer2 };
       }, true ? __vite__mapDeps([11,7,8,4,3,2]) : void 0);
       RendererClass = CanvasRenderer;
@@ -14374,7 +14374,7 @@ const loadBitmapFont = {
     }
     const [loadedTextures, { BitmapFont }] = await Promise.all([
       loader.load(textureUrls),
-      __vitePreload(() => import("./BitmapFont-CyDMm1w7.js"), true ? __vite__mapDeps([12,3,2]) : void 0)
+      __vitePreload(() => import("./BitmapFont-CxxLpqOT.js"), true ? __vite__mapDeps([12,3,2]) : void 0)
     ]);
     const textures = textureUrls.map((url2) => loadedTextures[url2.src]);
     const bitmapFont = new BitmapFont({
@@ -34045,7 +34045,7 @@ function Panel_bar($$anchor, $$props) {
   var header = root_2$3();
   var div = child(header);
   var span = sibling(child(div));
-  span.textContent = "1.2.1";
+  span.textContent = "1.3.0";
   var div_1 = sibling(div, 2);
   var text = only_child(div_1, true);
   var button = sibling(div_1, 2);
@@ -47817,6 +47817,18 @@ function rayFromScreen(view, screen) {
     return null;
   }
 }
+const GIZMO_PLANES = {
+  xy: { normal: "z", u: "x", v: "y" },
+  xz: { normal: "y", u: "x", v: "z" },
+  yz: { normal: "x", u: "y", v: "z" }
+};
+const GIZMO_PLANE_IDS = ["xy", "xz", "yz"];
+function isGizmoPlane(target) {
+  return target === "xy" || target === "xz" || target === "yz";
+}
+function axisDirOf(axes, axis) {
+  return axes[axis];
+}
 const GIZMO_OVERLAY_ID = "pixi-scene-inspector-gizmo-3d";
 const AXIS_COLORS = {
   x: "#ef4444",
@@ -47929,6 +47941,11 @@ function createGizmoDom() {
     y: svgEl("polyline"),
     z: svgEl("polyline")
   };
+  const planeHandles = {
+    xy: svgEl("polygon"),
+    xz: svgEl("polygon"),
+    yz: svgEl("polygon")
+  };
   ["x", "y", "z"].forEach((axis) => {
     const color = AXIS_COLORS[axis];
     Object.assign(axisLines[axis].style, { stroke: color, strokeWidth: "2", fill: "none" });
@@ -47963,6 +47980,21 @@ function createGizmoDom() {
     svg.appendChild(rotateRings[axis]);
     svg.appendChild(axisArrows[axis]);
     svg.appendChild(axisTips[axis]);
+  });
+  GIZMO_PLANE_IDS.forEach((plane) => {
+    const color = AXIS_COLORS[GIZMO_PLANES[plane].normal];
+    const handle = planeHandles[plane];
+    handle.setAttribute("fill", color);
+    handle.setAttribute("fill-opacity", "0.35");
+    handle.setAttribute("stroke", color);
+    handle.setAttribute("stroke-width", "1");
+    handle.setAttribute("stroke-opacity", "0.85");
+    Object.assign(handle.style, {
+      pointerEvents: "auto",
+      cursor: "move",
+      display: "none"
+    });
+    svg.appendChild(handle);
   });
   const uniformHit = svgEl("circle");
   uniformHit.setAttribute("r", "7");
@@ -48013,6 +48045,7 @@ function createGizmoDom() {
     axisHits,
     axisArrows,
     axisTips,
+    planeHandles,
     rotateRings,
     rotateHits,
     uniformHit,
@@ -48543,6 +48576,9 @@ function hideTransformHandles(dom) {
     dom.rotateRings[axis].style.display = "none";
     dom.rotateHits[axis].style.display = "none";
   });
+  GIZMO_PLANE_IDS.forEach((plane) => {
+    dom.planeHandles[plane].style.display = "none";
+  });
 }
 function paintHelperEdges(dom, edges, view, scaleX, scaleY) {
   const stroke = highlightStroke();
@@ -48598,6 +48634,8 @@ const AXIS_SCREEN_PX = 72;
 const ARROW_LENGTH_PX = 10;
 const ARROW_HALF_WIDTH_PX = 5;
 const RING_SEGMENTS = 48;
+const PLANE_OFFSET_FRAC = 0.16;
+const PLANE_SIZE_FRAC = 0.22;
 const SHELL_ID$1 = "pixi-scene-inspector-shell";
 function mountModeBar(modeBar) {
   const shell = document.getElementById(SHELL_ID$1);
@@ -48655,8 +48693,37 @@ function ringPoints(origin, axis, radius, view, scaleX, scaleY) {
   }
   return parts.join(" ");
 }
-function axisDirOf$1(axes, axis) {
-  return axes[axis];
+function cameraAxisSigns(axes, cameraPos) {
+  const toCam = sub3(cameraPos, axes.origin);
+  return {
+    x: Math.sign(dot3(toCam, axes.x)) || 1,
+    y: Math.sign(dot3(toCam, axes.y)) || 1,
+    z: Math.sign(dot3(toCam, axes.z)) || 1
+  };
+}
+function planeScreenPoints(view, axes, plane, signs, worldLen, scaleX, scaleY) {
+  const { u: u2, v: v2 } = GIZMO_PLANES[plane];
+  const offset = worldLen * PLANE_OFFSET_FRAC;
+  const size = worldLen * PLANE_SIZE_FRAC;
+  const su = signs[u2];
+  const sv = signs[v2];
+  const uDir = axisDirOf(axes, u2);
+  const vDir = axisDirOf(axes, v2);
+  const parts = [];
+  const corners = [
+    addScaled(addScaled(axes.origin, uDir, su * offset), vDir, sv * offset),
+    addScaled(addScaled(axes.origin, uDir, su * (offset + size)), vDir, sv * offset),
+    addScaled(addScaled(axes.origin, uDir, su * (offset + size)), vDir, sv * (offset + size)),
+    addScaled(addScaled(axes.origin, uDir, su * offset), vDir, sv * (offset + size))
+  ];
+  for (const corner of corners) {
+    const screen = projectWorldPoint(view, corner);
+    if (!screen) {
+      return null;
+    }
+    parts.push(`${screen.x * scaleX},${screen.y * scaleY}`);
+  }
+  return parts.join(" ");
 }
 function projectedUnitPixels(view, origin, originScreen, direction, scaleX, scaleY) {
   const probe = projectWorldPoint(view, addScaled(origin, direction, 1));
@@ -48734,7 +48801,7 @@ function paintGizmoLayout(input) {
   const showMoveArrows = mode === "move";
   const showScaleTips = mode === "scale";
   ["x", "y", "z"].forEach((axis) => {
-    const tipWorld = addScaled(axes.origin, axisDirOf$1(axes, axis), worldLen);
+    const tipWorld = addScaled(axes.origin, axisDirOf(axes, axis), worldLen);
     const tipScreen = projectWorldPoint(view, tipWorld);
     const line = dom.axisLines[axis];
     const hit = dom.axisHits[axis];
@@ -48778,7 +48845,7 @@ function paintGizmoLayout(input) {
       tip.style.display = "none";
     }
     if (showRotate) {
-      const points = ringPoints(axes.origin, axisDirOf$1(axes, axis), ringRadius, view, scaleX, scaleY);
+      const points = ringPoints(axes.origin, axisDirOf(axes, axis), ringRadius, view, scaleX, scaleY);
       ring.setAttribute("points", points);
       ringHit.setAttribute("points", points);
       ring.style.display = points ? "block" : "none";
@@ -48789,6 +48856,23 @@ function paintGizmoLayout(input) {
     }
   });
   dom.uniformHit.style.display = mode === "scale" ? "block" : "none";
+  const showPlanes = mode === "move";
+  const cameraPos = readNodeGlobalPosition3D(view.camera) ?? axes.origin;
+  const signs = cameraAxisSigns(axes, cameraPos);
+  GIZMO_PLANE_IDS.forEach((plane) => {
+    const handle = dom.planeHandles[plane];
+    if (!showPlanes) {
+      handle.style.display = "none";
+      return;
+    }
+    const points = planeScreenPoints(view, axes, plane, signs, worldLen, scaleX, scaleY);
+    if (!points) {
+      handle.style.display = "none";
+      return;
+    }
+    handle.setAttribute("points", points);
+    handle.style.display = "block";
+  });
 }
 function scaleKey(axis) {
   if (axis === "x") {
@@ -48813,9 +48897,6 @@ function clientToGlobal(rect, scaleX, scaleY, clientX, clientY) {
     x: (clientX - rect.left) / scaleX,
     y: (clientY - rect.top) / scaleY
   };
-}
-function axisDirOf(axes, axis) {
-  return axes[axis];
 }
 function signedAngleAroundAxis(from, axis) {
   const basis = planeBasis(axis);
@@ -48882,8 +48963,11 @@ function createGizmoDrag(host) {
         return;
       }
       const delta = sub3(hit, drag.startHit);
-      const along = dot3(delta, drag.axisDir);
-      const world = addScaled(drag.origin, drag.axisDir, along);
+      const world = isGizmoPlane(drag.axis) ? {
+        x: drag.origin.x + delta.x,
+        y: drag.origin.y + delta.y,
+        z: drag.origin.z + delta.z
+      } : addScaled(drag.origin, drag.axisDir, dot3(delta, drag.axisDir));
       const local = worldToParentLocal3D(drag.node, world);
       if (!local) {
         return;
@@ -48900,7 +48984,7 @@ function createGizmoDrag(host) {
       write("position.z", local.z);
       return;
     }
-    if (drag.mode === "rotate" && drag.axis !== "uniform" && drag.startQuat) {
+    if (drag.mode === "rotate" && (drag.axis === "x" || drag.axis === "y" || drag.axis === "z") && drag.startQuat) {
       const ray = rayFromScreen(view, screen);
       const hit = ray ? rayPlaneIntersection(ray, drag.origin, drag.axisDir) : null;
       if (!hit) {
@@ -48921,7 +49005,7 @@ function createGizmoDrag(host) {
       );
       return;
     }
-    if (drag.mode === "scale") {
+    if (drag.mode === "scale" && !isGizmoPlane(drag.axis)) {
       if (drag.axis === "uniform") {
         const ratio2 = scaleRatioFromPixelDelta(
           clientY - drag.startDist,
@@ -48958,6 +49042,9 @@ function createGizmoDrag(host) {
       const ux2 = axis2x / len;
       const uy2 = axis2y / len;
       const dist = (clientX - cx) * ux2 + (clientY - cy) * uy2;
+      if (drag.axis !== "x" && drag.axis !== "y" && drag.axis !== "z") {
+        return;
+      }
       const key = scaleKey(drag.axis);
       const start = drag.startValues.get(key);
       if (typeof start !== "number") {
@@ -49006,7 +49093,11 @@ function createGizmoDrag(host) {
     const metrics = host.getMetrics();
     const node = host.resolveNode();
     const mode = host.getMode();
+    const planeDrag = isGizmoPlane(axis);
     if (!node || !isNode3D(node) || !metrics) {
+      return;
+    }
+    if (planeDrag && mode !== "move") {
       return;
     }
     const view = node._view3d;
@@ -49016,17 +49107,24 @@ function createGizmoDrag(host) {
     }
     const { rect, scaleX, scaleY } = metrics;
     const screen = clientToGlobal(rect, scaleX, scaleY, event2.clientX, event2.clientY);
-    const axisDir = axis === "uniform" ? axes.x : axisDirOf(axes, axis);
+    let axisDir;
+    if (axis === "uniform") {
+      axisDir = axes.x;
+    } else if (planeDrag) {
+      axisDir = axisDirOf(axes, GIZMO_PLANES[axis].normal);
+    } else {
+      axisDir = axisDirOf(axes, axis);
+    }
     let keys = [];
     let startQuat = null;
     if (mode === "move") {
       keys = ["position.x", "position.y", "position.z"];
-    } else if (mode === "rotate" && axis !== "uniform") {
+    } else if (mode === "rotate" && axis !== "uniform" && !planeDrag) {
       startQuat = snapshotQuaternion(node);
       if (!startQuat) {
         return;
       }
-    } else if (mode === "scale") {
+    } else if (mode === "scale" && (axis === "uniform" || axis === "x" || axis === "y" || axis === "z")) {
       keys = axis === "uniform" ? ["scale.x", "scale.y", "scale.z"] : [scaleKey(axis)];
     }
     const startValues = keys.length > 0 ? snapshotNodeKeys(node, keys) : /* @__PURE__ */ new Map();
@@ -49035,16 +49133,14 @@ function createGizmoDrag(host) {
     }
     const cam = readNodeGlobalPosition3D(view.camera) ?? axes.origin;
     const toCam = normalize3(sub3(cam, axes.origin)) ?? { x: 0, y: 0, z: 1 };
-    let planeNormal = normalize3(cross3(axisDir, cross3(axisDir, toCam)));
-    if (!planeNormal) {
-      planeNormal = normalize3(cross3(axisDir, { x: 0, y: 1, z: 0 })) ?? { x: 0, y: 0, z: 1 };
+    let planeNormal;
+    if (planeDrag || mode === "rotate") {
+      planeNormal = axisDir;
+    } else {
+      planeNormal = normalize3(cross3(axisDir, cross3(axisDir, toCam))) ?? normalize3(cross3(axisDir, { x: 0, y: 1, z: 0 })) ?? { x: 0, y: 0, z: 1 };
     }
     const ray = rayFromScreen(view, screen);
-    const startHit = ray ? rayPlaneIntersection(
-      ray,
-      axes.origin,
-      mode === "rotate" ? axisDir : planeNormal
-    ) : screenToWorldAtDistance(
+    const startHit = ray ? rayPlaneIntersection(ray, axes.origin, planeNormal) : screenToWorldAtDistance(
       view,
       screen,
       cameraDistanceToWorld(view, axes.origin)
@@ -49063,7 +49159,7 @@ function createGizmoDrag(host) {
       screenAxisX = 0;
       screenAxisY = 1;
       startDist = event2.clientY;
-    } else if (mode === "scale") {
+    } else if (mode === "scale" && !planeDrag) {
       const originScreen = projectWorldPoint(view, axes.origin);
       if (originScreen) {
         const tipScreen = projectWorldPoint(
@@ -49192,6 +49288,11 @@ function installGizmo3D(resolveNode) {
     dom.axisArrows[axis].addEventListener("pointerdown", start);
     dom.axisTips[axis].addEventListener("pointerdown", start);
     dom.rotateHits[axis].addEventListener("pointerdown", start);
+  });
+  GIZMO_PLANE_IDS.forEach((plane) => {
+    dom.planeHandles[plane].addEventListener("pointerdown", (event2) => {
+      drag.beginAxisDrag(plane, event2);
+    });
   });
   dom.uniformHit.addEventListener("pointerdown", (event2) => drag.beginAxisDrag("uniform", event2));
   dom.modeButtons.move.addEventListener("click", () => setMode("move"));
@@ -77416,13 +77517,13 @@ const backendLoaders = [{
     type: ExtensionType.WebGLLoader,
     name: "pixijs-3d"
   },
-  load: () => __vitePreload(() => import("./init-y3ZHnCv1.js"), true ? __vite__mapDeps([13,14,10,8]) : void 0)
+  load: () => __vitePreload(() => import("./init-B96M69wv.js"), true ? __vite__mapDeps([13,14,10,8]) : void 0)
 }, {
   extension: {
     type: ExtensionType.WebGPULoader,
     name: "pixijs-3d"
   },
-  load: () => __vitePreload(() => import("./init-D3EaZw1A.js"), true ? __vite__mapDeps([15,14,10,8]) : void 0)
+  load: () => __vitePreload(() => import("./init-CizOsRxD.js"), true ? __vite__mapDeps([15,14,10,8]) : void 0)
 }];
 addUniformParsers();
 extensions.add(...backendLoaders);

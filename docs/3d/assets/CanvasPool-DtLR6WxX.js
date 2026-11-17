@@ -1,4 +1,4 @@
-import { c as ScreenSizeRegistry, d as deprecation, v as v8_21_0, D as DOMAdapter, w as warn, n as nextPow2, i as isPow2, e as GlobalResourceRegistry } from "./index-D-fMyKt8.js";
+import { c as ScreenSizeRegistry, d as deprecation, v as v8_21_0, D as DOMAdapter, w as warn, n as nextPow2, i as isPow2, e as GlobalResourceRegistry } from "./index-eueSuT0h.js";
 const maxKeyDimension = 32767;
 function bucketKey(width, height) {
   return (width << 17) + (height << 2);
