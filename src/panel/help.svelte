@@ -75,6 +75,13 @@
       </dd>
     </div>
     <div class="help-row">
+      <dt><kbd>X</kbd></dt>
+      <dd>
+        Toggle 3D gizmo local / world space (move and rotate; scale is always
+        local)
+      </dd>
+    </div>
+    <div class="help-row">
       <dt>Drag</dt>
       <dd>Reparent selected node(s)</dd>
     </div>

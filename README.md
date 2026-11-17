@@ -80,7 +80,7 @@ Colors, guides, interval, hotkey, and pick preference sync via `chrome.storage.s
 
 Enable **highlight** in the header (off by default) to outline the selected **2D** node on the game canvas. Anchor, when present, is marked with a small circle. The setting is remembered in `localStorage`.
 
-For a single selected **@pixi/3d** node the 2D outline is replaced by a **3D transform gizmo** (local axes). Modes: **W** move, **E** rotate, **R** scale (or the mode buttons in the top-right corner of the game shell). Hold **Option/Alt** while dragging to snap (position / angle / scale steps). Multi-select hides the gizmo and draws the union of selected **2D** bounds only.
+For a single selected **@pixi/3d** node the 2D outline is replaced by a **3D transform gizmo**. Modes: **W** move, **E** rotate, **R** scale (or the mode buttons in the top-right corner of the game shell). **X** toggles **local** / **world** space for move and rotate (**scale is always local**). Hold **Option/Alt** while dragging to snap (position / angle / scale steps). Multi-select hides the gizmo and draws the union of selected **2D** bounds only.
 
 ### Properties panel (docked overlay)
 
@@ -132,6 +132,7 @@ With more than one node selected:
 | `i` | Isolate selected subtree (enter needs one node; press again to exit) |
 | `h` | Toggle `visible` on every selected node (blocked for Scene3D, Camera3D, camera ancestors) |
 | `w` / `e` / `r` | 3D gizmo mode when **highlight** is on and a 3D node is selected: move / rotate / scale |
+| `x` | Toggle 3D gizmo **local** / **world** space (move & rotate; scale stays local) |
 | Esc | Clear selection (also cancels an in-progress drag / number scrub, or closes help) |
 | Shift+Esc | Restore selection cleared by Esc (if nothing else is selected and the tree is unchanged) |
 | `?` | Toggle shortcuts help |
@@ -241,7 +242,7 @@ No extra setup beyond the usual `__PIXI_APP__` (and optional `__PIXI_CACHE__`). 
 
 **Highlight gizmo**
 
-With **highlight** on, a selected 3D node shows move / rotate / scale handles instead of the 2D bounds box. See [Selection highlight](#selection-highlight-docked-overlay).
+With **highlight** on, a selected 3D node shows move / rotate / scale handles instead of the 2D bounds box. Move and rotate support **local** / **world** space (**X** or the mode-bar button); **scale is always local**. See [Selection highlight](#selection-highlight-docked-overlay).
 
 **Textures from glTF / GLB**
 

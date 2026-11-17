@@ -1,4 +1,4 @@
-const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/browserAll-BZHt2Lh5.js","assets/webworkerAll-BN2GEhac.js","assets/canvasUtils-4B_FKT8J.js","assets/CanvasPool-DtLR6WxX.js","assets/Filter-BAUydW6w.js","assets/WebGPURenderer-C3K8wAMw.js","assets/getTexelRangeRects-B110zw5e.js","assets/RenderTargetSystem-DrKiYNRw.js","assets/RenderTexture-CD2JBLQ-.js","assets/WebGLRenderer-TX5l-NEV.js","assets/isSafari-v8oDa0JT.js","assets/CanvasRenderer-vFvuZ4Mv.js","assets/BitmapFont-CxxLpqOT.js","assets/init-B96M69wv.js","assets/View3DGlobalData-ZElXGYJS.js","assets/init-CizOsRxD.js"])))=>i.map(i=>d[i]);
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/browserAll-CrBssq3T.js","assets/webworkerAll-D43CQu1h.js","assets/canvasUtils-Cf45dJQr.js","assets/CanvasPool-CKM6Yzcz.js","assets/Filter-DmrRtU6T.js","assets/WebGPURenderer-TJHoFoZD.js","assets/getTexelRangeRects-BZVNfYlh.js","assets/RenderTargetSystem-Y1Tw3dhP.js","assets/RenderTexture-BTEPCkw7.js","assets/WebGLRenderer-BV3yAAZZ.js","assets/isSafari-BRBWXqCp.js","assets/CanvasRenderer-B1coXZtN.js","assets/BitmapFont-Bo3DZeFL.js","assets/init-BD-PCCsw.js","assets/View3DGlobalData-C_3GeACm.js","assets/init-BQOzwO6s.js"])))=>i.map(i=>d[i]);
 (function polyfill() {
   const relList = document.createElement("link").relList;
   if (relList && relList.supports && relList.supports("modulepreload")) return;
@@ -355,7 +355,7 @@ const browserExt = {
   },
   test: () => true,
   load: async () => {
-    await __vitePreload(() => import("./browserAll-BZHt2Lh5.js"), true ? __vite__mapDeps([0,1,2,3,4]) : void 0);
+    await __vitePreload(() => import("./browserAll-CrBssq3T.js"), true ? __vite__mapDeps([0,1,2,3,4]) : void 0);
   }
 };
 const webworkerExt = {
@@ -366,7 +366,7 @@ const webworkerExt = {
   },
   test: () => typeof self !== "undefined" && self.WorkerGlobalScope !== void 0,
   load: async () => {
-    await __vitePreload(() => import("./webworkerAll-BN2GEhac.js"), true ? __vite__mapDeps([1,2,3,4]) : void 0);
+    await __vitePreload(() => import("./webworkerAll-D43CQu1h.js"), true ? __vite__mapDeps([1,2,3,4]) : void 0);
   }
 };
 class ObservablePoint {
@@ -13768,7 +13768,7 @@ async function autoDetectRenderer(options) {
     const rendererType = preferredOrder[i2];
     if (rendererType === "webgpu" && await isWebGPUSupported()) {
       const { WebGPURenderer } = await __vitePreload(async () => {
-        const { WebGPURenderer: WebGPURenderer2 } = await import("./WebGPURenderer-C3K8wAMw.js");
+        const { WebGPURenderer: WebGPURenderer2 } = await import("./WebGPURenderer-TJHoFoZD.js");
         return { WebGPURenderer: WebGPURenderer2 };
       }, true ? __vite__mapDeps([5,6,7,8,4,3]) : void 0);
       RendererClass = WebGPURenderer;
@@ -13778,7 +13778,7 @@ async function autoDetectRenderer(options) {
       options.failIfMajorPerformanceCaveat ?? AbstractRenderer.defaultOptions.failIfMajorPerformanceCaveat
     )) {
       const { WebGLRenderer } = await __vitePreload(async () => {
-        const { WebGLRenderer: WebGLRenderer2 } = await import("./WebGLRenderer-TX5l-NEV.js");
+        const { WebGLRenderer: WebGLRenderer2 } = await import("./WebGLRenderer-BV3yAAZZ.js");
         return { WebGLRenderer: WebGLRenderer2 };
       }, true ? __vite__mapDeps([9,6,7,8,4,3,10]) : void 0);
       RendererClass = WebGLRenderer;
@@ -13786,7 +13786,7 @@ async function autoDetectRenderer(options) {
       break;
     } else if (rendererType === "canvas") {
       const { CanvasRenderer } = await __vitePreload(async () => {
-        const { CanvasRenderer: CanvasRenderer2 } = await import("./CanvasRenderer-vFvuZ4Mv.js");
+        const { CanvasRenderer: CanvasRenderer2 } = await import("./CanvasRenderer-B1coXZtN.js");
         return { CanvasRenderer: CanvasRenderer2 };
       }, true ? __vite__mapDeps([11,7,8,4,3,2]) : void 0);
       RendererClass = CanvasRenderer;
@@ -14374,7 +14374,7 @@ const loadBitmapFont = {
     }
     const [loadedTextures, { BitmapFont }] = await Promise.all([
       loader.load(textureUrls),
-      __vitePreload(() => import("./BitmapFont-CxxLpqOT.js"), true ? __vite__mapDeps([12,3,2]) : void 0)
+      __vitePreload(() => import("./BitmapFont-Bo3DZeFL.js"), true ? __vite__mapDeps([12,3,2]) : void 0)
     ]);
     const textures = textureUrls.map((url2) => loadedTextures[url2.src]);
     const bitmapFont = new BitmapFont({
@@ -33976,7 +33976,8 @@ var root$5 = /* @__PURE__ */ from_html(`<div class="help svelte-3l8mbz"><div cla
         canvas</dt> <dd class="svelte-3l8mbz">Select node under cursor; click again without moving to cycle
         overlapping nodes</dd></div> <div class="help-row svelte-3l8mbz"><dt class="svelte-3l8mbz"><kbd class="svelte-3l8mbz">←</kbd> <kbd class="svelte-3l8mbz">→</kbd></dt> <dd class="svelte-3l8mbz">Move among siblings (from primary; replaces a multi-selection)</dd></div> <div class="help-row svelte-3l8mbz"><dt class="svelte-3l8mbz"><kbd class="svelte-3l8mbz">↑</kbd> <kbd class="svelte-3l8mbz">↓</kbd></dt> <dd class="svelte-3l8mbz">Parent / first child (↓ expands; replaces a multi-selection)</dd></div> <div class="help-row svelte-3l8mbz"><dt class="svelte-3l8mbz"><kbd class="svelte-3l8mbz">⌥/Alt</kbd>+arrows</dt> <dd class="svelte-3l8mbz">First/last sibling · root / deepest first child</dd></div> <div class="help-row svelte-3l8mbz"><dt class="svelte-3l8mbz"><kbd class="svelte-3l8mbz">I</kbd></dt> <dd class="svelte-3l8mbz">Isolate selected subtree (enter needs one node; press again to exit)</dd></div> <div class="help-row svelte-3l8mbz"><dt class="svelte-3l8mbz"><kbd class="svelte-3l8mbz">H</kbd></dt> <dd class="svelte-3l8mbz">Toggle visible on selected nodes (blocked for Scene3D, Camera3D, camera
         ancestors)</dd></div> <div class="help-row svelte-3l8mbz"><dt class="svelte-3l8mbz"><kbd class="svelte-3l8mbz">W</kbd> <kbd class="svelte-3l8mbz">E</kbd> <kbd class="svelte-3l8mbz">R</kbd></dt> <dd class="svelte-3l8mbz">3D gizmo mode when highlight is on and a 3D node is selected: move /
-        rotate / scale (or the mode buttons in the top-right corner)</dd></div> <div class="help-row svelte-3l8mbz"><dt class="svelte-3l8mbz">Drag</dt> <dd class="svelte-3l8mbz">Reparent selected node(s)</dd></div> <div class="help-row svelte-3l8mbz"><dt class="svelte-3l8mbz"><kbd class="svelte-3l8mbz">⌥/Alt</kbd> + scrub / arrows / 3D gizmo drag</dt> <dd class="svelte-3l8mbz">Snap value or transform to nearest step</dd></div> <div class="help-row svelte-3l8mbz"><dt class="svelte-3l8mbz"><kbd class="svelte-3l8mbz">Esc</kbd></dt> <dd class="svelte-3l8mbz">Clear selection / cancel drag and restore value / cancel node drag /
+        rotate / scale (or the mode buttons in the top-right corner)</dd></div> <div class="help-row svelte-3l8mbz"><dt class="svelte-3l8mbz"><kbd class="svelte-3l8mbz">X</kbd></dt> <dd class="svelte-3l8mbz">Toggle 3D gizmo local / world space (move and rotate; scale is always
+        local)</dd></div> <div class="help-row svelte-3l8mbz"><dt class="svelte-3l8mbz">Drag</dt> <dd class="svelte-3l8mbz">Reparent selected node(s)</dd></div> <div class="help-row svelte-3l8mbz"><dt class="svelte-3l8mbz"><kbd class="svelte-3l8mbz">⌥/Alt</kbd> + scrub / arrows / 3D gizmo drag</dt> <dd class="svelte-3l8mbz">Snap value or transform to nearest step</dd></div> <div class="help-row svelte-3l8mbz"><dt class="svelte-3l8mbz"><kbd class="svelte-3l8mbz">Esc</kbd></dt> <dd class="svelte-3l8mbz">Clear selection / cancel drag and restore value / cancel node drag /
         close this help</dd></div> <div class="help-row svelte-3l8mbz"><dt class="svelte-3l8mbz"><kbd class="svelte-3l8mbz">Shift</kbd>+<kbd class="svelte-3l8mbz">Esc</kbd></dt> <dd class="svelte-3l8mbz">Restore selection cleared by Esc (if nothing else is selected and the
         tree is unchanged)</dd></div> <div class="help-row svelte-3l8mbz"><dt class="svelte-3l8mbz"><kbd class="svelte-3l8mbz">⌘/Ctrl</kbd>+<kbd class="svelte-3l8mbz">C</kbd> then <kbd class="svelte-3l8mbz">⌘/Ctrl</kbd>+<kbd class="svelte-3l8mbz">V</kbd></dt> <dd class="svelte-3l8mbz">Move selected node(s) under the current selection</dd></div> <div class="help-row svelte-3l8mbz"><dt class="svelte-3l8mbz"><kbd class="svelte-3l8mbz">?</kbd></dt> <dd class="svelte-3l8mbz">Toggle this help</dd></div></dl> <p class="help-note svelte-3l8mbz">Selected node is exposed as <code class="svelte-3l8mbz">$pixi</code> in the page console.</p></div>`);
 const $$css$6 = {
@@ -36991,23 +36992,29 @@ function writeQuaternion(node, q2) {
   }
   return true;
 }
-function applyLocalAxisRotation(start, axis, deltaRad) {
+function axisAngleQuaternion(axis, deltaRad) {
   const half = deltaRad * 0.5;
   const s2 = Math.sin(half);
-  const dx = axis.x * s2;
-  const dy = axis.y * s2;
-  const dz = axis.z * s2;
-  const dw = Math.cos(half);
-  const qax = start.x;
-  const qay = start.y;
-  const qaz = start.z;
-  const qaw = start.w;
+  return {
+    x: axis.x * s2,
+    y: axis.y * s2,
+    z: axis.z * s2,
+    w: Math.cos(half)
+  };
+}
+function multiplyQuaternions(a2, b2) {
   return normalizeQuaternion({
-    x: qax * dw + qaw * dx + qay * dz - qaz * dy,
-    y: qay * dw + qaw * dy + qaz * dx - qax * dz,
-    z: qaz * dw + qaw * dz + qax * dy - qay * dx,
-    w: qaw * dw - qax * dx - qay * dy - qaz * dz
+    x: a2.w * b2.x + a2.x * b2.w + a2.y * b2.z - a2.z * b2.y,
+    y: a2.w * b2.y - a2.x * b2.z + a2.y * b2.w + a2.z * b2.x,
+    z: a2.w * b2.z + a2.x * b2.y - a2.y * b2.x + a2.z * b2.w,
+    w: a2.w * b2.w - a2.x * b2.x - a2.y * b2.y - a2.z * b2.z
   });
+}
+function applyLocalAxisRotation(start, axis, deltaRad) {
+  return multiplyQuaternions(start, axisAngleQuaternion(axis, deltaRad));
+}
+function applyWorldAxisRotation(start, axis, deltaRad) {
+  return multiplyQuaternions(axisAngleQuaternion(axis, deltaRad), start);
 }
 function readEffectiveEulerRadians(node) {
   if (!isNode3D(node)) {
@@ -47771,6 +47778,14 @@ function worldToParentLocal3D(node, world) {
   }
   return null;
 }
+function worldAxesAt(origin) {
+  return {
+    origin,
+    x: { x: 1, y: 0, z: 0 },
+    y: { x: 0, y: 1, z: 0 },
+    z: { x: 0, y: 0, z: 1 }
+  };
+}
 function readLocalAxesWorld(node) {
   const elements = readMatrix4Elements(node);
   const origin = readNodeGlobalPosition3D(node);
@@ -48031,6 +48046,11 @@ function createGizmoDom() {
     styleModeButton(button, mode === "move");
     modeBar.appendChild(button);
   });
+  const spaceButton = document.createElement("button");
+  spaceButton.type = "button";
+  setSpaceButtonLabel(spaceButton, "local");
+  styleModeButton(spaceButton, false);
+  modeBar.appendChild(spaceButton);
   root2.appendChild(svg);
   document.body.appendChild(root2);
   return {
@@ -48038,6 +48058,7 @@ function createGizmoDom() {
     svg,
     modeBar,
     modeButtons,
+    spaceButton,
     boundsLines,
     helperLines,
     helperGroup,
@@ -48056,6 +48077,13 @@ function setModeButtonsActive(dom, mode) {
   Object.keys(dom.modeButtons).forEach((key) => {
     styleModeButton(dom.modeButtons[key], key === mode);
   });
+}
+function setSpaceButtonLabel(button, space) {
+  button.textContent = space === "world" ? "X world" : "X local";
+}
+function setSpaceButtonActive(dom, space) {
+  setSpaceButtonLabel(dom.spaceButton, space);
+  styleModeButton(dom.spaceButton, space === "world");
 }
 function setGizmoVisible(dom, visible) {
   dom.root.style.display = visible ? "block" : "none";
@@ -48768,13 +48796,13 @@ function layoutGizmoRoot(dom, rect) {
   dom.svg.setAttribute("height", String(rect.height));
 }
 function paintGizmoLayout(input) {
-  const { dom, node, view, axes, rect, scaleX, scaleY, mode } = input;
+  const { dom, node, view, axes, localAxes, rect, scaleX, scaleY, mode } = input;
   const originScreen = projectWorldPoint(view, axes.origin);
   const aspectHint = rect.height > 1e-6 ? rect.width / rect.height : 16 / 9;
   if (!originScreen) {
     layoutGizmoRoot(dom, rect);
     hideTransformHandles(dom);
-    const wire = paintNodeWireframe(dom, node, view, axes, scaleX, scaleY, aspectHint);
+    const wire = paintNodeWireframe(dom, node, view, localAxes, scaleX, scaleY, aspectHint);
     if (wire.mode === "helper" && wire.visible) {
       dom.root.style.display = "block";
     } else {
@@ -48788,7 +48816,7 @@ function paintGizmoLayout(input) {
   mountModeBar(dom.modeBar);
   setGizmoVisible(dom, true);
   layoutGizmoRoot(dom, rect);
-  paintNodeWireframe(dom, node, view, axes, scaleX, scaleY, aspectHint);
+  paintNodeWireframe(dom, node, view, localAxes, scaleX, scaleY, aspectHint);
   const ox = originScreen.x * scaleX;
   const oy = originScreen.y * scaleY;
   dom.center.style.display = "block";
@@ -48882,6 +48910,9 @@ function scaleKey(axis) {
     return "scale.y";
   }
   return "scale.z";
+}
+function resolveGizmoHandleAxes(localAxes, space, mode) {
+  return space === "world" && mode !== "scale" ? worldAxesAt(localAxes.origin) : localAxes;
 }
 function localAxisOf(axis) {
   if (axis === "x") {
@@ -48999,10 +49030,9 @@ function createGizmoDrag(host) {
         const deltaDeg = snapToStep(deltaRad * (180 / Math.PI), ANGLE_STEP_3D);
         deltaRad = deltaDeg * (Math.PI / 180);
       }
-      writeQuaternion(
-        drag.node,
-        applyLocalAxisRotation(drag.startQuat, localAxisOf(drag.axis), deltaRad)
-      );
+      const axis = localAxisOf(drag.axis);
+      const next = drag.space === "world" ? applyWorldAxisRotation(drag.startQuat, axis, deltaRad) : applyLocalAxisRotation(drag.startQuat, axis, deltaRad);
+      writeQuaternion(drag.node, next);
       return;
     }
     if (drag.mode === "scale" && !isGizmoPlane(drag.axis)) {
@@ -49093,6 +49123,7 @@ function createGizmoDrag(host) {
     const metrics = host.getMetrics();
     const node = host.resolveNode();
     const mode = host.getMode();
+    const space = host.getSpace();
     const planeDrag = isGizmoPlane(axis);
     if (!node || !isNode3D(node) || !metrics) {
       return;
@@ -49101,10 +49132,11 @@ function createGizmoDrag(host) {
       return;
     }
     const view = node._view3d;
-    const axes = readLocalAxesWorld(node);
-    if (!view || !axes) {
+    const localAxes = readLocalAxesWorld(node);
+    if (!view || !localAxes) {
       return;
     }
+    const axes = resolveGizmoHandleAxes(localAxes, space, mode);
     const { rect, scaleX, scaleY } = metrics;
     const screen = clientToGlobal(rect, scaleX, scaleY, event2.clientX, event2.clientY);
     let axisDir;
@@ -49150,14 +49182,10 @@ function createGizmoDrag(host) {
     }
     let startAngle = 0;
     let startDist = 1;
-    let screenAxisX = 1;
-    let screenAxisY = 0;
     if (mode === "rotate") {
       startAngle = signedAngleAroundAxis(sub3(startHit, axes.origin), axisDir) ?? 0;
     }
     if (mode === "scale" && axis === "uniform") {
-      screenAxisX = 0;
-      screenAxisY = 1;
       startDist = event2.clientY;
     } else if (mode === "scale" && !planeDrag) {
       const originScreen = projectWorldPoint(view, axes.origin);
@@ -49173,8 +49201,8 @@ function createGizmoDrag(host) {
           const axis2y = (tipScreen.y - originScreen.y) * scaleY;
           const len = Math.hypot(axis2x, axis2y);
           if (len > 1e-6) {
-            screenAxisX = axis2x / len;
-            screenAxisY = axis2y / len;
+            const screenAxisX = axis2x / len;
+            const screenAxisY = axis2y / len;
             startDist = (event2.clientX - cx) * screenAxisX + (event2.clientY - cy) * screenAxisY;
           }
         }
@@ -49182,6 +49210,7 @@ function createGizmoDrag(host) {
     }
     drag = {
       mode,
+      space,
       axis,
       pointerId: event2.pointerId,
       node,
@@ -49192,8 +49221,6 @@ function createGizmoDrag(host) {
       startHit,
       startAngle,
       startDist,
-      screenAxisX,
-      screenAxisY,
       planeNormal
     };
     highlightTransformGesture.begin();
@@ -49214,11 +49241,19 @@ function createGizmoDrag(host) {
 function installGizmo3D(resolveNode) {
   const dom = createGizmoDom();
   let mode = "move";
+  let space = "local";
   let destroyed = false;
   let metrics = null;
   function setMode(next) {
     mode = next;
     setModeButtonsActive(dom, mode);
+  }
+  function setSpace(next) {
+    space = next;
+    setSpaceButtonActive(dom, space);
+  }
+  function toggleSpace() {
+    setSpace(space === "local" ? "world" : "local");
   }
   function hide() {
     hideAllWireframes(dom);
@@ -49227,6 +49262,7 @@ function installGizmo3D(resolveNode) {
   const drag = createGizmoDrag({
     resolveNode,
     getMode: () => mode,
+    getSpace: () => space,
     getMetrics: () => metrics
   });
   function sync(next) {
@@ -49242,8 +49278,8 @@ function installGizmo3D(resolveNode) {
       return;
     }
     const view = node._view3d;
-    const axes = readLocalAxesWorld(node);
-    if (!view || !axes) {
+    const localAxes = readLocalAxesWorld(node);
+    if (!view || !localAxes) {
       hide();
       return;
     }
@@ -49259,7 +49295,8 @@ function installGizmo3D(resolveNode) {
       dom,
       node,
       view,
-      axes,
+      axes: resolveGizmoHandleAxes(localAxes, space, mode),
+      localAxes,
       rect: next.rect,
       scaleX: next.scaleX,
       scaleY: next.scaleY,
@@ -49280,6 +49317,9 @@ function installGizmo3D(resolveNode) {
     } else if (key === "r") {
       setMode("scale");
       event2.preventDefault();
+    } else if (key === "x") {
+      toggleSpace();
+      event2.preventDefault();
     }
   }
   ["x", "y", "z"].forEach((axis) => {
@@ -49298,6 +49338,7 @@ function installGizmo3D(resolveNode) {
   dom.modeButtons.move.addEventListener("click", () => setMode("move"));
   dom.modeButtons.rotate.addEventListener("click", () => setMode("rotate"));
   dom.modeButtons.scale.addEventListener("click", () => setMode("scale"));
+  dom.spaceButton.addEventListener("click", () => toggleSpace());
   window.addEventListener("keydown", onModeKey, true);
   return {
     sync,
@@ -77517,13 +77558,13 @@ const backendLoaders = [{
     type: ExtensionType.WebGLLoader,
     name: "pixijs-3d"
   },
-  load: () => __vitePreload(() => import("./init-B96M69wv.js"), true ? __vite__mapDeps([13,14,10,8]) : void 0)
+  load: () => __vitePreload(() => import("./init-BD-PCCsw.js"), true ? __vite__mapDeps([13,14,10,8]) : void 0)
 }, {
   extension: {
     type: ExtensionType.WebGPULoader,
     name: "pixijs-3d"
   },
-  load: () => __vitePreload(() => import("./init-CizOsRxD.js"), true ? __vite__mapDeps([15,14,10,8]) : void 0)
+  load: () => __vitePreload(() => import("./init-BQOzwO6s.js"), true ? __vite__mapDeps([15,14,10,8]) : void 0)
 }];
 addUniformParsers();
 extensions.add(...backendLoaders);

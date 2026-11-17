@@ -1,5 +1,7 @@
 export type GizmoMode = 'move' | 'rotate' | 'scale';
 
+export type GizmoSpace = 'local' | 'world';
+
 export type GizmoAxis = 'x' | 'y' | 'z';
 
 export type GizmoPlane = 'xy' | 'xz' | 'yz';

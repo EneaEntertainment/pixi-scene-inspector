@@ -278,6 +278,16 @@ export function worldToParentLocal3D(node: PixiNode, world: Vec3): Vec3 | null
     return null;
 }
 
+export function worldAxesAt(origin: Vec3): AxesWorld
+{
+    return {
+        origin,
+        x : { x: 1, y: 0, z: 0 },
+        y : { x: 0, y: 1, z: 0 },
+        z : { x: 0, y: 0, z: 1 },
+    };
+}
+
 export function readLocalAxesWorld(node: PixiNode): AxesWorld | null
 {
     const elements = readMatrix4Elements(node);

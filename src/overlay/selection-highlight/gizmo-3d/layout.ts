@@ -231,6 +231,7 @@ export type GizmoLayoutInput = {
     node: PixiNode;
     view: NonNullable<PixiNode['_view3d']>;
     axes: AxesWorld;
+    localAxes: AxesWorld;
     rect: DOMRect;
     scaleX: number;
     scaleY: number;
@@ -249,7 +250,7 @@ function layoutGizmoRoot(dom: GizmoDom, rect: DOMRect)
 
 export function paintGizmoLayout(input: GizmoLayoutInput)
 {
-    const { dom, node, view, axes, rect, scaleX, scaleY, mode } = input;
+    const { dom, node, view, axes, localAxes, rect, scaleX, scaleY, mode } = input;
     const originScreen = projectWorldPoint(view, axes.origin);
     const aspectHint = rect.height > 1e-6 ? rect.width / rect.height : 16 / 9;
 
@@ -258,7 +259,7 @@ export function paintGizmoLayout(input: GizmoLayoutInput)
         layoutGizmoRoot(dom, rect);
         hideTransformHandles(dom);
 
-        const wire = paintNodeWireframe(dom, node, view, axes, scaleX, scaleY, aspectHint);
+        const wire = paintNodeWireframe(dom, node, view, localAxes, scaleX, scaleY, aspectHint);
 
         if (wire.mode === 'helper' && wire.visible)
         {
@@ -279,7 +280,7 @@ export function paintGizmoLayout(input: GizmoLayoutInput)
     mountModeBar(dom.modeBar);
     setGizmoVisible(dom, true);
     layoutGizmoRoot(dom, rect);
-    paintNodeWireframe(dom, node, view, axes, scaleX, scaleY, aspectHint);
+    paintNodeWireframe(dom, node, view, localAxes, scaleX, scaleY, aspectHint);
 
     const ox = originScreen.x * scaleX;
     const oy = originScreen.y * scaleY;

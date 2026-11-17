@@ -254,30 +254,45 @@ export function writeQuaternion(node: PixiNode, q: QuaternionLike): boolean
     return true;
 }
 
+function axisAngleQuaternion(axis: Axis3, deltaRad: number): QuaternionLike
+{
+    const half = deltaRad * 0.5;
+    const s = Math.sin(half);
+
+    return {
+        x : axis.x * s,
+        y : axis.y * s,
+        z : axis.z * s,
+        w : Math.cos(half),
+    };
+}
+
+function multiplyQuaternions(a: QuaternionLike, b: QuaternionLike): QuaternionLike
+{
+    return normalizeQuaternion({
+        x : (a.w * b.x) + (a.x * b.w) + (a.y * b.z) - (a.z * b.y),
+        y : (a.w * b.y) - (a.x * b.z) + (a.y * b.w) + (a.z * b.x),
+        z : (a.w * b.z) + (a.x * b.y) - (a.y * b.x) + (a.z * b.w),
+        w : (a.w * b.w) - (a.x * b.x) - (a.y * b.y) - (a.z * b.z),
+    });
+}
+
 export function applyLocalAxisRotation(
     start: QuaternionLike,
     axis: Axis3,
     deltaRad: number,
 ): QuaternionLike
 {
-    const half = deltaRad * 0.5;
-    const s = Math.sin(half);
-    const dx = axis.x * s;
-    const dy = axis.y * s;
-    const dz = axis.z * s;
-    const dw = Math.cos(half);
+    return multiplyQuaternions(start, axisAngleQuaternion(axis, deltaRad));
+}
 
-    const qax = start.x;
-    const qay = start.y;
-    const qaz = start.z;
-    const qaw = start.w;
-
-    return normalizeQuaternion({
-        x : (qax * dw) + (qaw * dx) + (qay * dz) - (qaz * dy),
-        y : (qay * dw) + (qaw * dy) + (qaz * dx) - (qax * dz),
-        z : (qaz * dw) + (qaw * dz) + (qax * dy) - (qay * dx),
-        w : (qaw * dw) - (qax * dx) - (qay * dy) - (qaz * dz),
-    });
+export function applyWorldAxisRotation(
+    start: QuaternionLike,
+    axis: Axis3,
+    deltaRad: number,
+): QuaternionLike
+{
+    return multiplyQuaternions(axisAngleQuaternion(axis, deltaRad), start);
 }
 
 export function readEffectiveEulerRadians(node: PixiNode): Euler3 | null

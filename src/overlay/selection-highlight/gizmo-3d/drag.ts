@@ -2,6 +2,7 @@ import { highlightTransformGesture } from '../../../gesture-active';
 import { isNode3D } from '../../../page-ops/node-3d';
 import {
     applyLocalAxisRotation,
+    applyWorldAxisRotation,
     snapshotQuaternion,
     writeQuaternion,
 } from '../../../page-ops/rotation-3d';
@@ -22,15 +23,17 @@ import { restoreNodeKeys, snapshotNodeKeys } from '../transform-snapshot';
 import { AXIS_SCREEN_PX } from './layout';
 import { axisDirOf, GIZMO_PLANES, isGizmoPlane } from './planes';
 import { scaleKey } from './property-keys';
+import { resolveGizmoHandleAxes } from './space';
 
 import type { PixiNode } from '../../../page-ops/pixi-node';
 import type { QuaternionLike } from '../../../page-ops/rotation-3d';
 import type { NumberPropertyKey } from '../../properties/node';
 import type { Vec3 } from '../math-3d';
-import type { CanvasMetrics, GizmoAxis, GizmoDragTarget, GizmoMode } from './types';
+import type { CanvasMetrics, GizmoAxis, GizmoDragTarget, GizmoMode, GizmoSpace } from './types';
 
 type DragState = {
     mode: GizmoMode;
+    space: GizmoSpace;
     axis: GizmoDragTarget;
     pointerId: number;
     node: PixiNode;
@@ -41,8 +44,6 @@ type DragState = {
     startHit: Vec3;
     startAngle: number;
     startDist: number;
-    screenAxisX: number;
-    screenAxisY: number;
     planeNormal: Vec3;
 };
 
@@ -64,6 +65,7 @@ function localAxisOf(axis: GizmoAxis): Vec3
 export type GizmoDragHost = {
     resolveNode: () => PixiNode | null;
     getMode: () => GizmoMode;
+    getSpace: () => GizmoSpace;
     getMetrics: () => CanvasMetrics | null;
 };
 
@@ -258,10 +260,13 @@ export function createGizmoDrag(host: GizmoDragHost): GizmoDragController
                 deltaRad = deltaDeg * (Math.PI / 180);
             }
 
-            writeQuaternion(
-                drag.node,
-                applyLocalAxisRotation(drag.startQuat, localAxisOf(drag.axis), deltaRad),
-            );
+            const axis = localAxisOf(drag.axis);
+
+            const next = drag.space === 'world'
+                ? applyWorldAxisRotation(drag.startQuat, axis, deltaRad)
+                : applyLocalAxisRotation(drag.startQuat, axis, deltaRad);
+
+            writeQuaternion(drag.node, next);
 
             return;
         }
@@ -395,6 +400,7 @@ export function createGizmoDrag(host: GizmoDragHost): GizmoDragController
         const metrics = host.getMetrics();
         const node = host.resolveNode();
         const mode = host.getMode();
+        const space = host.getSpace();
         const planeDrag = isGizmoPlane(axis);
 
         if (!node || !isNode3D(node) || !metrics)
@@ -408,12 +414,14 @@ export function createGizmoDrag(host: GizmoDragHost): GizmoDragController
         }
 
         const view = node._view3d;
-        const axes = readLocalAxesWorld(node);
+        const localAxes = readLocalAxesWorld(node);
 
-        if (!view || !axes)
+        if (!view || !localAxes)
         {
             return;
         }
+
+        const axes = resolveGizmoHandleAxes(localAxes, space, mode);
 
         const { rect, scaleX, scaleY } = metrics;
         const screen = clientToGlobal(rect, scaleX, scaleY, event.clientX, event.clientY);
@@ -496,8 +504,6 @@ export function createGizmoDrag(host: GizmoDragHost): GizmoDragController
 
         let startAngle = 0;
         let startDist = 1;
-        let screenAxisX = 1;
-        let screenAxisY = 0;
 
         if (mode === 'rotate')
         {
@@ -506,8 +512,6 @@ export function createGizmoDrag(host: GizmoDragHost): GizmoDragController
 
         if (mode === 'scale' && axis === 'uniform')
         {
-            screenAxisX = 0;
-            screenAxisY = 1;
             startDist = event.clientY;
         }
         else if (mode === 'scale' && !planeDrag)
@@ -531,8 +535,9 @@ export function createGizmoDrag(host: GizmoDragHost): GizmoDragController
 
                     if (len > 1e-6)
                     {
-                        screenAxisX = axis2x / len;
-                        screenAxisY = axis2y / len;
+                        const screenAxisX = axis2x / len;
+                        const screenAxisY = axis2y / len;
+
                         startDist = ((event.clientX - cx) * screenAxisX)
                             + ((event.clientY - cy) * screenAxisY);
                     }
@@ -542,6 +547,7 @@ export function createGizmoDrag(host: GizmoDragHost): GizmoDragController
 
         drag = {
             mode,
+            space,
             axis,
             pointerId : event.pointerId,
             node,
@@ -552,8 +558,6 @@ export function createGizmoDrag(host: GizmoDragHost): GizmoDragController
             startHit,
             startAngle,
             startDist,
-            screenAxisX,
-            screenAxisY,
             planeNormal,
         };
 

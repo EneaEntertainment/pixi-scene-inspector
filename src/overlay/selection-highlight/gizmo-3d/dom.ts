@@ -1,10 +1,10 @@
 import { GIZMO_PLANE_IDS, GIZMO_PLANES } from './planes';
 
-import type { GizmoMode, GizmoPlane } from './types';
+import type { GizmoMode, GizmoPlane, GizmoSpace } from './types';
 
 const GIZMO_OVERLAY_ID = 'pixi-scene-inspector-gizmo-3d';
 
-export const AXIS_COLORS = {
+const AXIS_COLORS = {
     x : '#ef4444',
     y : '#22c55e',
     z : '#3b82f6',
@@ -15,6 +15,7 @@ export type GizmoDom = {
     svg: SVGSVGElement;
     modeBar: HTMLDivElement;
     modeButtons: Record<GizmoMode, HTMLButtonElement>;
+    spaceButton: HTMLButtonElement;
     boundsLines: Array<SVGLineElement>;
     helperLines: Array<SVGLineElement>;
     helperGroup: SVGGElement;
@@ -275,6 +276,14 @@ export function createGizmoDom(): GizmoDom
         modeBar.appendChild(button);
     });
 
+    const spaceButton = document.createElement('button');
+
+    spaceButton.type = 'button';
+
+    setSpaceButtonLabel(spaceButton, 'local');
+    styleModeButton(spaceButton, false);
+    modeBar.appendChild(spaceButton);
+
     root.appendChild(svg);
     document.body.appendChild(root);
 
@@ -283,6 +292,7 @@ export function createGizmoDom(): GizmoDom
         svg,
         modeBar,
         modeButtons,
+        spaceButton,
         boundsLines,
         helperLines,
         helperGroup,
@@ -304,6 +314,17 @@ export function setModeButtonsActive(dom: GizmoDom, mode: GizmoMode)
     {
         styleModeButton(dom.modeButtons[key], key === mode);
     });
+}
+
+function setSpaceButtonLabel(button: HTMLButtonElement, space: GizmoSpace)
+{
+    button.textContent = space === 'world' ? 'X world' : 'X local';
+}
+
+export function setSpaceButtonActive(dom: GizmoDom, space: GizmoSpace)
+{
+    setSpaceButtonLabel(dom.spaceButton, space);
+    styleModeButton(dom.spaceButton, space === 'world');
 }
 
 export function setGizmoVisible(dom: GizmoDom, visible: boolean)
