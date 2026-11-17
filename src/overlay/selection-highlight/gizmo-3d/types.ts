@@ -1,6 +1,12 @@
 export type GizmoMode = 'move' | 'rotate' | 'scale';
 
+export type GizmoSpace = 'local' | 'world';
+
 export type GizmoAxis = 'x' | 'y' | 'z';
+
+export type GizmoPlane = 'xy' | 'xz' | 'yz';
+
+export type GizmoDragTarget = GizmoAxis | GizmoPlane | 'uniform';
 
 export type CanvasMetrics = {
     rect: DOMRect;

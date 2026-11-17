@@ -1,4 +1,4 @@
-import { D as DOMAdapter, C as Color, g as groupD8 } from "./index-D-fMyKt8.js";
+import { D as DOMAdapter, C as Color, g as groupD8 } from "./index-I8-UpSZd.js";
 let canUseNewCanvasBlendModesValue;
 function createColoredCanvas(color) {
   const canvas = DOMAdapter.get().createCanvas(6, 1);

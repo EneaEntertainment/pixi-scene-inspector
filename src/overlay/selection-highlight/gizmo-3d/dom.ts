@@ -1,4 +1,6 @@
-import type { GizmoMode } from './types';
+import { GIZMO_PLANE_IDS, GIZMO_PLANES } from './planes';
+
+import type { GizmoMode, GizmoPlane, GizmoSpace } from './types';
 
 const GIZMO_OVERLAY_ID = 'pixi-scene-inspector-gizmo-3d';
 
@@ -13,6 +15,7 @@ export type GizmoDom = {
     svg: SVGSVGElement;
     modeBar: HTMLDivElement;
     modeButtons: Record<GizmoMode, HTMLButtonElement>;
+    spaceButton: HTMLButtonElement;
     boundsLines: Array<SVGLineElement>;
     helperLines: Array<SVGLineElement>;
     helperGroup: SVGGElement;
@@ -20,6 +23,7 @@ export type GizmoDom = {
     axisHits: Record<'x' | 'y' | 'z', SVGLineElement>;
     axisArrows: Record<'x' | 'y' | 'z', SVGPolygonElement>;
     axisTips: Record<'x' | 'y' | 'z', SVGCircleElement>;
+    planeHandles: Record<GizmoPlane, SVGPolygonElement>;
     rotateRings: Record<'x' | 'y' | 'z', SVGPolylineElement>;
     rotateHits: Record<'x' | 'y' | 'z', SVGPolylineElement>;
     uniformHit: SVGCircleElement;
@@ -159,6 +163,11 @@ export function createGizmoDom(): GizmoDom
         y : svgEl('polyline'),
         z : svgEl('polyline'),
     };
+    const planeHandles = {
+        xy : svgEl('polygon'),
+        xz : svgEl('polygon'),
+        yz : svgEl('polygon'),
+    };
 
     (['x', 'y', 'z'] as const).forEach((axis) =>
     {
@@ -198,6 +207,26 @@ export function createGizmoDom(): GizmoDom
         svg.appendChild(rotateRings[axis]);
         svg.appendChild(axisArrows[axis]);
         svg.appendChild(axisTips[axis]);
+    });
+
+    GIZMO_PLANE_IDS.forEach((plane) =>
+    {
+        const color = AXIS_COLORS[GIZMO_PLANES[plane].normal];
+        const handle = planeHandles[plane];
+
+        handle.setAttribute('fill', color);
+        handle.setAttribute('fill-opacity', '0.35');
+        handle.setAttribute('stroke', color);
+        handle.setAttribute('stroke-width', '1');
+        handle.setAttribute('stroke-opacity', '0.85');
+
+        Object.assign(handle.style, {
+            pointerEvents : 'auto',
+            cursor        : 'move',
+            display       : 'none',
+        });
+
+        svg.appendChild(handle);
     });
 
     const uniformHit = svgEl('circle');
@@ -247,6 +276,14 @@ export function createGizmoDom(): GizmoDom
         modeBar.appendChild(button);
     });
 
+    const spaceButton = document.createElement('button');
+
+    spaceButton.type = 'button';
+
+    setSpaceButtonLabel(spaceButton, 'local');
+    styleModeButton(spaceButton, false);
+    modeBar.appendChild(spaceButton);
+
     root.appendChild(svg);
     document.body.appendChild(root);
 
@@ -255,6 +292,7 @@ export function createGizmoDom(): GizmoDom
         svg,
         modeBar,
         modeButtons,
+        spaceButton,
         boundsLines,
         helperLines,
         helperGroup,
@@ -262,6 +300,7 @@ export function createGizmoDom(): GizmoDom
         axisHits,
         axisArrows,
         axisTips,
+        planeHandles,
         rotateRings,
         rotateHits,
         uniformHit,
@@ -275,6 +314,17 @@ export function setModeButtonsActive(dom: GizmoDom, mode: GizmoMode)
     {
         styleModeButton(dom.modeButtons[key], key === mode);
     });
+}
+
+function setSpaceButtonLabel(button: HTMLButtonElement, space: GizmoSpace)
+{
+    button.textContent = space === 'world' ? 'X world' : 'X local';
+}
+
+export function setSpaceButtonActive(dom: GizmoDom, space: GizmoSpace)
+{
+    setSpaceButtonLabel(dom.spaceButton, space);
+    styleModeButton(dom.spaceButton, space === 'world');
 }
 
 export function setGizmoVisible(dom: GizmoDom, visible: boolean)

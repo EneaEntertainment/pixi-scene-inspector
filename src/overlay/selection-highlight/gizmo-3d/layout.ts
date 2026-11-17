@@ -1,10 +1,12 @@
 import {
     cameraDistanceToWorld,
     projectWorldPoint,
+    readNodeGlobalPosition3D,
     screenToWorldAtDistance,
 } from '../geometry-3d';
-import { addScaled, planeBasis } from '../math-3d';
+import { addScaled, dot3, planeBasis, sub3 } from '../math-3d';
 import { setGizmoVisible } from './dom';
+import { axisDirOf, GIZMO_PLANE_IDS, GIZMO_PLANES } from './planes';
 import {
     hideAllWireframes,
     hideTransformHandles,
@@ -15,12 +17,14 @@ import type { PixiNode } from '../../../page-ops/pixi-node';
 import type { AxesWorld } from '../geometry-3d';
 import type { Vec3 } from '../math-3d';
 import type { GizmoDom } from './dom';
-import type { GizmoAxis, GizmoMode } from './types';
+import type { GizmoAxis, GizmoMode, GizmoPlane } from './types';
 
 export const AXIS_SCREEN_PX = 72;
 const ARROW_LENGTH_PX = 10;
 const ARROW_HALF_WIDTH_PX = 5;
 const RING_SEGMENTS = 48;
+const PLANE_OFFSET_FRAC = 0.16;
+const PLANE_SIZE_FRAC = 0.22;
 const SHELL_ID = 'pixi-scene-inspector-shell';
 
 function mountModeBar(modeBar: HTMLDivElement)
@@ -110,9 +114,56 @@ function ringPoints(
     return parts.join(' ');
 }
 
-function axisDirOf(axes: AxesWorld, axis: GizmoAxis): Vec3
+function cameraAxisSigns(axes: AxesWorld, cameraPos: Vec3): Record<GizmoAxis, number>
 {
-    return axes[axis];
+    const toCam = sub3(cameraPos, axes.origin);
+
+    return {
+        x : Math.sign(dot3(toCam, axes.x)) || 1,
+        y : Math.sign(dot3(toCam, axes.y)) || 1,
+        z : Math.sign(dot3(toCam, axes.z)) || 1,
+    };
+}
+
+function planeScreenPoints(
+    view: NonNullable<PixiNode['_view3d']>,
+    axes: AxesWorld,
+    plane: GizmoPlane,
+    signs: Record<GizmoAxis, number>,
+    worldLen: number,
+    scaleX: number,
+    scaleY: number,
+): string | null
+{
+    const { u, v } = GIZMO_PLANES[plane];
+    const offset = worldLen * PLANE_OFFSET_FRAC;
+    const size = worldLen * PLANE_SIZE_FRAC;
+    const su = signs[u];
+    const sv = signs[v];
+    const uDir = axisDirOf(axes, u);
+    const vDir = axisDirOf(axes, v);
+    const parts: Array<string> = [];
+
+    const corners = [
+        addScaled(addScaled(axes.origin, uDir, su * offset), vDir, sv * offset),
+        addScaled(addScaled(axes.origin, uDir, su * (offset + size)), vDir, sv * offset),
+        addScaled(addScaled(axes.origin, uDir, su * (offset + size)), vDir, sv * (offset + size)),
+        addScaled(addScaled(axes.origin, uDir, su * offset), vDir, sv * (offset + size)),
+    ];
+
+    for (const corner of corners)
+    {
+        const screen = projectWorldPoint(view, corner);
+
+        if (!screen)
+        {
+            return null;
+        }
+
+        parts.push(`${screen.x * scaleX},${screen.y * scaleY}`);
+    }
+
+    return parts.join(' ');
 }
 
 function projectedUnitPixels(
@@ -180,6 +231,7 @@ export type GizmoLayoutInput = {
     node: PixiNode;
     view: NonNullable<PixiNode['_view3d']>;
     axes: AxesWorld;
+    localAxes: AxesWorld;
     rect: DOMRect;
     scaleX: number;
     scaleY: number;
@@ -198,7 +250,7 @@ function layoutGizmoRoot(dom: GizmoDom, rect: DOMRect)
 
 export function paintGizmoLayout(input: GizmoLayoutInput)
 {
-    const { dom, node, view, axes, rect, scaleX, scaleY, mode } = input;
+    const { dom, node, view, axes, localAxes, rect, scaleX, scaleY, mode } = input;
     const originScreen = projectWorldPoint(view, axes.origin);
     const aspectHint = rect.height > 1e-6 ? rect.width / rect.height : 16 / 9;
 
@@ -207,7 +259,7 @@ export function paintGizmoLayout(input: GizmoLayoutInput)
         layoutGizmoRoot(dom, rect);
         hideTransformHandles(dom);
 
-        const wire = paintNodeWireframe(dom, node, view, axes, scaleX, scaleY, aspectHint);
+        const wire = paintNodeWireframe(dom, node, view, localAxes, scaleX, scaleY, aspectHint);
 
         if (wire.mode === 'helper' && wire.visible)
         {
@@ -228,7 +280,7 @@ export function paintGizmoLayout(input: GizmoLayoutInput)
     mountModeBar(dom.modeBar);
     setGizmoVisible(dom, true);
     layoutGizmoRoot(dom, rect);
-    paintNodeWireframe(dom, node, view, axes, scaleX, scaleY, aspectHint);
+    paintNodeWireframe(dom, node, view, localAxes, scaleX, scaleY, aspectHint);
 
     const ox = originScreen.x * scaleX;
     const oy = originScreen.y * scaleY;
@@ -320,4 +372,32 @@ export function paintGizmoLayout(input: GizmoLayoutInput)
     });
 
     dom.uniformHit.style.display = mode === 'scale' ? 'block' : 'none';
+
+    const showPlanes = mode === 'move';
+    const cameraPos = readNodeGlobalPosition3D(view.camera as PixiNode) ?? axes.origin;
+    const signs = cameraAxisSigns(axes, cameraPos);
+
+    GIZMO_PLANE_IDS.forEach((plane) =>
+    {
+        const handle = dom.planeHandles[plane];
+
+        if (!showPlanes)
+        {
+            handle.style.display = 'none';
+
+            return;
+        }
+
+        const points = planeScreenPoints(view, axes, plane, signs, worldLen, scaleX, scaleY);
+
+        if (!points)
+        {
+            handle.style.display = 'none';
+
+            return;
+        }
+
+        handle.setAttribute('points', points);
+        handle.style.display = 'block';
+    });
 }

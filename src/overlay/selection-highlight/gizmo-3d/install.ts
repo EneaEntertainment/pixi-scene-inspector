@@ -1,25 +1,41 @@
 import { isEditableKeyTarget } from '../../../editable-keys';
 import { isNode3D } from '../../../page-ops/node-3d';
 import { readLocalAxesWorld } from '../geometry-3d';
-import { createGizmoDom, setGizmoVisible, setModeButtonsActive } from './dom';
+import { createGizmoDom, setGizmoVisible, setModeButtonsActive, setSpaceButtonActive } from './dom';
 import { createGizmoDrag } from './drag';
 import { paintGizmoLayout } from './layout';
+import { GIZMO_PLANE_IDS } from './planes';
+import { resolveGizmoHandleAxes } from './space';
 import { hideAllWireframes } from './wireframe';
 
 import type { PixiNode } from '../../../page-ops/pixi-node';
-import type { CanvasMetrics, Gizmo3DController, GizmoMode } from './types';
+import type { CanvasMetrics, Gizmo3DController, GizmoMode, GizmoSpace } from './types';
 
 export function installGizmo3D(resolveNode: () => PixiNode | null): Gizmo3DController
 {
     const dom = createGizmoDom();
     let mode: GizmoMode = 'move';
+    let space: GizmoSpace = 'local';
     let destroyed = false;
     let metrics: CanvasMetrics | null = null;
 
     function setMode(next: GizmoMode)
     {
         mode = next;
+
         setModeButtonsActive(dom, mode);
+    }
+
+    function setSpace(next: GizmoSpace)
+    {
+        space = next;
+
+        setSpaceButtonActive(dom, space);
+    }
+
+    function toggleSpace()
+    {
+        setSpace(space === 'local' ? 'world' : 'local');
     }
 
     function hide()
@@ -31,6 +47,7 @@ export function installGizmo3D(resolveNode: () => PixiNode | null): Gizmo3DContr
     const drag = createGizmoDrag({
         resolveNode,
         getMode    : () => mode,
+        getSpace   : () => space,
         getMetrics : () => metrics,
     });
 
@@ -56,9 +73,9 @@ export function installGizmo3D(resolveNode: () => PixiNode | null): Gizmo3DContr
         }
 
         const view = node._view3d;
-        const axes = readLocalAxesWorld(node);
+        const localAxes = readLocalAxesWorld(node);
 
-        if (!view || !axes)
+        if (!view || !localAxes)
         {
             hide();
 
@@ -83,7 +100,8 @@ export function installGizmo3D(resolveNode: () => PixiNode | null): Gizmo3DContr
             dom,
             node,
             view,
-            axes,
+            axes   : resolveGizmoHandleAxes(localAxes, space, mode),
+            localAxes,
             rect   : next.rect,
             scaleX : next.scaleX,
             scaleY : next.scaleY,
@@ -115,6 +133,11 @@ export function installGizmo3D(resolveNode: () => PixiNode | null): Gizmo3DContr
             setMode('scale');
             event.preventDefault();
         }
+        else if (key === 'x')
+        {
+            toggleSpace();
+            event.preventDefault();
+        }
     }
 
     (['x', 'y', 'z'] as const).forEach((axis) =>
@@ -127,10 +150,19 @@ export function installGizmo3D(resolveNode: () => PixiNode | null): Gizmo3DContr
         dom.rotateHits[axis].addEventListener('pointerdown', start);
     });
 
+    GIZMO_PLANE_IDS.forEach((plane) =>
+    {
+        dom.planeHandles[plane].addEventListener('pointerdown', (event) =>
+        {
+            drag.beginAxisDrag(plane, event);
+        });
+    });
+
     dom.uniformHit.addEventListener('pointerdown', (event) => drag.beginAxisDrag('uniform', event));
     dom.modeButtons.move.addEventListener('click', () => setMode('move'));
     dom.modeButtons.rotate.addEventListener('click', () => setMode('rotate'));
     dom.modeButtons.scale.addEventListener('click', () => setMode('scale'));
+    dom.spaceButton.addEventListener('click', () => toggleSpace());
     window.addEventListener('keydown', onModeKey, true);
 
     return {
