@@ -1,0 +1,331 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Version without v prefix (e.g. 1.5.0)
+        required: true
+        type: string
+      chrome_store:
+        description: Upload zip to Chrome Web Store and submit for review
+        required: true
+        type: boolean
+        default: true
+      stage:
+        description: all runs the full release. github, npm, or chrome continues a version that already has a tag.
+        required: true
+        type: choice
+        options:
+          - all
+          - github
+          - npm
+          - chrome
+        default: all
+
+permissions:
+  contents: write
+  id-token: write
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      zip_name: ${{ steps.pack.outputs.zip_name }}
+    steps:
+      - name: Validate version
+        env:
+          VERSION: ${{ inputs.version }}
+        run: |
+          set -euo pipefail
+          if [[ ! "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$ ]]; then
+            echo "Invalid version: $VERSION"
+            exit 1
+          fi
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.14'
+          cache: npm
+
+      - name: Resolve release state
+        id: state
+        env:
+          VERSION: ${{ inputs.version }}
+          STAGE: ${{ inputs.stage }}
+        run: |
+          set -euo pipefail
+          TAG_EXISTS=false
+          if git rev-parse "v${VERSION}" >/dev/null 2>&1; then
+            TAG_EXISTS=true
+          fi
+
+          if [ "$STAGE" != "all" ]; then
+            if [ "$TAG_EXISTS" != true ]; then
+              echo "Stage '${STAGE}' continues an existing release, but tag v${VERSION} does not exist."
+              exit 1
+            fi
+            echo "mode=tag" >> "$GITHUB_OUTPUT"
+            echo "Continuing v${VERSION} from the existing tag"
+            exit 0
+          fi
+
+          if [ "$TAG_EXISTS" = true ]; then
+            if [ "${GITHUB_RUN_ATTEMPT}" -eq 1 ]; then
+              echo "Tag v${VERSION} already exists. Re-run failed jobs on the original run, or dispatch stage github, npm, or chrome."
+              exit 1
+            fi
+            echo "mode=tag" >> "$GITHUB_OUTPUT"
+            echo "Tag v${VERSION} already exists; continuing this run"
+            exit 0
+          fi
+
+          CURRENT=$(node -p "require('./package.json').version")
+          export CURRENT
+          RELATION=$(node -e "
+            const parse = (v) => {
+              const [core, pre] = v.split('-');
+              const nums = core.split('.').map(Number);
+              return { nums, pre: pre || null };
+            };
+            const cmp = (a, b) => {
+              for (let i = 0; i < 3; i++) {
+                if (a.nums[i] !== b.nums[i]) return a.nums[i] - b.nums[i];
+              }
+              if (a.pre === null && b.pre === null) return 0;
+              if (a.pre === null) return 1;
+              if (b.pre === null) return -1;
+              return a.pre < b.pre ? -1 : a.pre > b.pre ? 1 : 0;
+            };
+            const next = parse(process.env.VERSION);
+            const current = parse(process.env.CURRENT);
+            const result = cmp(next, current);
+            if (result < 0) {
+              console.error('Version ' + process.env.VERSION + ' must be greater than ' + process.env.CURRENT);
+              process.exit(1);
+            }
+            process.stdout.write(result === 0 ? 'equal' : 'greater');
+          ")
+
+          if [ "$RELATION" = "equal" ]; then
+            MANIFEST=$(node -p "require('./src/manifest.json').version")
+            if [ "$MANIFEST" != "$VERSION" ]; then
+              echo "package.json is ${VERSION} but src/manifest.json is ${MANIFEST}"
+              exit 1
+            fi
+            echo "mode=resume" >> "$GITHUB_OUTPUT"
+            echo "v${VERSION} is already on main; creating the missing tag"
+          else
+            echo "mode=new" >> "$GITHUB_OUTPUT"
+            echo "v${VERSION} is greater than ${CURRENT}"
+          fi
+
+      - name: Checkout existing tag
+        if: steps.state.outputs.mode == 'tag'
+        env:
+          VERSION: ${{ inputs.version }}
+        run: |
+          set -euo pipefail
+          git checkout "v${VERSION}"
+          CURRENT=$(node -p "require('./package.json').version")
+          MANIFEST=$(node -p "require('./src/manifest.json').version")
+          if [ "$CURRENT" != "$VERSION" ] || [ "$MANIFEST" != "$VERSION" ]; then
+            echo "Tag v${VERSION} has package.json ${CURRENT} and manifest ${MANIFEST}"
+            exit 1
+          fi
+
+      - name: Bump version
+        if: steps.state.outputs.mode == 'new'
+        env:
+          VERSION: ${{ inputs.version }}
+        run: |
+          set -euo pipefail
+          npm version "$VERSION" --no-git-tag-version
+          node -e "
+            const fs = require('fs');
+            const path = 'src/manifest.json';
+            const manifest = JSON.parse(fs.readFileSync(path, 'utf8'));
+            manifest.version = process.env.VERSION;
+            fs.writeFileSync(path, JSON.stringify(manifest, null, 2) + '\n');
+          "
+
+      - name: Install and build
+        run: |
+          set -euo pipefail
+          npm ci
+          npm run demo:build
+
+      - name: Pack zip
+        id: pack
+        env:
+          VERSION: ${{ inputs.version }}
+        run: |
+          set -euo pipefail
+          ZIP_NAME="pixi-scene-inspector-v${VERSION}.zip"
+          (cd build && zip -r "../${ZIP_NAME}" . -x "index.js" -x "index.d.ts")
+          echo "zip_name=${ZIP_NAME}" >> "$GITHUB_OUTPUT"
+
+      - name: Build changelog
+        env:
+          VERSION: ${{ inputs.version }}
+          MODE: ${{ steps.state.outputs.mode }}
+        run: |
+          set -euo pipefail
+          if git rev-parse "v${VERSION}" >/dev/null 2>&1; then
+            END="v${VERSION}^"
+          elif [ "$MODE" = "resume" ]; then
+            RELEASE_COMMIT=$(git log origin/main --format='%H%x09%s' | awk -F '\t' -v msg="chore: release v${VERSION}" '$2 == msg { print $1; exit }')
+            if [ -z "$RELEASE_COMMIT" ]; then
+              echo "Commit 'chore: release v${VERSION}' was not found on main"
+              exit 1
+            fi
+            END="${RELEASE_COMMIT}^"
+          else
+            END="HEAD"
+          fi
+          PREV_TAG=$(git describe --tags --abbrev=0 "$END" 2>/dev/null || true)
+          if [ -z "$PREV_TAG" ]; then
+            git log --pretty=format:'* %s' --no-merges "$END" > release-notes.md
+          else
+            git log "${PREV_TAG}..${END}" --pretty=format:'* %s' --no-merges > release-notes.md
+          fi
+          echo >> release-notes.md
+          echo "Changelog preview:"
+          cat release-notes.md
+
+      - name: Commit release files
+        if: steps.state.outputs.mode == 'new'
+        env:
+          VERSION: ${{ inputs.version }}
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add package.json package-lock.json src/manifest.json docs
+          git commit -m "chore: release v${VERSION}"
+          git push origin HEAD:main
+
+      - name: Create tag
+        if: steps.state.outputs.mode != 'tag'
+        env:
+          VERSION: ${{ inputs.version }}
+        run: |
+          set -euo pipefail
+          if git rev-parse "v${VERSION}" >/dev/null 2>&1; then
+            echo "Tag v${VERSION} already exists"
+            exit 0
+          fi
+          git fetch origin main
+          RELEASE_COMMIT=$(git log origin/main --format='%H%x09%s' | awk -F '\t' -v msg="chore: release v${VERSION}" '$2 == msg { print $1; exit }')
+          if [ -z "$RELEASE_COMMIT" ]; then
+            echo "Commit 'chore: release v${VERSION}' was not found on main"
+            exit 1
+          fi
+          git tag "v${VERSION}" "$RELEASE_COMMIT"
+          git push origin "v${VERSION}"
+
+      - name: Upload release artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-${{ inputs.version }}
+          if-no-files-found: error
+          overwrite: true
+          path: |
+            pixi-scene-inspector-v${{ inputs.version }}.zip
+            release-notes.md
+
+  github-release:
+    needs: prepare
+    if: inputs.stage == 'all' || inputs.stage == 'github'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download release artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: release-${{ inputs.version }}
+
+      - name: Create GitHub Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: ${{ inputs.version }}
+          ZIP_NAME: ${{ needs.prepare.outputs.zip_name }}
+        run: |
+          set -euo pipefail
+          if gh release view "v${VERSION}" >/dev/null 2>&1; then
+            echo "Release v${VERSION} already exists, ensuring the zip is attached"
+            gh release upload "v${VERSION}" "$ZIP_NAME" --clobber
+            exit 0
+          fi
+          gh release create "v${VERSION}" \
+            --title "v${VERSION}" \
+            --notes-file release-notes.md \
+            "$ZIP_NAME"
+
+  npm:
+    needs: prepare
+    if: inputs.stage == 'all' || inputs.stage == 'npm'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout tag
+        uses: actions/checkout@v4
+        with:
+          ref: v${{ inputs.version }}
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.14'
+          registry-url: https://registry.npmjs.org
+          cache: npm
+
+      - name: Ensure npm supports OIDC
+        run: npm install -g npm@latest
+
+      - name: Publish to npm
+        env:
+          VERSION: ${{ inputs.version }}
+        run: |
+          set -euo pipefail
+          NAME=$(node -p "require('./package.json').name")
+          CURRENT=$(node -p "require('./package.json').version")
+          if [ "$CURRENT" != "$VERSION" ]; then
+            echo "Tag v${VERSION} has package version ${CURRENT}"
+            exit 1
+          fi
+          if npm view "${NAME}@${VERSION}" version >/dev/null 2>&1; then
+            echo "${NAME}@${VERSION} is already published"
+            exit 0
+          fi
+          npm ci
+          npm publish --access public
+
+  # chrome:
+  #   needs: prepare
+  #   if: (inputs.stage == 'all' && inputs.chrome_store) || inputs.stage == 'chrome'
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Download release artifact
+  #       uses: actions/download-artifact@v4
+  #       with:
+  #         name: release-${{ inputs.version }}
+  #
+  #     - name: Submit to Chrome Web Store
+  #       env:
+  #         EXTENSION_ID: ${{ secrets.CHROME_EXTENSION_ID }}
+  #         CLIENT_ID: ${{ secrets.CHROME_CLIENT_ID }}
+  #         CLIENT_SECRET: ${{ secrets.CHROME_CLIENT_SECRET }}
+  #         REFRESH_TOKEN: ${{ secrets.CHROME_REFRESH_TOKEN }}
+  #         PUBLISHER_ID: ${{ secrets.CHROME_PUBLISHER_ID }}
+  #         ZIP_NAME: ${{ needs.prepare.outputs.zip_name }}
+  #       run: npx --yes chrome-webstore-upload-cli@4.0.2 --source "$ZIP_NAME"
