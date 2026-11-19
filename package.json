@@ -1,23 +1,50 @@
 {
   "name": "pixi-scene-inspector",
-  "private": true,
   "version": "1.4.0",
+  "description": "Visual inspector for the PixiJS scene tree and node properties (Chrome extension + in-page npm package)",
   "type": "module",
+  "license": "MIT",
+  "author": "Enea Entertainment",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EneaEntertainment/pixi-scene-inspector.git"
+  },
+  "bugs": {
+    "url": "https://github.com/EneaEntertainment/pixi-scene-inspector/issues"
+  },
+  "homepage": "https://eneaentertainment.github.io/pixi-scene-inspector/",
+  "keywords": [
+    "pixi",
+    "pixijs",
+    "inspector",
+    "devtools",
+    "scene-graph"
+  ],
+  "files": [
+    "build/index.js",
+    "build/index.d.ts",
+    "LICENSE",
+    "README.md"
+  ],
   "exports": {
-    "./overlay": {
-      "types": "./build/overlay.d.ts",
-      "default": "./build/overlay.js"
+    ".": {
+      "types": "./build/index.d.ts",
+      "default": "./build/index.js"
     }
   },
+  "types": "./build/index.d.ts",
+  "main": "./build/index.js",
+  "module": "./build/index.js",
   "scripts": {
     "dev": "node build.js --watch",
     "build": "node build.js",
+    "prepublishOnly": "npm run build",
     "check": "svelte-check --tsconfig ./tsconfig.json",
     "lint": "eslint \"src/**/*.{ts,svelte}\" \"demo/**/*.{ts,svelte}\" \"demo-3d/**/*.{ts,svelte}\"",
     "lint:fix": "eslint \"src/**/*.{ts,svelte}\" \"demo/**/*.{ts,svelte}\" \"demo-3d/**/*.{ts,svelte}\" --fix",
-    "demo": "vite --config demo/vite.config.ts",
-    "demo:3d": "vite --config demo-3d/vite.config.ts",
-    "demo:build": "vite build --config demo/vite.config.ts && vite build --config demo-3d/vite.config.ts"
+    "demo": "npm run build && vite --config demo/vite.config.ts",
+    "demo:3d": "npm run build && vite --config demo-3d/vite.config.ts",
+    "demo:build": "npm run build && vite build --config demo/vite.config.ts && vite build --config demo-3d/vite.config.ts"
   },
   "devDependencies": {
     "@esotericsoftware/spine-pixi-v8": "~4.3.0",

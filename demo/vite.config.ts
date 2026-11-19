@@ -48,9 +48,20 @@ function emptyDocsKeep3d(): Plugin
 export default defineConfig(({ command }) => ({
     root   : 'demo',
     base   : command === 'build' ? '/pixi-scene-inspector/' : '/',
-    server : { port: 5179 },
-    define : {
+    server : {
+        port : 5179,
+        fs   : { allow: [rootDir] },
+    },
+    define: {
         PSI_VERSION: JSON.stringify(PSI_VERSION),
+    },
+    resolve: {
+        alias: {
+            'pixi-scene-inspector': join(rootDir, 'build/index.js'),
+        },
+    },
+    optimizeDeps: {
+        exclude: ['pixi-scene-inspector'],
     },
     build: {
         outDir      : '../docs',

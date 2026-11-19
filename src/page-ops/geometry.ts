@@ -105,27 +105,20 @@ export function readWorldTransform(node: PixiNode): MatrixLike | null
     return { a, b, c, d, tx, ty };
 }
 
+function asCanvas(value: unknown): HTMLCanvasElement | null
+{
+    return value instanceof HTMLCanvasElement ? value : null;
+}
+
 export function findPixiCanvas(win: PageGlobals): HTMLCanvasElement | null
 {
     const app = win.__PIXI_APP__;
     const renderer = win.__PIXI_RENDERER__ || app?.renderer;
 
-    const candidates = [
-        app?.canvas,
-        app?.view,
-        renderer?.canvas,
-        renderer?.view,
-    ];
-
-    for (const candidate of candidates)
-    {
-        if (candidate instanceof HTMLCanvasElement)
-        {
-            return candidate;
-        }
-    }
-
-    return null;
+    return asCanvas(app?.canvas)
+        ?? asCanvas(renderer?.canvas)
+        ?? asCanvas(app?.view)
+        ?? asCanvas(renderer?.view);
 }
 
 export function readScreenSize(win: PageGlobals, canvas: HTMLCanvasElement): { width: number; height: number }

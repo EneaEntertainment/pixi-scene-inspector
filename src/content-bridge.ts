@@ -1,58 +1,6 @@
-import {
-    readExtensionSettings,
-    resolveLiveRefreshInterval,
-    resolvePickIncludeHidden,
-    resolveToggleHotkey,
-    TOGGLE_HOTKEY_STORAGE_KEY,
-} from './extension-settings';
-import {
-    DEFAULT_HIGHLIGHT_COLORS,
-    HIGHLIGHT_COLORS_STORAGE_KEY,
-    HIGHLIGHT_FILL_STORAGE_KEY,
-    HIGHLIGHT_STROKE_STORAGE_KEY,
-    publishHighlightColors,
-} from './highlight-colors';
-import {
-    DEFAULT_HIGHLIGHT_GUIDES,
-    HIGHLIGHT_GUIDES_STORAGE_KEY,
-    normalizeHighlightGuides,
-    publishHighlightGuides,
-} from './highlight-guides';
-import { DEFAULT_TOGGLE_HOTKEY, publishHotkeyConfig } from './hotkey';
-import {
-    DEFAULT_LIVE_REFRESH_INTERVAL_SEC,
-    LIVE_REFRESH_INTERVAL_STORAGE_KEY,
-    publishLiveRefreshInterval,
-} from './live-refresh';
-import {
-    DEFAULT_PICK_INCLUDE_HIDDEN,
-    PICK_INCLUDE_HIDDEN_STORAGE_KEY,
-    publishPickIncludeHidden,
-} from './pick-settings';
+import { EXTENSION_SETTINGS_STORAGE_KEYS, syncExtensionSettingsToPage } from './extension-settings';
 
-async function syncFromStorage()
-{
-    try
-    {
-        const settings = await readExtensionSettings();
-
-        publishHotkeyConfig(settings.toggleHotkey);
-        publishHighlightColors(settings.highlightColors);
-        publishHighlightGuides(settings.highlightGuides);
-        publishLiveRefreshInterval(settings.liveRefreshInterval);
-        publishPickIncludeHidden(settings.pickIncludeHidden);
-    }
-    catch
-    {
-        publishHotkeyConfig(DEFAULT_TOGGLE_HOTKEY);
-        publishHighlightColors(DEFAULT_HIGHLIGHT_COLORS);
-        publishHighlightGuides(DEFAULT_HIGHLIGHT_GUIDES);
-        publishLiveRefreshInterval(DEFAULT_LIVE_REFRESH_INTERVAL_SEC);
-        publishPickIncludeHidden(DEFAULT_PICK_INCLUDE_HIDDEN);
-    }
-}
-
-void syncFromStorage();
+void syncExtensionSettingsToPage();
 
 chrome.storage.onChanged.addListener((changes, areaName) =>
 {
@@ -61,48 +9,12 @@ chrome.storage.onChanged.addListener((changes, areaName) =>
         return;
     }
 
-    const hotkeyChange = changes[TOGGLE_HOTKEY_STORAGE_KEY];
+    const touched = EXTENSION_SETTINGS_STORAGE_KEYS.some((key) => key in changes);
 
-    if (hotkeyChange)
+    if (!touched)
     {
-        publishHotkeyConfig(resolveToggleHotkey(hotkeyChange.newValue));
+        return;
     }
 
-    if (
-        changes[HIGHLIGHT_COLORS_STORAGE_KEY]
-        || changes[HIGHLIGHT_FILL_STORAGE_KEY]
-        || changes[HIGHLIGHT_STROKE_STORAGE_KEY]
-    )
-    {
-        void readExtensionSettings()
-            .then((settings) =>
-            {
-                publishHighlightColors(settings.highlightColors);
-            })
-            .catch(() =>
-            {
-                publishHighlightColors(DEFAULT_HIGHLIGHT_COLORS);
-            });
-    }
-
-    const liveRefreshChange = changes[LIVE_REFRESH_INTERVAL_STORAGE_KEY];
-
-    if (liveRefreshChange)
-    {
-        publishLiveRefreshInterval(resolveLiveRefreshInterval(liveRefreshChange.newValue));
-    }
-
-    const highlightGuidesChange = changes[HIGHLIGHT_GUIDES_STORAGE_KEY];
-
-    if (highlightGuidesChange)
-    {
-        publishHighlightGuides(normalizeHighlightGuides(highlightGuidesChange.newValue));
-    }
-
-    const pickIncludeHiddenChange = changes[PICK_INCLUDE_HIDDEN_STORAGE_KEY];
-
-    if (pickIncludeHiddenChange)
-    {
-        publishPickIncludeHidden(resolvePickIncludeHidden(pickIncludeHiddenChange.newValue));
-    }
+    void syncExtensionSettingsToPage();
 });

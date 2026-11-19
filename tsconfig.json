@@ -10,7 +10,10 @@
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "types": ["node"],
     "verbatimModuleSyntax": true,
-    "isolatedModules": true
+    "isolatedModules": true,
+    "paths": {
+      "pixi-scene-inspector": ["./build/index.d.ts"]
+    }
   },
   "include": [
     "src/**/*.ts",

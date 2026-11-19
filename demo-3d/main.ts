@@ -1,21 +1,7 @@
 import { Application, Cache } from 'pixi.js';
-import { isEditableKeyTarget } from '../src/editable-keys';
-import { DEFAULT_TOGGLE_HOTKEY, matchesHotkey } from '../src/hotkey';
-import { installPixiSceneInspectorHotkey } from '../src/overlay';
+import { installPixiSceneInspectorHotkey } from 'pixi-scene-inspector';
+import { discardHintOnInspectorHotkey } from '../demo/discard-hint-on-hotkey';
 import { buildThreeDDemoScene } from './scene';
-
-function discardHintOnInspectorHotkey()
-{
-    window.addEventListener('keydown', (event) =>
-    {
-        if (!matchesHotkey(event, DEFAULT_TOGGLE_HOTKEY) || isEditableKeyTarget(event.target))
-        {
-            return;
-        }
-
-        document.getElementById('hint')?.remove();
-    });
-}
 
 async function main()
 {

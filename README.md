@@ -1,13 +1,14 @@
 # Pixi Scene Inspector
 
 <p>
-  <img src="pixi-scene-inspector.jpg" alt="Pixi Scene Inspector" width="49%" />
-  <img src="pixi-scene-inspector-2.jpg" alt="Pixi Scene Inspector" width="49%" />
+  <img src="https://raw.githubusercontent.com/EneaEntertainment/pixi-scene-inspector/main/pixi-scene-inspector.jpg" alt="Pixi Scene Inspector" width="49%" />
+  <img src="https://raw.githubusercontent.com/EneaEntertainment/pixi-scene-inspector/main/pixi-scene-inspector-2.jpg" alt="Pixi Scene Inspector" width="49%" />
 </p>
 
 [Live demo](https://eneaentertainment.github.io/pixi-scene-inspector/) · [PixiJS 3D demo](https://eneaentertainment.github.io/pixi-scene-inspector/3d/)
 
 [![Chrome Web Store](https://img.shields.io/chrome-web-store/v/ofhbddhfahkompjbgnodecgiikbnhdgi?logo=googlechrome&label=Chrome%20Web%20Store)](https://chromewebstore.google.com/detail/pixi-scene-inspector/ofhbddhfahkompjbgnodecgiikbnhdgi)
+[![npm](https://img.shields.io/npm/v/pixi-scene-inspector?logo=npm&label=npm)](https://www.npmjs.com/package/pixi-scene-inspector)
 
 Chrome extension (and optional in-page overlay) that detects a PixiJS app and visualizes its **scene tree**. Nodes are colored by display-object type; custom labels and invisible nodes are shown distinctly. The docked overlay also opens a **properties** inspector for the selected node. Also works with **[@pixi/3d](https://github.com/pixijs/3d)** scenes (typed 3D nodes, extra properties, raycast pick, transform gizmo).
 
@@ -142,12 +143,38 @@ With more than one node selected:
 - **Drag & drop** selected node(s) onto another → append as last child; drop in a gap between siblings → insert at that index. Esc cancels an in-progress drag.
 - **⌘/Ctrl+C** then **⌘/Ctrl+V** → move the copied node(s) under the primary selection (append).
 
-## Usage (HTML overlay)
+## Usage (npm package / in-page overlay)
 
-Mount the panel into any DOM element in the same page as the Pixi app (dev builds only recommended):
+Install and use without the Chrome extension (dev builds recommended):
+
+```bash
+npm install pixi-scene-inspector
+```
 
 ```ts
-import { mountPixiSceneInspector } from "pixi-scene-inspector/overlay";
+import {
+  configurePixiSceneInspectorSettings,
+  installPixiSceneInspectorHotkey,
+} from "pixi-scene-inspector";
+
+globalThis.__PIXI_APP__ = app;
+
+configurePixiSceneInspectorSettings({
+  liveRefreshInterval: 1,
+  pickIncludeHidden: false,
+});
+
+installPixiSceneInspectorHotkey();
+```
+
+`configurePixiSceneInspectorSettings` uses the **same settings shape** as the extension popup (hotkey, highlight colors / guides, live refresh, pick invisible). Values are applied immediately and persisted to `localStorage` (pass `{ persist: false }` to skip). `getPixiSceneInspectorSettings()` returns the live snapshot. `installPixiSceneInspectorHotkey` / `dockPixiSceneInspector` also accept `settings?: Partial<InspectorSettings>` and rehydrate any previously saved page config when no `settings` are passed.
+
+The package ships a self-contained ESM build (`svelte` is bundled — no peer dependency).
+
+Mount the tree panel into any DOM element in the same page as the Pixi app:
+
+```ts
+import { mountPixiSceneInspector } from "pixi-scene-inspector";
 
 const el = document.createElement("div");
 
@@ -164,7 +191,7 @@ Optional `host` injects a custom `PixiTreeHost` (snapshot / select / visibility 
 For a bottom **tree** panel that shrinks the game viewport (and mounts the properties panel):
 
 ```ts
-import { dockPixiSceneInspector } from "pixi-scene-inspector/overlay";
+import { dockPixiSceneInspector } from "pixi-scene-inspector";
 
 const docked = dockPixiSceneInspector({ height: 280, resizable: true });
 
@@ -175,14 +202,6 @@ docked.unmount();
 `dockPixiSceneInspector` moves existing `body` children into a top shell, mounts the **tree** panel at the bottom and **properties** on the right (either panel can float), and dispatches `resize`. It also best-effort patches `window` / `visualViewport` / `documentElement` size getters for apps that still size from the full window. With `resizable` (default `true`), docked edges and floating corners can be dragged; sizes are remembered in `localStorage`.
 
 `togglePixiSceneInspector` mounts or unmounts programmatically. Prefer **either** the Chrome extension **or** an in-page hotkey — not both on the same page (two listeners would open then immediately close the panel).
-
-Without the extension, install the same **Shift+`` ` ``** toggle from the page:
-
-```ts
-import { installPixiSceneInspectorHotkey } from "pixi-scene-inspector/overlay";
-
-installPixiSceneInspectorHotkey();
-```
 
 `installPixiSceneInspectorHotkey` is idempotent (`globalThis` guard) and returns `true` when it installed the listener, or `false` when one was already present. The extension already calls it from a MAIN-world content script (`content-dock.js`), so games that only expose `__PIXI_APP__` need no import.
 
@@ -221,7 +240,7 @@ Alternatives: call `app.renderer.resize(gameRoot.clientWidth, gameRoot.clientHei
 
 Requires the same globals as the extension (`__PIXI_APP__`, etc.).
 
-Package export: `pixi-scene-inspector/overlay` → `build/overlay.js` + `build/overlay.d.ts` (run `npm run build` first; `svelte` is a peer import).
+Package entry: `pixi-scene-inspector` → `build/index.js` + `build/index.d.ts` (self-contained ESM; `svelte` is bundled).
 
 ## @pixi/3d ([pixijs/3d](https://github.com/pixijs/3d))
 

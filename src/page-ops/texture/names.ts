@@ -1,3 +1,5 @@
+import { textureBaseTexture } from './is-texture';
+
 import type { PixiTexture } from '../pixi-node';
 
 function firstCacheId(ids: Array<string> | undefined): string | undefined
@@ -40,11 +42,13 @@ export function basename(path: string): string
 
 export function textureLabelCandidates(texture: PixiTexture): Array<string>
 {
+    const base = textureBaseTexture(texture);
+
     const values = [
         nonEmptyString(texture.label),
         nonEmptyString(texture.source?.label),
         nonEmptyString(texture.source?._sourceOrigin),
-        nonEmptyString(texture.baseTexture?.label),
+        nonEmptyString(base?.label),
     ];
 
     const out: Array<string> = [];
@@ -62,7 +66,8 @@ export function textureLabelCandidates(texture: PixiTexture): Array<string>
 
 export function localTextureName(texture: PixiTexture): string
 {
-    const cached = firstCacheId(texture.textureCacheIds) ?? firstCacheId(texture.baseTexture?.textureCacheIds);
+    const base = textureBaseTexture(texture);
+    const cached = firstCacheId(texture.textureCacheIds) ?? firstCacheId(base?.textureCacheIds);
 
     if (cached)
     {
@@ -76,7 +81,7 @@ export function localTextureName(texture: PixiTexture): string
         return labeled;
     }
 
-    return nonEmptyString(texture.baseTexture?.resource?.url)
-        ?? nonEmptyString(texture.baseTexture?.resource?.src)
+    return nonEmptyString(base?.resource?.url)
+        ?? nonEmptyString(base?.resource?.src)
         ?? '';
 }

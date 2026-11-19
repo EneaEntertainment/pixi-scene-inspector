@@ -1,3 +1,5 @@
+import { textureBaseTexture } from './is-texture';
+
 import type { PageGlobals, PixiTexture } from '../pixi-node';
 
 type TexturePreviewSource = {
@@ -52,7 +54,7 @@ function textureResourceCandidate(texture: PixiTexture): unknown
         return texture.source.resource;
     }
 
-    const resource = texture.baseTexture?.resource;
+    const resource = textureBaseTexture(texture)?.resource;
 
     if (!resource)
     {
@@ -77,8 +79,12 @@ function textureResolution(texture: PixiTexture): number
     const candidates: Array<number | undefined> = [
         texture.source?.resolution,
         texture.source?._resolution,
-        texture.baseTexture?.resolution,
     ];
+
+    if (!texture.source)
+    {
+        candidates.push(textureBaseTexture(texture)?.resolution);
+    }
 
     for (const value of candidates)
     {
