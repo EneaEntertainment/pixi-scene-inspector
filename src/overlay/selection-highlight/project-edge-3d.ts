@@ -151,7 +151,7 @@ function readViewCameraAxes(camera: PixiNode): { origin: Vec3; z: Vec3 } | null
                 {
                     return {
                         origin,
-                        z : { x: zx / len, y: zy / len, z: zz / len },
+                        z: { x: zx / len, y: zy / len, z: zz / len },
                     };
                 }
             }

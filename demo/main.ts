@@ -1,7 +1,6 @@
 import { Application, Cache } from 'pixi.js';
-import { isEditableKeyTarget } from '../src/editable-keys';
-import { DEFAULT_TOGGLE_HOTKEY, matchesHotkey } from '../src/hotkey';
-import { installPixiSceneInspectorHotkey } from '../src/overlay';
+import { installPixiSceneInspectorHotkey } from 'pixi-scene-inspector';
+import { discardHintOnInspectorHotkey } from './discard-hint-on-hotkey';
 import { buildDemoScene } from './scene';
 import { DEMO_SAFE_HEIGHT, DEMO_SAFE_WIDTH } from './scene/layout';
 import { createDemoTextures } from './textures';
@@ -13,19 +12,6 @@ function stretchCanvas(canvas: HTMLCanvasElement)
 
     canvas.style.width = `${Math.round(DEMO_SAFE_WIDTH * scale)}px`;
     canvas.style.height = `${Math.round(DEMO_SAFE_HEIGHT * scale)}px`;
-}
-
-function discardHintOnInspectorHotkey()
-{
-    window.addEventListener('keydown', (event) =>
-    {
-        if (!matchesHotkey(event, DEFAULT_TOGGLE_HOTKEY) || isEditableKeyTarget(event.target))
-        {
-            return;
-        }
-
-        document.getElementById('hint')?.remove();
-    });
 }
 
 async function main()

@@ -3,108 +3,66 @@ import {
     HIGHLIGHT_COLORS_STORAGE_KEY,
     HIGHLIGHT_FILL_STORAGE_KEY,
     HIGHLIGHT_STROKE_STORAGE_KEY,
-    type HighlightColorSettings,
     normalizeHighlightColors,
 } from './highlight-colors';
+import { HIGHLIGHT_GUIDES_STORAGE_KEY, normalizeHighlightGuides } from './highlight-guides';
 import {
-    HIGHLIGHT_GUIDES_STORAGE_KEY,
-    type HighlightGuidesSettings,
-    normalizeHighlightGuides,
-} from './highlight-guides';
-import { DEFAULT_TOGGLE_HOTKEY, type HotkeyChord, normalizeHotkeyChord } from './hotkey';
-import {
-    DEFAULT_LIVE_REFRESH_INTERVAL_SEC,
-    LIVE_REFRESH_INTERVAL_STORAGE_KEY,
-    normalizeLiveRefreshInterval,
-} from './live-refresh';
-import {
-    DEFAULT_PICK_INCLUDE_HIDDEN,
-    normalizePickIncludeHidden,
-    PICK_INCLUDE_HIDDEN_STORAGE_KEY,
-} from './pick-settings';
+    applyInspectorSettings,
+    defaultInspectorSettings,
+    parseInspectorSettingsRecord,
+    resolveLiveRefreshInterval,
+    resolvePickIncludeHidden,
+    resolveToggleHotkey,
+    TOGGLE_HOTKEY_STORAGE_KEY,
+} from './inspector-settings';
+import { LIVE_REFRESH_INTERVAL_STORAGE_KEY, normalizeLiveRefreshInterval } from './live-refresh';
+import { normalizePickIncludeHidden, PICK_INCLUDE_HIDDEN_STORAGE_KEY } from './pick-settings';
 
-export const TOGGLE_HOTKEY_STORAGE_KEY = 'toggleHotkey';
+import type { HighlightColorSettings } from './highlight-colors';
+import type { HighlightGuidesSettings } from './highlight-guides';
+import type { HotkeyChord } from './hotkey';
+import type { InspectorSettings } from './inspector-settings';
 
-export type ExtensionSettings = {
-    toggleHotkey: HotkeyChord;
-    highlightColors: HighlightColorSettings;
-    highlightGuides: HighlightGuidesSettings;
-    liveRefreshInterval: number;
-    pickIncludeHidden: boolean;
+export {
+    resolveLiveRefreshInterval,
+    resolvePickIncludeHidden,
+    resolveToggleHotkey,
+    TOGGLE_HOTKEY_STORAGE_KEY,
 };
 
-export function resolveToggleHotkey(raw: unknown): HotkeyChord
+export type ExtensionSettings = InspectorSettings;
+
+export const EXTENSION_SETTINGS_STORAGE_KEYS = [
+    TOGGLE_HOTKEY_STORAGE_KEY,
+    HIGHLIGHT_COLORS_STORAGE_KEY,
+    HIGHLIGHT_FILL_STORAGE_KEY,
+    HIGHLIGHT_STROKE_STORAGE_KEY,
+    HIGHLIGHT_GUIDES_STORAGE_KEY,
+    LIVE_REFRESH_INTERVAL_STORAGE_KEY,
+    PICK_INCLUDE_HIDDEN_STORAGE_KEY,
+] as const;
+
+async function writeSync(payload: Record<string, unknown>): Promise<void>
 {
-    return normalizeHotkeyChord(raw) ?? DEFAULT_TOGGLE_HOTKEY;
-}
-
-export function resolveLiveRefreshInterval(raw: unknown): number
-{
-    if (raw === undefined || raw === null)
-    {
-        return DEFAULT_LIVE_REFRESH_INTERVAL_SEC;
-    }
-
-    return normalizeLiveRefreshInterval(raw);
-}
-
-export function resolvePickIncludeHidden(raw: unknown): boolean
-{
-    if (raw === undefined || raw === null)
-    {
-        return DEFAULT_PICK_INCLUDE_HIDDEN;
-    }
-
-    return normalizePickIncludeHidden(raw);
-}
-
-function resolveStoredHighlightColors(result: Record<string, unknown>): HighlightColorSettings
-{
-    const stored = result[HIGHLIGHT_COLORS_STORAGE_KEY];
-
-    if (stored && typeof stored === 'object')
-    {
-        return normalizeHighlightColors(stored);
-    }
-
-    return normalizeHighlightColors({
-        fill   : result[HIGHLIGHT_FILL_STORAGE_KEY],
-        stroke : result[HIGHLIGHT_STROKE_STORAGE_KEY],
-    });
+    await chrome.storage.sync.set(payload);
 }
 
 export async function readExtensionSettings(): Promise<ExtensionSettings>
 {
-    const result = await chrome.storage.sync.get([
-        TOGGLE_HOTKEY_STORAGE_KEY,
-        HIGHLIGHT_COLORS_STORAGE_KEY,
-        HIGHLIGHT_FILL_STORAGE_KEY,
-        HIGHLIGHT_STROKE_STORAGE_KEY,
-        HIGHLIGHT_GUIDES_STORAGE_KEY,
-        LIVE_REFRESH_INTERVAL_STORAGE_KEY,
-        PICK_INCLUDE_HIDDEN_STORAGE_KEY,
-    ]);
+    const result = await chrome.storage.sync.get([...EXTENSION_SETTINGS_STORAGE_KEYS]);
 
-    return {
-        toggleHotkey        : resolveToggleHotkey(result[TOGGLE_HOTKEY_STORAGE_KEY]),
-        highlightColors     : resolveStoredHighlightColors(result),
-        highlightGuides     : normalizeHighlightGuides(result[HIGHLIGHT_GUIDES_STORAGE_KEY]),
-        liveRefreshInterval : resolveLiveRefreshInterval(result[LIVE_REFRESH_INTERVAL_STORAGE_KEY]),
-        pickIncludeHidden   : resolvePickIncludeHidden(result[PICK_INCLUDE_HIDDEN_STORAGE_KEY]),
-    };
+    return parseInspectorSettingsRecord(result);
 }
 
 export async function writeToggleHotkey(chord: HotkeyChord): Promise<void>
 {
-    await chrome.storage.sync.set({ [TOGGLE_HOTKEY_STORAGE_KEY]: chord });
+    await writeSync({ [TOGGLE_HOTKEY_STORAGE_KEY]: resolveToggleHotkey(chord) });
 }
 
 export async function writeHighlightColors(colors: HighlightColorSettings): Promise<void>
 {
-    const next = normalizeHighlightColors(colors);
-
-    await chrome.storage.sync.set({
-        [HIGHLIGHT_COLORS_STORAGE_KEY]: next,
+    await writeSync({
+        [HIGHLIGHT_COLORS_STORAGE_KEY]: normalizeHighlightColors(colors),
     });
 }
 
@@ -121,7 +79,7 @@ export async function writeLiveRefreshInterval(seconds: number): Promise<number>
 {
     const next = normalizeLiveRefreshInterval(seconds);
 
-    await chrome.storage.sync.set({
+    await writeSync({
         [LIVE_REFRESH_INTERVAL_STORAGE_KEY]: next,
     });
 
@@ -132,7 +90,7 @@ export async function writeHighlightGuides(settings: HighlightGuidesSettings): P
 {
     const next = normalizeHighlightGuides(settings);
 
-    await chrome.storage.sync.set({
+    await writeSync({
         [HIGHLIGHT_GUIDES_STORAGE_KEY]: next,
     });
 
@@ -143,9 +101,21 @@ export async function writePickIncludeHidden(value: boolean): Promise<boolean>
 {
     const next = normalizePickIncludeHidden(value);
 
-    await chrome.storage.sync.set({
+    await writeSync({
         [PICK_INCLUDE_HIDDEN_STORAGE_KEY]: next,
     });
 
     return next;
+}
+
+export async function syncExtensionSettingsToPage(): Promise<ExtensionSettings>
+{
+    try
+    {
+        return applyInspectorSettings(await readExtensionSettings());
+    }
+    catch
+    {
+        return applyInspectorSettings(defaultInspectorSettings());
+    }
 }

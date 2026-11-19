@@ -3,6 +3,7 @@ import { createExportButton } from '../export/button';
 export function createSection(title: string, initiallyExpanded: boolean, onExportClick?: () => void): {
     root: HTMLElement;
     body: HTMLElement;
+    setTitle: (next: string) => void;
     setExpanded: (expanded: boolean) => void;
     setExportEnabled: (enabled: boolean) => void;
 }
@@ -145,6 +146,11 @@ export function createSection(title: string, initiallyExpanded: boolean, onExpor
     return {
         root,
         body,
+
+        setTitle: (next) =>
+        {
+            label.textContent = next;
+        },
 
         setExpanded: (next) =>
         {

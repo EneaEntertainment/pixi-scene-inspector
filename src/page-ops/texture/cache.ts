@@ -1,4 +1,4 @@
-import { isPixiTexture } from './is-texture';
+import { isPixiTexture, textureBaseTexture } from './is-texture';
 import { basename, localTextureName, textureLabelCandidates } from './names';
 
 import type { PageGlobals, PixiTexture } from '../pixi-node';
@@ -140,7 +140,7 @@ export function collectTextureNames(texture: PixiTexture, displayName: string, o
         addNamedTexture(out, id, texture);
     }
 
-    for (const id of texture.baseTexture?.textureCacheIds ?? [])
+    for (const id of textureBaseTexture(texture)?.textureCacheIds ?? [])
     {
         addNamedTexture(out, id, texture);
     }

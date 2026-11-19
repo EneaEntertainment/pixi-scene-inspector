@@ -146,5 +146,6 @@ const channel = createDocumentSettingChannel<HighlightColorSettings>({
     apply     : setHighlightColors,
 });
 
+export const readHighlightColorsAttr = channel.readAttr;
 export const publishHighlightColors = channel.publish;
 export const subscribeHighlightColors = channel.subscribe;

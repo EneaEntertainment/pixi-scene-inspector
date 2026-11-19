@@ -14,12 +14,21 @@ const PSI_VERSION = JSON.parse(
 export default defineConfig(({ command }) => ({
     root   : 'demo-3d',
     base   : command === 'build' ? '/pixi-scene-inspector/3d/' : '/',
-    server : { port: 5180 },
-    define : {
+    server : {
+        port : 5180,
+        fs   : { allow: [rootDir] },
+    },
+    define: {
         PSI_VERSION: JSON.stringify(PSI_VERSION),
     },
+    resolve: {
+        alias: {
+            'pixi-scene-inspector': join(rootDir, 'build/index.js'),
+        },
+    },
     optimizeDeps: {
-        include: ['@pixi/3d', '@pixi/3d/extras'],
+        include : ['@pixi/3d', '@pixi/3d/extras'],
+        exclude : ['pixi-scene-inspector'],
     },
     build: {
         outDir      : '../docs/3d',

@@ -1,9 +1,11 @@
 import { mount, unmount } from 'svelte';
 import { createInPageHost } from '../host-in-page';
+import { applyPixiSceneInspectorMountSettings } from '../page-inspector-settings';
 import App from '../panel/app.svelte';
 import { createSelectionChannel } from '../selection-channel';
 
 import type { PixiTreeHost } from '../host';
+import type { InspectorSettingsInput } from '../inspector-settings';
 import type { SelectionChannel } from '../selection-channel';
 
 export type MountedPixiSceneInspector = {
@@ -16,6 +18,7 @@ export type MountPixiSceneInspectorOptions = {
     onBarReady?: (bar: HTMLElement) => void;
     selection?: SelectionChannel;
     setHighlightEnabled?: (enabled: boolean) => void;
+    settings?: InspectorSettingsInput;
 };
 
 export function mountPixiSceneInspector(
@@ -23,6 +26,8 @@ export function mountPixiSceneInspector(
     options?: MountPixiSceneInspectorOptions,
 ): MountedPixiSceneInspector
 {
+    applyPixiSceneInspectorMountSettings(options?.settings);
+
     const host = options?.host ?? createInPageHost();
     const selection = options?.selection ?? createSelectionChannel();
 

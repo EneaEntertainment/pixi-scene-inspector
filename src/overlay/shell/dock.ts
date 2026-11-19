@@ -6,6 +6,7 @@ import {
     normalizeHotkeyChord,
     readHotkeyAttr,
 } from '../../hotkey';
+import { applyPixiSceneInspectorMountSettings } from '../../page-inspector-settings';
 import { createSelectionChannel } from '../../selection-channel';
 import { mountPixiSceneInspector } from '../mount';
 import { createPropertiesPanel, type PropertiesPanel } from '../properties/panel';
@@ -115,6 +116,8 @@ export function dockPixiSceneInspector(options?: DockPixiSceneInspectorOptions):
     {
         throw new Error('pixi-scene-inspector overlay is already mounted');
     }
+
+    applyPixiSceneInspectorMountSettings(options?.settings);
 
     const resizable = options?.resizable !== false;
     const readNativeWidth = readNumberGetter(window, 'innerWidth', () => window.innerWidth);
@@ -344,6 +347,8 @@ export function installPixiSceneInspectorHotkey(options?: DockPixiSceneInspector
     }
 
     root[HOTKEY_GLOBAL_KEY] = true;
+
+    applyPixiSceneInspectorMountSettings(options?.settings);
 
     let chord: HotkeyChord = readHotkeyAttr() ?? DEFAULT_TOGGLE_HOTKEY;
 

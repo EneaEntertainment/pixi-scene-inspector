@@ -58,28 +58,27 @@ const ctx = await esbuild.context({
     logLevel: 'info',
 });
 
-const overlayCtx = await esbuild.context({
+const packageCtx = await esbuild.context({
     define: {
         WATCH: JSON.stringify(false),
         PSI_VERSION: JSON.stringify(PSI_VERSION),
         'process.env.NODE_ENV': JSON.stringify(WATCH ? 'development' : 'production'),
     },
-    entryPoints: [path.join(srcDir, 'overlay.ts')],
+    entryPoints: [path.join(srcDir, 'index.ts')],
     mainFields: ['svelte', 'browser', 'module', 'main'],
     conditions: WATCH ? undefined : ['production'],
     bundle: true,
     minify: !WATCH,
-    outfile: path.join(outdir, 'overlay.js'),
+    outfile: path.join(outdir, 'index.js'),
     format: 'esm',
     target: 'es2022',
-    external: ['svelte', 'svelte/*'],
     plugins: sharedPlugins,
     logLevel: 'info',
 });
 
 if (WATCH)
 {
-    await Promise.all([ctx.watch(), overlayCtx.watch()]);
+    await Promise.all([ctx.watch(), packageCtx.watch()]);
     await ctx.serve({ port: 10809, cors: { origin: '*' } });
 
     // eslint-disable-next-line no-console
@@ -87,11 +86,11 @@ if (WATCH)
 }
 else
 {
-    await Promise.all([ctx.rebuild(), overlayCtx.rebuild()]);
-    await Promise.all([ctx.dispose(), overlayCtx.dispose()]);
+    await Promise.all([ctx.rebuild(), packageCtx.rebuild()]);
+    await Promise.all([ctx.dispose(), packageCtx.dispose()]);
 }
 
 fs.copyFileSync(
-    path.join(srcDir, 'overlay-public.d.ts'),
-    path.join(outdir, 'overlay.d.ts'),
+    path.join(srcDir, 'public.d.ts'),
+    path.join(outdir, 'index.d.ts'),
 );

@@ -1,5 +1,15 @@
 import type { PixiNode, PixiTexture } from '../pixi-node';
 
+export function textureBaseTexture(texture: PixiTexture): PixiTexture['baseTexture'] | undefined
+{
+    if (texture.source)
+    {
+        return undefined;
+    }
+
+    return texture.baseTexture;
+}
+
 export function isPixiTexture(value: unknown): value is PixiTexture
 {
     if (!value || typeof value !== 'object')
@@ -19,7 +29,9 @@ export function isPixiTexture(value: unknown): value is PixiTexture
         return true;
     }
 
-    return !!(texture.baseTexture && typeof texture.baseTexture === 'object');
+    const base = textureBaseTexture(texture);
+
+    return !!(base && typeof base === 'object');
 }
 
 export function nodeTexture(node: PixiNode | null | undefined): PixiTexture | undefined

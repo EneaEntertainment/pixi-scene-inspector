@@ -1,3 +1,5 @@
+import { textureBaseTexture } from './is-texture';
+
 import type { PixiTexture } from '../pixi-node';
 
 function textureSourceRef(texture: PixiTexture): object | undefined
@@ -7,9 +9,11 @@ function textureSourceRef(texture: PixiTexture): object | undefined
         return texture.source;
     }
 
-    if (texture.baseTexture && typeof texture.baseTexture === 'object')
+    const base = textureBaseTexture(texture);
+
+    if (base && typeof base === 'object')
     {
-        return texture.baseTexture;
+        return base;
     }
 
     return undefined;
@@ -34,8 +38,16 @@ function positiveSize(width: number | undefined, height: number | undefined): { 
 
 function sourceSize(texture: PixiTexture): { width: number; height: number } | undefined
 {
-    return positiveSize(texture.source?.width, texture.source?.height)
-        ?? positiveSize(texture.baseTexture?.width, texture.baseTexture?.height);
+    const fromSource = positiveSize(texture.source?.width, texture.source?.height);
+
+    if (fromSource || texture.source)
+    {
+        return fromSource;
+    }
+
+    const base = textureBaseTexture(texture);
+
+    return positiveSize(base?.width, base?.height);
 }
 
 function approxEqual(left: number, right: number): boolean

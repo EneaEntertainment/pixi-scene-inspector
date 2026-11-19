@@ -1,3 +1,3 @@
-import { installPixiSceneInspectorHotkey } from './overlay';
+import { installPixiSceneInspectorHotkey } from './index';
 
 installPixiSceneInspectorHotkey();
