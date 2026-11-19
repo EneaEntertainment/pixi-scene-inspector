@@ -5,6 +5,7 @@ import { clearSelectionIds } from '../../page-ops/selection-ids';
 import { typeNameOf } from '../../page-ops/types';
 import { openExportDialog } from '../export';
 import { createAim3DSection } from './aim-3d-section';
+import { createCameraViewSection } from './camera-view-section';
 import {
     CAMERA_FORM_SECTIONS,
     LIGHT_FORM_SECTIONS,
@@ -533,6 +534,24 @@ export function createPropertiesForm(selection: SelectionChannel): PropertiesFor
     buildTabSections(cameraHost, CAMERA_FORM_SECTIONS);
     buildTabSections(viewHost, VIEW_FORM_SECTIONS);
 
+    const cameraViewSection = createCameraViewSection({
+        onChanged: () =>
+        {
+            syncFromNode();
+        },
+    });
+
+    const firstCameraSection = cameraHost.built[0];
+
+    if (firstCameraSection)
+    {
+        firstCameraSection.root.before(cameraViewSection.root);
+    }
+    else
+    {
+        cameraHost.pane.appendChild(cameraViewSection.root);
+    }
+
     for (const host of hosts)
     {
         scrollElement.appendChild(host.pane);
@@ -756,6 +775,7 @@ export function createPropertiesForm(selection: SelectionChannel): PropertiesFor
                 model3dSection.sync(null);
                 aim3dSection.sync(null);
                 placeAimSection(null);
+                cameraViewSection.sync(null);
                 textureSection.sync(null, true);
 
                 return;
@@ -826,6 +846,7 @@ export function createPropertiesForm(selection: SelectionChannel): PropertiesFor
             model3dSection.sync(node);
             placeAimSection(node);
             aim3dSection.sync(node);
+            cameraViewSection.sync(node);
             textureSection.sync(node);
         }
         catch
@@ -852,6 +873,7 @@ export function createPropertiesForm(selection: SelectionChannel): PropertiesFor
             model3dSection.sync(null);
             aim3dSection.sync(null);
             placeAimSection(null);
+            cameraViewSection.sync(null);
             textureSection.sync(null);
         }
     }
@@ -896,6 +918,7 @@ export function createPropertiesForm(selection: SelectionChannel): PropertiesFor
             spineSection.destroy();
             model3dSection.destroy();
             aim3dSection.destroy();
+            cameraViewSection.destroy();
             textureSection.destroy();
 
             for (const host of hosts)

@@ -12,7 +12,11 @@ type CameraLike = PixiNode & {
     mode?: string;
     orthographicSize?: number;
     lookAt?: (target: Vec3Target) => unknown;
+    renderTexture?: unknown;
+    resetHistory?: () => void;
 };
+
+type ViewCameraStatus = 'active' | 'ready' | 'unavailable';
 
 export type OrbitCameraLike = {
     autoRotate: boolean;
@@ -104,4 +108,76 @@ export function readOrbitCamera(node: PixiNode): OrbitCameraLike | null
 
     return readOrbitFromHost(view, view, hostCamera)
         ?? readOrbitFromHost(hostCamera, view, hostCamera);
+}
+
+function readCameraView(camera: CameraLike)
+{
+    const viewFromCamera = camera._view3d as PixiNode | undefined;
+
+    return viewFromCamera ? readView3D(viewFromCamera) : null;
+}
+
+export function viewCameraStatus(node: PixiNode): ViewCameraStatus
+{
+    const camera = readCamera3D(node);
+
+    if (!camera)
+    {
+        return 'unavailable';
+    }
+
+    const view = readCameraView(camera);
+
+    if (!view)
+    {
+        return 'unavailable';
+    }
+
+    if (view.camera === camera)
+    {
+        return 'active';
+    }
+
+    if (camera.renderTexture || camera.visible === false)
+    {
+        return 'unavailable';
+    }
+
+    return 'ready';
+}
+
+export function setAsViewCamera(node: PixiNode): boolean
+{
+    const status = viewCameraStatus(node);
+
+    if (status === 'active')
+    {
+        return true;
+    }
+
+    if (status !== 'ready')
+    {
+        return false;
+    }
+
+    const camera = readCamera3D(node);
+    const view = camera ? readCameraView(camera) : null;
+
+    if (!camera || !view)
+    {
+        return false;
+    }
+
+    try
+    {
+        (view as { camera: CameraLike }).camera = camera;
+    }
+    catch
+    {
+        return false;
+    }
+
+    camera.resetHistory?.();
+
+    return view.camera === camera;
 }

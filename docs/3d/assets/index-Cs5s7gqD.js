@@ -1,4 +1,4 @@
-const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/browserAll-CrBssq3T.js","assets/webworkerAll-D43CQu1h.js","assets/canvasUtils-Cf45dJQr.js","assets/CanvasPool-CKM6Yzcz.js","assets/Filter-DmrRtU6T.js","assets/WebGPURenderer-TJHoFoZD.js","assets/getTexelRangeRects-BZVNfYlh.js","assets/RenderTargetSystem-Y1Tw3dhP.js","assets/RenderTexture-BTEPCkw7.js","assets/WebGLRenderer-BV3yAAZZ.js","assets/isSafari-BRBWXqCp.js","assets/CanvasRenderer-B1coXZtN.js","assets/BitmapFont-Bo3DZeFL.js","assets/init-BD-PCCsw.js","assets/View3DGlobalData-C_3GeACm.js","assets/init-BQOzwO6s.js"])))=>i.map(i=>d[i]);
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/browserAll-5ver0qKl.js","assets/webworkerAll-DATdJfRF.js","assets/canvasUtils-BG7v1SCz.js","assets/CanvasPool-7uRv-BbJ.js","assets/Filter-BXNoKapH.js","assets/WebGPURenderer-Bbl2OLUQ.js","assets/getTexelRangeRects-DLLZstkS.js","assets/RenderTargetSystem-IBz8NdF2.js","assets/RenderTexture-2RGl7z0T.js","assets/WebGLRenderer-CKzO6hGH.js","assets/isSafari-DyZ1jwvr.js","assets/CanvasRenderer-DAJia7gJ.js","assets/BitmapFont-AGFIkz1d.js","assets/init-C0r8PMCj.js","assets/View3DGlobalData-BK1ok7DA.js","assets/init-FlhCX0bs.js"])))=>i.map(i=>d[i]);
 (function polyfill() {
   const relList = document.createElement("link").relList;
   if (relList && relList.supports && relList.supports("modulepreload")) return;
@@ -355,7 +355,7 @@ const browserExt = {
   },
   test: () => true,
   load: async () => {
-    await __vitePreload(() => import("./browserAll-CrBssq3T.js"), true ? __vite__mapDeps([0,1,2,3,4]) : void 0);
+    await __vitePreload(() => import("./browserAll-5ver0qKl.js"), true ? __vite__mapDeps([0,1,2,3,4]) : void 0);
   }
 };
 const webworkerExt = {
@@ -366,7 +366,7 @@ const webworkerExt = {
   },
   test: () => typeof self !== "undefined" && self.WorkerGlobalScope !== void 0,
   load: async () => {
-    await __vitePreload(() => import("./webworkerAll-D43CQu1h.js"), true ? __vite__mapDeps([1,2,3,4]) : void 0);
+    await __vitePreload(() => import("./webworkerAll-DATdJfRF.js"), true ? __vite__mapDeps([1,2,3,4]) : void 0);
   }
 };
 class ObservablePoint {
@@ -13768,7 +13768,7 @@ async function autoDetectRenderer(options) {
     const rendererType = preferredOrder[i2];
     if (rendererType === "webgpu" && await isWebGPUSupported()) {
       const { WebGPURenderer } = await __vitePreload(async () => {
-        const { WebGPURenderer: WebGPURenderer2 } = await import("./WebGPURenderer-TJHoFoZD.js");
+        const { WebGPURenderer: WebGPURenderer2 } = await import("./WebGPURenderer-Bbl2OLUQ.js");
         return { WebGPURenderer: WebGPURenderer2 };
       }, true ? __vite__mapDeps([5,6,7,8,4,3]) : void 0);
       RendererClass = WebGPURenderer;
@@ -13778,7 +13778,7 @@ async function autoDetectRenderer(options) {
       options.failIfMajorPerformanceCaveat ?? AbstractRenderer.defaultOptions.failIfMajorPerformanceCaveat
     )) {
       const { WebGLRenderer } = await __vitePreload(async () => {
-        const { WebGLRenderer: WebGLRenderer2 } = await import("./WebGLRenderer-BV3yAAZZ.js");
+        const { WebGLRenderer: WebGLRenderer2 } = await import("./WebGLRenderer-CKzO6hGH.js");
         return { WebGLRenderer: WebGLRenderer2 };
       }, true ? __vite__mapDeps([9,6,7,8,4,3,10]) : void 0);
       RendererClass = WebGLRenderer;
@@ -13786,7 +13786,7 @@ async function autoDetectRenderer(options) {
       break;
     } else if (rendererType === "canvas") {
       const { CanvasRenderer } = await __vitePreload(async () => {
-        const { CanvasRenderer: CanvasRenderer2 } = await import("./CanvasRenderer-B1coXZtN.js");
+        const { CanvasRenderer: CanvasRenderer2 } = await import("./CanvasRenderer-DAJia7gJ.js");
         return { CanvasRenderer: CanvasRenderer2 };
       }, true ? __vite__mapDeps([11,7,8,4,3,2]) : void 0);
       RendererClass = CanvasRenderer;
@@ -14374,7 +14374,7 @@ const loadBitmapFont = {
     }
     const [loadedTextures, { BitmapFont }] = await Promise.all([
       loader.load(textureUrls),
-      __vitePreload(() => import("./BitmapFont-Bo3DZeFL.js"), true ? __vite__mapDeps([12,3,2]) : void 0)
+      __vitePreload(() => import("./BitmapFont-AGFIkz1d.js"), true ? __vite__mapDeps([12,3,2]) : void 0)
     ]);
     const textures = textureUrls.map((url2) => loadedTextures[url2.src]);
     const bitmapFont = new BitmapFont({
@@ -34046,7 +34046,7 @@ function Panel_bar($$anchor, $$props) {
   var header = root_2$3();
   var div = child(header);
   var span = sibling(child(div));
-  span.textContent = "1.3.0";
+  span.textContent = "1.4.0";
   var div_1 = sibling(div, 2);
   var text = only_child(div_1, true);
   var button = sibling(div_1, 2);
@@ -36300,6 +36300,48 @@ function readOrbitCamera(node) {
   }
   const hostCamera = camera ?? view.camera ?? null;
   return readOrbitFromHost(view, view, hostCamera) ?? readOrbitFromHost(hostCamera, view, hostCamera);
+}
+function readCameraView(camera) {
+  const viewFromCamera = camera._view3d;
+  return viewFromCamera ? readView3D(viewFromCamera) : null;
+}
+function viewCameraStatus(node) {
+  const camera = readCamera3D(node);
+  if (!camera) {
+    return "unavailable";
+  }
+  const view = readCameraView(camera);
+  if (!view) {
+    return "unavailable";
+  }
+  if (view.camera === camera) {
+    return "active";
+  }
+  if (camera.renderTexture || camera.visible === false) {
+    return "unavailable";
+  }
+  return "ready";
+}
+function setAsViewCamera(node) {
+  const status = viewCameraStatus(node);
+  if (status === "active") {
+    return true;
+  }
+  if (status !== "ready") {
+    return false;
+  }
+  const camera = readCamera3D(node);
+  const view = camera ? readCameraView(camera) : null;
+  if (!camera || !view) {
+    return false;
+  }
+  try {
+    view.camera = camera;
+  } catch {
+    return false;
+  }
+  camera.resetHistory?.();
+  return view.camera === camera;
 }
 const LIGHT_TYPE_NAMES = /* @__PURE__ */ new Set([
   "DirectionalLight",
@@ -42993,6 +43035,9 @@ function createSection(title, initiallyExpanded, onExportClick) {
   return {
     root: root2,
     body,
+    setTitle: (next) => {
+      label.textContent = next;
+    },
     setExpanded: (next) => {
       expanded = next;
       applyExpanded();
@@ -43129,6 +43174,103 @@ function createAim3DSection() {
       }
     });
   }
+  return {
+    root: ui.root,
+    sync: (node) => {
+      try {
+        syncNode(node);
+      } catch {
+        hide();
+      }
+    },
+    destroy: () => {
+      hide();
+      ui.root.remove();
+    }
+  };
+}
+function cameraDisplayName(node) {
+  if (typeof node.label === "string" && node.label !== "") {
+    return node.label;
+  }
+  if (typeof node.name === "string" && node.name !== "") {
+    return node.name;
+  }
+  const typeName = typeNameOf(node);
+  return typeName || "Camera3D";
+}
+function activeViewCameraName(node) {
+  const camera = readCamera3D(node);
+  const viewCamera = camera?._view3d?.camera;
+  if (!viewCamera) {
+    return null;
+  }
+  return cameraDisplayName(viewCamera);
+}
+function createCameraViewSection(options = {}) {
+  const ui = createSection("View Camera", true);
+  ui.root.style.display = "none";
+  const actions = document.createElement("div");
+  Object.assign(actions.style, {
+    display: "flex",
+    justifyContent: "center",
+    gap: "6px"
+  });
+  const useBtn = document.createElement("button");
+  useBtn.type = "button";
+  useBtn.textContent = "Use as view camera";
+  Object.assign(useBtn.style, {
+    height: "24px",
+    margin: "0",
+    padding: "0 10px",
+    border: "0",
+    borderRadius: "4px",
+    appearance: "none",
+    background: BUTTON_BG,
+    color: "#ffffff",
+    font: "inherit",
+    fontSize: "12px",
+    cursor: "pointer",
+    outline: "none",
+    boxSizing: "border-box"
+  });
+  actions.append(useBtn);
+  ui.body.append(actions);
+  let boundNode = null;
+  function hide() {
+    boundNode = null;
+    ui.root.style.display = "none";
+    ui.setTitle("View Camera");
+  }
+  function setButtonEnabled(enabled) {
+    useBtn.disabled = !enabled;
+    useBtn.style.opacity = enabled ? "1" : "0.55";
+    useBtn.style.cursor = enabled ? "pointer" : "default";
+  }
+  function syncNode(node) {
+    if (!node || !readCamera3D(node)) {
+      hide();
+      return;
+    }
+    const activeName = activeViewCameraName(node);
+    boundNode = node;
+    ui.root.style.display = "block";
+    ui.setTitle(activeName ? `View Camera (${activeName})` : "View Camera");
+    setButtonEnabled(viewCameraStatus(node) === "ready");
+  }
+  useBtn.addEventListener("click", (event2) => {
+    event2.preventDefault();
+    event2.stopPropagation();
+    useBtn.blur();
+    if (!boundNode) {
+      return;
+    }
+    const ok = setAsViewCamera(boundNode);
+    syncNode(boundNode);
+    if (ok) {
+      options.onChanged?.();
+    }
+  });
   return {
     root: ui.root,
     sync: (node) => {
@@ -46440,6 +46582,17 @@ function createPropertiesForm(selection) {
   buildTabSections(lightHost, LIGHT_FORM_SECTIONS);
   buildTabSections(cameraHost, CAMERA_FORM_SECTIONS);
   buildTabSections(viewHost, VIEW_FORM_SECTIONS);
+  const cameraViewSection = createCameraViewSection({
+    onChanged: () => {
+      syncFromNode();
+    }
+  });
+  const firstCameraSection = cameraHost.built[0];
+  if (firstCameraSection) {
+    firstCameraSection.root.before(cameraViewSection.root);
+  } else {
+    cameraHost.pane.appendChild(cameraViewSection.root);
+  }
   for (const host of hosts) {
     scrollElement.appendChild(host.pane);
   }
@@ -46583,6 +46736,7 @@ function createPropertiesForm(selection) {
         model3dSection.sync(null);
         aim3dSection.sync(null);
         placeAimSection(null);
+        cameraViewSection.sync(null);
         textureSection.sync(null, true);
         return;
       }
@@ -46627,6 +46781,7 @@ function createPropertiesForm(selection) {
       model3dSection.sync(node);
       placeAimSection(node);
       aim3dSection.sync(node);
+      cameraViewSection.sync(node);
       textureSection.sync(node);
     } catch {
       objectMaps = { numbers: [], booleans: [], strings: [] };
@@ -46648,6 +46803,7 @@ function createPropertiesForm(selection) {
       model3dSection.sync(null);
       aim3dSection.sync(null);
       placeAimSection(null);
+      cameraViewSection.sync(null);
       textureSection.sync(null);
     }
   }
@@ -46678,6 +46834,7 @@ function createPropertiesForm(selection) {
       spineSection.destroy();
       model3dSection.destroy();
       aim3dSection.destroy();
+      cameraViewSection.destroy();
       textureSection.destroy();
       for (const host of hosts) {
         for (const section of host.built) {
@@ -77558,13 +77715,13 @@ const backendLoaders = [{
     type: ExtensionType.WebGLLoader,
     name: "pixijs-3d"
   },
-  load: () => __vitePreload(() => import("./init-BD-PCCsw.js"), true ? __vite__mapDeps([13,14,10,8]) : void 0)
+  load: () => __vitePreload(() => import("./init-C0r8PMCj.js"), true ? __vite__mapDeps([13,14,10,8]) : void 0)
 }, {
   extension: {
     type: ExtensionType.WebGPULoader,
     name: "pixijs-3d"
   },
-  load: () => __vitePreload(() => import("./init-BQOzwO6s.js"), true ? __vite__mapDeps([15,14,10,8]) : void 0)
+  load: () => __vitePreload(() => import("./init-FlhCX0bs.js"), true ? __vite__mapDeps([15,14,10,8]) : void 0)
 }];
 addUniformParsers();
 extensions.add(...backendLoaders);

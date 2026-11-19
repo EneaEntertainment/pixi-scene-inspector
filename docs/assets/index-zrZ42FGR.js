@@ -1,4 +1,4 @@
-const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/browserAll-CHCj1QTB.js","assets/webworkerAll-Bj3AXwal.js","assets/Filter-DX92DiFF.js","assets/WebGPURenderer-BihnYDZ0.js","assets/getTexelRangeRects-Cnn5MP6i.js","assets/RenderTargetSystem-BjU32ce0.js","assets/RenderTexture-D8FPB11K.js","assets/WebGLRenderer-qag8RFAn.js","assets/CanvasRenderer-BBtDiK1E.js","assets/init-Dpugb6vJ.js","assets/View3DGlobalData-CtBNFSpq.js","assets/init-Dp0aIONZ.js"])))=>i.map(i=>d[i]);
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/browserAll-DLOllcxi.js","assets/webworkerAll-B6IYxXYo.js","assets/Filter-Bv4svXTl.js","assets/WebGPURenderer-Dx-owdBu.js","assets/getTexelRangeRects-BqaVC4-3.js","assets/RenderTargetSystem-BuhJj84V.js","assets/RenderTexture-Cd0sdqva.js","assets/WebGLRenderer-D7rxKiii.js","assets/CanvasRenderer-BSzdujZb.js","assets/init-BLjaXaDA.js","assets/View3DGlobalData-Dgj7o9qD.js","assets/init-v0KNrrZU.js"])))=>i.map(i=>d[i]);
 (function polyfill() {
   const relList = document.createElement("link").relList;
   if (relList && relList.supports && relList.supports("modulepreload")) return;
@@ -355,7 +355,7 @@ const browserExt = {
   },
   test: () => true,
   load: async () => {
-    await __vitePreload(() => import("./browserAll-CHCj1QTB.js"), true ? __vite__mapDeps([0,1,2]) : void 0);
+    await __vitePreload(() => import("./browserAll-DLOllcxi.js"), true ? __vite__mapDeps([0,1,2]) : void 0);
   }
 };
 const webworkerExt = {
@@ -366,7 +366,7 @@ const webworkerExt = {
   },
   test: () => typeof self !== "undefined" && self.WorkerGlobalScope !== void 0,
   load: async () => {
-    await __vitePreload(() => import("./webworkerAll-Bj3AXwal.js"), true ? __vite__mapDeps([1,2]) : void 0);
+    await __vitePreload(() => import("./webworkerAll-B6IYxXYo.js"), true ? __vite__mapDeps([1,2]) : void 0);
   }
 };
 class ObservablePoint {
@@ -13768,7 +13768,7 @@ async function autoDetectRenderer(options) {
     const rendererType = preferredOrder[i2];
     if (rendererType === "webgpu" && await isWebGPUSupported()) {
       const { WebGPURenderer } = await __vitePreload(async () => {
-        const { WebGPURenderer: WebGPURenderer2 } = await import("./WebGPURenderer-BihnYDZ0.js");
+        const { WebGPURenderer: WebGPURenderer2 } = await import("./WebGPURenderer-Dx-owdBu.js");
         return { WebGPURenderer: WebGPURenderer2 };
       }, true ? __vite__mapDeps([3,4,5,6,2]) : void 0);
       RendererClass = WebGPURenderer;
@@ -13778,7 +13778,7 @@ async function autoDetectRenderer(options) {
       options.failIfMajorPerformanceCaveat ?? AbstractRenderer.defaultOptions.failIfMajorPerformanceCaveat
     )) {
       const { WebGLRenderer } = await __vitePreload(async () => {
-        const { WebGLRenderer: WebGLRenderer2 } = await import("./WebGLRenderer-qag8RFAn.js");
+        const { WebGLRenderer: WebGLRenderer2 } = await import("./WebGLRenderer-D7rxKiii.js");
         return { WebGLRenderer: WebGLRenderer2 };
       }, true ? __vite__mapDeps([7,4,5,6,2]) : void 0);
       RendererClass = WebGLRenderer;
@@ -13786,7 +13786,7 @@ async function autoDetectRenderer(options) {
       break;
     } else if (rendererType === "canvas") {
       const { CanvasRenderer } = await __vitePreload(async () => {
-        const { CanvasRenderer: CanvasRenderer2 } = await import("./CanvasRenderer-BBtDiK1E.js");
+        const { CanvasRenderer: CanvasRenderer2 } = await import("./CanvasRenderer-BSzdujZb.js");
         return { CanvasRenderer: CanvasRenderer2 };
       }, true ? __vite__mapDeps([8,5,6,2]) : void 0);
       RendererClass = CanvasRenderer;
@@ -49676,7 +49676,7 @@ function Panel_bar($$anchor, $$props) {
   var header = root_2$3();
   var div = child(header);
   var span = sibling(child(div));
-  span.textContent = "1.3.0";
+  span.textContent = "1.4.0";
   var div_1 = sibling(div, 2);
   var text = only_child(div_1, true);
   var button = sibling(div_1, 2);
@@ -51930,6 +51930,48 @@ function readOrbitCamera(node) {
   }
   const hostCamera = camera ?? view.camera ?? null;
   return readOrbitFromHost(view, view, hostCamera) ?? readOrbitFromHost(hostCamera, view, hostCamera);
+}
+function readCameraView(camera) {
+  const viewFromCamera = camera._view3d;
+  return viewFromCamera ? readView3D(viewFromCamera) : null;
+}
+function viewCameraStatus(node) {
+  const camera = readCamera3D(node);
+  if (!camera) {
+    return "unavailable";
+  }
+  const view = readCameraView(camera);
+  if (!view) {
+    return "unavailable";
+  }
+  if (view.camera === camera) {
+    return "active";
+  }
+  if (camera.renderTexture || camera.visible === false) {
+    return "unavailable";
+  }
+  return "ready";
+}
+function setAsViewCamera(node) {
+  const status = viewCameraStatus(node);
+  if (status === "active") {
+    return true;
+  }
+  if (status !== "ready") {
+    return false;
+  }
+  const camera = readCamera3D(node);
+  const view = camera ? readCameraView(camera) : null;
+  if (!camera || !view) {
+    return false;
+  }
+  try {
+    view.camera = camera;
+  } catch {
+    return false;
+  }
+  camera.resetHistory?.();
+  return view.camera === camera;
 }
 const LIGHT_TYPE_NAMES = /* @__PURE__ */ new Set([
   "DirectionalLight",
@@ -58623,6 +58665,9 @@ function createSection(title, initiallyExpanded, onExportClick) {
   return {
     root: root2,
     body,
+    setTitle: (next) => {
+      label.textContent = next;
+    },
     setExpanded: (next) => {
       expanded = next;
       applyExpanded();
@@ -58759,6 +58804,103 @@ function createAim3DSection() {
       }
     });
   }
+  return {
+    root: ui.root,
+    sync: (node) => {
+      try {
+        syncNode(node);
+      } catch {
+        hide();
+      }
+    },
+    destroy: () => {
+      hide();
+      ui.root.remove();
+    }
+  };
+}
+function cameraDisplayName(node) {
+  if (typeof node.label === "string" && node.label !== "") {
+    return node.label;
+  }
+  if (typeof node.name === "string" && node.name !== "") {
+    return node.name;
+  }
+  const typeName = typeNameOf(node);
+  return typeName || "Camera3D";
+}
+function activeViewCameraName(node) {
+  const camera = readCamera3D(node);
+  const viewCamera = camera?._view3d?.camera;
+  if (!viewCamera) {
+    return null;
+  }
+  return cameraDisplayName(viewCamera);
+}
+function createCameraViewSection(options = {}) {
+  const ui = createSection("View Camera", true);
+  ui.root.style.display = "none";
+  const actions = document.createElement("div");
+  Object.assign(actions.style, {
+    display: "flex",
+    justifyContent: "center",
+    gap: "6px"
+  });
+  const useBtn = document.createElement("button");
+  useBtn.type = "button";
+  useBtn.textContent = "Use as view camera";
+  Object.assign(useBtn.style, {
+    height: "24px",
+    margin: "0",
+    padding: "0 10px",
+    border: "0",
+    borderRadius: "4px",
+    appearance: "none",
+    background: BUTTON_BG,
+    color: "#ffffff",
+    font: "inherit",
+    fontSize: "12px",
+    cursor: "pointer",
+    outline: "none",
+    boxSizing: "border-box"
+  });
+  actions.append(useBtn);
+  ui.body.append(actions);
+  let boundNode = null;
+  function hide() {
+    boundNode = null;
+    ui.root.style.display = "none";
+    ui.setTitle("View Camera");
+  }
+  function setButtonEnabled(enabled) {
+    useBtn.disabled = !enabled;
+    useBtn.style.opacity = enabled ? "1" : "0.55";
+    useBtn.style.cursor = enabled ? "pointer" : "default";
+  }
+  function syncNode(node) {
+    if (!node || !readCamera3D(node)) {
+      hide();
+      return;
+    }
+    const activeName = activeViewCameraName(node);
+    boundNode = node;
+    ui.root.style.display = "block";
+    ui.setTitle(activeName ? `View Camera (${activeName})` : "View Camera");
+    setButtonEnabled(viewCameraStatus(node) === "ready");
+  }
+  useBtn.addEventListener("click", (event2) => {
+    event2.preventDefault();
+    event2.stopPropagation();
+    useBtn.blur();
+    if (!boundNode) {
+      return;
+    }
+    const ok = setAsViewCamera(boundNode);
+    syncNode(boundNode);
+    if (ok) {
+      options.onChanged?.();
+    }
+  });
   return {
     root: ui.root,
     sync: (node) => {
@@ -62070,6 +62212,17 @@ function createPropertiesForm(selection) {
   buildTabSections(lightHost, LIGHT_FORM_SECTIONS);
   buildTabSections(cameraHost, CAMERA_FORM_SECTIONS);
   buildTabSections(viewHost, VIEW_FORM_SECTIONS);
+  const cameraViewSection = createCameraViewSection({
+    onChanged: () => {
+      syncFromNode();
+    }
+  });
+  const firstCameraSection = cameraHost.built[0];
+  if (firstCameraSection) {
+    firstCameraSection.root.before(cameraViewSection.root);
+  } else {
+    cameraHost.pane.appendChild(cameraViewSection.root);
+  }
   for (const host of hosts) {
     scrollElement.appendChild(host.pane);
   }
@@ -62213,6 +62366,7 @@ function createPropertiesForm(selection) {
         model3dSection.sync(null);
         aim3dSection.sync(null);
         placeAimSection(null);
+        cameraViewSection.sync(null);
         textureSection.sync(null, true);
         return;
       }
@@ -62257,6 +62411,7 @@ function createPropertiesForm(selection) {
       model3dSection.sync(node);
       placeAimSection(node);
       aim3dSection.sync(node);
+      cameraViewSection.sync(node);
       textureSection.sync(node);
     } catch {
       objectMaps = { numbers: [], booleans: [], strings: [] };
@@ -62278,6 +62433,7 @@ function createPropertiesForm(selection) {
       model3dSection.sync(null);
       aim3dSection.sync(null);
       placeAimSection(null);
+      cameraViewSection.sync(null);
       textureSection.sync(null);
     }
   }
@@ -62308,6 +62464,7 @@ function createPropertiesForm(selection) {
       spineSection.destroy();
       model3dSection.destroy();
       aim3dSection.destroy();
+      cameraViewSection.destroy();
       textureSection.destroy();
       for (const host of hosts) {
         for (const section of host.built) {
@@ -109981,13 +110138,13 @@ const backendLoaders = [{
     type: ExtensionType.WebGLLoader,
     name: "pixijs-3d"
   },
-  load: () => __vitePreload(() => import("./init-Dpugb6vJ.js"), true ? __vite__mapDeps([9,10,6]) : void 0)
+  load: () => __vitePreload(() => import("./init-BLjaXaDA.js"), true ? __vite__mapDeps([9,10,6]) : void 0)
 }, {
   extension: {
     type: ExtensionType.WebGPULoader,
     name: "pixijs-3d"
   },
-  load: () => __vitePreload(() => import("./init-Dp0aIONZ.js"), true ? __vite__mapDeps([11,10,6]) : void 0)
+  load: () => __vitePreload(() => import("./init-v0KNrrZU.js"), true ? __vite__mapDeps([11,10,6]) : void 0)
 }];
 addUniformParsers();
 extensions.add(...backendLoaders);

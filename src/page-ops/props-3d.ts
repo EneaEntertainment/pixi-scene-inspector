@@ -3,6 +3,8 @@ export {
     type OrbitCameraLike,
     readCamera3D,
     readOrbitCamera,
+    setAsViewCamera,
+    viewCameraStatus,
 } from './camera-3d';
 export {
     classifyNode,
