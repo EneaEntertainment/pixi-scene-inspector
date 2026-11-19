@@ -7,20 +7,20 @@ on:
         description: Version without v prefix (e.g. 1.5.0)
         required: true
         type: string
-      chrome_store:
-        description: Upload zip to Chrome Web Store and submit for review
-        required: true
-        type: boolean
-        default: true
+      # chrome_store:
+      #   description: Upload zip to Chrome Web Store and submit for review
+      #   required: true
+      #   type: boolean
+      #   default: true
       stage:
-        description: all runs the full release. github, npm, or chrome continues a version that already has a tag.
+        description: all runs the full release. github or npm continues a version that already has a tag.
         required: true
         type: choice
         options:
           - all
           - github
           - npm
-          - chrome
+          # - chrome
         default: all
 
 permissions:
@@ -83,7 +83,7 @@ jobs:
 
           if [ "$TAG_EXISTS" = true ]; then
             if [ "${GITHUB_RUN_ATTEMPT}" -eq 1 ]; then
-              echo "Tag v${VERSION} already exists. Re-run failed jobs on the original run, or dispatch stage github, npm, or chrome."
+              echo "Tag v${VERSION} already exists. Re-run failed jobs on the original run, or dispatch stage github or npm."
               exit 1
             fi
             echo "mode=tag" >> "$GITHUB_OUTPUT"
